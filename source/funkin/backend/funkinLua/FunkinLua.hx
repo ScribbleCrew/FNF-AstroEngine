@@ -1949,28 +1949,18 @@ class FunkinLua
 				var killMe:Array<String> = obj.split('.');
 				spr = LuaUtils.getObjectDirectly(killMe[0]);
 				if (killMe.length > 1)
-				{
 					spr = LuaUtils.getVarInArray(LuaUtils.getPropertyLoopThingWhatever(killMe), killMe[killMe.length - 1]);
-				}
 			}
 
 			if (spr != null)
 			{
-				switch (pos.trim().toLowerCase())
-				{
-					case 'x':
-						spr.screenCenter(X);
-						return;
-					case 'y':
-						spr.screenCenter(Y);
-						return;
-					default:
-						spr.screenCenter(XY);
-						return;
-				}
+				final i = ObjectUtils.convertFlxAxes(pos.trim());
+				spr.screenCenter(i);
+				return;
 			}
 			luaTrace("screenCenter: Object " + obj + " doesn't exist!", false, false, FlxColor.RED);
 		});
+		
 		Lua_helper.add_callback(lua, "objectsOverlap", function(obj1:String, obj2:String)
 		{
 			var namesArray:Array<String> = [obj1, obj2];

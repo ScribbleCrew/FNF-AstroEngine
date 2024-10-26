@@ -34,7 +34,7 @@ class Init extends flixel.FlxState
 
 		#if VIDEOS_ALLOWED hxvlc.util.Handle.init(#if (hxvlc >= "1.8.0")  ['--no-lua'] #end);#end
 
-		#if beta owoWatermark(); #end
+		#if WATERMARK owoWatermark(); #end
 
 		funkin.game.objects.Alphabet.AlphaCharacter.loadAlphabetData();
 
@@ -52,6 +52,7 @@ class Init extends flixel.FlxState
 			funkin.game.states.StoryMenuState.weekCompleted = FlxG.save.data.weekCompleted;
 	}
 
+	#if WATERMARK
 	private function owoWatermark():Void {
 		
 		// uhh tester text lmao
@@ -67,6 +68,7 @@ class Init extends flixel.FlxState
 
 		Lib.current.addChild(owoTxt);
 	}
+	#end
 }
 
 class Volume

@@ -214,7 +214,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.changeValue = 0.1;
 		addOption(option);
 
-		var option:Option = new Option('Furry Stuff',
+		var option:Option = new Option('Weird Stuff',
 		'erm, owo?', 
 		'gayFurryStuff',
 		'bool',
