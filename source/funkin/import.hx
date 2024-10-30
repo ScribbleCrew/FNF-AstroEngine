@@ -4,6 +4,7 @@ import funkin.game.objects.characters.*;
 import funkin.game.objects.*;
 import funkin.game.options.objects.*;
 import funkin.game.states.*;
+import funkin.game.editors.*;
 import funkin.game.transitions.*;
 import funkin.game.objects.notes.*;
 import funkin.game.objects.notes.Note.EventNote;
