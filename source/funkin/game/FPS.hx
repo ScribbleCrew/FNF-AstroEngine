@@ -84,7 +84,7 @@ class FPS extends TextField
 			text += '\nAstro Engine: ' + EngineData.engineData.coreVersion;
 		*/
 			#if debug 
-			text += '\nCommit: ${CommitMacro.commitNumber} [${CommitMacro.commitHash}]'; 
+			text += '\nCommit: ${GitMacro.commitNumber} [${GitMacro.commitHash}] ${GitMacro.branch}';
 			#end
 
 			textColor = 0xFFFFFFFF;

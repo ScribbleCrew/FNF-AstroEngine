@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
-	<app
-		title="Friday Night Funkin' Astro Engine" 
-		file="Astro Engine" 
-		version="0.2.8" 
-		packageName="com.astro" 
-		main="funkin.game.Main" 
-		company="Hackx2" 
-	/>
+	<app title="Friday Night Funkin' Astro Engine" file="Astro Engine" version="0.2.8" packageName="com.astro" main="funkin.game.Main" company="YourFriendOrbl" />
+	<!-- for your mod do like com.astro.MODNAMEHERE -->
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
@@ -41,7 +35,7 @@
 	<define name="FLXANIMATE_ALLOWED" />
 
 	<!-- Enables Support For Discord Client Integration -->
-	<define name="DISCORD_ALLOWED"  if="desktop"/>
+	<define name="DISCORD_ALLOWED" if="desktop"/>
 
 	<!-- Enables Achievements -->
 	<define name="ACHIEVEMENTS_ALLOWED" />
@@ -72,7 +66,7 @@
 	<icon path="art/icons/icon32.png" size='32'/>
 	<icon path="art/icons/icon64.png" size='64'/>
 	<icon path="art/icons/iconOG.png"/>
-	
+
 	<!-- ____________________________ Window Settings ___________________________ -->
 
 	<!--These window settings apply to all targets-->
@@ -106,8 +100,8 @@
 	<assets path='mods' embed='false'/>
 	<assets path="assets/embed" exclude="*.ogg" if="web" embed="true"/>
 	<assets path="assets/embed" exclude="*.mp3" unless="web" embed="true"/>
-	<assets path="assets/week_assets"   rename="assets" exclude="*.ogg" if="web"/>
-	<assets path="assets/week_assets"   rename="assets" exclude="*.mp3" unless="web"/>
+	<assets path="assets/week_assets" rename="assets" exclude="*.ogg" if="web"/>
+	<assets path="assets/week_assets" rename="assets" exclude="*.mp3" unless="web"/>
 	<assets path='art/icons/iconOG.png' rename='icon.png' if="linux" />
 
 	<section if="BASE_GAME_FILES">
@@ -148,7 +142,7 @@
 	<haxelib name="hxcpp-debug-server" if="DEBUG_SERVER_ALLOWED"/>
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
-	
+
 	<!-- A Script That Runs Before Complie -->
 	<prebuild haxe="source/Prebuild.hx"/>
 

@@ -33,6 +33,24 @@ class CoolUtil
 		return newValue / tempMult;
 	}
 
+	
+	static var _mousePoint:FlxPoint = new FlxPoint();
+	static var _objPoint:FlxPoint = new FlxPoint();
+	public static function mouseOverlapping<T:flixel.FlxObject>(obj:T, ?mousePoint:FlxPoint, ?camera:flixel.FlxCamera)
+		{
+			if (camera == null)
+				camera = obj.camera;
+			if (mousePoint == null)
+			{
+				mousePoint = _mousePoint;
+				FlxG.mouse.getScreenPosition(camera, mousePoint);
+			}
+			{
+				obj.getScreenPosition(_objPoint, camera);
+				return FlxMath.pointInCoordinates(mousePoint.x, mousePoint.y, _objPoint.x, _objPoint.y, obj.width, obj.height);
+			}
+		}
+
 	public static function coolLerp(base:Float, target:Float, ratio:Float):Float
 		return base + cameraLerp(ratio) * (target - base);
 

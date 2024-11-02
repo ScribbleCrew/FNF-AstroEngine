@@ -61,28 +61,25 @@ class MainMenuState extends MusicBeatState
 		{
 			name: 'freeplay',
 			state: new FreeplayState()
-		},		
+		},
 		#if MODS_ALLOWED
 		{
 			name: 'mods',
 			state: new ModsMenuState()
 		},
 		#end
-		#if ACHIEVEMENTS_ALLOWED
-		{
+		#if ACHIEVEMENTS_ALLOWED {
 			name: 'awards',
 			state: new AchievementsMenuState()
-		}
-		#end,
+		} #end,
 		{
 			name: 'credits',
 			state: new CreditsState()
 		},
-		#if !switch
-		{
+		#if !switch {
 			name: 'donate',
 			link: 'https://ninja-muffin24.itch.io/funkin'
-		}#end,
+		} #end,
 		{
 			name: 'options',
 			state: new OptionsState()
@@ -184,19 +181,6 @@ class MainMenuState extends MusicBeatState
 			menuItem.scrollFactor.set(0, scr);
 			menuItem.antialiasing = ClientPrefs.data.globalAntialiasing;
 			menuItem.updateHitbox();
-			MouseUtil.MOUSESUPPORT(menuItem, {
-				onClick: (_) -> onStateChange(),
-				selectedSomethin: selectedSomethin,
-				selectedSomethinMouse: selectedSomethinMouse,
-				onHover: () ->
-				{
-					if(curSelected == i) return;
-
-					FlxG.sound.play(Paths.sound('scrollMenu'));
-					curSelected = i;
-					changeItem();
-				}
-			});
 		}
 
 		// Version Loop
@@ -227,6 +211,8 @@ class MainMenuState extends MusicBeatState
 
 	var selectedSomethin:Bool = false;
 	var selectedSomethinMouse:Bool = true;
+	var overlap:Bool = false;
+	var curSpr:FlxSprite = null;
 
 	override function update(elapsed:Float)
 	{
@@ -236,6 +222,23 @@ class MainMenuState extends MusicBeatState
 			if (funkin.game.states.FreeplayState.vocals != null)
 				funkin.game.states.FreeplayState.vocals.volume += 0.5 * elapsed;
 		}
+
+		/*
+			MouseUtil.MOUSESUPPORT(menuItem, {
+				onClick: (_) -> onStateChange(),
+				selectedSomethin: selectedSomethin,
+				selectedSomethinMouse: selectedSomethinMouse,
+				onHover: () ->
+				{
+					if(curSelected == i) return;
+
+					FlxG.sound.play(Paths.sound('scrollMenu'));
+					curSelected = i;
+					changeItem();
+				}
+		});*/
+
+		//mouseFunc();
 
 		if (!selectedSomethin)
 		{
@@ -278,6 +281,38 @@ class MainMenuState extends MusicBeatState
 		menuItems.forEach(function(spr:FlxSprite) spr.screenCenter(X));
 	}
 
+	function mouseFunc() {
+		overlap = false;
+		for (spr in menuItems.members)
+		{
+			final mousePoint = FlxG.mouse.getScreenPosition(FlxG.camera);
+
+			if (spr == null && curSpr == spr)
+				continue;
+
+			if (CoolUtil.mouseOverlapping(spr, mousePoint))
+			{
+				curSelected = spr.ID;
+				overlap = true;
+				curSpr = spr;
+				changeItem();
+				break;
+			}
+			else
+			{
+				curSpr = null;
+				overlap = false;
+			}
+			mousePoint.put();
+		}
+
+		if (overlap && FlxG.mouse.justPressed)
+		{
+			onStateChange();
+			return;
+		}
+	}
+
 	function onStateChange():Void
 	{
 		if (menuButtons[curSelected].link != null)
@@ -306,11 +341,11 @@ class MainMenuState extends MusicBeatState
 				{
 					FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker)
 					{
-						var daChoice:EitherType<FlxState,FlxSubState> = menuButtons[curSelected].state;
+						var daChoice:EitherType<FlxState, FlxSubState> = menuButtons[curSelected].state;
 
-						if(Std.is(daChoice, FlxState))
+						if (Std.is(daChoice, FlxState))
 							MusicBeatState.switchState(daChoice);
-						else 
+						else
 							openSubState(daChoice);
 					});
 				}

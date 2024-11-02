@@ -104,8 +104,7 @@ import flixel.addons.display.FlxBackdrop;
 import flixel.FlxBasic;
 #end
 using StringTools;
-
-#if !macro
 using funkin.backend.utils.StringUtils;
+#if !macro
 using funkin.backend.utils.ObjectUtils;
 #end
