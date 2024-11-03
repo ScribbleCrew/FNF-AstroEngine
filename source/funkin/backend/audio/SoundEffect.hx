@@ -11,6 +11,7 @@ class SoundEffect
 {
 	/**
 	 *	Sound thing idk.
+	 *	It also cannot be changed.
 	 */
 	private static var _sound(default, null):FlxSound = new FlxSound();
 
@@ -35,7 +36,7 @@ class SoundEffect
 		_sound.pan = -.5;
 
 		/**
-		 *	After 100 milseconds the auto effect will start.
+		 *	After 100 milseconds the sound effect will start.
 		 */
 		new flixel.util.FlxTimer().start(.1, (tmr) -> _sound.play());
 
