@@ -38,5 +38,10 @@ class SoundEffect
 		 *	After 100 milseconds the auto effect will start.
 		 */
 		new flixel.util.FlxTimer().start(.1, (tmr) -> _sound.play());
+
+		/**
+		 *	Adding the sound to the list.
+		 */
+		FlxG.sound.list.add(_sound);
 	}
 }
