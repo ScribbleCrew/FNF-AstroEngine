@@ -44,7 +44,7 @@ class GitMacro
 		}
 		catch (e)
 		{
-			trace("Error Gettings Hash from Git" + e);
+			trace("Error getting current commit number from git: " + e);
 		}
 		return macro $v{0} #end
 	}
@@ -62,8 +62,8 @@ class GitMacro
 			return macro $v{process.stdout.readLine()};
 		}
 		catch (e)
-		{
-			trace("Error Gettings Hash from Git" + e);
+		{ 
+			trace("Error getting current commit hash from git: " + e);
 		}
 		return macro $v{"~"} #end
 	}
@@ -82,7 +82,7 @@ class GitMacro
 		}
 		catch (e)
 		{
-			trace("Error Gettings Hash from Git" + e);
+			trace("Error getting current branch from git: " + e);
 		}
 		return macro $v{""} #end
 	}
