@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="art/astro/512-modified.png" width="250" height="250"/>
+    <img src="art/branding/512xSmoothed.png" width="250" height="250"/>
     <br>
     <h1>Friday Night Funkin' • <code>Astro Engine</code> (<strong>Beta</strong>)</h1>
     <br>    
@@ -24,8 +24,6 @@ Could not parse frame number of: `haxelib install flixel 5.6.1`
 <h2>Credits:</h2>
 
 **[Hackx2](https://twitter.com/AnimatesHack)** - Main **Programmer**
-
-**[GuineaPigUuhh](https://github.com/GuineaPigUuhh)** - Ex-**Programmer**
 
 ---
 

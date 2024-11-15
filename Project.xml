@@ -135,7 +135,7 @@
 	<!-- Hxvlc -->
 	<haxelib name="hxvlc" if="VIDEOS_ALLOWED"/>
 	<!-- FlxAnimate -->
-	<haxelib name="flxanimate" path="./libs/flxanimate" if="FLXANIMATE_ALLOWED"/>
+	<haxelib name="flxanimate" if="FLXANIMATE_ALLOWED"/>
 	<!-- Discord API -->
 	<haxelib name="hxdiscord_rpc" if="DISCORD_ALLOWED"/>
 	<!-- Debug Sever -->

@@ -1,2 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+*.hxs linguist-language=Haxe
+*.hsc linguist-language=Haxe
+*.hscript linguist-language=Haxe

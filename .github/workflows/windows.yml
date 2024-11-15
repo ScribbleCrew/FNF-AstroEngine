@@ -16,11 +16,9 @@ jobs:
       - uses: krdlab/setup-haxe@master
         with:
           haxe-version: 4.3.4
-      - name: Install Haxelib
+      - name: Installing/Updating libraries
         run: |
-          haxelib setup C:/haxelib
-          haxelib install hxcpp > /dev/null --quiet
-          .\"setup/windows.bat"
+            haxe -cp commandline -D analyzer-optimize --run Main setup -s
         shell: cmd
       - name: Skip SScript setup mode
         run: echo 'oy9:showMacroty8:loopCosti25y10:includeAllfg' >> ~/settings.cocoa

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<libraries>
+    <!-- OpenFL & Lime -->
+    <lib name="openfl" version="9.3.3" />
+    <lib name="lime" version="8.1.2" />
+
+    <!-- Flixel -->
+    <lib name="flixel" version="5.6.1" />
+    <lib name="flixel-addons" version="3.2.2"/>
+    <lib name="flixel-ui"/>
+
+    <!-- Hxcpp Debug Server -->
+    <lib name="hxcpp-debug-server"/>
+
+    <!-- HScript -->
+    <lib name="hscript-iris" version="1.0.2" />
+
+    <!-- Json -->
+    <lib name="tjson" version="1.4.0" />
+
+	<!-- Hx Discord RPC -->
+    <git name="hxdiscord_rpc" url="https://github.com/FNF-CNE-Devs/hxdiscord_rpc" />
+
+	<!-- FlxAnimate -->
+    <git name="flxanimate" url="https://github.com/AstroEngineDevs/flxanimate" />
+
+	<!-- Hxvlc -->
+    <lib name="hxvlc" skipDeps="true" />
+    
+	<!-- linc_luajit -->
+    <git name="linc_luajit" url="https://github.com/superpowers04/linc_luajit" ref="633fcc051399afed6781dd60cbf30ed8c3fe2c5a" />
+
+    <!-- V-Slice Libs -->
+    <git name="funkin.vis" url="https://github.com/FunkinCrew/funkVis" ref="22b1ce089dd924f15cdc4632397ef3504d464e90" />
+    <git name="grig.audio" url="https://gitlab.com/haxe-grig/grig.audio" ref="cbf91e2180fd2e374924fe74844086aab7891666" />
+    
+    <!-- <lib name="dox" /> -->
+</libraries>

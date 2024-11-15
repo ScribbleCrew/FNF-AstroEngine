@@ -1,3 +1,6 @@
+### Super Stupid LOL!
+### ! means a file should be added regardless of it it gets ignored prior.
+
 ### Haxe
 export/*
 dump/*
@@ -6,11 +9,12 @@ dump/*
 .vscode/*
 .haxelib/
 *.code-workspace
-# Local history which shouldn't be shared.
+
+### Local history which shouldn't be shared.
 .history
 .ionide
-# ! means a file should be added regardless of it it gets ignored prior.
-# Including to allow others to use already set-up configuration tweaked for the project.
+
+### Including to allow others to use already set-up configuration tweaked for the project.
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json

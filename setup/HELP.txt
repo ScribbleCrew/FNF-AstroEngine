@@ -1,8 +1,0 @@
-new to fnf then run? 
-then run: msvc-win.bat
-
-then run:
-
-MacOS or Linux: unix.sh
-
-Windows: windows.bat
