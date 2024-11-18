@@ -3751,6 +3751,9 @@ class PlayState extends MusicBeatState
 		super.destroy();
 	}
 
+	/**
+	 * Cancel the music fade tween.
+	 */
 	public static function cancelMusicFadeTween()
 	{
 		if (FlxG.sound.music.fadeTween != null)

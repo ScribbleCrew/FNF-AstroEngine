@@ -2,6 +2,7 @@
 
 * idk lol
 * stage editor(psych)
+* fix Weekend1 shaders
 
 ---
   

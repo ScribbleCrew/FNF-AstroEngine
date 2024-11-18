@@ -19,3 +19,9 @@ dump/*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+
+## DOX
+pages
+docs
+bin

@@ -1,0 +1,2 @@
+haxelib run lime test windows --haxeflag='-xml export/doc.xml'
+haxelib run dox -i bin -o docs -in source

@@ -14,7 +14,7 @@ class Update {
 		if (!FileSystem.exists('.haxelib'))
 			FileSystem.createDirectory('.haxelib');
 
-		var filename = "./commandline/libs.xml";
+		var filename = "./commandline/libraries.xml";
 		var isSilent = false;
 		for(arg in args) {
 			if (arg.startsWith("--lib=")) {

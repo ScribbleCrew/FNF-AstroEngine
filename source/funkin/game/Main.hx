@@ -22,8 +22,6 @@ import openfl.events.UncaughtErrorEvent;
 import funkin.backend.data.*;
 import funkin.game.FPS;
 
-
-
 /*
 	No need to change anything here unless you know what your doin' :3c
 	If you want to add something that will run once the game has started, edit Init.hx
@@ -46,7 +44,8 @@ class Main extends Sprite
 
 	public static function exitOn(?type:Int = 0, ?traceE:Bool = false)
 	{
-		if (traceE) trace('Exited at ${Date.now().toString()}');
+		if (traceE)
+			trace('Exited at ${Date.now().toString()}');
 		Sys.exit(type);
 	}
 
@@ -90,8 +89,8 @@ class Main extends Sprite
 
 		ClientPrefs.loadDefaultKeys();
 
-		var game:FlxGame = new FlxGame(Config.gameSize[0], Config.gameSize[1], Init, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate, Config.skipSplash,
-		Config.startFullscreen);
+		var game:FlxGame = new FlxGame(Config.gameSize[0], Config.gameSize[1], Init, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate,
+			Config.skipSplash, Config.startFullscreen);
 
 		@:privateAccess
 		game._customSoundTray = funkin.backend.system.ui.FunkinSoundTray;
@@ -108,11 +107,37 @@ class Main extends Sprite
 		#end
 
 		#if html5
-		FlxG.autoPause = FlxG.mouse.visible = false;
+		FlxG.autoPause = false;
+		FlxG.mouse.visible = false;
 		#end
+
+		FlxG.fixedTimestep = false;
+		FlxG.game.focusLostFramerate = 60;
+		FlxG.keys.preventDefaultKeys = [TAB];
 
 		#if CRASH_HANDLER
 		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, CrashHandler.main);
 		#end
+
+		FlxG.signals.gameResized.add(function(w, h)
+		{
+			if (FlxG.cameras != null)
+			{
+				for (cam in FlxG.cameras.list)
+					if (cam != null && cam.filters != null)
+						resetSpriteCache(cam.flashSprite);
+			}
+
+			if (FlxG.game != null)
+				resetSpriteCache(FlxG.game);
+		});
+	}
+
+	static function resetSpriteCache(sprite:Sprite):Void
+	{
+		@:privateAccess {
+			sprite.__cacheBitmap = null;
+			sprite.__cacheBitmapData = null;
+		}
 	}
 }
