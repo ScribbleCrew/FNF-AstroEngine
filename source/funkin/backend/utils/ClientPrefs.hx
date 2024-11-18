@@ -10,11 +10,13 @@ import funkin.game.Init.Volume;
 @:structInit class SaveVariables
 {
 	// if u use psych
-	@:deprecated("uhh psych") public var antialiasing:Bool = true;
-	public var globalAntialiasing(default,set):Bool = true;
-	private function set_globalAntialiasing (owo:Bool)
-		return globalAntialiasing = antialiasing = owo;
-	
+	@:deprecated("Psych Support") @:isVar public var antialiasing(get, set):Bool = true;
+	public var globalAntialiasing:Bool = true;
+	@:dox(hide) @:noCompletion private inline function set_antialiasing(value:Bool)
+		return globalAntialiasing = antialiasing = value;
+	@:dox(hide) @:noCompletion private inline function get_antialiasing()
+		return globalAntialiasing;
+
 	public var downScroll:Bool = false;
 	public var middleScroll:Bool = false;
 	public var opponentStrums:Bool = true;
@@ -24,7 +26,7 @@ import funkin.game.Init.Volume;
 	public var opnoteSplashes:Bool = true;
 	public var lowQuality:Bool = false;
 	public var hideFullHUD:Bool = false;
-	public var botplayStudio:Bool = false;
+	public var botplayEnabled:Bool = false;
 	public var shaders:Bool = true;
 	public var cacheOnGPU:Bool = #if !switch false #else true #end;
 	public var framerate:Int = 60;
@@ -73,12 +75,14 @@ import funkin.game.Init.Volume;
 		[0xFFC24B99, 0xFFFFFFFF, 0xFF3C1F56],
 		[0xFF00FFFF, 0xFFFFFFFF, 0xFF1542B7],
 		[0xFF12FA05, 0xFFFFFFFF, 0xFF0A4447],
-		[0xFFF9393F, 0xFFFFFFFF, 0xFF651038]];
+		[0xFFF9393F, 0xFFFFFFFF, 0xFF651038]
+	];
 	public var arrowRGBPixel:Array<Array<FlxColor>> = [
 		[0xFFE276FF, 0xFFFFF9FF, 0xFF60008D],
 		[0xFF3DCAFF, 0xFFF4FFFF, 0xFF003060],
 		[0xFF71E300, 0xFFF6FFE6, 0xFF003100],
-		[0xFFFF884E, 0xFFFFFAF5, 0xFF6C0000]];
+		[0xFFFF884E, 0xFFFFFAF5, 0xFF6C0000]
+	];
 
 	// Astro Engine
 	public var discordRPC:Bool = true;
@@ -101,46 +105,39 @@ class ClientPrefs
 	public static var defaultData:SaveVariables = {};
 
 	// Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
-	//Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
 	public static var keyBinds:Map<String, Array<FlxKey>> = [
-		//Key Bind, Name for ControlsSubState
-		'note_up'		=> [W, UP],
-		'note_left'		=> [A, LEFT],
-		'note_down'		=> [S, DOWN],
-		'note_right'	=> [D, RIGHT],
-		
-		'ui_up'			=> [W, UP],
-		'ui_left'		=> [A, LEFT],
-		'ui_down'		=> [S, DOWN],
-		'ui_right'		=> [D, RIGHT],
-		
-		'accept'		=> [SPACE, ENTER],
-		'back'			=> [BACKSPACE, ESCAPE],
-		'pause'			=> [ENTER, ESCAPE],
-		'reset'			=> [R],
-		
-		'volume_mute'	=> [ZERO],
-		'volume_up'		=> [NUMPADPLUS, PLUS],
-		'volume_down'	=> [NUMPADMINUS, MINUS],
-		
-		'debug_1'		=> [SEVEN],
-		'debug_2'		=> [EIGHT]
+		// Key Bind, Name for ControlsSubState
+		'note_up' => [W, UP],
+		'note_left' => [A, LEFT],
+		'note_down' => [S, DOWN],
+		'note_right' => [D, RIGHT],
+		'ui_up' => [W, UP],
+		'ui_left' => [A, LEFT],
+		'ui_down' => [S, DOWN],
+		'ui_right' => [D, RIGHT],
+		'accept' => [SPACE, ENTER],
+		'back' => [BACKSPACE, ESCAPE],
+		'pause' => [ENTER, ESCAPE],
+		'reset' => [R],
+		'volume_mute' => [ZERO],
+		'volume_up' => [NUMPADPLUS, PLUS],
+		'volume_down' => [NUMPADMINUS, MINUS],
+		'debug_1' => [SEVEN],
+		'debug_2' => [EIGHT]
 	];
 	public static var gamepadBinds:Map<String, Array<FlxGamepadInputID>> = [
-		'note_up'		=> [DPAD_UP, Y],
-		'note_left'		=> [DPAD_LEFT, X],
-		'note_down'		=> [DPAD_DOWN, A],
-		'note_right'	=> [DPAD_RIGHT, B],
-		
-		'ui_up'			=> [DPAD_UP, LEFT_STICK_DIGITAL_UP],
-		'ui_left'		=> [DPAD_LEFT, LEFT_STICK_DIGITAL_LEFT],
-		'ui_down'		=> [DPAD_DOWN, LEFT_STICK_DIGITAL_DOWN],
-		'ui_right'		=> [DPAD_RIGHT, LEFT_STICK_DIGITAL_RIGHT],
-		
-		'accept'		=> [A, START],
-		'back'			=> [B],
-		'pause'			=> [START],
-		'reset'			=> [BACK]
+		'note_up' => [DPAD_UP, Y],
+		'note_left' => [DPAD_LEFT, X],
+		'note_down' => [DPAD_DOWN, A],
+		'note_right' => [DPAD_RIGHT, B],
+		'ui_up' => [DPAD_UP, LEFT_STICK_DIGITAL_UP],
+		'ui_left' => [DPAD_LEFT, LEFT_STICK_DIGITAL_LEFT],
+		'ui_down' => [DPAD_DOWN, LEFT_STICK_DIGITAL_DOWN],
+		'ui_right' => [DPAD_RIGHT, LEFT_STICK_DIGITAL_RIGHT],
+		'accept' => [A, START],
+		'back' => [B],
+		'pause' => [START],
+		'reset' => [BACK]
 	];
 	public static var defaultKeys:Map<String, Array<FlxKey>> = null;
 	public static var defaultButtons:Map<String, Array<FlxGamepadInputID>> = null;
@@ -169,7 +166,7 @@ class ClientPrefs
 	public static function loadPrefs()
 	{
 		for (key in Reflect.fields(data))
-			if (key != 'gameplaySettings' && key != 'stats' && key != 'achievementsMap'&& Reflect.hasField(FlxG.save.data, key))
+			if (key != 'gameplaySettings' && key != 'stats' && key != 'achievementsMap' && Reflect.hasField(FlxG.save.data, key))
 				Reflect.setField(data, key, Reflect.field(FlxG.save.data, key));
 
 		#if (!html5 && !switch)
@@ -245,9 +242,7 @@ class ClientPrefs
 			trace("Initialization Successful");
 		}
 		catch (e)
-		{
-			trace("Initialization Unsuccessful" + e);
-		}
+			trace("Initialization Unsuccessful : " + e);
 	}
 
 	inline public static function getGameplaySetting(name:String, defaultValue:Dynamic = null, ?customDefaultValue:Bool = false):Dynamic
@@ -256,15 +251,16 @@ class ClientPrefs
 			defaultValue = defaultData.gameplaySettings.get(name);
 		return (data.gameplaySettings.exists(name) ? data.gameplaySettings.get(name) : defaultValue);
 	}
-	
+
 	public static function reloadVolumeKeys()
-		{
-			Volume.muteKeys = copyKey(keyBinds.get('volume_mute'));
-			Volume.volumeDownKeys = copyKey(keyBinds.get('volume_down'));
-			Volume.volumeUpKeys = copyKey(keyBinds.get('volume_up'));
-			
-			toggleVolumeKeys(true);
-		}
+	{
+		Volume.muteKeys = copyKey(keyBinds.get('volume_mute'));
+		Volume.volumeDownKeys = copyKey(keyBinds.get('volume_down'));
+		Volume.volumeUpKeys = copyKey(keyBinds.get('volume_up'));
+
+		toggleVolumeKeys(true);
+	}
+
 	public static function toggleVolumeKeys(?turnOn:Bool = true)
 	{
 		final emptyArray = [];

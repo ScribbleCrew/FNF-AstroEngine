@@ -1,7 +1,6 @@
 # ```TODO```
 
 * idk lol
-* weekend1 fix chart system
 * stage editor(psych)
 
 ---

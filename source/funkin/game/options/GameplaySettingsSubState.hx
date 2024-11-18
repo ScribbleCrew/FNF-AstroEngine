@@ -125,11 +125,10 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 
 		var option:Option = new Option('Botplay',
 		'It\'s fucking botplay', 
-		'botplayStudio',
+		'botplayEnabled',
 		'bool',
 		false);
 		addOption(option);
-
 		
 		#if DISCORD_ALLOWED
 		var option:Option = new Option('Discord Rich Presence',
