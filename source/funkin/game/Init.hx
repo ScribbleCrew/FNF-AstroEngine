@@ -84,10 +84,11 @@ class Logs // Modded trace func
 
 	public static function init():Void
 	{
-		haxe.Log.trace = _trace;
+		haxe.Log.trace = __customTrace;
+		trace('Finished Setting up custom trace');
 	}
 
-	private static function _trace(v:Dynamic, ?infos:haxe.PosInfos):Void
+	@:noCompletion private static function __customTrace(v:Dynamic, ?infos:haxe.PosInfos):Void
 	{
 		final nerddd = infos.fileName + ":" + infos.lineNumber;
 		if (infos != null && infos.customParams != null)
