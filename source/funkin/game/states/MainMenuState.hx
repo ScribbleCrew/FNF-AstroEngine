@@ -25,7 +25,6 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import lime.app.Application;
-import funkin.game.objects.Achievements;
 import funkin.game.editors.MasterEditorMenu;
 import flixel.input.keyboard.FlxKey;
 import funkin.backend.data.*;
@@ -76,10 +75,10 @@ class MainMenuState extends MusicBeatState
 			name: 'credits',
 			state: new CreditsState()
 		},
-		#if !switch {
+		#if (!switch && switch) {//idon'trllywantdisherelol
 			name: 'donate',
 			link: 'https://ninja-muffin24.itch.io/funkin'
-		} #end,
+		},#end
 		{
 			name: 'options',
 			state: new OptionsState()
@@ -200,7 +199,14 @@ class MainMenuState extends MusicBeatState
 
 		// Achievement Check
 		#if ACHIEVEMENTS_ALLOWED
-		AchievementUtils.checkAndGrantAchievement('friday_night_play', camAchievement);
+		// Unlocks "Freaky on a Friday Night" achievement if it's a Friday and between 18:00 PM and 23:59 PM
+		var leDate = Date.now();
+		if (leDate.getDay() == 5 && leDate.getHours() >= 18)
+			Achievements.unlock('friday_night_play');
+
+		#if MODS_ALLOWED
+		Achievements.reloadList();
+		#end
 		#end
 
 		super.create();

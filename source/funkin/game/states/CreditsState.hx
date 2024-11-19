@@ -44,10 +44,11 @@ class CreditsState extends MusicBeatState
 
 	override function create()
 	{
-		#if desktop
+		#if (desktop && DISCORD_ALLOWED)
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("Credits Menu", null);
 		#end
+		WindowUtil.setTitle('Credits Menu');
 
 		persistentUpdate = true;
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
@@ -90,10 +91,10 @@ class CreditsState extends MusicBeatState
 			// Name - Icon name - Description - Link - BG Color
 			['Astro Engine Team'],
 			[
-				'Hackx2',
-				'hackx2',
+				'YourFriendOrbl',
+				'orbl',
 				'Main Programmer of Astro Engine',
-				'https://github.com/Hackx2',
+				'https://x.com/YourFriendOrbl',
 				'BA7EFF'
 			],
 			[''],
@@ -111,22 +112,6 @@ class CreditsState extends MusicBeatState
 				'Main Artist/Animator of Psych Engine',
 				'https://twitter.com/riverennn',
 				'14967B'
-			],
-			[''],
-			['Former Engine Members'],
-			[
-				'bb-panzu',
-				'bb',
-				'Ex-Programmer of Psych Engine',
-				'https://twitter.com/bbsub3',
-				'3E813A'
-			],
-			[
-				'shubs',
-				'face',
-				'Ex-Programmer of Psych Engine\nI don\'t support them.',
-				'',
-				'A1A1A1'
 			],
 			[''],
 			['Engine Contributors'],

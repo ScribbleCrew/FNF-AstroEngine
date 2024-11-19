@@ -62,7 +62,7 @@ class PhillyTrain extends BGSprite
 	public function beatHit(curBeat:Int):Void
 	{
 		if (!moving)
-			cooldown += 1;
+			cooldown++;
 
 		if (curBeat % 8 == 4 && FlxG.random.bool(30) && !moving && cooldown > 8)
 		{

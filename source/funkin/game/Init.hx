@@ -15,9 +15,9 @@ class Init extends flixel.FlxState
 		WindowUtil.resetTitle();
 
 		FlxG.save.bind('funkin', funkin.backend.CoolUtil.getSavePath());
-		
-		#if LUA_ALLOWED Mods.pushGlobalMods();#end
-		
+
+		#if LUA_ALLOWED Mods.pushGlobalMods(); #end
+
 		Mods.loadTopMod();
 
 		Controls.instance = new Controls();
@@ -30,9 +30,11 @@ class Init extends flixel.FlxState
 
 		#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(CallbackHandler.call)); #end
 
+		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
+		
 		#if DISCORD_ALLOWED DiscordClient.prepare(); #end
 
-		#if VIDEOS_ALLOWED hxvlc.util.Handle.init(#if (hxvlc >= "1.8.0")  ['--no-lua'] #end);#end
+		#if VIDEOS_ALLOWED hxvlc.util.Handle.init(#if (hxvlc >= "1.8.0") ['--no-lua'] #end); #end
 
 		#if WATERMARK owoWatermark(); #end
 
@@ -45,7 +47,8 @@ class Init extends flixel.FlxState
 		FlxG.switchState(new TitleState());
 	}
 
-	private function init():Void {
+	private function init():Void
+	{
 		if (FlxG.save.data != null && FlxG.save.data.fullscreen)
 			FlxG.fullscreen = FlxG.save.data.fullscreen;
 		if (FlxG.save.data.weekCompleted != null)
@@ -53,17 +56,17 @@ class Init extends flixel.FlxState
 	}
 
 	#if WATERMARK
-	private function owoWatermark():Void {
-		
+	private function owoWatermark():Void
+	{
 		// uhh tester text lmao
 		final owoTxt:TextField = new TextField();
-		owoTxt.defaultTextFormat = new TextFormat("assets/fonts/OswaldMedium.ttf",100,FlxColor.WHITE);
+		owoTxt.defaultTextFormat = new TextFormat("assets/fonts/OswaldMedium.ttf", 100, FlxColor.WHITE);
 		owoTxt.text = 'BETA BUILD OF ASTRO ENGINE';
 		owoTxt.alpha = .4;
 		owoTxt.width = Lib.current.stage.stageWidth;
 		owoTxt.height = Lib.current.stage.stageHeight;
 		owoTxt.x = (Lib.current.stage.stageWidth - owoTxt.width) / 2;
-        owoTxt.y = (Lib.current.stage.stageHeight - owoTxt.height) / 2;
+		owoTxt.y = (Lib.current.stage.stageHeight - owoTxt.height) / 2;
 		owoTxt.selectable = false;
 
 		Lib.current.addChild(owoTxt);
@@ -103,7 +106,8 @@ class Logs // Modded trace func
 			Sys.println('$fuckbaby: ${v + extra} : $nerddd');
 			#end
 		}
-		else{
+		else
+		{
 			#if js
 			if (js.Syntax.typeof(untyped console) != "undefined" && (untyped console).log != null)
 				(untyped console).log('$fuckbaby: $v : $nerddd');

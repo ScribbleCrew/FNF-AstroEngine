@@ -4,7 +4,6 @@ import funkin.backend.CoolUtil;
 #if desktop
 import sys.thread.Thread;
 #end
-
 import funkin.game.objects.shaders.ColorSwap;
 import funkin.backend.Highscore;
 import flixel.FlxState;
@@ -45,8 +44,6 @@ import funkin.backend.client.Discord.DiscordClient;
 import funkin.backend.system.MusicBeatState;
 import funkin.backend.utils.Paths;
 
-
-
 typedef TitleData =
 {
 	titlex:Float,
@@ -85,7 +82,7 @@ class TitleState extends MusicBeatState
 	override public function create():Void
 	{
 		Paths.clearStoredMemory();
-		
+
 		#if desktop
 		DiscordClient.changePresence("Viewing The Title", null);
 		WindowUtil.resetTitle();
@@ -181,7 +178,7 @@ class TitleState extends MusicBeatState
 			}
 		}
 
-		Conductor.bpm=titleJSON.bpm;
+		Conductor.bpm = titleJSON.bpm;
 		persistentUpdate = true;
 
 		var bg:FlxSprite = new FlxSprite();
@@ -264,7 +261,6 @@ class TitleState extends MusicBeatState
 		credTextShit = new Alphabet(0, 0, "", true);
 		credTextShit.screenCenter();
 
-
 		credTextShit.visible = false;
 
 		ngSpr = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('newgrounds_logo'));
@@ -303,8 +299,6 @@ class TitleState extends MusicBeatState
 	}
 
 	var transitioning:Bool = false;
-
-	private static var playJingle:Bool = false;
 
 	var newTitle:Bool = false;
 	var titleTimer:Float = 0;
@@ -408,38 +402,40 @@ class TitleState extends MusicBeatState
 	}
 
 	function createCoolText(textArray:Array<String>, ?offset:Float = 0)
+	{
+		for (i in 0...textArray.length)
 		{
-			for (i in 0...textArray.length)
+			var money:Alphabet = new Alphabet(0, 0, textArray[i], true);
+			money.screenCenter(X);
+			money.y += (i * 60) + 200 + offset;
+			if (credGroup != null && textGroup != null)
 			{
-				var money:Alphabet = new Alphabet(0, 0, textArray[i], true);
-				money.screenCenter(X);
-				money.y += (i * 60) + 200 + offset;
-				if(credGroup != null && textGroup != null) {
-					credGroup.add(money);
-					textGroup.add(money);
-				}
+				credGroup.add(money);
+				textGroup.add(money);
 			}
 		}
-	
-		function addMoreText(text:String, ?offset:Float = 0)
+	}
+
+	function addMoreText(text:String, ?offset:Float = 0)
+	{
+		if (textGroup != null && credGroup != null)
 		{
-			if(textGroup != null && credGroup != null) {
-				var coolText:Alphabet = new Alphabet(0, 0, text, true);
-				coolText.screenCenter(X);
-				coolText.y += (textGroup.length * 60) + 200 + offset;
-				credGroup.add(coolText);
-				textGroup.add(coolText);
-			}
+			var coolText:Alphabet = new Alphabet(0, 0, text, true);
+			coolText.screenCenter(X);
+			coolText.y += (textGroup.length * 60) + 200 + offset;
+			credGroup.add(coolText);
+			textGroup.add(coolText);
 		}
-	
-		function deleteCoolText()
+	}
+
+	function deleteCoolText()
+	{
+		while (textGroup.members.length > 0)
 		{
-			while (textGroup.members.length > 0)
-			{
-				credGroup.remove(textGroup.members[0], true);
-				textGroup.remove(textGroup.members[0], true);
-			}
+			credGroup.remove(textGroup.members[0], true);
+			textGroup.remove(textGroup.members[0], true);
 		}
+	}
 
 	private var sickBeats:Int = 0; // Basically curBeat but won't be skipped if you hold the tab or resize the screen
 
@@ -463,7 +459,6 @@ class TitleState extends MusicBeatState
 
 		if (!closedState)
 		{
-
 			// basically controls the fnf intro
 			sickBeats++;
 			switch (sickBeats)
@@ -510,73 +505,10 @@ class TitleState extends MusicBeatState
 	{
 		if (!skippedIntro)
 		{
-			if (playJingle) // Ignore deez
-			{
-				var easteregg:String = FlxG.save.data.psychDevsEasterEgg;
-				if (easteregg == null)
-					easteregg = '';
-				easteregg = easteregg.toUpperCase();
+			remove(ngSpr);
+			remove(credGroup);
+			FlxG.camera.flash(FlxColor.WHITE, 4);
 
-				var sound:FlxSound = null;
-				switch (easteregg)
-				{
-					case 'RIVER':
-						sound = FlxG.sound.play(Paths.sound('JingleRiver'));
-					case 'SHUBS':
-						sound = FlxG.sound.play(Paths.sound('JingleShubs'));
-					case 'SHADOW':
-						FlxG.sound.play(Paths.sound('JingleShadow'));
-					case 'BBPANZU':
-						sound = FlxG.sound.play(Paths.sound('JingleBB'));
-
-					default: // Go back to normal ugly ass boring GF
-						remove(ngSpr);
-						remove(credGroup);
-						FlxG.camera.flash(FlxColor.WHITE, 2);
-						skippedIntro = true;
-						playJingle = false;
-
-						FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						return;
-				}
-
-				transitioning = true;
-				if (easteregg == 'SHADOW')
-				{
-					new FlxTimer().start(3.2, function(tmr:FlxTimer)
-					{
-						remove(ngSpr);
-						remove(credGroup);
-						FlxG.camera.flash(FlxColor.WHITE, 0.6);
-						transitioning = false;
-					});
-				}
-				else
-				{
-					remove(ngSpr);
-					remove(credGroup);
-					FlxG.camera.flash(FlxColor.WHITE, 3);
-					sound.onComplete = function()
-					{
-						FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
-						FlxG.sound.music.fadeIn(4, 0, 0.7);
-						transitioning = false;
-					};
-				}
-				playJingle = false;
-			}
-			else // Default! Edit this one!!
-			{
-				remove(ngSpr);
-				remove(credGroup);
-				FlxG.camera.flash(FlxColor.WHITE, 4);
-
-				var easteregg:String = FlxG.save.data.psychDevsEasterEgg;
-				if (easteregg == null)
-					easteregg = '';
-				easteregg = easteregg.toUpperCase();
-			}
 			skippedIntro = true;
 		}
 	}

@@ -24,6 +24,7 @@ import funkin.backend.system.*;
 import funkin.backend.utils.*;
 import funkin.backend.data.*;
 import funkin.backend.*;
+import funkin.backend.Achievements.Achievement;
 import funkin.backend.base.*;
 import funkin.backend.utils.native.*;
 import funkin.backend.base.BaseStage.Countdown;
@@ -88,6 +89,7 @@ import openfl.utils.Assets as OpenFlAssets;
 // Flixel
 import flixel.sound.FlxSound;
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxCamera;
 import flixel.math.FlxMath;
@@ -103,6 +105,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.addons.display.FlxBackdrop;
 import flixel.FlxBasic;
 #end
+
 using StringTools;
 using funkin.backend.utils.StringUtils;
 #if !macro

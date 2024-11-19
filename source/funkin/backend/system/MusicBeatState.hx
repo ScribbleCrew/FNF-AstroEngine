@@ -19,7 +19,7 @@ class MusicBeatState extends FlxState
 
 	private var curDecStep:Float = 0;
 	private var curDecBeat:Float = 0;
-	private var controls(get, never):Controls;
+	public var controls(get, never):Controls;
 
 	var _astroCameraInitialized:Bool = false;
 	inline function get_controls():Controls

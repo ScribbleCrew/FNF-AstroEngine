@@ -3,6 +3,7 @@ package funkin.game.objects.scorebars;
 import flixel.util.FlxStringUtil;
 import funkin.backend.Highscore;
 
+using flixel.util.FlxSpriteUtil;
 class AstroScore extends BaseScorebar
 {
 	private var scoreText:FlxText;
@@ -131,16 +132,17 @@ class AstroScore extends BaseScorebar
 		};
 	}
 
-	private function addCurveBG(x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0, ellipseWidthAndHeight:Int = 0, startAlpha:Int = 0,
+	@:dox(show) private function addCurveBG(x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0, ellipseWidthAndHeight:Int = 0, startAlpha:Int = 0,
 			?group:FlxTypedGroup<Dynamic>)
 	{
 		final width = Std.int(width);
 		final height = Std.int(height);
 
-		final helloLmao = new FlxSprite(x, y).makeGraphic(width, height, FlxColor.TRANSPARENT, false);
-		flixel.util.FlxSpriteUtil.drawRoundRect(helloLmao, 0, 0, width, height, ellipseWidthAndHeight, ellipseWidthAndHeight, FlxColor.BLACK);
-		helloLmao.alpha = startAlpha;
+		final curveSpr = new FlxSprite(x, y).makeGraphic(width, height, FlxColor.TRANSPARENT, false);
+		curveSpr.drawRoundRect(0, 0, width, height, ellipseWidthAndHeight, ellipseWidthAndHeight, FlxColor.BLACK);
+		curveSpr.alpha = startAlpha;
+		
 		if (group != null)
-			group.insert(game.members.indexOf(game.uiGroup), helloLmao);
+			group.insert(game.members.indexOf(game.uiGroup), curveSpr);
 	}
 }

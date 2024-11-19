@@ -2,7 +2,7 @@ package funkin.game.editors;
 
 
 import funkin.game.objects.TypedAlphabet;
-#if desktop
+#if (desktop && DISCORD_ALLOWED)
 import funkin.backend.client.Discord.DiscordClient;
 #end
 import flixel.FlxG;

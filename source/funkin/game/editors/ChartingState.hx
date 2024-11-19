@@ -1019,7 +1019,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 						stopMovingNotes();
 						resetSelectedNotes();
 						selectedNotes = pasteCopiedNotesToSection();
-						selectedNotes.sort(PlayState.sortByTime);
+						selectedNotes.sort(ObjectUtils.sortByTime);
 
 						var didFind:Bool = false;
 						var minNoteData:Float = Math.POSITIVE_INFINITY;
@@ -1111,7 +1111,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 					else
 						curZoom = zoomList[Std.int(Math.min(zoomList.indexOf(curZoom) + 1, zoomList.length - 1))];
 	
-					notes.sort(PlayState.sortByTime);
+					notes.sort(ObjectUtils.sortByTime);
 					var noteSec:Int = 0;
 					var nextSectionTime:Float = cachedSectionTimes[noteSec + 1];
 					var curSectionTime:Float = cachedSectionTimes[noteSec];
@@ -1553,7 +1553,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		isMovingNotes = true;
 		movingNotesLastY = lastY;
 		movingNotesLastData = noteData;
-		movingNotes.sort(cast PlayState.sortByTime);
+		movingNotes.sort(cast ObjectUtils.sortByTime);
 		addUndoAction(MOVE_NOTE, {originalNotes: originalNotes, originalEvents: originalEvents, movedNotes: movedNotes, movedEvents: movedEvents});
 		softReloadNotes();
 	}
@@ -1568,7 +1568,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 			if(!note.isEvent) pushedNotes.push(note);
 			else pushedEvents.push(cast (note, MetaNote.EventMetaNote));
 		});
-		notes.sort(PlayState.sortByTime);
+		notes.sort(ObjectUtils.sortByTime);
 		movingNotes.clear();
 		isMovingNotes = false;
 		softReloadNotes();
@@ -1922,8 +1922,8 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 			if(event != null && (cachedSectionTimes.length < 1 || event[0] < cachedSectionTimes[cachedSectionTimes.length-1])) //dont spawn events over the time limit
 				events.push(createEvent(event));
 
-		notes.sort(PlayState.sortByTime);
-		events.sort(PlayState.sortByTime);
+		notes.sort(ObjectUtils.sortByTime);
+		events.sort(ObjectUtils.sortByTime);
 
 		trace('Note count: ${notes.length}');
 		trace('Events count: ${events.length}');
@@ -2969,7 +2969,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 					pushedNotes.push(newNote);
 				}
 			}
-			notes.sort(PlayState.sortByTime);
+			notes.sort(ObjectUtils.sortByTime);
 			softReloadNotes(true);
 			
 			addUndoAction(ADD_NOTE, {notes: pushedNotes});
@@ -3107,7 +3107,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 				pushedNotes.push(createdNote);
 				nts.push(createdNote);
 			}
-			notes.sort(PlayState.sortByTime);
+			notes.sort(ObjectUtils.sortByTime);
 		}
 
 		if(canCopyEvents && copiedEvents.length > 0)
@@ -3123,7 +3123,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 				pushedNotes.push(createdEvent);
 				evs.push(createdEvent);
 			}
-			events.sort(PlayState.sortByTime);
+			events.sort(ObjectUtils.sortByTime);
 		}
 		loadSection();
 		
@@ -4404,7 +4404,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		for (secNum => section in PlayState.SONG.notes)
 			PlayState.SONG.notes[secNum].sectionNotes = [];
 
-		notes.sort(PlayState.sortByTime);
+		notes.sort(ObjectUtils.sortByTime);
 		var noteSec:Int = 0;
 		var nextSectionTime:Float = cachedSectionTimes[noteSec + 1];
 		var curSectionTime:Float = cachedSectionTimes[noteSec];
@@ -4425,7 +4425,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 			arr.push(note.songData);
 		}
 
-		events.sort(PlayState.sortByTime);
+		events.sort(ObjectUtils.sortByTime);
 		PlayState.SONG.events = [];
 		for (event in events)
 			PlayState.SONG.events.push(event.songData);
@@ -4507,7 +4507,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		undoActions = [];
 		setSongPlaying(false);
 		var gridLerp:Float = FlxMath.bound((scrollY + FlxG.height/2 - gridBg.y) / gridBg.height, 0.000001, 0.999999);
-		notes.sort(PlayState.sortByTime);
+		notes.sort(ObjectUtils.sortByTime);
 		_cacheSections();
 
 		var noteSec:Int = 0;
@@ -4871,7 +4871,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 					selectedNotes.push(note);
 				}
 			}
-			notes.sort(PlayState.sortByTime);
+			notes.sort(ObjectUtils.sortByTime);
 		}
 		if(dataEvents != null && dataEvents.length > 0)
 		{
@@ -4883,7 +4883,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 					selectedNotes.push(event);
 				}
 			}
-			events.sort(PlayState.sortByTime);
+			events.sort(ObjectUtils.sortByTime);
 		}
 		softReloadNotes();
 	}

@@ -29,7 +29,7 @@ import Type.ValueType;
 import funkin.backend.utils.Controls;
 import funkin.game.objects.DialogueBoxPsych;
 
-#if desktop
+#if (desktop && DISCORD_ALLOWED)
 import funkin.backend.client.Discord.DiscordClient;
 #end
 

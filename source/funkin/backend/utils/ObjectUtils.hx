@@ -3,12 +3,14 @@ package funkin.backend.utils;
 class ObjectUtils
 {
 	/**
-	 * Center Object On A Sprite
-	 * @param spr Sprite You Want to center.
+	 * Center object on another sprite.
+	 *
+	 * @param spr Sprite you want to center.
 	 * @param spr2 Sprite you want your sprite to be centered on.
-	 * @return Converted Sprite
-	**/
-	public static function centerOnObject(spr:flixel.FlxObject, spr2:flixel.FlxObject, axes:flixel.util.FlxAxes):flixel.FlxObject
+	 *
+	 * @return Converted sprite.
+	 */
+	public static inline function centerOnObject(spr:flixel.FlxObject, spr2:flixel.FlxObject, axes:flixel.util.FlxAxes):flixel.FlxObject
 	{
 		if (axes.x)
 			spr.x = (spr.width - spr2.width) / 2;
@@ -19,13 +21,26 @@ class ObjectUtils
 	}
 
 	/**
-	 * Converts string to a FlxAxes.
-	 * @param thing1 String in question.
+	 * Sort strumTime by time.
+	 *
+	 * @param Obj1 Obj1.
+	 * @param Obj2 Obj2.
+	 *
+	 * @return FlxSort.
+	 */
+	public static inline function sortByTime(Obj1:Dynamic, Obj2:Dynamic):Int
+		return flixel.util.FlxSort.byValues(flixel.util.FlxSort.ASCENDING, Obj1.strumTime, Obj2.strumTime);
+
+	/**
+	 * Converts given string to a FlxAxes.
+	 *
+	 * @param inputStr String in question.
+	 *
 	 * @return FlxAxes
-	**/
-	public static function convertFlxAxes(thing1:String):flixel.util.FlxAxes
+	 */
+	public static inline function convertFlxAxes(inputStr:String):flixel.util.FlxAxes
 	{
-		return switch (thing1.toLowerCase())
+		return switch (inputStr.toLowerCase())
 		{
 			case 'x':
 				return flixel.util.FlxAxes.X;
