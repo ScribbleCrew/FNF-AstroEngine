@@ -118,8 +118,6 @@
 
 	<!-- _______________________________ Libraries ______________________________ -->
 
-	<haxedev set='webgl' />
-
 	<!-- Lime -->
 	<haxelib name="lime" />
 	<!-- HaxeFlixel -->
@@ -165,6 +163,10 @@
 
 	<!-- Disable deprecated warnings -->
 	<haxedef name='no-deprecation-warnings' />
+
+	<!--Macro fixes-->
+	<haxeflag name="--macro" value="allowPackage('flash')" />
+	<haxeflag name="--macro" value="include('my.pack')" />
 
 	<!-- Fixes HXCPP NOT FOUND ERRORS -->
 	<haxedef name="NO_PRECOMPILED_HEADERS" if="linux" />

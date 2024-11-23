@@ -199,8 +199,7 @@ class BaseStage extends FlxBasic
 			moveCameraSection();
 
 	function moveCamera(isDad:Bool)
-		if (onPlayState)
-			moveCamera(isDad);
+		if (onPlayState) PlayState.instance.moveCamera(isDad);
 
 	inline private function get_paused()
 		return game.paused;

@@ -24,7 +24,11 @@ class ExtraFunctions
 
 		Lua_helper.add_callback(lua, "setDarkmode", function(value:Bool)
 			{
+				#if windows
 				WindowUtil.darkMode(value);
+				#else
+				FunkinLua.luaTrace("setDarkmode: Platform unsupported for darkmode! (use windows)", false, false, FlxColor.RED);
+				#end
 			});
 
 		Lua_helper.add_callback(lua, "gamepadAnalogX", function(id:Int, ?leftStick:Bool = true)

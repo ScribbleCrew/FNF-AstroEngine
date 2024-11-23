@@ -8,18 +8,12 @@ class CheckboxThingie extends FlxRGBSprite
 	public var offsetX:Float = 0;
 	public var offsetY:Float = 0;
 
-	final colorArray:Array<String> = Mods.mergeAllTextsNamed('data/checkboxColors.txt');
+	private var colorArray:Array<String> = Mods.mergeAllTextsNamed('data/checkboxColors.txt');
 
 	public function new(x:Float = 0, y:Float = 0, ?checked = false) {
 		super(x, y);
 
-		frames = Paths.getSparrowAtlas('checkboxanim');
-
-	/*	frames = Paths.getSparrowAtlas('checkboxanime');
-		animation.addByPrefix("unchecked", "checkbox0", 24, false);
-		animation.addByPrefix("unchecking", "checkbox anim reverse", 24, false);
-		animation.addByPrefix("checking", "checkbox anim0", 24, false);
-		animation.addByPrefix("checked", "checkbox finish", 24, false);*/
+		frames = Paths.getSparrowAtlas('checkbox');
 
 		animation.addByPrefix("unchecked", "static", 1, false);
 		animation.addByPrefix("unchecking", "deselected", 24, false);
@@ -30,9 +24,11 @@ class CheckboxThingie extends FlxRGBSprite
 		setGraphicSize(Std.int(0.9 * width));
 		updateHitbox();
 
-		rgbShaderReference.r = FlxColor.fromString(colorArray[0]);
-		rgbShaderReference.g = FlxColor.fromString(colorArray[1]);
-		rgbShaderReference.b = FlxColor.fromString(colorArray[2]);
+		if(colorArray != null){
+			rgbShaderReference.r = FlxColor.fromString(colorArray[0]) ?? 0xFFCC00;
+			rgbShaderReference.g = FlxColor.fromString(colorArray[1]) ?? 0xFFFFFFFF;
+			rgbShaderReference.b = FlxColor.fromString(colorArray[2]) ?? 0xE97813;
+		}
 
 		animationFinished(checked ? 'checking' : 'unchecking');
 		animation.finishCallback = animationFinished;

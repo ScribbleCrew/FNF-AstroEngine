@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TextureAtlas imagePath="checkboxanim.png">
+<TextureAtlas imagePath="checkbox.png">
 	<!-- Created with Adobe Animate version 20.5.1.31044 -->
 	<!-- http://www.adobe.com/products/animate.html -->
 	<SubTexture name="deselected0000" x="15" y="15" width="111" height="108" frameX="-28" frameY="-29" frameWidth="178" frameHeight="167"/>
