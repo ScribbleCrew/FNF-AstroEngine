@@ -1,7 +1,7 @@
 package funkin.backend;
 
 /**
-	Structure For Versions
+	Structure For Main Menu Versions
 
 	@param name Name / Astro Engine v
 	@param version Version / 0.0.0

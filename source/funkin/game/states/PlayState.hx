@@ -1,5 +1,6 @@
 package funkin.game.states;
 
+import haxe.extern.EitherType;
 import flixel.util.*;
 import funkin.backend.base.BaseStage.Countdown;
 import funkin.game.objects.scorebars.*;
@@ -42,7 +43,6 @@ import funkin.backend.Rating;
 #if !flash
 import flixel.addons.display.FlxRuntimeShader;
 #end
-
 #if HSCRIPT_ALLOWED
 import crowplexus.iris.Iris;
 #end
@@ -102,76 +102,120 @@ class PlayState extends MusicBeatState
 	public var BF_Y:Float = 100;
 	public var DAD_X:Float = 100;
 	public var DAD_Y:Float = 100;
+	public var charPos:Map<String, FlxPoint> = [
+		"BF" => new FlxPoint(770, 100),
+		"DAD" => new FlxPoint(100, 100),
+		"GF" => new FlxPoint(400, 130)
+	];
 	public var GF_X:Float = 400;
 	public var GF_Y:Float = 130;
 
 	public var songSpeedTween:FlxTween;
 	public var songSpeed(default, set):Float = 1;
+
 	@:noCompletion private function set_songSpeed(value:Float):Float
+	{
+		if (generatedMusic)
 		{
-			if (generatedMusic)
-			{
-				final ratio:Float = value / songSpeed; // funny word huh
-				for (note in notes)
-					note.resizeByRatio(ratio);
-				for (note in unspawnNotes)
-					note.resizeByRatio(ratio);
-			}
-			noteKillOffset = 350 / songSpeed;
-			return songSpeed = value;
+			final ratio:Float = value / songSpeed; // funny word huh
+			for (note in notes.members.concat(unspawnNotes))
+				note.resizeByRatio(ratio);
 		}
+		noteKillOffset = 350 / songSpeed;
+		return songSpeed = value;
+	}
+
 	public var songSpeedType:String = "multiplicative";
 	public var noteKillOffset:Float = 350;
 
-	public var playbackRate(default, set):Float = 1;
-	@:noCompletion private function	 set_playbackRate(value:Float):Float
-		{
-			#if FLX_PITCH
-			if (generatedMusic)
-			{
-				vocals.pitch = value;
-				opponentVocals.pitch = value;
-				FlxG.sound.music.pitch = value;
-	
-				final ratio:Float = playbackRate / value; // funny word huh
-				if (ratio != 1)
-				{
-					for (note in notes.members)
-						note.resizeByRatio(ratio);
-					for (note in unspawnNotes)
-						note.resizeByRatio(ratio);
-				}
-			}
-			playbackRate = value;
-			FlxG.animationTimeScale = value;
-			Conductor.safeZoneOffset = (ClientPrefs.data.safeFrames / 60) * 1000 * value;
-			setOnScripts('playbackRate', playbackRate);
-			#else
-			playbackRate = 1.0; // ensuring -Crow
-			#end
-			return playbackRate;
-		}
-
+	/**
+	 * Boyfriend Group.
+	 */
 	public var boyfriendGroup:FlxSpriteGroup;
+
+	/**
+	 * Dad Group.
+	 */
 	public var dadGroup:FlxSpriteGroup;
+
+	/**
+	 * GirlFriend Group.
+	 */
 	public var gfGroup:FlxSpriteGroup;
 
+	/**
+	 * The stages ui.
+	 */
+	public static var stageUI:String = "normal";
+
+	/**
+	 * If the current stage is the pixel stage.
+	 *
+	 * Mainly used to determine the ui type; also contains a `get` function,
+	 * which checks if `stageUI` contains the keyword **"pixel"** or **"-pixel"**.
+	 *
+	 * **Types: Pixel, Normal**
+	 * @returns bool
+	 */
+	@:isVar
+	@:deprecated("Deprecated: Isn't really used much. i think...")
+	public static var isPixelStage(get, never):Bool;
+
+	@:dox(hide) @:noCompletion private inline static function get_isPixelStage():Bool
+		return stageUI == "pixel" || stageUI.endsWith("-pixel");
+
+	/**
+	 * The current stage name.
+	 * @return `SONG.stage`
+	 */
 	@:isVar
 	public static var curStage(get, never):String;
+
 	@:dox(hide) @:noCompletion private inline static function get_curStage():String
 		return SONG.stage;
 
+	/**
+	 * The current song name.
+	 * @return `SONG.song`
+	 */
 	@:isVar
 	private var curSong(get, never):String;
+
 	@:dox(hide) @:noCompletion private inline function get_curSong():String
 		return SONG.song;
 
-	public static var stageUI:String = "normal";
+	public var playbackRate(default, set):Float = 1;
 
-	public static var isPixelStage(get, never):Bool;
-	@:noCompletion private inline static function get_isPixelStage():Bool
-		return stageUI == "pixel" || stageUI.endsWith("-pixel");
+	@:dox(hide) @:noCompletion private function set_playbackRate(value:Float):Float
+	{
+		#if FLX_PITCH
+		if (generatedMusic)
+		{
+			FlxG.sound.music.pitch = vocals.pitch = opponentVocals.pitch = value;
 
+			final ratio:Float = playbackRate / value; // funny word huh
+			if (ratio != 1)
+				for (note in notes.members.concat(unspawnNotes))
+					note.resizeByRatio(ratio);
+		}
+		FlxG.animationTimeScale = playbackRate = value;
+		Conductor.safeZoneOffset = (ClientPrefs.data.safeFrames / 60) * 1000 * value;
+		setOnScripts('playbackRate', playbackRate);
+		#else
+		playbackRate = 1.0; // ensuring -Crow
+		#end
+		return playbackRate;
+	}
+
+	/**
+	 * The current ui.
+	 * Used for lua.
+	 */
+	public var ui:Dynamic = null;
+
+	/**
+	 * The current song data.
+	 */
 	public static var SONG:SwagSong = null;
 
 	/**
@@ -333,8 +377,9 @@ class PlayState extends MusicBeatState
 	// Lua shit
 	public static var instance:PlayState;
 
-	#if LUA_ALLOWED 
+	#if LUA_ALLOWED
 	public var luaArray:Array<FunkinLua> = [];
+
 	private var luaDebugGroup:FlxTypedGroup<DebugLuaText>;
 	#end
 
@@ -478,12 +523,9 @@ class PlayState extends MusicBeatState
 		else if (stageData.isPixelStage == true) // Backward compatibility
 			stageUI = "pixel";
 
-		BF_X = stageData.boyfriend[0];
-		BF_Y = stageData.boyfriend[1];
-		GF_X = stageData.girlfriend[0];
-		GF_Y = stageData.girlfriend[1];
-		DAD_X = stageData.opponent[0];
-		DAD_Y = stageData.opponent[1];
+		charPos.set("BF", FlxPoint.get(stageData.boyfriend[0], stageData.boyfriend[1]));
+		charPos.set("GF", FlxPoint.get(stageData.girlfriend[0], stageData.girlfriend[1]));
+		charPos.set("DAD", FlxPoint.get(stageData.opponent[0], stageData.opponent[1]));
 
 		if (stageData.camera_speed != null)
 			cameraSpeed = stageData.camera_speed;
@@ -500,11 +542,10 @@ class PlayState extends MusicBeatState
 		if (girlfriendCameraOffset == null)
 			girlfriendCameraOffset = [0, 0];
 
-		boyfriendGroup = new FlxSpriteGroup(BF_X, BF_Y);
-		dadGroup = new FlxSpriteGroup(DAD_X, DAD_Y);
-		gfGroup = new FlxSpriteGroup(GF_X, GF_Y);
-
-		@:private
+		boyfriendGroup = new FlxSpriteGroup(charPos.get('BF').x, charPos.get('BF').y);
+		dadGroup = new FlxSpriteGroup(charPos.get('DAD').x, charPos.get('DAD').y);
+		gfGroup = new FlxSpriteGroup(charPos.get('GF').x, charPos.get('GF').y);
+		
 		switch (curStage)
 		{
 			case 'stage':
@@ -934,7 +975,6 @@ class PlayState extends MusicBeatState
 		return false;
 	}
 	#end
-
 
 	public function addTextToDebug(text:String, color:FlxColor)
 	{
@@ -2645,31 +2685,38 @@ class PlayState extends MusicBeatState
 						});
 				}
 
-				case 'Set Property':
-					try
+			case 'Set Property':
+				try
+				{
+					var trueValue:Dynamic = value2.trim();
+					if (trueValue == 'true' || trueValue == 'false')
+						trueValue = trueValue == 'true';
+					else if (flValue2 != null)
+						trueValue = flValue2;
+					else
+						trueValue = value2;
+
+					var split:Array<String> = value1.split('.');
+					if (split.length > 1)
 					{
-						var trueValue:Dynamic = value2.trim();
-						if (trueValue == 'true' || trueValue == 'false') trueValue = trueValue == 'true';
-						else if (flValue2 != null) trueValue = flValue2;
-						else trueValue = value2;
-	
-						var split:Array<String> = value1.split('.');
-						if(split.length > 1) {
-							LuaUtils.setVarInArray(LuaUtils.getPropertyLoop(split), split[split.length-1], trueValue);
-						} else {
-							LuaUtils.setVarInArray(this, value1, trueValue);
-						}
+						LuaUtils.setVarInArray(LuaUtils.getPropertyLoop(split), split[split.length - 1], trueValue);
 					}
-					catch(e:Dynamic)
+					else
 					{
-						var len:Int = e.message.indexOf('\n') + 1;
-						if(len <= 0) len = e.message.length;
-						#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
-						addTextToDebug('ERROR ("Set Property" Event) - ' + e.message.substr(0, len), FlxColor.RED);
-						#else
-						FlxG.log.warn('ERROR ("Set Property" Event) - ' + e.message.substr(0, len));
-						#end
+						LuaUtils.setVarInArray(this, value1, trueValue);
 					}
+				}
+				catch (e:Dynamic)
+				{
+					var len:Int = e.message.indexOf('\n') + 1;
+					if (len <= 0)
+						len = e.message.length;
+					#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
+					addTextToDebug('ERROR ("Set Property" Event) - ' + e.message.substr(0, len), FlxColor.RED);
+					#else
+					FlxG.log.warn('ERROR ("Set Property" Event) - ' + e.message.substr(0, len));
+					#end
+				}
 
 			case 'Play Sound':
 				if (flValue2 == null)
@@ -3644,13 +3691,13 @@ class PlayState extends MusicBeatState
 	}
 
 	/**
-		* Removes and cleans up a note from the game.
-		* 
-		* This method disables the note by calling `kill()`, removes it from the `notes` group, 
-		* and destroys its resources to free up memory.
-		* 
-		* @param note The `Note` instance to be invalidated and removed.
-		*/
+	 * Removes and cleans up a note from the game.
+	 * 
+	 * This method disables the note by calling `kill()`, removes it from the `notes` group, 
+	 * and destroys its resources to free up memory.
+	 * 
+	 * @param note The `Note` instance to be invalidated and removed.
+	 */
 	public function invalidateNote(note:Note):Void
 	{
 		note.kill();
@@ -3659,15 +3706,15 @@ class PlayState extends MusicBeatState
 	}
 
 	/**
-	* Spawns a note splash at a note.
-	*
-	* If noteSplashes isn't enabled in clientprefs,
-	* this method wont work for opponent or player.
-	* 
-	* Note splashes are also skipped if the HUD is hidden.
-	* 
-	* @param note The note on which to spawn the note splash.
-	*/
+	 * Spawns a note splash at a note.
+	 *
+	 * If noteSplashes isn't enabled in clientprefs,
+	 * this method wont work for opponent or player.
+	 * 
+	 * Note splashes are also skipped if the HUD is hidden.
+	 * 
+	 * @param note The note on which to spawn the note splash.
+	 */
 	public function spawnNoteSplashOnNote(note:Note)
 	{
 		if (ClientPrefs.data.noteSplashes && note != null && !ClientPrefs.data.hideFullHUD)
@@ -3675,21 +3722,21 @@ class PlayState extends MusicBeatState
 			var strum:StrumNote = playerStrums.members[note.noteData];
 			if (ClientPrefs.data.opnoteSplashes && note.hitByOpponent)
 				strum = opponentStrums.members[note.noteData];
-			
+
 			if (strum != null)
 				spawnNoteSplash(note, strum);
 		}
 	}
 
 	/**
-	* Spawns a note splash at the given position.
-	* 
-	* This creates a new `NoteSplash`, 
-	* sets it up with the note's data then adds it to `grpNoteSplashes`.
-	*
-	* @param note The note tied to this splash effect.
-	* @param strum The strum connected to the note.
-	*/
+	 * Spawns a note splash at the given position.
+	 * 
+	 * This creates a new `NoteSplash`, 
+	 * sets it up with the note's data then adds it to `grpNoteSplashes`.
+	 *
+	 * @param note The note tied to this splash effect.
+	 * @param strum The strum connected to the note.
+	 */
 	public function spawnNoteSplash(note:Note, strum:StrumNote)
 	{
 		var splash:NoteSplash = new NoteSplash();
@@ -4155,22 +4202,25 @@ class PlayState extends MusicBeatState
 		setOnScripts('ratingFC', ratingFC);
 	}
 
-	
 	#if ACHIEVEMENTS_ALLOWED
 	private function checkForAchievement(achievesToCheck:Array<String> = null)
 	{
-		if(chartingMode) return;
+		if (chartingMode)
+			return;
 
 		var usedPractice:Bool = (ClientPrefs.getGameplaySetting('practice') || ClientPrefs.getGameplaySetting('botplay'));
-		if(cpuControlled) return;
+		if (cpuControlled)
+			return;
 
-		for (name in achievesToCheck) {
-			if(!Achievements.exists(name)) continue;
+		for (name in achievesToCheck)
+		{
+			if (!Achievements.exists(name))
+				continue;
 
 			var unlock:Bool = false;
 			if (name != WeekData.getWeekFileName() + '_nomiss') // common achievements
 			{
-				switch(name)
+				switch (name)
 				{
 					case 'ur_bad':
 						unlock = (ratingPercent < 0.2 && !practiceMode);
@@ -4196,12 +4246,17 @@ class PlayState extends MusicBeatState
 			}
 			else // any FC achievements, name should be "weekFileName_nomiss", e.g: "week3_nomiss";
 			{
-				if(isStoryMode && campaignMisses + songMisses < 1 && Difficulty.getString().toUpperCase() == 'HARD'
-					&& storyPlaylist.length <= 1 && !changedDifficulty && !usedPractice)
+				if (isStoryMode
+					&& campaignMisses + songMisses < 1
+					&& Difficulty.getString().toUpperCase() == 'HARD'
+					&& storyPlaylist.length <= 1
+					&& !changedDifficulty
+					&& !usedPractice)
 					unlock = true;
 			}
 
-			if(unlock) Achievements.unlock(name);
+			if (unlock)
+				Achievements.unlock(name);
 		}
 	}
 	#end

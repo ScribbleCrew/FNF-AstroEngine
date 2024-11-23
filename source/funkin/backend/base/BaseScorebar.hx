@@ -21,6 +21,7 @@ class BaseScorebar extends FlxBasic
 			create();
 
 			game.stageUpdate = update;
+			game.ui = this;
 			scoreUpdate = updateScore;
 
 			PlayState.instance.uiGroup.forEach((spr) -> spr.alpha = 0);
@@ -52,7 +53,6 @@ class BaseScorebar extends FlxBasic
 
 	private inline function get_game():Dynamic
 		return cast FlxG.state;
-
 
 	private inline function get_defaultPos() 
 		return game.healthBar.getPosition();

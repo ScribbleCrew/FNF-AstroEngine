@@ -35,7 +35,7 @@ class DiscordClient
 	{
 
 		if(Config.discordID == '')
-			clientID = cast('1095422496473358356', String); // uhm astro engine shiz
+			clientID = cast(EngineData.coreGame.coreDiscordID, String); // uhm astro engine shiz
 		else
 			clientID = _defaultID;
 
@@ -132,6 +132,12 @@ class DiscordClient
 		// Obtained times are in milliseconds so they are divided so Discord can use it
 		presence.startTimestamp = Std.int(startTimestamp / 1000);
 		presence.endTimestamp = Std.int(endTimestamp / 1000);
+
+		if(presence.button1Label == null)
+			presence.button1Label = "Astro Engine Discord";
+		if(presence.button1Url == null)
+			presence.button1Url = "";
+
 		updatePresence();
 	}
 

@@ -1,10 +1,7 @@
 package funkin.backend.data;
 
-import flixel.FlxG;
-
-
-
-class PsychData {
-    public static final psychVersion:String = "0.6.3";
-    public static final psychDiscordID:String = "863222024192262205";
+class PsychData
+{
+	public static final psychVersion:String = "1.0(ish)" /*"0.6.3"*/;
+	public static final psychDiscordID:String = "863222024192262205";
 }

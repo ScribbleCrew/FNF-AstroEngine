@@ -10,7 +10,6 @@ final class EngineData
 	}
 
 	//** ignore this **/
-
 	static final engineData = {
 		coreVersion: '0.3.0',
 		repository: "https://github.com/AstroEngineDevs/FNF-AstroEngine"

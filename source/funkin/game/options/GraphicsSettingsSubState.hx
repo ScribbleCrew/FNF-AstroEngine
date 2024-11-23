@@ -103,6 +103,7 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 
 	function onChangeAntiAliasing()
 	{
+		
 		for (sprite in members)
 		{
 			var sprite:Dynamic = sprite; //Make it check for FlxSprite instead of FlxBasic
@@ -126,4 +127,11 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 			FlxG.updateFramerate = ClientPrefs.data.framerate;
 		}
 	}
+
+	
+	override function changeSelection(change:Int = 0)
+		{
+			super.changeSelection(change);
+			boyfriend.visible = (antialiasingOption == curSelected);
+		}
 }

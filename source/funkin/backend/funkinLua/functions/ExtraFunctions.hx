@@ -22,6 +22,11 @@ class ExtraFunctions
 		Lua_helper.add_callback(lua, "anyGamepadPressed", function(name:String) FlxG.gamepads.anyPressed(name));
 		Lua_helper.add_callback(lua, "anyGamepadReleased", function(name:String) return FlxG.gamepads.anyJustReleased(name));
 
+		Lua_helper.add_callback(lua, "setDarkmode", function(value:Bool)
+			{
+				WindowUtil.darkMode(value);
+			});
+
 		Lua_helper.add_callback(lua, "gamepadAnalogX", function(id:Int, ?leftStick:Bool = true)
 		{
 			var controller = FlxG.gamepads.getByID(id);

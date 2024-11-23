@@ -1,4 +1,7 @@
 package funkin.game.objects.scorebars;
+
+import flixel.util.FlxStringUtil;
+
 class VSliceScore extends BaseScorebar
 {
 	private var scoreText:FlxText;
@@ -6,19 +9,21 @@ class VSliceScore extends BaseScorebar
 	override function create()
 	{
 		super.create();
+		
+		var defaultPosButBetter = game.healthBar.bg;
 
-		scoreText = new FlxText(0, defaultPos.y + 36, FlxG.width, "", 20);
+		scoreText = new FlxText(defaultPosButBetter.x + defaultPosButBetter.width - 190, defaultPosButBetter.y + 30, 0, '', 20);
 		scoreText.scrollFactor.set();
 		scoreText.borderSize = 1.25;
 		scoreText.visible = !ClientPrefs.data.hideFullHUD;
 		scoreText.alpha = 0;
-		scoreText.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		scoreText.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(scoreText);
 	}
 
 	override function updateScore()
 	{
 		super.updateScore();
-		scoreText.text = 'Score: ' + PlayState.instance.songScore;
+		scoreText.text = 'Score: ' + FlxStringUtil.formatMoney(PlayState.instance.songScore, false, true);
 	}
 }

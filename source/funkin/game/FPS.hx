@@ -77,10 +77,11 @@ class FPS extends TextField
 			
 			var memoryMegas:Float = 0;
 
-		/*	#if openfl
+			#if openfl
 			memoryMegas = Math.abs(FlxMath.roundDecimal(System.totalMemory / 1000000, 1));
 			text += "\nMemory: " + memoryMegas + " MB";
 			#end
+			/*
 			text += '\nAstro Engine: ' + EngineData.engineData.coreVersion;
 		*/
 			#if debug 

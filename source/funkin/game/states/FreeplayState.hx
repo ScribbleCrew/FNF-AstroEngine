@@ -84,8 +84,9 @@ class FreeplayState extends MusicBeatState
 
 		#if DISCORD_ALLOWED
 		// Updating Discord Rich Presence
-		DiscordClient.changePresence("In the Menus", null);
+		DiscordClient.changePresence("Freeplay Menu", null);
 		#end
+		WindowUtil.setTitle('Freeplay');
 
 		if(WeekData.weeksList.length < 1)
 			{
@@ -340,7 +341,10 @@ class FreeplayState extends MusicBeatState
 
 				player.playingMusic = false;
 				player.switchPlayMusic();
-
+				#if DISCORD_ALLOWED
+				DiscordClient.changePresence("Freeplay", null);
+				#end
+				WindowUtil.setTitle('Freeplay');
 				FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
 				FlxTween.tween(FlxG.sound.music, {volume: 1}, 1);
 			}
@@ -425,6 +429,10 @@ class FreeplayState extends MusicBeatState
 				player.playingMusic = true;
 				player.curTime = 0;
 				player.switchPlayMusic();
+				#if DISCORD_ALLOWED
+				DiscordClient.changePresence("Music Player", null);
+				#end
+				WindowUtil.setTitle('Freeplay - Music Player');
 				player.pauseOrResume(true);
 			}
 			else if (instPlaying == curSelected && player.playingMusic)

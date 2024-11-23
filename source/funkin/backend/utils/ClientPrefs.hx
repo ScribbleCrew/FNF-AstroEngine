@@ -87,7 +87,6 @@ import funkin.game.Init.Volume;
 	// Astro Engine
 	public var discordRPC:Bool = true;
 	public var scoreBarType:String = 'Astro';
-	public var noteSplashesType:String = 'normal';
 	public var forceNoteSplashes:Bool = false;
 	public var showRatingStats:Bool = true;
 	public var darkMode:Bool = false;

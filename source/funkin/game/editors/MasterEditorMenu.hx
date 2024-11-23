@@ -21,15 +21,14 @@ import funkin.game.objects.Alphabet;
 import funkin.backend.system.MusicBeatState;
 import funkin.backend.data.WeekData.WeekFile;
 import funkin.backend.data.WeekData.WeekData;
-
 import funkin.game.states.LoadingState;
-
 
 class MasterEditorMenu extends MusicBeatState
 {
 	var options:Array<String> = [
 		'Week Editor',
 		'Menu Character Editor',
+		'Stage Editor',
 		'Dialogue Editor',
 		'Dialogue Portrait Editor',
 		'Character Editor',
@@ -66,7 +65,7 @@ class MasterEditorMenu extends MusicBeatState
 			grpTexts.add(leText);
 			leText.snapToPosition();
 		}
-		
+
 		#if MODS_ALLOWED
 		var textBG:FlxSprite = new FlxSprite(0, FlxG.height - 42).makeGraphic(FlxG.width, 42, 0xFF000000);
 		textBG.alpha = 0.6;
@@ -76,14 +75,15 @@ class MasterEditorMenu extends MusicBeatState
 		directoryTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER);
 		directoryTxt.scrollFactor.set();
 		add(directoryTxt);
-		
+
 		for (folder in Paths.getModDirectories())
 		{
 			directories.push(folder);
 		}
 
 		var found:Int = directories.indexOf(Mods.currentModDirectory);
-		if(found > -1) curDirectory = found;
+		if (found > -1)
+			curDirectory = found;
 		changeDirectory();
 		#end
 		changeSelection();
@@ -103,11 +103,11 @@ class MasterEditorMenu extends MusicBeatState
 			changeSelection(1);
 		}
 		#if MODS_ALLOWED
-		if(controls.UI_LEFT_P)
+		if (controls.UI_LEFT_P)
 		{
 			changeDirectory(-1);
 		}
-		if(controls.UI_RIGHT_P)
+		if (controls.UI_RIGHT_P)
 		{
 			changeDirectory(1);
 		}
@@ -120,24 +120,27 @@ class MasterEditorMenu extends MusicBeatState
 
 		if (controls.ACCEPT)
 		{
-			switch(options[curSelected]) {
+			switch (options[curSelected])
+			{
 				case 'Character Editor':
 					LoadingState.loadAndSwitchState(new CharacterEditorState(Character.DEFAULT_CHARACTER, false));
 				case 'Week Editor':
 					MusicBeatState.switchState(new WeekEditorState());
+				case 'Stage Editor':
+					LoadingState.loadAndSwitchState(new StageEditorState());
 				case 'Menu Character Editor':
 					MusicBeatState.switchState(new MenuCharacterEditorState());
 				case 'Dialogue Portrait Editor':
 					LoadingState.loadAndSwitchState(new DialogueCharacterEditorState(), false);
 				case 'Dialogue Editor':
 					LoadingState.loadAndSwitchState(new DialogueEditorState(), false);
-				case 'Chart Editor'://felt it would be cool maybe
+				case 'Chart Editor': // felt it would be cool maybe
 					LoadingState.loadAndSwitchState(new ChartingState(), false);
 			}
 			FlxG.sound.music.volume = 0;
 			funkin.game.states.FreeplayState.destroyFreeplayVocals();
 		}
-		
+
 		var bullShit:Int = 0;
 		for (item in grpTexts.members)
 		{
@@ -175,13 +178,13 @@ class MasterEditorMenu extends MusicBeatState
 
 		curDirectory += change;
 
-		if(curDirectory < 0)
+		if (curDirectory < 0)
 			curDirectory = directories.length - 1;
-		if(curDirectory >= directories.length)
+		if (curDirectory >= directories.length)
 			curDirectory = 0;
-	
+
 		WeekData.setDirectoryFromWeek();
-		if(directories[curDirectory] == null || directories[curDirectory].length < 1)
+		if (directories[curDirectory] == null || directories[curDirectory].length < 1)
 			directoryTxt.text = '< No Mod Directory Loaded >';
 		else
 		{
