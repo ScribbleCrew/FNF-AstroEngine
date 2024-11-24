@@ -66,6 +66,7 @@
 	<define name="message.reporting" value="pretty"/>
 
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
+	<assets path='art/icons/iconOG.png' rename='icon.png' if="linux" />
 	<icon path="art/icons/icon16.png" size='16'/>
 	<icon path="art/icons/icon32.png" size='32'/>
 	<icon path="art/icons/icon64.png" size='64'/>
@@ -172,7 +173,4 @@
 
 	<!-- Fixes HXCPP NOT FOUND ERRORS -->
 	<haxedef name="NO_PRECOMPILED_HEADERS" if="linux" />
-
-	
-	<assets path='art/iconOG.png' rename='icon.png' if="linux" />
 </project>
