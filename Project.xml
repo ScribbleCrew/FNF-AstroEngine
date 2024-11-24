@@ -2,7 +2,9 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 	<app title="Friday Night Funkin' Astro Engine" file="Astro Engine" version="0.2.8" packageName="com.astro" main="funkin.game.Main" company="YourFriendOrbl" />
-	<!-- for your mod do like com.astro.MODNAMEHERE -->
+	<!-- for your mod do like com.astro.MODNAME
+		Or  com.YOURNAME.MODNAME
+	-->
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
@@ -21,6 +23,8 @@
 
 	<!-- uhh adds base assets lol -->
 	<define name="BASE_GAME_FILES" />
+
+	<define name="SHOW_LOADING_SCREEN" />
 
 	<!-- Enable Mod Support -->
 	<define name="MODS_ALLOWED" if="desktop" />
@@ -118,8 +122,6 @@
 
 	<!-- _______________________________ Libraries ______________________________ -->
 
-	<!-- Lime -->
-	<haxelib name="lime" />
 	<!-- HaxeFlixel -->
 	<haxelib name="flixel"/>
 	<haxelib name="flixel-addons"/>
@@ -170,4 +172,7 @@
 
 	<!-- Fixes HXCPP NOT FOUND ERRORS -->
 	<haxedef name="NO_PRECOMPILED_HEADERS" if="linux" />
+
+	
+	<assets path='art/iconOG.png' rename='icon.png' if="linux" />
 </project>

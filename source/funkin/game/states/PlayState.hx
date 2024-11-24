@@ -481,9 +481,10 @@ class PlayState extends MusicBeatState
 		camPause.bgColor.alpha = 0;
 		FlxG.cameras.add(camPause, false);
 
+		persistentUpdate = persistentDraw = true;
+
 		// Init Stuff
 		grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
-		persistentUpdate = persistentDraw = true;
 		if (isPixelStage)
 			introSoundsSuffix = '-pixel';
 		if (SONG == null)
@@ -584,7 +585,6 @@ class PlayState extends MusicBeatState
 		luaDebugGroup.cameras = [camOther];
 		add(luaDebugGroup);
 		// "GLOBAL" SCRIPTS
-		var filesPushed:Array<String> = [];
 		var foldersToCheck:Array<String> = [Paths.getSharedPath('scripts/')];
 
 		#if MODS_ALLOWED
@@ -3700,7 +3700,10 @@ class PlayState extends MusicBeatState
 
 		FlxG.camera.setFilters([]);
 
-		FlxG.sound.music.pitch = 1;
+		#if FLX_PITCH FlxG.sound.music.pitch = 1; #end
+		FlxG.animationTimeScale = 1;
+
+		instance = null;
 		super.destroy();
 	}
 

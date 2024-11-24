@@ -13,6 +13,9 @@
     <lib name="hxcpp-debug-server"/>
 
     <!-- HScript -->
+    <lib name="hscript"/>
+
+    <!-- HScript -->
     <lib name="hscript-iris" version="1.0.2" />
 
     <!-- Json -->
