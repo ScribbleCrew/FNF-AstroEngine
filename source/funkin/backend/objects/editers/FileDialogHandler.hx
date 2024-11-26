@@ -5,7 +5,9 @@ import openfl.events.IOErrorEvent;
 import flash.net.FileFilter;
 
 import haxe.Exception;
+#if sys
 import sys.io.File;
+#end
 import lime.ui.*;
 
 import flixel.FlxBasic;

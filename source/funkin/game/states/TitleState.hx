@@ -1,9 +1,7 @@
 package funkin.game.states;
 
 import funkin.backend.CoolUtil;
-#if desktop
-import sys.thread.Thread;
-#end
+
 import funkin.game.objects.shaders.ColorSwap;
 import funkin.backend.Highscore;
 import flixel.FlxState;

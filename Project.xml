@@ -49,7 +49,7 @@
 	<define name="FLXANIMATE_ALLOWED" />
 
 	<!-- Enables Support For Discord Client Integration -->
-	<define name="DISCORD_ALLOWED" if="desktop"/>
+	<define name="DISCORD_ALLOWED" if="desktop" unless="html5"/>
 
 	<!-- Enables Achievements -->
 	<define name="ACHIEVEMENTS_ALLOWED" />

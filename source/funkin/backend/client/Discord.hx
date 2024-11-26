@@ -91,6 +91,7 @@ class DiscordClient
 
 	public static function initialize()
 	{
+		#if desktop
 		var discordHandlers:DiscordEventHandlers = DiscordEventHandlers.create();
 		discordHandlers.ready = cpp.Function.fromStaticFunction(onReady);
 		discordHandlers.disconnected = cpp.Function.fromStaticFunction(onDisconnected);
@@ -99,6 +100,7 @@ class DiscordClient
 
 		if (!isInitialized)
 			traceFr("Initialized");
+
 
 		sys.thread.Thread.create(() ->
 		{
@@ -112,6 +114,9 @@ class DiscordClient
 			}
 		});
 		isInitialized = true;
+		#else
+		FlxG.log.add('Isn\' desktop thingy');
+		#end
 	}
 
 	public static function changePresence(?details:String = 'In the Menus', ?state:Null<String>, ?smallImageKey:String, ?hasStartTimestamp:Bool,
