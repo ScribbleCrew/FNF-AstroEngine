@@ -16,9 +16,7 @@ import funkin.backend.utils.ClientPrefs;
 #if DISCORD_ALLOWED
 import funkin.backend.client.Discord.DiscordClient;
 #end
-#if CRASH_HANDLER
-import openfl.events.UncaughtErrorEvent;
-#end
+
 import funkin.backend.data.*;
 import funkin.game.FPS;
 

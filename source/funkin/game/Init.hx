@@ -3,7 +3,9 @@ package funkin.game;
 import openfl.Lib;
 import flixel.input.keyboard.FlxKey;
 import funkin.backend.utils.Paths;
-
+#if CRASH_HANDLER
+import openfl.events.UncaughtErrorEvent;
+#end
 class Init extends flixel.FlxState
 {
 	override public function create():Void
