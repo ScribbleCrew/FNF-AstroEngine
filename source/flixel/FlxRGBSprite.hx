@@ -1,5 +1,7 @@
-package funkin.game.objects;
+package flixel;
 
+import funkin.game.objects.shaders.RGBPalette;
+import funkin.game.objects.shaders.RGBPalette.RGBShaderReference;
 import flixel.FlxSprite;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.util.FlxColor;

@@ -1,7 +1,5 @@
 package funkin.game;
 
-import openfl.text.TextFormat;
-import openfl.text.TextField;
 import openfl.Lib;
 import flixel.input.keyboard.FlxKey;
 import funkin.backend.utils.Paths;
@@ -31,12 +29,16 @@ class Init extends flixel.FlxState
 		#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(CallbackHandler.call)); #end
 
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
-		
+
 		#if DISCORD_ALLOWED DiscordClient.prepare(); #end
 
 		#if VIDEOS_ALLOWED hxvlc.util.Handle.init(#if (hxvlc >= "1.8.0") ['--no-lua'] #end); #end
 
 		#if WATERMARK owoWatermark(); #end
+
+		#if CRASH_HANDLER initCrashHandler(); #end
+
+		fragFix();
 
 		funkin.game.objects.Alphabet.AlphaCharacter.loadAlphabetData();
 
@@ -49,29 +51,72 @@ class Init extends flixel.FlxState
 
 	private function init():Void
 	{
+		#if html5
+		FlxG.mouse.visible = false;
+		#end
+
+		FlxG.fixedTimestep = #if html5 FlxG.mouse.visible = #end
+		false;
+		FlxG.keys.preventDefaultKeys = [TAB];
+		FlxG.game.focusLostFramerate = 30;
+
 		if (FlxG.save.data != null && FlxG.save.data.fullscreen)
 			FlxG.fullscreen = FlxG.save.data.fullscreen;
 		if (FlxG.save.data.weekCompleted != null)
 			funkin.game.states.StoryMenuState.weekCompleted = FlxG.save.data.weekCompleted;
 	}
 
-	#if WATERMARK
+	#if CRASH_HANDLER
+	private function initCrashHandler()
+	{
+		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, CrashHandler.main);
+	}
+	#end
+
+	private function fragFix()
+	{
+		FlxG.signals.gameResized.add(function(w, h)
+		{
+			if (FlxG.cameras != null)
+				for (cam in FlxG.cameras.list)
+					if (cam != null && cam.filters != null)
+						resetSpriteCache(cam.flashSprite);
+
+			if (FlxG.game != null)
+				resetSpriteCache(FlxG.game);
+		});
+	}
+
+	private static function resetSpriteCache(sprite:openfl.display.Sprite):Void
+	{
+		@:privateAccess {
+			sprite.__cacheBitmap = null;
+			sprite.__cacheBitmapData = null;
+		}
+	}
+
 	private function owoWatermark():Void
 	{
 		// uhh tester text lmao
-		final owoTxt:TextField = new TextField();
-		owoTxt.defaultTextFormat = new TextFormat("assets/fonts/OswaldMedium.ttf", 100, FlxColor.WHITE);
-		owoTxt.text = 'BETA BUILD OF ASTRO ENGINE';
-		owoTxt.alpha = .4;
-		owoTxt.width = Lib.current.stage.stageWidth;
-		owoTxt.height = Lib.current.stage.stageHeight;
-		owoTxt.x = (Lib.current.stage.stageWidth - owoTxt.width) / 2;
-		owoTxt.y = (Lib.current.stage.stageHeight - owoTxt.height) / 2;
-		owoTxt.selectable = false;
+		final width =FlxG.width;
+		final height = FlxG.height;
+		final watermarkText:String = 'BETA(DO NOT LEAK)\n${OsAPI.username}\n${OsAPI.hashUsername}';
 
-		Lib.current.addChild(owoTxt);
+		final format:openfl.text.TextFormat = new openfl.text.TextFormat("assets/fonts/OswaldMedium.ttf", 50, FlxColor.WHITE);
+		format.align = openfl.text.TextFormatAlign.CENTER;
+
+		final watermark:openfl.text.TextField = new openfl.text.TextField();
+		watermark.defaultTextFormat = format;
+		watermark.text = watermarkText;
+		watermark.alpha = .55;
+		watermark.width = width;
+		watermark.height = height;
+		watermark.selectable = false;
+
+		watermark.y = (height - watermark.textHeight) / 2;
+
+		Lib.current.addChild(watermark);
 	}
-	#end
 }
 
 class Volume
@@ -83,12 +128,12 @@ class Volume
 
 class Logs // Modded trace func
 {
-	private static final fuckbaby:String = "[Astro System]"; // prefix i guess
+	private static final fembois:String = "[Astro System]"; // prefix i guess
 
 	public static function init():Void
 	{
 		haxe.Log.trace = __customTrace;
-		trace('Finished Setting up custom trace');
+		trace('Finished Setting up custom trace.');
 	}
 
 	@:noCompletion private static function __customTrace(v:Dynamic, ?infos:haxe.PosInfos):Void
@@ -101,18 +146,18 @@ class Logs // Modded trace func
 				extra += ", " + v;
 			#if js
 			if (js.Syntax.typeof(untyped console) != "undefined" && (untyped console).log != null)
-				(untyped console).log('$fuckbaby: ${v + extra} : $nerddd');
+				(untyped console).log('$fembois: ${v + extra} : $nerddd');
 			#elseif sys
-			Sys.println('$fuckbaby: ${v + extra} : $nerddd');
+			Sys.println('$fembois: ${v + extra} : $nerddd');
 			#end
 		}
 		else
 		{
 			#if js
 			if (js.Syntax.typeof(untyped console) != "undefined" && (untyped console).log != null)
-				(untyped console).log('$fuckbaby: $v : $nerddd');
+				(untyped console).log('$fembois: $v : $nerddd');
 			#elseif sys
-			Sys.println('$fuckbaby: $v : $nerddd');
+			Sys.println('$fembois: $v : $nerddd');
 			#end
 		}
 	}

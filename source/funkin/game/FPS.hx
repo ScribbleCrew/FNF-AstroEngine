@@ -73,19 +73,19 @@ class FPS extends TextField
 
 		if (currentCount != cacheCount)
 		{
-			text = '${ClientPrefs.data.gayFurryStuff ? "owo's per second" : 'FPS'}: $currentFPS';
+			text = '${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "owo's per second" : #end 'FPS'}: $currentFPS';
 			
 			var memoryMegas:Float = 0;
 
 			#if openfl
 			memoryMegas = Math.abs(FlxMath.roundDecimal(System.totalMemory / 1000000, 1));
-			text += '\n${ClientPrefs.data.gayFurryStuff ? "proot mem usage" : 'Memory'}: ${memoryMegas} MB';
+			text += '\n${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "proot mem usage" : #end 'Memory'}: ${memoryMegas} MB';
 			#end
 			/*
 			text += '\nAstro Engine: ' + EngineData.engineData.coreVersion;
 		*/
 			#if debug 
-			text += '\n${ClientPrefs.data.gayFurryStuff ? "orbl pick one pls 🙏" : "Commit"}: ${GitMacro.commitNumber} [${GitMacro.commitHash}] ${GitMacro.branch}';
+			text += '\n${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "orbl pick one pls 🙏" : #end "Commit"}: ${GitMacro.commitNumber} [${GitMacro.commitHash}] ${GitMacro.branch}';
 			#end
 
 			textColor = 0xFFFFFFFF;

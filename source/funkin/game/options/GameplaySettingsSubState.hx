@@ -141,8 +141,10 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.changeValue = 0.1;
 		addOption(option);
 
+		#if ASTRO_WATERMARKS
 		var option:Option = new Option('Weird Stuff', 'erm, owo?', 'gayFurryStuff', BOOL);
 		addOption(option);
+		#end
 
 		super();
 	}

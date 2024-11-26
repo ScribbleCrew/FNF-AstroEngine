@@ -3,6 +3,9 @@ package funkin.backend.funkinLua.functions;
 import flixel.util.FlxSave;
 import openfl.utils.Assets;
 
+import haxe.crypto.Md5;
+import haxe.crypto.Sha1;
+
 //
 // Things to trivialize some dumb stuff like splitting strings on older Lua
 //
@@ -13,15 +16,7 @@ class ExtraFunctions
 	{
 		var lua:State = funk.lua;
 		
-		// Keyboard & Gamepads
-		Lua_helper.add_callback(lua, "keyboardJustPressed", function(name:String) return Reflect.getProperty(FlxG.keys.justPressed, name));
-		Lua_helper.add_callback(lua, "keyboardPressed", function(name:String) return Reflect.getProperty(FlxG.keys.pressed, name));
-		Lua_helper.add_callback(lua, "keyboardReleased", function(name:String) return Reflect.getProperty(FlxG.keys.justReleased, name));
-
-		Lua_helper.add_callback(lua, "anyGamepadJustPressed", function(name:String) return FlxG.gamepads.anyJustPressed(name));
-		Lua_helper.add_callback(lua, "anyGamepadPressed", function(name:String) FlxG.gamepads.anyPressed(name));
-		Lua_helper.add_callback(lua, "anyGamepadReleased", function(name:String) return FlxG.gamepads.anyJustReleased(name));
-
+		
 		Lua_helper.add_callback(lua, "setDarkmode", function(value:Bool)
 			{
 				#if windows
@@ -30,6 +25,27 @@ class ExtraFunctions
 				FunkinLua.luaTrace("setDarkmode: Platform unsupported for darkmode! (use windows)", false, false, FlxColor.RED);
 				#end
 			});
+
+		Lua_helper.add_callback(lua, "hash", function(txt:String, type:String = "md5")
+			{
+				switch(type.toLowerCase()) {
+					case "md5":
+						return Md5.encode(txt);
+					case "sha1":
+						return Sha1.encode(txt);
+					default:
+						throw "Unsupported hash type: " + type;
+				}
+			});
+
+		// Keyboard & Gamepads
+		Lua_helper.add_callback(lua, "keyboardJustPressed", function(name:String) return Reflect.getProperty(FlxG.keys.justPressed, name));
+		Lua_helper.add_callback(lua, "keyboardPressed", function(name:String) return Reflect.getProperty(FlxG.keys.pressed, name));
+		Lua_helper.add_callback(lua, "keyboardReleased", function(name:String) return Reflect.getProperty(FlxG.keys.justReleased, name));
+
+		Lua_helper.add_callback(lua, "anyGamepadJustPressed", function(name:String) return FlxG.gamepads.anyJustPressed(name));
+		Lua_helper.add_callback(lua, "anyGamepadPressed", function(name:String) FlxG.gamepads.anyPressed(name));
+		Lua_helper.add_callback(lua, "anyGamepadReleased", function(name:String) return FlxG.gamepads.anyJustReleased(name));
 
 		Lua_helper.add_callback(lua, "gamepadAnalogX", function(id:Int, ?leftStick:Bool = true)
 		{

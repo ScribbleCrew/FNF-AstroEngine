@@ -87,6 +87,7 @@ import haxe.*;
 import openfl.utils.Assets as OpenFlAssets;
 
 // Flixel
+import flixel.*;
 import flixel.sound.FlxSound;
 import flixel.FlxG;
 import flixel.FlxObject;

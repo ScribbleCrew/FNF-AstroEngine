@@ -549,9 +549,9 @@ class PlayState extends MusicBeatState
 
 		switch (curStage)
 		{
+			#if BASE_GAME_FILES
 			case 'stage':
 				new Stage(); // Week 1
-			#if BASE_GAME_FILES
 			case 'spooky':
 				new Spooky(); // Week 2
 			case 'philly':

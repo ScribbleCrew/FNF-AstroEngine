@@ -91,7 +91,9 @@ import funkin.game.Init.Volume;
 	public var showRatingStats:Bool = true;
 	public var darkMode:Bool = false;
 
+	#if ASTRO_WATERMARKS
 	public var gayFurryStuff:Bool = false;
+	#end
 
 	public var stats:Map<String, Dynamic> = ['Max Misses' => 0, 'Max Score' => 0];
 

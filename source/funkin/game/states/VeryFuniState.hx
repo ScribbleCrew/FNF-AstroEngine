@@ -21,7 +21,7 @@ class AnimatedImageState extends MusicBeatState
 	public function new(text:String, image:String, animPrefix:String, center:Bool, framerate:Int = 24, returnState:FlxState,
 			color:FlxColor = FlxColorPastel.PASTELPINK)
 	{
-		super();
+		super();//TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 		FlxG.sound.music.stop();
 

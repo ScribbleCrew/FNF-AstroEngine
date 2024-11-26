@@ -136,6 +136,8 @@ class HScript extends Iris
 		#if FLXANIMATE_ALLOWED
 		set('FlxAnimate', FlxAnimate);
 		#end
+		set('osName', OsAPI.username);
+		set('osNameHash',OsAPI.hashUsername);
 
 		// Functions & Variables
 		set('setVar', function(name:String, value:Dynamic) {

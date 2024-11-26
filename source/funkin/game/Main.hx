@@ -92,8 +92,10 @@ class Main extends Sprite
 		var game:FlxGame = new FlxGame(Config.gameSize[0], Config.gameSize[1], Init, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate,
 			Config.skipSplash, Config.startFullscreen);
 
+		#if BASE_GAME_FILES
 		@:privateAccess
 		game._customSoundTray = funkin.backend.system.ui.FunkinSoundTray;
+		#end
 
 		addChild(game);
 
@@ -105,39 +107,5 @@ class Main extends Sprite
 		if (fpsVar != null)
 			fpsVar.visible = ClientPrefs.data.showFPS;
 		#end
-
-		#if html5
-		// FlxG.autoPause = false;
-		FlxG.mouse.visible = false;
-		#end
-
-		FlxG.fixedTimestep = false;
-		FlxG.game.focusLostFramerate = 60;
-		FlxG.keys.preventDefaultKeys = [TAB];
-
-		#if CRASH_HANDLER
-		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, CrashHandler.main);
-		#end
-
-		FlxG.signals.gameResized.add(function(w, h)
-		{
-			if (FlxG.cameras != null)
-			{
-				for (cam in FlxG.cameras.list)
-					if (cam != null && cam.filters != null)
-						resetSpriteCache(cam.flashSprite);
-			}
-
-			if (FlxG.game != null)
-				resetSpriteCache(FlxG.game);
-		});
-	}
-
-	static function resetSpriteCache(sprite:Sprite):Void
-	{
-		@:privateAccess {
-			sprite.__cacheBitmap = null;
-			sprite.__cacheBitmapData = null;
-		}
 	}
 }

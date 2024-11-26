@@ -63,8 +63,7 @@ class FunkinSoundTray extends FlxSoundTray
 
 	function getPathImage(path:String):Dynamic
 	{
-		final ext = 'png';
-		final file = Paths.getPath('images/$path.$ext');
+		final file = Paths.getPath('images/$path.png');
 
 		#if MODS_ALLOWED
 		return BitmapData.fromFile(file);

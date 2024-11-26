@@ -23,7 +23,7 @@ Could not parse frame number of: `haxelib install flixel 5.6.1`
 
 <h2>Credits:</h2>
 
-**[Hackx2](https://twitter.com/AnimatesHack)** - Main **Programmer**
+**[Orbl](https://twitter.com/YourFriendOrbl)** - Main **Programmer**
 
 ---
 

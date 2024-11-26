@@ -21,10 +21,20 @@
 
 	<!-- _____________________________ ASTRO ENGINE CUSTOMIZATION ____________________________ -->
 
-	<!-- uhh adds base assets lol -->
+	<!-- Adds base game files. -->
 	<define name="BASE_GAME_FILES" />
 
+	<!-- Shows the loading screen. -->
 	<define name="SHOW_LOADING_SCREEN" />
+
+	<!-- 
+		Enables watermarks for unreleased mods. 
+		Uses Md5 hashing system to hash the players system username.
+	-->
+	<!-- <define name="WATERMARK" /> -->
+
+	<!-- Enables astro engine watermarks. -->
+	<define name="ASTRO_WATERMARKS"/>
 
 	<!-- Enable Mod Support -->
 	<define name="MODS_ALLOWED" if="desktop" />
@@ -118,7 +128,7 @@
 
 	<assets path='art/readme.txt' rename='do NOT readme.txt' />
 
-	<!-- Font Paths -->
+	<!-- Font Path -->
 	<assets path="assets/fonts" />
 
 	<!-- _______________________________ Libraries ______________________________ -->
