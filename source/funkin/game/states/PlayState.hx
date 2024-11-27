@@ -98,17 +98,11 @@ class PlayState extends MusicBeatState
 	public var instancesExclude:Array<String> = [];
 	#end
 
-	public var BF_X:Float = 770;
-	public var BF_Y:Float = 100;
-	public var DAD_X:Float = 100;
-	public var DAD_Y:Float = 100;
 	public var charPos:Map<String, FlxPoint> = [
 		"BF" => new FlxPoint(770, 100),
 		"DAD" => new FlxPoint(100, 100),
 		"GF" => new FlxPoint(400, 130)
 	];
-	public var GF_X:Float = 400;
-	public var GF_Y:Float = 130;
 
 	public var songSpeedTween:FlxTween;
 	public var songSpeed(default, set):Float = 1;
