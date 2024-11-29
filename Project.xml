@@ -58,6 +58,8 @@
 	<!-- Enables Support For Discord Client Integration -->
 	<define name="DISCORD_ALLOWED" if="desktop" unless="html5"/>
 
+	<define name="DISCORD_DISABLE_IO_THREAD" if="DISCORD_ALLOWED"/>
+
 	<!-- Enables Achievements -->
 	<define name="ACHIEVEMENTS_ALLOWED" />
 
