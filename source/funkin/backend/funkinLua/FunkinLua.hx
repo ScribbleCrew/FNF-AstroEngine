@@ -193,12 +193,12 @@ class FunkinLua {
 			}
 	
 			// Default character data
-			set('defaultBoyfriendX', game.charPos.get("BF").x);
-			set('defaultBoyfriendY', game.charPos.get("BF").y);
-			set('defaultOpponentX', game.charPos.get("DAD").x);
-			set('defaultOpponentY', game.charPos.get("DAD").y);
-			set('defaultGirlfriendX', game.charPos.get("GF").x);
-			set('defaultGirlfriendY', game.charPos.get("GF").y);
+			set('defaultBoyfriendX', game.defaultCharacterPositions.get("BF").x);
+			set('defaultBoyfriendY', game.defaultCharacterPositions.get("BF").y);
+			set('defaultOpponentX', game.defaultCharacterPositions.get("DAD").x);
+			set('defaultOpponentY', game.defaultCharacterPositions.get("DAD").y);
+			set('defaultGirlfriendX', game.defaultCharacterPositions.get("GF").x);
+			set('defaultGirlfriendY', game.defaultCharacterPositions.get("GF").y);
 
 			set('boyfriendName', PlayState.SONG.player1);
 			set('dadName', PlayState.SONG.player2);
@@ -219,7 +219,11 @@ class FunkinLua {
 		set('healthBarAlpha', ClientPrefs.data.healthBarAlpha);
 		set('noResetButton', ClientPrefs.data.noReset);
 		set('lowQuality', ClientPrefs.data.lowQuality);
+		#if SHADERS_ALLOWED
 		set('shadersEnabled', ClientPrefs.data.shaders);
+		#else
+		set('shadersEnabled', false);
+		#end
 		set('scriptName', scriptName);
 		set('currentModDirectory', Mods.currentModDirectory);
 
@@ -232,6 +236,8 @@ class FunkinLua {
 
 		// build target (windows, mac, linux, etc.)
 		set('buildTarget', LuaUtils.getBuildTarget());
+		set('osInfo', OsAPI.osInfo);
+		set('osVersion', OsAPI.osVersion);
 
 		//
 		Lua_helper.add_callback(lua, "getRunningScripts", function() {
@@ -1571,11 +1577,11 @@ class FunkinLua {
 		#if TRANSLATIONS_ALLOWED Language.addLuaCallbacks(lua); #end
 		#if HSCRIPT_ALLOWED HScript.implement(this); #end
 		#if flxanimate FlxAnimateFunctions.implement(this); #end
+		#if SHADERS_ALLOWED ShaderFunctions.implement(this); #end
 		ReflectionFunctions.implement(this);
 		TextFunctions.implement(this);
 		ExtraFunctions.implement(this);
 		CustomSubstate.implement(this);
-		ShaderFunctions.implement(this);
 		DeprecatedFunctions.implement(this);
 
 		for (name => func in customFunctions)
@@ -1804,15 +1810,13 @@ class FunkinLua {
 		Lua_helper.add_callback(lua, name, null); //just so that it gets called
 	}
 
-	#if (MODS_ALLOWED && !flash && sys)
+	#if (MODS_ALLOWED && SHADERS_ALLOWED)
 	public var runtimeShaders:Map<String, Array<String>> = new Map<String, Array<String>>();
-	#end
-
 	public function initLuaShader(name:String, ?glslVersion:Int = 120)
 	{
 		if(!ClientPrefs.data.shaders) return false;
 
-		#if (MODS_ALLOWED && !flash && sys)
+		#if (MODS_ALLOWED && SHADERS_ALLOWED)
 		if(runtimeShaders.exists(name))
 		{
 			var shaderData:Array<String> = runtimeShaders.get(name);
@@ -1865,4 +1869,5 @@ class FunkinLua {
 		#end
 		return false;
 	}
+	#end
 }

@@ -4,6 +4,7 @@ package funkin.backend.funkinLua.functions;
 import flixel.addons.display.FlxRuntimeShader;
 #end
 
+#if SHADERS_ALLOWED
 class ShaderFunctions
 {
 	public static function implement(funk:FunkinLua)
@@ -282,3 +283,4 @@ class ShaderFunctions
 	}
 	#end
 }
+#end

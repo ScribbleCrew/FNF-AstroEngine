@@ -27,7 +27,9 @@ import funkin.game.Init.Volume;
 	public var lowQuality:Bool = false;
 	public var hideFullHUD:Bool = false;
 	public var botplayEnabled:Bool = false;
+	#if SHADERS_ALLOWED
 	public var shaders:Bool = true;
+	#end
 	public var cacheOnGPU:Bool = #if !switch false #else true #end;
 	public var framerate:Int = 60;
 	public var cursing:Bool = true;

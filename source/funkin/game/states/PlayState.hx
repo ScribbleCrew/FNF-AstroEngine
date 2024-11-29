@@ -98,7 +98,7 @@ class PlayState extends MusicBeatState
 	public var instancesExclude:Array<String> = [];
 	#end
 
-	public var charPos:Map<String, FlxPoint> = [
+	public var defaultCharacterPositions:Map<String, FlxPoint> = [
 		"BF" => new FlxPoint(770, 100),
 		"DAD" => new FlxPoint(100, 100),
 		"GF" => new FlxPoint(400, 130)
@@ -518,9 +518,9 @@ class PlayState extends MusicBeatState
 		else if (stageData.isPixelStage == true) // Backward compatibility
 			stageUI = "pixel";
 
-		charPos.set("BF", FlxPoint.get(stageData.boyfriend[0], stageData.boyfriend[1]));
-		charPos.set("GF", FlxPoint.get(stageData.girlfriend[0], stageData.girlfriend[1]));
-		charPos.set("DAD", FlxPoint.get(stageData.opponent[0], stageData.opponent[1]));
+		defaultCharacterPositions.set("BF", FlxPoint.get(stageData.boyfriend[0], stageData.boyfriend[1]));
+		defaultCharacterPositions.set("GF", FlxPoint.get(stageData.girlfriend[0], stageData.girlfriend[1]));
+		defaultCharacterPositions.set("DAD", FlxPoint.get(stageData.opponent[0], stageData.opponent[1]));
 
 		if (stageData.camera_speed != null)
 			cameraSpeed = stageData.camera_speed;
@@ -537,9 +537,9 @@ class PlayState extends MusicBeatState
 		if (girlfriendCameraOffset == null)
 			girlfriendCameraOffset = [0, 0];
 
-		boyfriendGroup = new FlxSpriteGroup(charPos.get('BF').x, charPos.get('BF').y);
-		dadGroup = new FlxSpriteGroup(charPos.get('DAD').x, charPos.get('DAD').y);
-		gfGroup = new FlxSpriteGroup(charPos.get('GF').x, charPos.get('GF').y);
+		boyfriendGroup = new FlxSpriteGroup(defaultCharacterPositions.get('BF').x, defaultCharacterPositions.get('BF').y);
+		dadGroup = new FlxSpriteGroup(defaultCharacterPositions.get('DAD').x, defaultCharacterPositions.get('DAD').y);
+		gfGroup = new FlxSpriteGroup(defaultCharacterPositions.get('GF').x, defaultCharacterPositions.get('GF').y);
 
 		switch (curStage)
 		{
@@ -635,7 +635,7 @@ class PlayState extends MusicBeatState
 
 		if (dad.curCharacter.startsWith('gf'))
 		{
-			dad.setPosition(GF_X, GF_Y);
+			dad.setPosition(defaultCharacterPositions.get('GF').x, defaultCharacterPositions.get('GF').y);
 			if (gf != null)
 				gf.visible = false;
 		}
@@ -891,7 +891,7 @@ class PlayState extends MusicBeatState
 			checkEventNote();
 	}
 
-	#if (!flash && sys)
+	#if SHADERS_ALLOWED
 	public var runtimeShaders:Map<String, Array<String>> = new Map<String, Array<String>>();
 
 	public function createRuntimeShader(name:String):FlxRuntimeShader
@@ -899,7 +899,7 @@ class PlayState extends MusicBeatState
 		if (!ClientPrefs.data.shaders)
 			return new FlxRuntimeShader();
 
-		#if (!flash && MODS_ALLOWED && sys)
+		#if (SHADERS_ALLOWED && MODS_ALLOWED)
 		if (!runtimeShaders.exists(name) && !initLuaShader(name))
 		{
 			FlxG.log.warn('Shader $name is missing!');
@@ -914,6 +914,7 @@ class PlayState extends MusicBeatState
 		#end
 	}
 
+	#if SHADERS_ALLOWED
 	public function initLuaShader(name:String, ?glslVersion:Int = 120)
 	{
 		if (!ClientPrefs.data.shaders)
@@ -966,6 +967,7 @@ class PlayState extends MusicBeatState
 		FlxG.log.warn('Missing shader $name .frag AND .vert files!');
 		return false;
 	}
+	#end
 	#end
 
 	public function addTextToDebug(text:String, color:FlxColor)
@@ -1110,7 +1112,7 @@ class PlayState extends MusicBeatState
 	{
 		if (gfCheck && char.curCharacter.startsWith('gf'))
 		{ // IF DAD IS GIRLFRIEND, HE GOES TO HER POSITION
-			char.setPosition(GF_X, GF_Y);
+			char.setPosition(defaultCharacterPositions.get('GF').x, defaultCharacterPositions.get('GF').y);
 			char.scrollFactor.set(0.95, 0.95);
 			char.danceEveryNumBeats = 2;
 		}

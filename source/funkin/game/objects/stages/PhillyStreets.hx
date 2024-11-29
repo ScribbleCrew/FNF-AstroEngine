@@ -2,7 +2,9 @@ package funkin.game.objects.stages;
 
 import flixel.addons.transition.FlxTransitionableState;
 import openfl.filters.ShaderFilter;
+#if SHADERS_ALLOWED
 import funkin.game.objects.shaders.RainShader;
+#end
 import flixel.addons.display.FlxTiledSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import states.stages.objects.*;
@@ -23,9 +25,11 @@ class PhillyStreets extends BaseStage
 	final VULTURE_THRESHOLD:Float = 0.5;
 	var blinkCountdown:Int = 3;
 
+	#if SHADERS_ALLOWED
 	var rainShader:RainShader;
 	var rainShaderStartIntensity:Float = 0;
 	var rainShaderEndIntensity:Float = 0;
+	#end
 
 	var scrollingSky:FlxTiledSprite;
 	var phillyTraffic:BGSprite;
@@ -132,8 +136,10 @@ class PhillyStreets extends BaseStage
 		updateABotEye(true);
 		add(abot);
 
+		#if SHADERS_ALLOWED
 		if (ClientPrefs.data.shaders)
 			setupRainShader();
+		#end
 
 		var _song = PlayState.SONG;
 		if (_song.gameOverSound == null || _song.gameOverSound.trim().length < 1)
@@ -508,7 +514,7 @@ class PhillyStreets extends BaseStage
 		for (i in 1...5)
 			Paths.sound('shots/shot$i');
 	}
-
+	#if SHADERS_ALLOWED
 	function setupRainShader()
 	{
 		rainShader = new RainShader();
@@ -528,6 +534,7 @@ class PhillyStreets extends BaseStage
 		rainShader.intensity = rainShaderStartIntensity;
 		FlxG.camera.setFilters([new ShaderFilter(rainShader)]);
 	}
+	#end
 
 	var currentNeneState:NeneState = STATE_DEFAULT;
 	var animationFinished:Bool = false;
@@ -537,6 +544,7 @@ class PhillyStreets extends BaseStage
 		if (scrollingSky != null)
 			scrollingSky.scrollX -= elapsed * 22;
 
+		#if SHADERS_ALLOWED
 		if (rainShader != null)
 		{
 			var remappedIntensityValue:Float = FlxMath.remapToRange(Conductor.songPosition, 0, (FlxG.sound.music != null ? FlxG.sound.music.length : 0),
@@ -545,6 +553,7 @@ class PhillyStreets extends BaseStage
 			rainShader.updateViewInfo(FlxG.width, FlxG.height, FlxG.camera);
 			rainShader.update(elapsed);
 		}
+		#end
 
 		if (gf == null || !game.startedCountdown)
 			return;

@@ -1,5 +1,6 @@
 package funkin.backend.client;
 
+import funkin.game.Init;
 import funkin.game.Config;
 import funkin.backend.data.EngineData;
 import funkin.backend.utils.ClientPrefs;
@@ -12,8 +13,6 @@ import llua.*;
 import llua.Lua;
 #end
 
-
-
 class DiscordClient
 {
 	public static var isInitialized:Bool = false;
@@ -22,23 +21,23 @@ class DiscordClient
 	private static var presence:DiscordRichPresence = DiscordRichPresence.create();
 
 	public static var clientName(default, set):String = null;
+
 	private static function set_clientName(owo:String)
 		return clientName = owo;
 
 	public static var clientDiscrim(default, set):String = null;
+
 	private static function set_clientDiscrim(owo:String)
 		return clientDiscrim = owo;
 
-	//discriminator
+	// discriminator
 
 	public static function check()
 	{
-
-		if(Config.discordID == '')
+		if (Config.discordID == '')
 			clientID = cast(EngineData.coreGame.coreDiscordID, String); // uhm astro engine shiz
 		else
 			clientID = _defaultID;
-
 
 		if (ClientPrefs.data.discordRPC)
 			initialize();
@@ -68,26 +67,40 @@ class DiscordClient
 	{
 		var requestPtr:cpp.Star<DiscordUser> = cpp.ConstPointer.fromRaw(request).ptr;
 
-		clientName = '${cast(requestPtr.username,String)}';
-		clientDiscrim = '$clientName#${cast (requestPtr.discriminator, String)}';
+		clientName = '${cast (requestPtr.username, String)}';
+		clientDiscrim = cast(requestPtr.discriminator, String);
 
-		if (Std.parseInt(cast(requestPtr.discriminator, String)) != 0) // New Discord IDs/Discriminator system
-			traceFr('Connected to User (${cast (requestPtr.username, String)}#${cast (requestPtr.discriminator, String)})');
-		else // Old discriminators
-			traceFr('Connected to User (${cast (requestPtr.username, String)})');
+		if (Std.parseInt(cast(requestPtr.discriminator, String)) != 0)
+		{ // New Discord IDs/Discriminator system
+			final userDiscriminator = '${cast (requestPtr.username, String)}#${cast (requestPtr.discriminator, String)}';
+			#if WATERMARK
+			Init.watermark.text += '\n$userDiscriminator\n${HashUtils.hash(cast(requestPtr.username, String), MD5)}';
+			#end
+			traceFr('Connected to User ($userDiscriminator)');
+		}
+		else
+		{ // Old discriminators
+			final user = cast(requestPtr.username, String);
+			#if WATERMARK
+			Init.watermark.text += '\n$user\n${HashUtils.hash(user, MD5)}';
+			#end
+			traceFr('Connected to User ($user)');
+		}
+		#if WATERMARK
+		final userID = cast(requestPtr.userId, String).trim();
+		trace(userID);
+		Init.watermark.text += '\n$userID';
+		Init.watermark.y = (FlxG.height - Init.watermark.textHeight) / 2;
+		#end
 
 		changePresence();
 	}
 
 	private static function onError(errorCode:Int, message:cpp.ConstCharStar):Void
-	{
 		traceFr('Error ($errorCode: ${cast (message, String)})');
-	}
 
 	private static function onDisconnected(errorCode:Int, message:cpp.ConstCharStar):Void
-	{
 		traceFr('Disconnected ($errorCode: ${cast (message, String)})');
-	}
 
 	public static function initialize()
 	{
@@ -100,7 +113,6 @@ class DiscordClient
 
 		if (!isInitialized)
 			traceFr("Initialized");
-
 
 		sys.thread.Thread.create(() ->
 		{
@@ -138,9 +150,9 @@ class DiscordClient
 		presence.startTimestamp = Std.int(startTimestamp / 1000);
 		presence.endTimestamp = Std.int(endTimestamp / 1000);
 
-		if(presence.button1Label == null)
+		if (presence.button1Label == null)
 			presence.button1Label = "Astro Engine Discord";
-		if(presence.button1Url == null)
+		if (presence.button1Url == null)
 			presence.button1Url = "";
 
 		updatePresence();
@@ -170,10 +182,10 @@ class DiscordClient
 	public static function loadModRPC()
 	{
 		var pack:Dynamic = Mods.getPack();
-		if(pack != null && pack.discordRPC != null && pack.discordRPC != clientID)
+		if (pack != null && pack.discordRPC != null && pack.discordRPC != clientID)
 		{
 			clientID = pack.discordRPC;
-			//trace('Changing clientID! $clientID, $_defaultID');
+			// trace('Changing clientID! $clientID, $_defaultID');
 		}
 	}
 	#end

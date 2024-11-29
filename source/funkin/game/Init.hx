@@ -6,6 +6,7 @@ import funkin.backend.utils.Paths;
 #if CRASH_HANDLER
 import openfl.events.UncaughtErrorEvent;
 #end
+
 class Init extends flixel.FlxState
 {
 	override public function create():Void
@@ -36,15 +37,15 @@ class Init extends flixel.FlxState
 
 		#if VIDEOS_ALLOWED hxvlc.util.Handle.init(#if (hxvlc >= "1.8.0") ['--no-lua'] #end); #end
 
-		#if WATERMARK owoWatermark(); #end
-
 		#if CRASH_HANDLER initCrashHandler(); #end
 
-		fragFix();
+		#if SHADERS_ALLOWED fragFix(); #end
 
 		funkin.game.objects.Alphabet.AlphaCharacter.loadAlphabetData();
 
 		super.create();
+
+		#if WATERMARK owoWatermark(); #end
 
 		// Extra stuff goes here :3
 
@@ -53,10 +54,6 @@ class Init extends flixel.FlxState
 
 	private function init():Void
 	{
-		#if html5
-		FlxG.mouse.visible = false;
-		#end
-
 		FlxG.fixedTimestep = #if html5 FlxG.mouse.visible = #end
 		false;
 		FlxG.keys.preventDefaultKeys = [TAB];
@@ -70,11 +67,10 @@ class Init extends flixel.FlxState
 
 	#if CRASH_HANDLER
 	private function initCrashHandler()
-	{
 		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, CrashHandler.main);
-	}
 	#end
 
+	#if SHADERS_ALLOWED
 	private function fragFix()
 	{
 		FlxG.signals.gameResized.add(function(w, h)
@@ -96,29 +92,32 @@ class Init extends flixel.FlxState
 			sprite.__cacheBitmapData = null;
 		}
 	}
+	#end
+
+	#if WATERMARK
+	public static var watermark:openfl.text.TextField;
 
 	private function owoWatermark():Void
 	{
 		// uhh tester text lmao
-		final width =FlxG.width;
-		final height = FlxG.height;
-		final watermarkText:String = 'BETA(DO NOT LEAK)\n${OsAPI.username}\n${OsAPI.hashUsername}';
+		final watermarkText:String = '${OsAPI.username}\n${HashUtils.hash(OsAPI.username, MD5)}';
 
 		final format:openfl.text.TextFormat = new openfl.text.TextFormat("assets/fonts/OswaldMedium.ttf", 50, FlxColor.WHITE);
 		format.align = openfl.text.TextFormatAlign.CENTER;
 
-		final watermark:openfl.text.TextField = new openfl.text.TextField();
+		watermark = new openfl.text.TextField();
 		watermark.defaultTextFormat = format;
 		watermark.text = watermarkText;
 		watermark.alpha = .55;
-		watermark.width = width;
-		watermark.height = height;
+		watermark.width = FlxG.width;
+		watermark.height = FlxG.height;
 		watermark.selectable = false;
 
-		watermark.y = (height - watermark.textHeight) / 2;
+		watermark.y = (FlxG.height - watermark.textHeight) / 2;
 
 		Lib.current.addChild(watermark);
 	}
+	#end
 }
 
 class Volume

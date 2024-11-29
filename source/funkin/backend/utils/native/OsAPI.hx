@@ -5,19 +5,38 @@ import haxe.crypto.Md5;
 class OsAPI
 {
 	public static var username(get, null):String;
+	public static var hashUsername(get, null):String;
+	public static var osInfo(get, never):String;
+	public static var osVersion(get, never):String;
 
 	@:noCompletion private inline static function get_username()
 	{
 		final environment = Sys.environment();
 
-		if (environment.exists("USERNAME")) return environment["USERNAME"];
-		if (environment.exists("USER")) return environment["USER"];
+		if (environment.exists("USERNAME"))
+			return environment["USERNAME"];
+		if (environment.exists("USER"))
+			return environment["USER"];
 
 		return '???';
 	}
 
-	public static var hashUsername(get, null):String;
+	private static function get_osInfo()
+	{ // stolen from twist engine lmao
+		if (lime.system.System.platformLabel != null
+			&& lime.system.System.platformLabel != ""
+			&& lime.system.System.platformVersion != null
+			&& lime.system.System.platformVersion != "")
+			return lime.system.System.platformLabel.replace(lime.system.System.platformVersion, "").trim();
+		else
+			trace('Unable to grab OS Label');
+
+		return null;
+	}
+
+	private static inline function get_osVersion()
+		return lime.system.System.platformVersion;
 
 	@:noCompletion private inline static function get_hashUsername()
-		return Md5.encode(username);
+		return HashUtils.hash(username, MD5);
 }

@@ -29,13 +29,20 @@
 
 	<!-- 
 		Enables watermarks for unreleased mods. 
-		Uses Md5 hashing system to hash the players system username.
+		Uses Md5 hashing system to hash the players system username.(soo u can unhash iguess it just looks cool 😎)
+		Also checks for a discord client and shows that name too!!!
+		and userid LOL!!!!!!!!!!!
+		helps find out who leak!!!!!!!!!!!!!!
+		Used for beta testers lol!
 	-->
 	<!-- <define name="WATERMARK" /> -->
 
 	<!-- Enables astro engine watermarks. -->
 	<define name="ASTRO_WATERMARKS"/>
 
+	<!-- Shaders Allowed -->
+	<define name="SHADERS_ALLOWED" unless="flash"/>
+	
 	<!-- Enable Mod Support -->
 	<define name="MODS_ALLOWED" if="desktop" />
 

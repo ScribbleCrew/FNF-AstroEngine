@@ -510,7 +510,7 @@ class LoadingState extends MusicBeatState
 		Thread.create(() -> {
 			mutex.acquire();
 			try {
-				if (func() != null) trace('finished preloading $traceData');
+				if (func() != null) trace('Preloaded $traceData');
 				else trace('ERROR! fail on preloading $traceData');
 			}
 			catch(e:Dynamic) {

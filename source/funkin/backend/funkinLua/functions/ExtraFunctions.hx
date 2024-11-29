@@ -26,17 +26,8 @@ class ExtraFunctions
 				#end
 			});
 
-		Lua_helper.add_callback(lua, "hash", function(txt:String, type:String = "md5")
-			{
-				switch(type.toLowerCase()) {
-					case "md5":
-						return Md5.encode(txt);
-					case "sha1":
-						return Sha1.encode(txt);
-					default:
-						throw "Unsupported hash type: " + type;
-				}
-			});
+			Lua_helper.add_callback(lua, "hash", function(txt:String, type:String = "md5") return HashUtils.hash(txt, HashUtils.convertHashType(type)));
+
 
 		// Keyboard & Gamepads
 		Lua_helper.add_callback(lua, "keyboardJustPressed", function(name:String) return Reflect.getProperty(FlxG.keys.justPressed, name));

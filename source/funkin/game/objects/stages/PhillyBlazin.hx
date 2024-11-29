@@ -1,8 +1,9 @@
 package funkin.game.objects.stages;
 
 import openfl.filters.ShaderFilter;
+#if SHADERS_ALLOWED
 import funkin.game.objects.shaders.RainShader;
-
+#end
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.display.FlxTiledSprite;
 
@@ -10,7 +11,9 @@ import states.stages.objects.*;
 
 class PhillyBlazin extends BaseStage
 {
+	#if SHADERS_ALLOWED
 	var rainShader:RainShader;
+	#end
 	var rainTimeScale:Float = 1;
 
 	var scrollingSky:FlxTiledSprite;
@@ -75,9 +78,10 @@ class PhillyBlazin extends BaseStage
 
 		abot = new ABotSpeaker(gfGroup.x, gfGroup.y + 550);
 		add(abot);
-		
+		#if SHADERS_ALLOWED
 		if(ClientPrefs.data.shaders)
 			setupRainShader();
+		#end
 
 		var _song = PlayState.SONG;
 		if(_song.gameOverSound == null || _song.gameOverSound.trim().length < 1) GameOverSubstate.deathSoundName = 'fnf_loss_sfx-pico-gutpunch';
@@ -153,6 +157,7 @@ class PhillyBlazin extends BaseStage
 		abot.snd = FlxG.sound.music;
 	}
 
+	#if SHADERS_ALLOWED
 	function setupRainShader()
 	{
 		rainShader = new RainShader();
@@ -160,6 +165,7 @@ class PhillyBlazin extends BaseStage
 		rainShader.intensity = 0.5;
 		FlxG.camera.setFilters([new ShaderFilter(rainShader)]);
 	}
+	#end
 
 	function precache()
 	{
@@ -173,12 +179,14 @@ class PhillyBlazin extends BaseStage
 	{
 		if(scrollingSky != null) scrollingSky.scrollX -= elapsed * 35;
 
+		#if SHADERS_ALLOWED
 		if(rainShader != null)
 		{
 			rainShader.updateViewInfo(FlxG.width, FlxG.height, FlxG.camera);
 			rainShader.update(elapsed * rainTimeScale);
 			rainTimeScale = FlxMath.lerp(0.02, Math.min(1, rainTimeScale), Math.exp(-elapsed / (1/3)));
 		}
+		#end
 		
 		lightningTimer -= elapsed;
 		if (lightningTimer <= 0)
