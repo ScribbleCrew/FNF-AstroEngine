@@ -1166,7 +1166,7 @@ class FunkinLua {
 				left_color = CoolUtil.colorFromString(left);
 			if (right != null && right != '')
 				right_color = CoolUtil.colorFromString(right);
-			game.healthBar.setColors(left_color, right_color);
+			game.baseUI.healthBar.setColors(left_color, right_color);
 		});
 		Lua_helper.add_callback(lua, "setTimeBarColors", function(left:String, right:String) {
 			var left_color:Null<FlxColor> = null;
@@ -1175,7 +1175,7 @@ class FunkinLua {
 				left_color = CoolUtil.colorFromString(left);
 			if (right != null && right != '')
 				right_color = CoolUtil.colorFromString(right);
-			game.timeBar.setColors(left_color, right_color);
+			game.baseUI.timeBar.setColors(left_color, right_color);
 		});
 
 		Lua_helper.add_callback(lua, "setObjectCamera", function(obj:String, camera:String = 'game') {

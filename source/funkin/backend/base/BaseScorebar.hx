@@ -16,8 +16,10 @@ class BaseScorebar extends FlxBasic
 		else
 		{
 			FlxG.log.add('Scorebar Created');
-
+			game.baseUI = new funkin.game.objects.scorebars.DefaultHUD();
+			
 			super();
+			game.baseUI.create();
 			create();
 
 			game.stageUpdate = update;
@@ -55,7 +57,7 @@ class BaseScorebar extends FlxBasic
 		return cast FlxG.state;
 
 	private inline function get_defaultPos() 
-		return game.healthBar.getPosition();
+		return game.baseUI.healthBar.getPosition();
 
 	// uhh owo?
 	function add(object:FlxBasic)

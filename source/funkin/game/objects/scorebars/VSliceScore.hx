@@ -10,6 +10,8 @@ class VSliceScore extends BaseScorebar
 	{
 		super.create();
 		
+//		game.timeTxt.visible = game.timeBar.visible = false;
+
 		var defaultPosButBetter = game.healthBar.bg;
 
 		scoreText = new FlxText(defaultPosButBetter.x + defaultPosButBetter.width - 190, defaultPosButBetter.y + 30, 0, '', 20);

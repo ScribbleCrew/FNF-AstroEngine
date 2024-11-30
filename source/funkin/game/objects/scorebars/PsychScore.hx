@@ -8,6 +8,8 @@ class PsychScore extends BaseScorebar
 	{
 		super.create();
 
+		game.timeTxt.font = Paths.font("vcr.ttf");
+
 		scoreText = new FlxText(0, defaultPos.y + 36, FlxG.width, "", 20);
 		scoreText.scrollFactor.set();
 		scoreText.borderSize = 1.25;
