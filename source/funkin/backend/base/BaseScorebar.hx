@@ -1,5 +1,7 @@
 package funkin.backend.base;
 
+import funkin.game.objects.scorebars.DefaultHUD;
+
 class BaseScorebar extends FlxBasic
 {
 	private var game(get, never):Dynamic;
@@ -16,8 +18,9 @@ class BaseScorebar extends FlxBasic
 		else
 		{
 			FlxG.log.add('Scorebar Created');
-
+			
 			super();
+			game.baseUI = new DefaultHUD();
 			create();
 
 			game.stageUpdate = update;
@@ -55,7 +58,7 @@ class BaseScorebar extends FlxBasic
 		return cast FlxG.state;
 
 	private inline function get_defaultPos() 
-		return game.healthBar.getPosition();
+		return game.baseUI.healthBar.getPosition();
 
 	// uhh owo?
 	function add(object:FlxBasic)

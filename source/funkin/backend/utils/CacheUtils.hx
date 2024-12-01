@@ -4,13 +4,16 @@ enum CacheType
 {
 	COUNTDOWN;
 	POPUPSCORE;
+	CUSTOM;
+	NONE;
 }
 
 class CacheUtils
 {
-	public static function cache(type:CacheType = COUNTDOWN)
+	public static function cache(type:CacheType = COUNTDOWN, ?doTrace:Bool = true)
 	{
-		trace('Cached: $type');
+		if(doTrace)
+			trace('Cached: $type');
 		switch (type)
 		{
 			case COUNTDOWN:
@@ -20,6 +23,12 @@ class CacheUtils
 			default:
 				throw 'invalid type lol :3';
 		}
+	}
+
+	public static function cacheArgs(list:Array<CacheType>) {
+		for (i in list)
+			cache(i, false);
+		trace('Successfully Cached: ${list}');
 	}
 
 	public static function cacheCountdown()
@@ -39,9 +48,8 @@ class CacheUtils
 		for (asset in introAlts)
 			Paths.image(asset);
 
-		Paths.sound('intro3' + introSoundsSuffix);
-		Paths.sound('intro2' + introSoundsSuffix);
-		Paths.sound('intro1' + introSoundsSuffix);
+		for(i in 1...3)
+			Paths.sound('intro$i' + introSoundsSuffix);
 		Paths.sound('introGo' + introSoundsSuffix);
 	}
 

@@ -8,7 +8,9 @@ class PsychScore extends BaseScorebar
 	{
 		super.create();
 
-		scoreText = new FlxText(0, defaultPos.y + 36, FlxG.width, "", 20);
+		//game.baseUI.defaultFont = Paths.font("vcr.ttf");
+
+		scoreText = new FlxText(0, defaultPos.y + 40, FlxG.width, "", 20);
 		scoreText.scrollFactor.set();
 		scoreText.borderSize = 1.25;
 		scoreText.visible = !ClientPrefs.data.hideFullHUD;
@@ -19,7 +21,6 @@ class PsychScore extends BaseScorebar
 
 	override function updateScore()
 	{
-		super.updateScore();
 		scoreText.text = 'Score: '
 			+ PlayState.instance.songScore
 			+ ' - Misses: '

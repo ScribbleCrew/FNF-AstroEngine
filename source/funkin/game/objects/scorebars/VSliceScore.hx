@@ -7,10 +7,8 @@ class VSliceScore extends BaseScorebar
 	private var scoreText:FlxText;
 
 	override function create()
-	{
-		super.create();
-		
-		var defaultPosButBetter = game.healthBar.bg;
+	{	
+		final defaultPosButBetter = game.baseUI.healthBar.bg;
 
 		scoreText = new FlxText(defaultPosButBetter.x + defaultPosButBetter.width - 190, defaultPosButBetter.y + 30, 0, '', 20);
 		scoreText.scrollFactor.set();
@@ -19,11 +17,14 @@ class VSliceScore extends BaseScorebar
 		scoreText.alpha = 0;
 		scoreText.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(scoreText);
+
+		super.create();
+
+		game.baseUI.timeTxt.visible = game.baseUI.timeBar.visible = false;
 	}
 
 	override function updateScore()
 	{
-		super.updateScore();
 		scoreText.text = 'Score: ' + FlxStringUtil.formatMoney(PlayState.instance.songScore, false, true);
 	}
 }

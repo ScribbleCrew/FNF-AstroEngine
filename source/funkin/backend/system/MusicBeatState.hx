@@ -56,7 +56,7 @@ class MusicBeatState extends FlxState
 
 	public static function init()
 	{
-		trace('Init Complete'); // Makes Sure MusicBeatState isnt null fr
+		trace('Initialization Complete'); // Makes Sure MusicBeatState isnt null fr
 	}
 
 	public function addBehindObject(obj:FlxBasic, obj2:FlxBasic)

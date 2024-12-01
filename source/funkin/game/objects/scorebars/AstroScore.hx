@@ -19,9 +19,7 @@ class AstroScore extends BaseScorebar
 
 	override function create()
 	{
-		super.create();
-
-		scoreText = new FlxText(0, defaultPos.y + 36, FlxG.width, "ermOwo?", 20);
+		scoreText = new FlxText(0, defaultPos.y + 36, FlxG.width, "erm, owo???", 20);
 		scoreText.scrollFactor.set();
 		scoreText.borderSize = 1.25;
 		scoreText.visible = !ClientPrefs.data.hideFullHUD;
@@ -100,6 +98,10 @@ class AstroScore extends BaseScorebar
 			add(missTxt);
 			addCurveBG(missTxt.x - 10, missTxt.y - 2.5, sickTxt.fieldWidth - 10, 35, 35, 0, game.uiBackgroundGroup);
 		}
+
+		super.create();
+		
+		game.baseUI.timeTxt.setFormat(Paths.font("PhantomMuff.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 	}
 
 	override function update(f)
@@ -113,7 +115,6 @@ class AstroScore extends BaseScorebar
 
 	override function updateScore()
 	{
-		super.updateScore();
 		scoreText.text = 'Score: '
 			+ game.songScore
 			+ ' • Misses: '

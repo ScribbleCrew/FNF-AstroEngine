@@ -164,7 +164,7 @@
 	<!-- ______________________________ Haxedefines _____________________________ -->
 
 	<!-- A Script That Runs Before Complie -->
-	<prebuild haxe="source/Prebuild.hx"/>
+	<prebuild haxe="source/Prebuild.hx" unless="display"/>
 
 	<!--Disable the Flixel core focus lost screen-->
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
