@@ -5,7 +5,7 @@ import haxe.crypto.Md5;
 class OsAPI
 {
 	public static var username(get, null):String;
-	public static var hashUsername(get, null):String;
+	public static var hashUsernameMD5(get, null):String;
 	public static var osInfo(get, never):String;
 	public static var osVersion(get, never):String;
 
@@ -37,6 +37,6 @@ class OsAPI
 	private static inline function get_osVersion()
 		return lime.system.System.platformVersion;
 
-	@:noCompletion private inline static function get_hashUsername()
+	@:noCompletion private inline static function get_hashUsernameMD5()
 		return HashUtils.hash(username, MD5);
 }

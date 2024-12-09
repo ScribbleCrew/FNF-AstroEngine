@@ -27,6 +27,7 @@ class WindowUtil
 
 		// Windows 11 support????????
 		if (!OsAPI.osInfo.contains('11')){
+			// meh
 			Application.current.window.borderless = true;
 			Application.current.window.borderless = false;
 		}
