@@ -24,8 +24,6 @@ import flixel.AttachedFlxText;
 import funkin.backend.system.MusicBeatSubstate;
 import funkin.backend.system.MusicBeatState;
 
-
-
 class CreditsState extends MusicBeatState
 {
 	var curSelected:Int = -1;
@@ -136,13 +134,7 @@ class CreditsState extends MusicBeatState
 				'https://twitter.com/EliteMasterEric',
 				'FFBD40'
 			],
-			[
-				'Tahir',
-				'tahir',
-				'Other PRs',
-				'https://twitter.com/tahirk618',
-				'A04397'
-			],
+			['Tahir', 'tahir', 'Other PRs', 'https://twitter.com/tahirk618', 'A04397'],
 			[
 				'iFlicky',
 				'flicky',
@@ -285,10 +277,15 @@ class CreditsState extends MusicBeatState
 					changeSelection(-shiftMult);
 					holdTime = 0;
 				}
-				if (downP)
+				else if (downP)
 				{
 					changeSelection(shiftMult);
 					holdTime = 0;
+				}
+				else if (FlxG.mouse.wheel != 0)
+				{
+					FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+					changeSelection(-shiftMult * FlxG.mouse.wheel, false);
 				}
 
 				if (controls.UI_DOWN || controls.UI_UP)
@@ -342,9 +339,10 @@ class CreditsState extends MusicBeatState
 
 	var moveTween:FlxTween = null;
 
-	function changeSelection(change:Int = 0)
+	function changeSelection(change:Int = 0, ?snd:Bool = true)
 	{
-		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+		if (snd)
+			FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 		do
 		{
 			curSelected += change;

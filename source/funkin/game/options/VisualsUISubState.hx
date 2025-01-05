@@ -180,9 +180,9 @@ class VisualsUISubState extends BaseOptionsMenu
 		add(notes);
 	}
 
-	override function changeSelection(change:Int = 0)
+	override function changeSelection(change:Int = 0, ?snd:Bool = true)
 		{
-			super.changeSelection(change);
+			super.changeSelection(change, snd);
 			
 			if(noteOptionID < 0) return;
 	

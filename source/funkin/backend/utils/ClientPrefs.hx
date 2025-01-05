@@ -91,7 +91,7 @@ import funkin.game.Init.Volume;
 	public var scoreBarType:String = 'Astro';
 	public var forceNoteSplashes:Bool = false;
 	public var showRatingStats:Bool = true;
-	public var darkMode:Bool = false;
+	public var darkmodeEnabled:Bool = false;
 
 	#if ASTRO_WATERMARKS
 	public var gayFurryStuff:Bool = false;
@@ -241,7 +241,7 @@ class ClientPrefs
 		{
 			loadPrefs();
 			saveSettings();
-			#if windows WindowUtil.darkMode(data.darkMode); #end
+			#if windows WindowUtil.darkmode = data.darkmodeEnabled; #end
 			trace("Initialization Successful");
 		}
 		catch (e)

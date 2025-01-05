@@ -110,7 +110,7 @@ class MainMenuState extends MusicBeatState
 
 		// Updates
 		persistentUpdate = persistentDraw = true;
-		FlxG.mouse.visible = true;
+		FlxG.mouse.visible = ClientPrefs.data.mouseEvents;
 
 		// Discord RPC
 		#if desktop
@@ -216,9 +216,7 @@ class MainMenuState extends MusicBeatState
 	}
 
 	var selectedSomethin:Bool = false;
-	var selectedSomethinMouse:Bool = true;
-	var overlap:Bool = false;
-	var curSpr:FlxSprite = null;
+	var timeNotMoving:Float = 0;
 
 	override function update(elapsed:Float)
 	{
@@ -229,22 +227,61 @@ class MainMenuState extends MusicBeatState
 			if (funkin.game.states.FreeplayState.vocals != null)
 				funkin.game.states.FreeplayState.vocals.volume += 0.5 * elapsed;
 		}
-
-		mouseFunc();
-
 		if (!selectedSomethin)
 		{
+			var allowMouse:Bool = ClientPrefs.data.mouseEvents;
+			if (allowMouse
+				&& ((FlxG.mouse.deltaScreenX != 0 && FlxG.mouse.deltaScreenY != 0)
+					|| FlxG.mouse.justPressed)) // FlxG.mouse.deltaScreenX/Y checks is more accurate than FlxG.mouse.justMoved
+			{
+				allowMouse = false;
+				FlxG.mouse.visible = true;
+				timeNotMoving = 0;
+
+				var selectedItem:FlxSprite = menuItems.members[curSelected];
+
+				var dist:Float = -1;
+				var distItem:Int = -1;
+				for (i in 0...menuButtons.length)
+				{
+					var memb:FlxSprite = menuItems.members[i];
+					if (FlxG.mouse.overlaps(memb))
+					{
+						var distance:Float = Math.sqrt(Math.pow(memb.getGraphicMidpoint().x - FlxG.mouse.screenX, 2)
+							+ Math.pow(memb.getGraphicMidpoint().y - FlxG.mouse.screenY, 2));
+						if (dist < 0 || distance < dist)
+						{
+							dist = distance;
+							distItem = i;
+							allowMouse = true;
+						}
+					}
+				}
+
+				if (distItem != -1 && selectedItem != menuItems.members[distItem])
+				{
+					curSelected = distItem;
+					changeItem();
+				}
+			}
+			else
+			{
+				timeNotMoving += elapsed;
+				if (timeNotMoving > 2)
+					FlxG.mouse.visible = false;
+			}
+
 			if (controls.UI_UP_P)
 			{
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 				changeItem(-1);
-				selectedSomethinMouse = false;
-			} else if (controls.UI_DOWN_P)
+			}
+			else if (controls.UI_DOWN_P)
 			{
 				FlxG.sound.play(Paths.sound('scrollMenu'));
 				changeItem(1);
-				selectedSomethinMouse = false;
-			} else if (FlxG.mouse.wheel != 0)
+			}
+			else if (FlxG.mouse.wheel != 0)
 			{
 				FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 				changeItem(-FlxG.mouse.wheel);
@@ -257,7 +294,7 @@ class MainMenuState extends MusicBeatState
 				MusicBeatState.switchState(new funkin.game.states.TitleState());
 			}
 
-			if (controls.ACCEPT)
+			if (controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.data.mouseEvents))
 				onStateChange();
 			#if desktop
 			else if (FlxG.keys.anyJustPressed(debugKeys))
@@ -271,43 +308,6 @@ class MainMenuState extends MusicBeatState
 		super.update(elapsed);
 
 		menuItems.forEach(function(spr:FlxSprite) spr.screenCenter(X));
-	}
-
-	function mouseFunc()
-	{
-		// overlap = false;
-		for (spr in menuItems.members)
-		{
-			final mousePoint = FlxG.mouse.getScreenPosition(FlxG.camera);
-
-			if (spr == null && curSpr == spr)
-				continue;
-
-			if (CoolUtil.mouseOverlapping(spr, mousePoint))
-			{
-				curSelected = spr.ID;
-				overlap = true;
-				curSpr = spr;
-
-				menuItems.remove(curSpr, true);
-				menuItems.add(curSpr);
-
-				changeItem();
-				break;
-			}
-			else
-			{
-				//	curSpr = null;
-				overlap = false;
-			}
-			mousePoint.put();
-		}
-
-		if (overlap && FlxG.mouse.justPressed)
-		{
-			onStateChange();
-			return;
-		}
 	}
 
 	function onStateChange():Void

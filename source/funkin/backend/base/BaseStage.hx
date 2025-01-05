@@ -74,7 +74,10 @@ class BaseStage extends FlxBasic
 	public function countdownTick(count:Countdown, num:Int)
 	{
 	}
-	public function startSong() {}
+
+	public function startSong()
+	{
+	}
 
 	// FNF steps, beats and sections
 	public var curBeat:Int = 0;
@@ -118,15 +121,31 @@ class BaseStage extends FlxBasic
 	}
 
 	// Note Hit/Miss
-	public function goodNoteHit(note:Note) {}
-	public function opponentNoteHit(note:Note) {}
-	public function noteMiss(note:Note) {}
-	public function noteMissPress(direction:Int) {}
+	public function goodNoteHit(note:Note)
+	{
+	}
+
+	public function opponentNoteHit(note:Note)
+	{
+	}
+
+	public function noteMiss(note:Note)
+	{
+	}
+
+	public function noteMissPress(direction:Int)
+	{
+	}
 
 	// Things to replace FlxGroup stuff and inject sprites directly into the state
-	function add(object:FlxBasic) return FlxG.state.add(object);
-	function remove(object:FlxBasic, splice:Bool = false) return FlxG.state.remove(object, splice);
-	function insert(position:Int, object:FlxBasic) return FlxG.state.insert(position, object);
+	function add(object:FlxBasic)
+		return FlxG.state.add(object);
+
+	function remove(object:FlxBasic, splice:Bool = false)
+		return FlxG.state.remove(object, splice);
+
+	function insert(position:Int, object:FlxBasic)
+		return FlxG.state.insert(position, object);
 
 	public function addBehindGF(obj:FlxBasic)
 		insert(members.indexOf(game.gfGroup), obj);
@@ -147,18 +166,21 @@ class BaseStage extends FlxBasic
 		}
 	}
 
-	public function getStageObject(name:String) //Objects can only be accessed *after* create(), use createPost() if you want to mess with them on init
+	public function getStageObject(name:String) // Objects can only be accessed *after* create(), use createPost() if you want to mess with them on init
 		return game.variables.get(name);
 
-	//start/end callback functions
+	// start/end callback functions
 	public function setStartCallback(myfn:Void->Void)
 	{
-		if(!onPlayState) return;
+		if (!onPlayState)
+			return;
 		PlayState.instance.startCallback = myfn;
 	}
+
 	public function setEndCallback(myfn:Void->Void)
 	{
-		if(!onPlayState) return;
+		if (!onPlayState)
+			return;
 		PlayState.instance.endCallback = myfn;
 	}
 
@@ -199,79 +221,72 @@ class BaseStage extends FlxBasic
 			moveCameraSection();
 
 	function moveCamera(isDad:Bool)
-		if (onPlayState) PlayState.instance.moveCamera(isDad);
+		if (onPlayState)
+			PlayState.instance.moveCamera(isDad);
 
-	inline private function get_paused()
+	@:noCompletion inline private function get_paused():Bool
 		return game.paused;
 
-	inline private function get_songName()
+	@:noCompletion inline private function get_songName():String
 		return playstate.SONG.song.toLowerCase();
 
-	inline private function get_isStoryMode()
+	@:noCompletion inline private function get_isStoryMode():Bool
 		return playstate.isStoryMode;
 
-	inline private function get_seenCutscene()
+	@:noCompletion inline private function get_seenCutscene():Bool
 		return playstate.seenCutscene;
 
-	inline private function get_inCutscene()
+	@:noCompletion inline private function get_inCutscene():Bool
 		return game.inCutscene;
 
-	inline private function set_inCutscene(value:Bool)
-	{
-		game.inCutscene = value;
-		return value;
-	}
+	@:noCompletion inline private function set_inCutscene(value:Bool):Bool
+		return game.inCutscene = value;
 
-	inline private function get_canPause()
+	@:noCompletion inline private function get_canPause():Bool
 		return game.canPause;
 
-	inline private function set_canPause(value:Bool)
-	{
-		game.canPause = value;
-		return value;
-	}
+	@:noCompletion inline private function set_canPause(value:Bool):Bool
+		return game.canPause = value;
 
-	inline private function get_members()
+	@:noCompletion inline private function get_members():Dynamic
 		return game.members;
 
-	inline private function get_game() return cast FlxG.state;
-	
-	inline private function get_boyfriend():Character
+	@:noCompletion inline private function get_game():Dynamic
+		return cast FlxG.state;
+
+	@:noCompletion inline private function get_boyfriend():Character
 		return game.boyfriend;
 
-	inline private function get_dad():Character
+	@:noCompletion inline private function get_dad():Character
 		return game.dad;
 
-	inline private function get_gf():Character
+	@:noCompletion inline private function get_gf():Character
 		return game.gf;
 
-	inline private function get_boyfriendGroup():FlxSpriteGroup
+	@:noCompletion inline private function get_boyfriendGroup():FlxSpriteGroup
 		return game.boyfriendGroup;
 
-	inline private function get_dadGroup():FlxSpriteGroup
+	@:noCompletion inline private function get_dadGroup():FlxSpriteGroup
 		return game.dadGroup;
 
-	inline private function get_gfGroup():FlxSpriteGroup
+	@:noCompletion inline private function get_gfGroup():FlxSpriteGroup
 		return game.gfGroup;
 
-	inline private function get_camGame():FlxCamera
+	@:noCompletion inline private function get_camGame():FlxCamera
 		return game.camGame;
 
-	inline private function get_camHUD():FlxCamera
+	@:noCompletion inline private function get_camHUD():FlxCamera
 		return game.camHUD;
 
-	inline private function get_camOther():FlxCamera
+	@:noCompletion inline private function get_camOther():FlxCamera
 		return game.camOther;
 
-	inline private function get_defaultCamZoom():Float
+	@:noCompletion inline private function get_defaultCamZoom():Float
 		return game.defaultCamZoom;
 
-	inline private function set_defaultCamZoom(value:Float):Float
-	{
-		game.defaultCamZoom = value;
-		return game.defaultCamZoom;
-	}
+	@:noCompletion inline private function set_defaultCamZoom(value:Float):Float
+		return game.defaultCamZoom = value;
 
-	inline private function get_camFollow():FlxObject
+	@:noCompletion inline private function get_camFollow():FlxObject
 		return game.camFollow;
 }

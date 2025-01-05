@@ -15,14 +15,16 @@ import lime.app.Application;
 class WindowUtil
 {
 	#if windows
+	@:isVar
+	public static var darkmode(default,set):Bool;
+
 	@:functionCode('
     int darkMode = enable ? 1 : 0;
     HWND window = GetActiveWindow();
     if (S_OK != DwmSetWindowAttribute(window, 19, &darkMode, sizeof(darkMode)))
         DwmSetWindowAttribute(window, 20, &darkMode, sizeof(darkMode));
     ')
-	public static function darkMode(enable:Bool)
-	{
+	@:noCompletion private static function set_darkmode(enable:Bool){
 		trace('Darkmode ${enable ? 'Enabled' : 'Disabled'}');
 
 		// Windows 11 support????????
@@ -33,6 +35,8 @@ class WindowUtil
 		}
 
 		trace(OsAPI.osInfo + ' ' + OsAPI.osVersion);
+		trace(enable);
+		return darkmode = enable;
 	}
 	#end
 

@@ -60,8 +60,8 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		antialiasingOption = optionsArray.length - 1;
 
 		#if windows
-		var option:Option = new Option('Dark Mode', 'Enabled Dark Mode Support.', 'darkMode', BOOL);
-		option.onChange = () -> WindowUtil.darkMode(ClientPrefs.data.darkMode);
+		var option:Option = new Option('Dark Mode', 'Enabled Dark Mode Support.', 'darkmodeEnabled', BOOL);
+		option.onChange = () -> WindowUtil.darkmode = ClientPrefs.data.darkmodeEnabled;
 		addOption(option);
 		#end
 
@@ -121,9 +121,9 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		}
 	}
 
-	override function changeSelection(change:Int = 0)
+	override function changeSelection(change:Int = 0, ?snd:Bool = true)
 	{
-		super.changeSelection(change);
+		super.changeSelection(change, snd);
 		boyfriend.visible = (antialiasingOption == curSelected);
 	}
 }

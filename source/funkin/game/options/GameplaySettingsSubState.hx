@@ -39,7 +39,6 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 
 		var option:Option = new Option('Mouse Controls', 'If checked, mouse support will be enabled, simple right?', 'mouseEvents', BOOL);
 		addOption(option);
-		option.onChange = onChangeEnableDisableMouse;
 
 		// I'd suggest using "Downscroll" as an example for making your own option since it is the simplest here
 		var option:Option = new Option('Downscroll', // Name
@@ -83,14 +82,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		var option:Option = new Option('Discord Rich Presence',
 			"Uncheck this to prevent accidental leaks, it will hide the Application from your \"Playing\" box on Discord", 'discordRPC', BOOL);
 		addOption(option);
-		option.onChange = () ->
-		{
-			var fr = ClientPrefs.data.discordRPC;
-			if (fr)
-				DiscordClient.initialize();
-			else
-				DiscordClient.shutdown();
-		}
+		option.onChange = () -> ClientPrefs.data.discordRPC ? DiscordClient.initialize() : DiscordClient.shutdown();
 		#end
 
 		var option:Option = new Option('Hitsound Volume', 'Funny notes does \"Tick!\" when you hit them."', 'hitsoundVolume', PERCENT);
@@ -100,7 +92,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.maxValue = 1;
 		option.changeValue = 0.1;
 		option.decimals = 1;
-		option.onChange = onChangeHitsoundVolume;
+		option.onChange = () -> FlxG.sound.play(Paths.sound('hitsound'), funkin.backend.utils.ClientPrefs.data.hitsoundVolume);
 
 		var option:Option = new Option('Rating Offset', 'Changes how late/early you have to hit for a "Sick!"\nHigher values mean you have to hit later.',
 			'ratingOffset', INT);
@@ -145,10 +137,4 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 
 		super();
 	}
-
-	function onChangeHitsoundVolume()
-		FlxG.sound.play(Paths.sound('hitsound'), funkin.backend.utils.ClientPrefs.data.hitsoundVolume);
-
-	function onChangeEnableDisableMouse()
-		FlxG.mouse.visible = funkin.backend.utils.ClientPrefs.data.mouseEvents;
 }

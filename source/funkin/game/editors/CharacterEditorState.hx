@@ -113,7 +113,7 @@ class CharacterEditorState extends MusicBeatState implements FlxUIEventHandler.F
 		healthBar.scrollFactor.set();
 		healthBar.cameras = [camHUD];
 
-		healthIcon = new HealthIcon(character.healthIcon, false);
+		healthIcon = new HealthIcon(character.healthIcon, false, false);
 		healthIcon.y = FlxG.height - 150;
 		healthIcon.cameras = [camHUD];
 
