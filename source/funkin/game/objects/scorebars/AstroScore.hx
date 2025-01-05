@@ -17,7 +17,7 @@ class AstroScore extends BaseScorebar
 	private var shitsTxt:FlxText;
 	private var missTxt:FlxText;
 
-	override function create()
+	override function create():Void
 	{
 		scoreText = new FlxText(0, defaultPos.y + 36, FlxG.width, "erm, owo???", 20);
 		scoreText.scrollFactor.set();
@@ -104,16 +104,16 @@ class AstroScore extends BaseScorebar
 		game.baseUI.timeTxt.setFormat(Paths.font("PhantomMuff.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 	}
 
-	override function update(f)
+	override function update(elapsed:Float):Void
 	{
-		super.update(f);
+		super.update(elapsed);
 
 		songLeft.text = FlxStringUtil.formatTime(Math.max(0, Math.floor((Conductor.songPosition - ClientPrefs.data.noteOffset) / 1000)), false)
 			+ " • "
 			+ FlxStringUtil.formatTime(Math.max(0, Math.floor(FlxG.sound.music.length / 1000)), false);
 	}
 
-	override function updateScore()
+	override function updateScore():Void
 	{
 		scoreText.text = 'Score: '
 			+ game.songScore
@@ -124,13 +124,20 @@ class AstroScore extends BaseScorebar
 			+ (game.ratingName != '?' ? ' (${Highscore.floorDecimal(game.ratingPercent * 100, 2)}%) - ${game.ratingFC}' : '');
 
 		if (ClientPrefs.data.showRatingStats)
-		{
-			sickTxt.text = 'Sick: ${game.sicks}';
-			goodsTxt.text = 'Good: ${game.goods}';
-			badTxt.text = 'Bad: ${game.bads}';
-			shitsTxt.text = 'Shit: ${game.shits}';
-			missTxt.text = 'Miss: ${game.songMisses}';
-		};
+			updateStats();
+	}
+
+	@:dox(show) private dynamic function updateStats(){
+		final sicks:Int = game.ratingsData[0].hits;
+		final goods:Int =  game.ratingsData[1].hits;
+		final bads:Int =  game.ratingsData[2].hits;
+		final shits:Int =  game.ratingsData[3].hits;
+
+		sickTxt.text = 'Sick: ${sicks}';
+		goodsTxt.text = 'Good: ${goods}';
+		badTxt.text = 'Bad: ${bads}';
+		shitsTxt.text = 'Shit: ${shits}';
+		missTxt.text = 'Miss: ${game.songMisses}';
 	}
 
 	@:dox(show) private function addCurveBG(x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0, ellipseWidthAndHeight:Int = 0, startAlpha:Int = 0,
