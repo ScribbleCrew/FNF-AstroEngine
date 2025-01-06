@@ -42,11 +42,14 @@ class CreditsState extends MusicBeatState
 
 	override function create()
 	{
-		#if (desktop && DISCORD_ALLOWED)
+		#if desktop
 		// Updating Discord Rich Presence
+		#if DISCORD_ALLOWED
 		DiscordClient.changePresence("Credits Menu", null);
 		#end
 		WindowUtil.setTitle('Credits Menu');
+		FlxG.mouse.visible = false;
+		#end
 
 		persistentUpdate = true;
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
