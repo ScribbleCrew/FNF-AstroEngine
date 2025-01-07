@@ -57,7 +57,7 @@ class CharacterEditorState extends MusicBeatState implements FlxUIEventHandler.F
 	{
 		this._char = char;
 		this._goToPlayState = goToPlayState;
-		if(this._char == null) this._char = Character.DEFAULT_CHARACTER;
+		if(this._char == null) this._char = Constants.DEFAULT_CHARACTER;
 
 		super();
 	}

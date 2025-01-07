@@ -1,5 +1,6 @@
 package funkin.game.objects;
 
+import haxe.macro.Expr.Constant;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.text.FlxTypeText;
@@ -57,7 +58,6 @@ typedef DialogueLine = {
 class DialogueCharacter extends FlxSprite
 {
 	private static var IDLE_SUFFIX:String = '-IDLE';
-	public static var DEFAULT_CHARACTER:String = 'bf';
 	public static var DEFAULT_SCALE:Float = 0.7;
 
 	public var jsonFile:DialogueCharacterFile = null;
@@ -76,7 +76,7 @@ class DialogueCharacter extends FlxSprite
 	{
 		super(x, y);
 
-		if(character == null) character = DEFAULT_CHARACTER;
+		if(character == null) character = Constants.DEFAULT_CHARACTER;
 		this.curCharacter = character;
 
 		reloadCharacterJson(character);
@@ -98,7 +98,7 @@ class DialogueCharacter extends FlxSprite
 		}
 
 		if(!FileSystem.exists(path)) {
-			path = Paths.getSharedPath('images/dialogue/' + DEFAULT_CHARACTER + '.json');
+			path = Paths.getSharedPath('images/dialogue/' + Constants.DEFAULT_CHARACTER + '.json');
 		}
 		rawJson = File.getContent(path);
 

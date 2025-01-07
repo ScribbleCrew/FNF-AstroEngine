@@ -95,7 +95,7 @@ class OptionsState extends MusicBeatState
 			var optionText:funkin.game.objects.Alphabet = new funkin.game.objects.Alphabet(0, OFFSETFUCKME, options[i], true);
 			optionText.screenCenter();
 			optionText.astroMenuItem = true;
-			//optionText.alignment = CENTERED;
+			// optionText.alignment = CENTERED;
 			// optionText.changeY = false;
 			optionText.changeX = false;
 			optionText.y += (100 * (i - (options.length / 2))) + 50;
@@ -132,52 +132,56 @@ class OptionsState extends MusicBeatState
 		super.update(elapsed);
 
 		if (controls.UI_UP_P)
-			{
-				changeSelection(-1);
-			}
-			else if (controls.UI_DOWN_P)
-			{
-				changeSelection(1);
-			}
-			else if (FlxG.mouse.wheel != 0)
-			{
-				FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
-				changeSelection(-FlxG.mouse.wheel, false);
-			}
-	
+		{
+			changeSelection(-1);
+		}
+		else if (controls.UI_DOWN_P)
+		{
+			changeSelection(1);
+		}
+		else if (FlxG.mouse.wheel != 0)
+		{
+			FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+			changeSelection(-FlxG.mouse.wheel, false);
+		}
 
-		if (controls.ACCEPT)
+		if (controls.ACCEPT || FlxG.mouse.justPressedMiddle)
 		{
 			openSelectedSubstate(options[curSelected]);
+		}
+		else if (controls.BACK)
+		{
+			FlxG.sound.play(Paths.sound('cancelMenu'), 0.4);
+			MusicBeatState.switchState(new funkin.game.states.MainMenuState());
 		}
 	}
 
 	function changeSelection(change:Int = 0, ?snd:Bool = true)
+	{
+		curSelected += change;
+		if (curSelected < 0)
+			curSelected = options.length - 1;
+		if (curSelected >= options.length)
+			curSelected = 0;
+
+		var bullShit:Int = 0;
+
+		for (item in grpOptions.members)
 		{
-			curSelected += change;
-			if (curSelected < 0)
-				curSelected = options.length - 1;
-			if (curSelected >= options.length)
-				curSelected = 0;
-	
-			var bullShit:Int = 0;
-	
-			for (item in grpOptions.members)
+			item.targetY = bullShit - curSelected;
+			bullShit++;
+
+			item.alpha = 0.6;
+			if (item.targetY == 0)
 			{
-				item.targetY = bullShit - curSelected;
-				bullShit++;
-	
-				item.alpha = 0.6;
-				if (item.targetY == 0)
-				{
-					item.alpha = 1;
-					selectorLeft.x = item.x - 63;
-					selectorLeft.y = item.y;
-					selectorRight.x = item.x + item.width + 15;
-					selectorRight.y = item.y;
-				}
+				item.alpha = 1;
+				selectorLeft.x = item.x - 63;
+				selectorLeft.y = item.y;
+				selectorRight.x = item.x + item.width + 15;
+				selectorRight.y = item.y;
 			}
-			if (snd)
-				FlxG.sound.play(Paths.sound('scrollMenu'));
 		}
+		if (snd)
+			FlxG.sound.play(Paths.sound('scrollMenu'));
+	}
 }

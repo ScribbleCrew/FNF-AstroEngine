@@ -24,7 +24,6 @@ class MenuCharacter extends FlxSprite
 {
 	public var character:String;
 	public var hasConfirmAnimation:Bool = false;
-	private static var DEFAULT_CHARACTER:String = 'bf';
 
 	public function new(x:Float, character:String = 'bf')
 	{
@@ -62,7 +61,7 @@ class MenuCharacter extends FlxSprite
 				if (!Assets.exists(path))
 				#end
 				{
-					path = Paths.getSharedPath('characters/' + DEFAULT_CHARACTER + '.json'); //If a character couldn't be found, change him to BF just to prevent a crash
+					path = Paths.getSharedPath('characters/' + Constants.DEFAULT_CHARACTER + '.json'); //If a character couldn't be found, change him to BF just to prevent a crash
 					color = FlxColor.BLACK;
 					alpha = 0.6;
 				}

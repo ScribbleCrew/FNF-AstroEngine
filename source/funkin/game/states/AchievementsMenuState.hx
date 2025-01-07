@@ -100,11 +100,11 @@ class AchievementsMenuState extends MusicBeatState
 		add(box);
 		
 		nameText = new FlxText(50, box.y + 10, FlxG.width - 100, "", 32);
-		nameText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER);
+		nameText.setFormat(Constants.DEFAULT_FONT, 32, FlxColor.WHITE, CENTER);
 		nameText.scrollFactor.set();
 
 		descText = new FlxText(50, nameText.y + 38, FlxG.width - 100, "", 24);
-		descText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER);
+		descText.setFormat(Constants.DEFAULT_FONT, 24, FlxColor.WHITE, CENTER);
 		descText.scrollFactor.set();
 
 		progressBar = new Bar(0, descText.y + 52);
@@ -113,7 +113,7 @@ class AchievementsMenuState extends MusicBeatState
 		progressBar.enabled = false;
 		
 		progressTxt = new FlxText(50, progressBar.y - 6, FlxG.width - 100, "", 32);
-		progressTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		progressTxt.setFormat(Constants.DEFAULT_FONT, 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		progressTxt.scrollFactor.set();
 		progressTxt.borderSize = 2;
 
@@ -275,7 +275,7 @@ class ResetAchievementSubstate extends MusicBeatSubstate
 		
 		var state:AchievementsMenuState = cast FlxG.state;
 		var text:FlxText = new FlxText(50, text.y + 90, FlxG.width - 100, state.options[state.curSelected].displayName, 40);
-		text.setFormat(Paths.font("vcr.ttf"), 40, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		text.setFormat(Constants.DEFAULT_FONT, 40, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		text.scrollFactor.set();
 		text.borderSize = 2;
 		add(text);

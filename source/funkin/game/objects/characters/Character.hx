@@ -39,17 +39,12 @@ typedef AnimArray = {
 
 class Character extends FlxSprite
 {
-	/**
-	 * In case a character is missing, it will use this on its place
-	**/
-	public static final DEFAULT_CHARACTER:String = 'bf';
-
 	public var animOffsets:Map<String, Array<Dynamic>>;
 	public var debugMode:Bool = false;
 	public var extraData:Map<String, Dynamic> = new Map<String, Dynamic>();
 
 	public var isPlayer:Bool = false;
-	public var curCharacter:String = DEFAULT_CHARACTER;
+	public var curCharacter:String = Constants.DEFAULT_CHARACTER;
 
 	public var holdTimer:Float = 0;
 	public var heyTimer:Float = 0;
@@ -118,7 +113,7 @@ class Character extends FlxSprite
 		if (!Assets.exists(path))
 		#end
 		{
-			path = Paths.getSharedPath('characters/' + DEFAULT_CHARACTER + '.json'); //If a character couldn't be found, change him to BF just to prevent a crash
+			path = Paths.getSharedPath('characters/' + Constants.DEFAULT_CHARACTER + '.json'); //If a character couldn't be found, change him to BF just to prevent a crash
 			missingCharacter = true;
 			missingText = new FlxText(0, 0, 300, 'ERROR:\n$character.json', 16);
 			missingText.alignment = CENTER;

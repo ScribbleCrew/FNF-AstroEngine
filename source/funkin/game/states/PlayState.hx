@@ -1,48 +1,28 @@
 package funkin.game.states;
 
-import haxe.extern.EitherType;
 import flixel.util.*;
-import funkin.backend.base.BaseStage.Countdown;
-import funkin.game.objects.scorebars.*;
-import flixel.util.FlxSpriteUtil;
-import funkin.backend.data.WeekData;
-import funkin.backend.CoolUtil;
-import funkin.game.objects.notes.Note.EventNote;
-import funkin.game.objects.stages.*;
-import funkin.backend.utils.ClientPrefs;
-import funkin.game.objects.characters.Character;
-import funkin.game.objects.*;
-import flixel.AttachedFlxSprite;
-import flixel.graphics.FlxGraphic;
-import funkin.backend.Highscore;
-import funkin.game.states.*;
-import funkin.game.states.StoryMenuState;
-import funkin.backend.Song;
-import funkin.backend.utils.Paths;
-import funkin.game.states.substates.GameOverSubstate;
-import funkin.backend.handlers.CutsceneHandler;
-import funkin.backend.Song.SwagSong;
-import funkin.game.states.substates.PauseSubState;
-import funkin.backend.Conductor;
-import funkin.game.objects.notes.NoteSplash;
-import flixel.addons.display.FlxGridOverlay;
-import flixel.addons.transition.FlxTransitionableState;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import haxe.Json;
-import funkin.backend.system.MusicBeatSubstate;
-import lime.utils.Assets;
-import openfl.Lib;
-import openfl.utils.Assets as OpenFlAssets;
-import funkin.game.editors.ChartingState;
-import funkin.game.editors.CharacterEditorState;
 import flixel.group.FlxSpriteGroup;
 import flixel.input.keyboard.FlxKey;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.addons.display.FlxGridOverlay;
+import flixel.addons.transition.FlxTransitionableState;
+import flixel.util.FlxSpriteUtil;
+import flixel.AttachedFlxSprite;
+import flixel.graphics.FlxGraphic;
+
+import haxe.Json;
+import haxe.extern.EitherType;
+
+import lime.utils.Assets;
+
+import openfl.Lib;
+import openfl.utils.Assets as OpenFlAssets;
 import openfl.events.KeyboardEvent;
-import funkin.backend.data.StageData;
-import funkin.backend.Rating;
+
 #if !flash
 import flixel.addons.display.FlxRuntimeShader;
 #end
+
 #if HSCRIPT_ALLOWED
 import crowplexus.iris.Iris;
 #end
@@ -65,10 +45,7 @@ import crowplexus.iris.Iris;
 **/
 class PlayState extends MusicBeatState
 {
-	public static var STRUM_X = 42;
-	public static var STRUM_X_MIDDLESCROLL = -278;
-
-	public static var ratingStuff:Array<Dynamic> = [
+	public static var ratingStuff(default, null):Array<Dynamic> = [
 		['You Suck!', 0.2], // From 0% to 19%
 		['Shit', 0.4], // From 20% to 39%
 		['Bad', 0.5], // From 40% to 49%
@@ -82,48 +59,76 @@ class PlayState extends MusicBeatState
 		['Cheater', 1.2]
 	];
 
-	// event variables
-	private var isCameraOnForcedPos:Bool = false;
+	/**
+	 * Strum x pos for normal users.
+	 */
+	public static var STRUM_X:Int = 42;
 
-	var keysPressed:Array<Int> = [];
-	var boyfriendIdleTime:Float = 0.0;
-	var boyfriendIdled:Bool = false;
+	/**
+	 * Strum x pos for middlescroll users.
+	 */
+	public static var STRUM_X_MIDDLESCROLL:Int = -278;
 
+	/**
+	 * Stop the camera from moving.
+	 */
+	public var isCameraOnForcedPos:Bool = false;
+
+	/**
+	 * An array of all the pressed keys.
+	 */
+	public var keysPressed:Array<Int> = [];
+
+	/**
+	 * Boyfriend's idle time.
+	 */
+	 public var boyfriendIdleTime:Float = 0.0;
+
+	/**
+	 * Is boyfriend idle.
+	 */
+	private var boyfriendIdled:Bool = false;
+
+	/**
+	 * Boyfriend's map.
+	 */
 	public var boyfriendMap:Map<String, Character> = new Map<String, Character>();
+
+	/**
+	 * Dad's map.
+	 */
 	public var dadMap:Map<String, Character> = new Map<String, Character>();
+
+	/**
+	 * Girlfriend's map.
+	 */
 	public var gfMap:Map<String, Character> = new Map<String, Character>();
 
-	#if HSCRIPT_ALLOWED
-	public var hscriptArray:Array<HScript> = [];
-	public var instancesExclude:Array<String> = [];
-	#end
-
-	public var defaultCharacterPositions:Map<String, FlxPoint> = [
+	/**
+	 * Default character positions.
+	 */
+	private var defaultCharacterPositions:Map<String, FlxPoint> = [
 		"BF" => new FlxPoint(770, 100),
 		"DAD" => new FlxPoint(100, 100),
 		"GF" => new FlxPoint(400, 130)
 	];
 
+	#if HSCRIPT_ALLOWED
+	/**
+	 * An `array` full of all init'd hscript files.
+	 */
+	public var hscriptArray:Array<HScript> = [];
+
+	/**
+	 * Make sure the script isn't ran again.
+	 */
+	private var instancesExclude:Array<String> = [];
+	#end
+
 	/**
 	 * The song speed tween.
 	 */
 	public var songSpeedTween:FlxTween;
-
-	/**
-	 * Set the song's speed.
-	 */
-	public var songSpeed(default, set):Float = 1;
-	@:noCompletion private function set_songSpeed(value:Float):Float
-	{
-		if (generatedMusic)
-		{
-			final ratio:Float = value / songSpeed; // funny word huh
-			for (note in notes.members.concat(unspawnNotes))
-				note.resizeByRatio(ratio);
-		}
-		noteKillOffset = 350 / songSpeed;
-		return songSpeed = value;
-	}
 
 	/**
 	 * The song speed type.
@@ -154,6 +159,22 @@ class PlayState extends MusicBeatState
 	 * The stages ui.
 	 */
 	public static var stageUI:String = "normal";
+	
+	/**
+	 * Set the song's speed.
+	 */
+	 public var songSpeed(default, set):Float = 1;
+	 @:dox(hide) @:noCompletion private inline function set_songSpeed(value:Float):Float
+	 {
+		 if (generatedMusic)
+		 {
+			 final ratio:Float = value / songSpeed; // funny word huh
+			 for (note in notes.members.concat(unspawnNotes))
+				 note.resizeByRatio(ratio);
+		 }
+		 noteKillOffset = 350 / songSpeed;
+		 return songSpeed = value;
+	 }
 
 	/**
 	 * If the current stage is the pixel stage.
@@ -434,12 +455,10 @@ class PlayState extends MusicBeatState
 
 		// Lua
 		instance = this;
-
+		PauseSubState.songName = null; // Reset to default
 		debugKeysChart = ClientPrefs.copyKey(ClientPrefs.keyBinds.get('debug_1'));
 		debugKeysCharacter = ClientPrefs.copyKey(ClientPrefs.keyBinds.get('debug_2'));
-		PauseSubState.songName = null; // Reset to default
 		playbackRate = ClientPrefs.getGameplaySetting('songspeed', 1);
-
 		keysArray = ['note_left', 'note_down', 'note_up', 'note_right'];
 
 		// Ratings
@@ -586,8 +605,7 @@ class PlayState extends MusicBeatState
 			#end
 		}
 
-		add(gfGroup); // Needed for blammed lights
-
+		add(gfGroup);
 		add(dadGroup);
 		add(boyfriendGroup);
 
@@ -595,17 +613,6 @@ class PlayState extends MusicBeatState
 		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
 		luaDebugGroup.cameras = [camOther];
 		add(luaDebugGroup);
-		// "GLOBAL" SCRIPTS
-		var foldersToCheck:Array<String> = [Paths.getSharedPath('scripts/')];
-
-		#if MODS_ALLOWED
-		foldersToCheck.insert(0, Paths.mods('scripts/'));
-		if (Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0)
-			foldersToCheck.insert(0, Paths.mods(Mods.currentModDirectory + '/scripts/'));
-
-		for (mod in Paths.getGlobalMods())
-			foldersToCheck.insert(0, Paths.mods(mod + '/scripts/'));
-		#end
 		#end
 
 		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
@@ -921,14 +928,11 @@ class PlayState extends MusicBeatState
 	public function addTextToDebug(text:String, color:FlxColor)
 	{
 		#if LUA_ALLOWED
-		luaDebugGroup.forEachAlive(function(spr:DebugLuaText)
-		{
-			spr.y += 20;
-		});
+		luaDebugGroup.forEachAlive(function(spr:DebugLuaText) spr.y += 20);
 
 		if (luaDebugGroup.members.length > 34)
 		{
-			var blah = luaDebugGroup.members[34];
+			final blah = luaDebugGroup.members[34];
 			blah.destroy();
 			luaDebugGroup.remove(blah);
 		}
@@ -3610,8 +3614,7 @@ class PlayState extends MusicBeatState
 		FlxG.sound.music.fadeTween = null;
 	}
 
-	var lastStepHit:Int = -1;
-
+	@:noCompletion private var _lastStepHit:Int = -1;
 	@:dox(hide) override function stepHit()
 	{
 		super.stepHit();
@@ -3621,23 +3624,20 @@ class PlayState extends MusicBeatState
 			resyncVocals();
 		}
 
-		if (curStep == lastStepHit)
-		{
+		if (curStep == _lastStepHit)
 			return;
-		}
 
-		lastStepHit = curStep;
+		_lastStepHit = curStep;
 		setOnScripts('curStep', curStep);
 		callOnScripts('onStepHit', []);
 	}
 
-	var lastBeatHit:Int = -1;
-
+	@:noCompletion private var _lastBeatHit:Int = -1;
 	@:dox(hide) override function beatHit()
 	{
 		super.beatHit();
 
-		if (lastBeatHit >= curBeat)
+		if (_lastBeatHit >= curBeat)
 			return;
 
 		if (generatedMusic)
@@ -3649,7 +3649,7 @@ class PlayState extends MusicBeatState
 
 		characterBopper(curBeat);
 
-		lastBeatHit = curBeat;
+		_lastBeatHit = curBeat;
 
 		setOnScripts('curBeat', curBeat); // DAWGG?????
 		callOnScripts('onBeatHit', []);
@@ -3678,9 +3678,7 @@ class PlayState extends MusicBeatState
 		if (SONG.notes[curSection] != null)
 		{
 			if (generatedMusic && !endingSong && !isCameraOnForcedPos)
-			{
 				moveCameraSection();
-			}
 
 			if (camZooming && FlxG.camera.zoom < 1.35 && ClientPrefs.data.camZooms)
 			{

@@ -56,7 +56,7 @@ class DialogueEditorState extends MusicBeatState implements FlxUIEventHandler.Fl
 		add(uhh);
 
 		defaultLine = {
-			portrait: DialogueCharacter.DEFAULT_CHARACTER,
+			portrait: Constants.DEFAULT_CHARACTER,
 			expression: 'talk',
 			text: DEFAULT_TEXT,
 			boxState: DEFAULT_BUBBLETYPE,
@@ -91,17 +91,17 @@ class DialogueEditorState extends MusicBeatState implements FlxUIEventHandler.Fl
 		FlxG.mouse.visible = true;
 
 		var addLineText:FlxText = new FlxText(10, 10, FlxG.width - 20, 'Press O to remove the current dialogue line, Press P to add another line after the current one.', 8);
-		addLineText.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		addLineText.setFormat(Constants.DEFAULT_FONT, 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		addLineText.scrollFactor.set();
 		add(addLineText);
 
 		selectedText = new FlxText(10, 32, FlxG.width - 20, '', 8);
-		selectedText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		selectedText.setFormat(Constants.DEFAULT_FONT, 24, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		selectedText.scrollFactor.set();
 		add(selectedText);
 
 		animText = new FlxText(10, 62, FlxG.width - 20, '', 8);
-		animText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		animText.setFormat(Constants.DEFAULT_FONT, 24, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		animText.scrollFactor.set();
 		add(animText);
 		
@@ -129,7 +129,7 @@ class DialogueEditorState extends MusicBeatState implements FlxUIEventHandler.Fl
 	function addDialogueLineUI() {
 		var tab_group = UI_box.getTab('Dialogue Line').menu;
 
-		characterInputText = new FlxUIInputText(10, 20, 80, DialogueCharacter.DEFAULT_CHARACTER, 8);
+		characterInputText = new FlxUIInputText(10, 20, 80, Constants.DEFAULT_CHARACTER, 8);
 		speedStepper = new FlxUINumericStepper(10, characterInputText.y + 40, 0.005, 0.05, 0, 0.5, 3);
 
 		angryCheckbox = new FlxUICheckBox(speedStepper.x + 120, speedStepper.y, "Angry Textbox", 200);

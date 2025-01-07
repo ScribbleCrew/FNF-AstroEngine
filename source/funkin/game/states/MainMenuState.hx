@@ -68,13 +68,13 @@ class MainMenuState extends MusicBeatState
 		#if ACHIEVEMENTS_ALLOWED {
 			name: 'awards',
 			state: new AchievementsMenuState()
-		} #end,
+		}, #end
 		{
 			name: 'credits',
 			state: new CreditsState()
 		},
 		#if (!switch && switch)
-		{ // idon'trllywantdisherelol
+		{ // idon'trllywantdisherelol i'm not even trying to being selfish
 			name: 'donate',
 			link: 'https://ninja-muffin24.itch.io/funkin'
 		},
@@ -185,9 +185,7 @@ class MainMenuState extends MusicBeatState
 		// Version Loop
 		for (i in 0...engineVersions.length)
 		{
-			final ii:Int = i + 1;
-
-			final engineVersion:FlxText = new FlxText(12, FlxG.height - 22 * ii, 0, engineVersions[i].name + engineVersions[i].version);
+			final engineVersion:FlxText = new FlxText(12, FlxG.height - 22 * (i+1), 0, engineVersions[i].name + engineVersions[i].version);
 			engineVersion.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			engineVersion.x += engineVersions[i].offset.x;
 			engineVersion.y += engineVersions[i].offset.y;
@@ -217,7 +215,6 @@ class MainMenuState extends MusicBeatState
 
 	var selectedSomethin:Bool = false;
 	var timeNotMoving:Float = 0;
-
 	override function update(elapsed:Float)
 	{
 		if (FlxG.sound.music.volume < 0.8)
@@ -294,7 +291,7 @@ class MainMenuState extends MusicBeatState
 				MusicBeatState.switchState(new funkin.game.states.TitleState());
 			}
 
-			if (controls.ACCEPT || (FlxG.mouse.justPressed && ClientPrefs.data.mouseEvents))
+			if (controls.ACCEPT || FlxG.mouse.justPressed || (FlxG.mouse.justPressedMiddle))
 				onStateChange();
 			#if desktop
 			else if (FlxG.keys.anyJustPressed(debugKeys))
@@ -367,6 +364,7 @@ class MainMenuState extends MusicBeatState
 
 				if (spr.animation.curAnim.name != 'selected')
 					spr.animation.play('selected');
+
 				camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y - add);
 				spr.centerOffsets();
 			}

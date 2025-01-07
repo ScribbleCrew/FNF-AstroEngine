@@ -15,7 +15,7 @@ class VSliceScore extends BaseScorebar
 		scoreText.borderSize = 1.25;
 		scoreText.visible = !ClientPrefs.data.hideFullHUD;
 		scoreText.alpha = 0;
-		scoreText.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		scoreText.setFormat(Constants.DEFAULT_FONT, 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(scoreText);
 
 		super.create();

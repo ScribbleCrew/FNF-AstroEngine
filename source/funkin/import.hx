@@ -7,7 +7,6 @@ import funkin.game.states.*;
 import funkin.game.editors.*;
 import funkin.game.transitions.*;
 import funkin.game.objects.notes.*;
-import funkin.game.objects.notes.Note.EventNote;
 import funkin.game.objects.stages.objects.*;
 import funkin.game.transitions.*;
 import funkin.game.objects.characters.*;
@@ -15,8 +14,10 @@ import funkin.game.options.objects.*;
 import funkin.game.editors.content.*;
 import funkin.game.states.substates.*;
 import funkin.game.objects.shaders.*;
-import funkin.game.objects.shaders.RGBPalette;
-import funkin.backend.Prompt;
+import funkin.game.objects.scorebars.*;
+import funkin.game.objects.stages.*;
+import funkin.game.objects.notes.Note.EventNote;
+import funkin.game.objects.shaders.RGBPalette.RGBShaderReference;
 
 // backend
 import funkin.backend.macro.*;
@@ -24,6 +25,7 @@ import funkin.backend.system.*;
 import funkin.backend.utils.*;
 import funkin.backend.data.*;
 import funkin.backend.*;
+import funkin.backend.Prompt;
 import funkin.backend.Achievements.Achievement;
 import funkin.backend.base.*;
 import funkin.backend.utils.native.*;
@@ -35,6 +37,9 @@ import funkin.backend.Structures;
 import funkin.backend.objects.editers.*;
 import funkin.backend.objects.editers.VSlice;
 import funkin.backend.animation.*;
+import funkin.backend.Song.SwagSong;
+import funkin.backend.Song.SwagSection;
+import funkin.backend.data.StageData.StageFile;
 
 //Discord API
 #if DISCORD_ALLOWED

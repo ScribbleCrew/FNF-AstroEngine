@@ -195,7 +195,7 @@ class StoryMenuState extends MusicBeatState
 
 		txtTracklist = new FlxText(FlxG.width * 0.05, tracksSprite.y + 60, 0, "", 32);
 		txtTracklist.alignment = CENTER;
-		txtTracklist.font = Paths.font("vcr.ttf");
+		txtTracklist.font = Constants.DEFAULT_FONT;
 		txtTracklist.color = 0xFFe55777;
 		add(txtTracklist);
 		add(scoreText);
@@ -294,7 +294,7 @@ class StoryMenuState extends MusicBeatState
 				openSubState(new ResetScoreSubState('', curDifficulty, '', curWeek));
 				// FlxG.sound.play(Paths.sound('scrollMenu'));
 			}
-			else if (controls.ACCEPT)
+			else if (controls.ACCEPT|| FlxG.mouse.justPressedMiddle)
 				selectWeek();
 		}
 

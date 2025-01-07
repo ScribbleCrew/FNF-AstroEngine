@@ -154,7 +154,7 @@ class ControlsSubState extends BaseMenu
 				FlxG.sound.play(Paths.sound('cancelMenu'));
 			}
 
-			if (controls.ACCEPT && nextAccept <= 0)
+			if ((controls.ACCEPT || FlxG.mouse.justPressedMiddle) && nextAccept <= 0)
 			{
 				if (optionShit[curSelected][0] == defaultKey)
 				{

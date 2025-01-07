@@ -28,7 +28,7 @@ class DefaultHUD extends FlxBasic
 		createSongTimer();
 
 		botplayTxt = new FlxText(400, healthBar.y - 90, FlxG.width - 800, 'BOTPLAY', 32);
-		botplayTxt.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		botplayTxt.setFormat(Constants.DEFAULT_FONT, 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		botplayTxt.scrollFactor.set();
 		botplayTxt.borderSize = 1.25;
 		botplayTxt.visible = game.cpuControlled;
@@ -83,7 +83,7 @@ class DefaultHUD extends FlxBasic
 	{
 		var showTime:Bool = (ClientPrefs.data.timeBarType != 'Disabled');
 		timeTxt = new FlxText(PlayState.STRUM_X + (FlxG.width / 2) - 248, 14, 400, "eeeeeee", 32);
-		timeTxt.setFormat(Paths.font("vcr.ttf"), 35, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		timeTxt.setFormat(Constants.DEFAULT_FONT, 35, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		timeTxt.scrollFactor.set();
 		timeTxt.alpha = 0;
 		timeTxt.borderSize = 2;

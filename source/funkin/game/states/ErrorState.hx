@@ -26,7 +26,7 @@ class ErrorState extends MusicBeatState
 		bg.screenCenter();
 
 		errorText = new FlxText(0, 0, FlxG.width - 300, errorMsg, 32);
-		errorText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		errorText.setFormat(Constants.DEFAULT_FONT, 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		errorText.scrollFactor.set();
 		errorText.borderSize = 2;
 		errorText.screenCenter();

@@ -193,12 +193,14 @@ class FunkinLua {
 			}
 	
 			// Default character data
-			set('defaultBoyfriendX', game.defaultCharacterPositions.get("BF").x);
-			set('defaultBoyfriendY', game.defaultCharacterPositions.get("BF").y);
-			set('defaultOpponentX', game.defaultCharacterPositions.get("DAD").x);
-			set('defaultOpponentY', game.defaultCharacterPositions.get("DAD").y);
-			set('defaultGirlfriendX', game.defaultCharacterPositions.get("GF").x);
-			set('defaultGirlfriendY', game.defaultCharacterPositions.get("GF").y);
+			@:privateAccess{
+				set('defaultBoyfriendX', game.defaultCharacterPositions.get("BF").x);
+				set('defaultBoyfriendY', game.defaultCharacterPositions.get("BF").y);
+				set('defaultOpponentX', game.defaultCharacterPositions.get("DAD").x);
+				set('defaultOpponentY', game.defaultCharacterPositions.get("DAD").y);
+				set('defaultGirlfriendX', game.defaultCharacterPositions.get("GF").x);
+				set('defaultGirlfriendY', game.defaultCharacterPositions.get("GF").y);
+			}
 
 			set('boyfriendName', PlayState.SONG.player1);
 			set('dadName', PlayState.SONG.player2);

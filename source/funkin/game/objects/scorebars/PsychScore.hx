@@ -8,14 +8,14 @@ class PsychScore extends BaseScorebar
 	{
 		super.create();
 
-		//game.baseUI.defaultFont = Paths.font("vcr.ttf");
+		//game.baseUI.defaultFont = Constants.DEFAULT_FONT;
 
 		scoreText = new FlxText(0, defaultPos.y + 40, FlxG.width, "", 20);
 		scoreText.scrollFactor.set();
 		scoreText.borderSize = 1.25;
 		scoreText.visible = !ClientPrefs.data.hideFullHUD;
 		scoreText.alpha = 0;
-		scoreText.setFormat(Paths.font("vcr.ttf"), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		scoreText.setFormat(Constants.DEFAULT_FONT, 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(scoreText);
 	}
 

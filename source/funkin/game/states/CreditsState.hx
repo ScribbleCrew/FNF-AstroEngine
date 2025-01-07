@@ -242,7 +242,7 @@ class CreditsState extends MusicBeatState
 		add(descBox);
 
 		descText = new FlxText(50, FlxG.height + offsetThing - 25, 1180, "", 32);
-		descText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, CENTER /*, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK*/);
+		descText.setFormat(Constants.DEFAULT_FONT, 32, FlxColor.WHITE, CENTER /*, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK*/);
 		descText.scrollFactor.set();
 		// descText.borderSize = 2.4;
 		descBox.sprTracker = descText;
@@ -304,7 +304,7 @@ class CreditsState extends MusicBeatState
 				}
 			}
 
-			if (controls.ACCEPT && (creditsStuff[curSelected][3] == null || creditsStuff[curSelected][3].length > 4))
+			if ((controls.ACCEPT|| FlxG.mouse.justPressedMiddle) && (creditsStuff[curSelected][3] == null || creditsStuff[curSelected][3].length > 4))
 			{
 				CoolUtil.browserLoad(creditsStuff[curSelected][3]);
 			}

@@ -89,7 +89,7 @@ class LoadingState extends MusicBeatState
 		add(bg);
 	
 		loadingText = new FlxText(520, 600, 400, 'Now Loading...', 32);
-		loadingText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, LEFT, OUTLINE_FAST, FlxColor.BLACK);
+		loadingText.setFormat(Constants.DEFAULT_FONT, 32, FlxColor.WHITE, LEFT, OUTLINE_FAST, FlxColor.BLACK);
 		loadingText.borderSize = 2;
 		add(loadingText);
 	
@@ -377,12 +377,12 @@ class LoadingState extends MusicBeatState
 			preloadCharacter(player1, prefixVocals);
 			if (!dontPreloadDefaultVoices && prefixVocals != null)
 			{
-				if(Paths.fileExists('$prefixVocals-Player.${Paths.SOUND_EXT}', SOUND, false, 'songs') && Paths.fileExists('$prefixVocals-Opponent.${Paths.SOUND_EXT}', SOUND, false, 'songs'))
+				if(Paths.fileExists('$prefixVocals-Player.${Constants.SOUND_EXT}', SOUND, false, 'songs') && Paths.fileExists('$prefixVocals-Opponent.${Constants.SOUND_EXT}', SOUND, false, 'songs'))
 				{
 					songsToPrepare.push('$prefixVocals-Player');
 					songsToPrepare.push('$prefixVocals-Opponent');
 				}
-				else if(Paths.fileExists('$prefixVocals.${Paths.SOUND_EXT}', SOUND, false, 'songs'))
+				else if(Paths.fileExists('$prefixVocals.${Constants.SOUND_EXT}', SOUND, false, 'songs'))
 					songsToPrepare.push(prefixVocals);
 			}
 
@@ -409,9 +409,9 @@ class LoadingState extends MusicBeatState
 	public static function clearInvalids()
 	{
 		clearInvalidFrom(imagesToPrepare, 'images', '.png', IMAGE);
-		clearInvalidFrom(soundsToPrepare, 'sounds', '.${Paths.SOUND_EXT}', SOUND);
-		clearInvalidFrom(musicToPrepare, 'music',' .${Paths.SOUND_EXT}', SOUND);
-		clearInvalidFrom(songsToPrepare, 'songs', '.${Paths.SOUND_EXT}', SOUND, 'songs');
+		clearInvalidFrom(soundsToPrepare, 'sounds', '.${Constants.SOUND_EXT}', SOUND);
+		clearInvalidFrom(musicToPrepare, 'music',' .${Constants.SOUND_EXT}', SOUND);
+		clearInvalidFrom(songsToPrepare, 'songs', '.${Constants.SOUND_EXT}', SOUND, 'songs');
 
 		for (arr in [imagesToPrepare, soundsToPrepare, musicToPrepare, songsToPrepare])
 			while (arr.contains(null))

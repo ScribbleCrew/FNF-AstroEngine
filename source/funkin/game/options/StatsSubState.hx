@@ -50,7 +50,7 @@ class StatsSubState extends BaseMenu
 		add(textBG);
 
 		text = new FlxText(textBG.x, textBG.y + 4, FlxG.width, "Press RESET to clear stats!", 18);
-		text.setFormat(Paths.font("vcr.ttf"), 18, FlxColor.WHITE, CENTER);
+		text.setFormat(Constants.DEFAULT_FONT, 18, FlxColor.WHITE, CENTER);
 		text.scrollFactor.set(0, 0);
 		add(text);
 
