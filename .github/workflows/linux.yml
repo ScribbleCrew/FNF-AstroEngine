@@ -10,6 +10,7 @@ on:
 
 jobs:
    buildLinux:
+    name: Linux Build
     runs-on: ubuntu-latest
 
     steps:
@@ -28,8 +29,8 @@ jobs:
         run: echo "${{github.run_id}}" > VERSION
       - name: Compile
         run: haxelib run lime build Project.xml linux --app-version="4.0.0-${{ github.run_id}}"
-      - name: Publish Artifact
+      - name: Uploading artifact (entire build)
         uses: actions/upload-artifact@v4
         with:
-          name: linuxBuild
+          name: Astro Engine
           path: export/release/linux/bin
