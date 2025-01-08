@@ -1,6 +1,6 @@
 import funkin.backend.utils.Paths;
 
-class Constants {
+@:final class Constants {
 	public static inline final SOUND_EXT:String = #if web "mp3" #else "ogg" #end;
 	public static inline final VIDEO_EXT:String = "mp4";
 
