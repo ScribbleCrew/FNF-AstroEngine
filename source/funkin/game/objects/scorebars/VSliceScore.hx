@@ -13,7 +13,7 @@ class VSliceScore extends BaseScorebar
 		scoreText = new FlxText(defaultPosButBetter.x + defaultPosButBetter.width - 190, defaultPosButBetter.y + 30, 0, '', 20);
 		scoreText.scrollFactor.set();
 		scoreText.borderSize = 1.25;
-		scoreText.visible = !ClientPrefs.data.hideFullHUD;
+		scoreText.visible = !ClientPrefs.data.hideHud;
 		scoreText.alpha = 0;
 		scoreText.setFormat(Constants.DEFAULT_FONT, 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(scoreText);

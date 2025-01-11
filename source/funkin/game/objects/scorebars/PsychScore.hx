@@ -13,7 +13,7 @@ class PsychScore extends BaseScorebar
 		scoreText = new FlxText(0, defaultPos.y + 40, FlxG.width, "", 20);
 		scoreText.scrollFactor.set();
 		scoreText.borderSize = 1.25;
-		scoreText.visible = !ClientPrefs.data.hideFullHUD;
+		scoreText.visible = !ClientPrefs.data.hideHud;
 		scoreText.alpha = 0;
 		scoreText.setFormat(Constants.DEFAULT_FONT, 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(scoreText);

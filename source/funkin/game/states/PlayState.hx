@@ -679,6 +679,7 @@ class PlayState extends MusicBeatState
 		comboGroup = new FlxSpriteGroup();
 		add(comboGroup);
 		noteGroup = new FlxTypedGroup<FlxBasic>();
+		noteGroup.visible = !ClientPrefs.data.hideHud;
 		add(noteGroup);
 		uiBackgroundGroup = new FlxTypedGroup<FlxSprite>();
 		add(uiBackgroundGroup);
@@ -691,11 +692,11 @@ class PlayState extends MusicBeatState
 		if (ClientPrefs.data.downScroll)
 			strumLine.y = FlxG.height - 150;
 		strumLine.scrollFactor.set();
-		strumLine.visible = !ClientPrefs.data.hideFullHUD;
+		strumLine.visible = !ClientPrefs.data.hideHud;
 
 		strumLineNotes = new FlxTypedGroup<StrumNote>();
 		noteGroup.add(strumLineNotes);
-		strumLineNotes.visible = !ClientPrefs.data.hideFullHUD;
+		strumLineNotes.visible = !ClientPrefs.data.hideHud;
 		noteGroup.add(grpNoteSplashes);
 
 		var splash:NoteSplash = new NoteSplash();
@@ -703,7 +704,9 @@ class PlayState extends MusicBeatState
 		splash.alpha = 0.000001;
 
 		opponentStrums = new FlxTypedGroup<StrumNote>();
+		opponentStrums.visible = !ClientPrefs.data.hideHud;
 		playerStrums = new FlxTypedGroup<StrumNote>();
+		playerStrums.visible = !ClientPrefs.data.hideHud;
 
 		generateSong();
 
@@ -740,7 +743,7 @@ class PlayState extends MusicBeatState
 
 		if (!ClientPrefs.data.downScroll)
 			uiBackgroundGroup.visible = true;
-		if (ClientPrefs.data.hideFullHUD)
+		if (ClientPrefs.data.hideHud)
 			uiBackgroundGroup.visible = false;
 
 		noteGroup.cameras = [camHUD];
@@ -3540,7 +3543,7 @@ class PlayState extends MusicBeatState
 	 */
 	public function spawnNoteSplashOnNote(note:Note)
 	{
-		if (ClientPrefs.data.noteSplashes && note != null && !ClientPrefs.data.hideFullHUD)
+		if (ClientPrefs.data.noteSplashes && note != null && !ClientPrefs.data.hideHud)
 		{
 			var strum:StrumNote = playerStrums.members[note.noteData];
 			if (ClientPrefs.data.opnoteSplashes && note.hitByOpponent)

@@ -25,7 +25,7 @@ import funkin.game.Init.Volume;
 	public var noteSplashes:Bool = true;
 	public var opnoteSplashes:Bool = true;
 	public var lowQuality:Bool = false;
-	public var hideFullHUD:Bool = false;
+	public var hideHud:Bool = false;
 	public var botplayEnabled:Bool = false;
 	#if SHADERS_ALLOWED
 	public var shaders:Bool = true;
@@ -35,7 +35,6 @@ import funkin.game.Init.Volume;
 	public var cursing:Bool = true;
 	public var violence:Bool = true;
 	public var camZooms:Bool = true;
-	public var hideHud:Bool = false;
 	public var noteOffset:Int = 0;
 	public var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
 	public var ghostTapping:Bool = true;

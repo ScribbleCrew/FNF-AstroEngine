@@ -51,13 +51,13 @@ class DefaultHUD extends FlxBasic
 		// furry
 		iconP1 = new HealthIcon(game.boyfriend.healthIcon, true);
 		iconP1.y = healthBar.y - 75;
-		iconP1.visible = !ClientPrefs.data.hideFullHUD;
+		iconP1.visible = !ClientPrefs.data.hideHud;
 		iconP1.alpha = ClientPrefs.data.healthBarAlpha;
 		game.uiGroup.add(iconP1);
 
 		iconP2 = new HealthIcon(game.dad.healthIcon, false);
 		iconP2.y = healthBar.y - 75;
-		iconP2.visible = !ClientPrefs.data.hideFullHUD;
+		iconP2.visible = !ClientPrefs.data.hideHud;
 		iconP2.alpha = ClientPrefs.data.healthBarAlpha;
 		game.uiGroup.add(iconP2);
 	}
@@ -108,7 +108,7 @@ class DefaultHUD extends FlxBasic
 		game.uiGroup.add(timeBar);
 		game.uiGroup.add(timeTxt);
 
-		if (ClientPrefs.data.hideFullHUD)
+		if (ClientPrefs.data.hideHud)
 			timeBar.visible = false;
 		else
 			timeBar.visible = showTime;

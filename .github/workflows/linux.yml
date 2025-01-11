@@ -11,7 +11,7 @@ on:
 jobs:
    buildLinux:
     name: Linux Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it

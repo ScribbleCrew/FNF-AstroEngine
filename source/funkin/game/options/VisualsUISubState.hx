@@ -101,11 +101,11 @@ class VisualsUISubState extends BaseOptionsMenu
 
 		var option:Option = new Option('Hide HUD',
 			'Hide\'s all HUD elements\nimproves performance.',
-			'hideFullHUD',
+			'hideHud',
 			BOOL);
 		addOption(option);
 		option.onChange = () -> {
-			if (ClientPrefs.data.hideFullHUD){
+			if (ClientPrefs.data.hideHud){
 				ClientPrefs.data.showFPS = false;
 			}else{
 				ClientPrefs.data.showFPS = true;
@@ -238,9 +238,9 @@ class VisualsUISubState extends BaseOptionsMenu
 	function onChangeFPSCounter()
 	{
 		if(funkin.backend.utils.ClientPrefs.data.showFPS){
-			funkin.backend.utils.ClientPrefs.data.hideFullHUD = false;
+			funkin.backend.utils.ClientPrefs.data.hideHud = false;
 		} else {
-			funkin.backend.utils.ClientPrefs.data.hideFullHUD = true;
+			funkin.backend.utils.ClientPrefs.data.hideHud = true;
 		}
 		
 		if(funkin.game.Main.fpsVar != null)
