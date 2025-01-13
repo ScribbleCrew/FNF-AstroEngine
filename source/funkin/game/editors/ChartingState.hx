@@ -3203,7 +3203,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		};
 
 		tab_group.add(new FlxText(songNameInputText.x, songNameInputText.y - 15, 80, 'Song Name:'));
-		tab_group.add(new FlxText(songColorInputText.x, songColorInputText.y - 15, 80, 'Song Color:'));
+		//tab_group.add(new FlxText(songColorInputText.x, songColorInputText.y - 15, 80, 'Song Color:'));
 		tab_group.add(songNameInputText);
 		tab_group.add(songColorInputText);
 		tab_group.add(allowVocalsCheckBox);

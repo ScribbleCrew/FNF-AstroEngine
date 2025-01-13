@@ -10,11 +10,11 @@ on:
 
 jobs:
   buildMac:
-    name: MacOs Build
+    name: Macos Build
     runs-on: macos-15
 
     steps:
-      - uses: actions/checkout@v2.3.0
+      - uses: actions/checkout@v4.1.7
       - uses: krdlab/setup-haxe@master
         with:
           haxe-version: 4.3.4
