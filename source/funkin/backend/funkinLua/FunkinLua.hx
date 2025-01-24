@@ -796,7 +796,7 @@ class FunkinLua {
 			else
 				MusicBeatState.switchState(new FreeplayState());
 
-			#if DISCORD_ALLOWED DiscordClient.resetClientID(); #end
+			#if DISCORD_ALLOWED DiscordClient.clientID = null; #end
 
 			FlxG.sound.playMusic(Paths.music('freakyMenu'));
 			PlayState.changedDifficulty = false;
@@ -1567,6 +1567,8 @@ class FunkinLua {
 		//
 
 		Lua_helper.add_callback(lua, "debugPrint", function(text:Dynamic = '', color:String = 'WHITE') PlayState.instance.addTextToDebug(text, CoolUtil.colorFromString(color)));
+
+		Lua_helper.add_callback(lua, "print", function(text:Dynamic = '') trace(text));
 
 		addLocalCallback("close", function() {
 			closed = true;

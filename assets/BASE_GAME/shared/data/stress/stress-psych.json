@@ -3027,7 +3027,7 @@
 		"stage": "tank",
 		"needsVoices": true,
 		"validScore": true,
-		"format": "psych_v1_convert",
+		"format": "astro_v1_convert",
 		"bpm": 178,
 		"speed": 1.75
 	}

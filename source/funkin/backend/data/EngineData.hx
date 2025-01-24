@@ -5,7 +5,6 @@ final class EngineData
 {
 	//** Customization (Source Code Only) **/
 	static final coreGame = {
-		coreDiscordID: "1095422496473358356",
 		menuColor: 0xff525252,
 	}
 

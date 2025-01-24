@@ -2229,7 +2229,7 @@ class PlayState extends MusicBeatState
 		if (opponentVocals != null)
 			opponentVocals.pause();
 
-		#if DISCORD_ALLOWED DiscordClient.resetClientID(); #end
+		#if DISCORD_ALLOWED DiscordClient.clientID = null; #end
 		MusicBeatState.switchState(new CharacterEditorState(SONG.player2));
 	}
 
@@ -3586,8 +3586,9 @@ class PlayState extends MusicBeatState
 		#if HSCRIPT_ALLOWED
 		for (script in hscriptArray)
 			if (script != null)
-			{
-				script.call('onDestroy');
+			{	
+				final ON_DESTORY:Dynamic = script.get('onDestroy');
+				if(ON_DESTORY != null && Reflect.isFunction(ON_DESTORY)) ON_DESTORY();
 				script.destroy();
 			}
 
@@ -3848,56 +3849,41 @@ class PlayState extends MusicBeatState
 		return returnVal;
 	}
 
-	public function callOnHScript(funcToCall:String, args:Array<Dynamic> = null, ?ignoreStops:Bool = false, exclusions:Array<String> = null,
-			excludeValues:Array<Dynamic> = null):Dynamic
-	{
-		var returnVal:Dynamic = LuaUtils.Function_Continue;
+	public function callOnHScript(funcToCall:String, args:Array<Dynamic> = null, ?ignoreStops:Bool = false, exclusions:Array<String> = null, excludeValues:Array<Dynamic> = null):Dynamic {
+		var returnVal:String = LuaUtils.Function_Continue;
 
 		#if HSCRIPT_ALLOWED
-		if (exclusions == null)
-			exclusions = new Array();
-		if (excludeValues == null)
-			excludeValues = new Array();
+		if(exclusions == null) exclusions = new Array();
+		if(excludeValues == null) excludeValues = new Array();
 		excludeValues.push(LuaUtils.Function_Continue);
 
 		var len:Int = hscriptArray.length;
 		if (len < 1)
 			return returnVal;
-		for (i in 0...len)
+
+		for(script in hscriptArray)
 		{
-			var script:HScript = hscriptArray[i];
-			if (script == null || !script.exists(funcToCall) || exclusions.contains(script.origin))
+			@:privateAccess
+			if(script == null || !script.exists(funcToCall) || exclusions.contains(script.origin))
 				continue;
 
-			var myValue:Dynamic = null;
 			try
 			{
 				var callValue = script.call(funcToCall, args);
-				if (!callValue.succeeded)
-				{
-					var e = callValue.exceptions[0];
-					if (e != null)
-					{
-						var len:Int = e.message.indexOf('\n') + 1;
-						if (len <= 0)
-							len = e.message.length;
-						addTextToDebug('ERROR (${callValue.calledFunction}) - ' + e.message.substr(0, len), FlxColor.RED);
-					}
-				}
-				else
-				{
-					myValue = callValue.returnValue;
-					if ((myValue == LuaUtils.Function_StopHScript || myValue == LuaUtils.Function_StopAll)
-						&& !excludeValues.contains(myValue)
-						&& !ignoreStops)
-					{
-						returnVal = myValue;
-						break;
-					}
+				var myValue:Dynamic = callValue.returnValue;
 
-					if (myValue != null && !excludeValues.contains(myValue))
-						returnVal = myValue;
+				if((myValue == LuaUtils.Function_StopHScript || myValue == LuaUtils.Function_StopAll) && !excludeValues.contains(myValue) && !ignoreStops)
+				{
+					returnVal = myValue;
+					break;
 				}
+
+				if(myValue != null && !excludeValues.contains(myValue))
+					returnVal = myValue;
+			}
+			catch(e:Dynamic)
+			{
+				addTextToDebug('ERROR (${script.origin}: $funcToCall) - $e', FlxColor.RED);
 			}
 		}
 		#end

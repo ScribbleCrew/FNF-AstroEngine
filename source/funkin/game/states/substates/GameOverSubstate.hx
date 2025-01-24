@@ -157,7 +157,7 @@ class GameOverSubstate extends MusicBeatSubstate
 			}
 			else if (controls.BACK)
 			{
-				#if DISCORD_ALLOWED DiscordClient.resetClientID(); #end
+				#if DISCORD_ALLOWED DiscordClient.clientID = null; #end
 				FlxG.camera.visible = false;
 				FlxG.sound.music.stop();
 				PlayState.deathCounter = 0;
