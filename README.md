@@ -3,9 +3,9 @@
     <br>
     <h1>Friday Night Funkin' • <code>Astro Engine</code> (<strong>Beta</strong>)</h1>
     <br>    
-    <img src="https://img.shields.io/github/forks/AstroEngineDevs/FNF-AstroEngine?style=for-the-badge" />
-    <img src="https://img.shields.io/github/license/AstroEngineDevs/FNF-AstroEngine?style=for-the-badge" />
-    <img src="https://img.shields.io/github/actions/workflow/status/AstroEngineDevs/FNF-AstroEngine/windows.yml?style=for-the-badge" /> 
+    <img src="https://img.shields.io/github/forks/ScribbleCrew/FNF-AstroEngine?style=for-the-badge" />
+    <img src="https://img.shields.io/github/license/ScribbleCrew/FNF-AstroEngine?style=for-the-badge" />
+    <img src="https://img.shields.io/github/actions/workflow/status/ScribbleCrew/FNF-AstroEngine/windows.yml?style=for-the-badge" /> 
     <br>
 
 Hello, this is a modified version of the **Psych Engine** that includes events and functions missing from the original engine.

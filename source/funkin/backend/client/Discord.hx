@@ -180,7 +180,7 @@ class DiscordClient
 
 	public static function updatePresence():Void
 	{
-		setButton({label: "Github Page", url: "https://github.com/AstroEngineDevs"}, FIRST);
+		setButton({label: "Github Page", url: "https://github.com/ScribbleCrew"}, FIRST);
 		setButton({label: "X Page", url: "https://x.com/YourFriendOrbl"}, SECOND);
 
 		Discord.UpdatePresence(cpp.RawConstPointer.addressOf(presence));

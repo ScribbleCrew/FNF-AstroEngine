@@ -99,7 +99,7 @@ class TitleState extends MusicBeatState
 		if (ClientPrefs.data.checkForUpdates && !closedState)
 		{
 			trace('checking for update');
-			var http = new haxe.Http("https://raw.githubusercontent.com/AstroEngineDevs/FNF-AstroEngine/main/gitVersion.txt");
+			var http = new haxe.Http("https://raw.githubusercontent.com/ScribbleCrew/FNF-AstroEngine/main/gitVersion.txt");
 
 			http.onData = function(data:String)
 			{
