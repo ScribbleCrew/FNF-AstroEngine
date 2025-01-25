@@ -1,5 +1,7 @@
+<!-- https://shields.io/badges/git-hub-actions-workflow-status -->
+
 <div align="center">
-    <img src="art/branding/4000x smaller.png" width="200" height="200" style="border-radius: 15%;"/>
+    <img src="art/branding/4000x rounded.png" width="200" height="200" style="border-radius: 15%;"/>
     <br>
     <h1>Friday Night Funkin' • AE [<strong>ALPHA</strong>]</h1>
     <br>    
@@ -7,20 +9,9 @@
     <img src="https://img.shields.io/github/license/ScribbleCrew/FNF-AstroEngine?style=for-the-badge" />
     <br>
     <h2>Workflows</h2>
-    <div style="display: flex; justify-content: center; gap: 20px; text-align: center;">
-        <div style="display: flex; flex-direction: column; align-items: center;">
-            <span>Windows</span>
-            <img src="https://img.shields.io/github/actions/workflow/status/ScribbleCrew/FNF-AstroEngine/windows.yml?style=for-the-badge" /> 
-        </div>
-        <div style="display: flex; flex-direction: column; align-items: center;">
-            <span>MacOS</span>
-            <img src="https://img.shields.io/github/actions/workflow/status/ScribbleCrew/FNF-AstroEngine/mac.yml?style=for-the-badge" /> 
-        </div>
-        <div style="display: flex; flex-direction: column; align-items: center;">
-            <span>Linux</span>
-            <img src="https://img.shields.io/github/actions/workflow/status/ScribbleCrew/FNF-AstroEngine/linux.yml?style=for-the-badge" /> 
-        </div>
-    </div>
+    <img src="https://img.shields.io/github/actions/workflow/status/ScribbleCrew/FNF-AstroEngine/windows.yml?style=for-the-badge&label=Windows" /> 
+    <img src="https://img.shields.io/github/actions/workflow/status/ScribbleCrew/FNF-AstroEngine/linux.yml?style=for-the-badge&label=Linux" /> 
+    <img src="https://img.shields.io/github/actions/workflow/status/ScribbleCrew/FNF-AstroEngine/mac.yml?style=for-the-badge&label=MacOS" /> 
 
 ## Description:
 todo lol
@@ -29,9 +20,7 @@ todo lol
 **Windows:** Run the `setup.bat` file.  
 **Unix-based systems (macOS, Linux):** Run the `setup.sh` file.
 
-
-After it finishes, run `lime test windows -debug` in order to compile a **Astro Engine!!!** :3c
-
+After it finishes, run `lime test windows -debug` in order to compile a build of **Astro Engine!!!** :3c ⭐
 
 ---
 
