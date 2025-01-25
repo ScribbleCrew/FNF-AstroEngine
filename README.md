@@ -17,6 +17,7 @@
 
 <h2>Description:</h2>
 todo lol
+<br>
 
 ---
 
@@ -25,11 +26,13 @@ todo lol
 **Unix-based systems (macOS, Linux):** Run the `setup.sh` file.
 
 After it finishes, run `lime test windows -debug` in order to compile a build of **Astro Engine!!!** :3c ⭐
+<br>
 
 ---
 
 <h2>Bugs:</h2>
 - "Could not parse frame number of x", install `haxelib install flixel 5.6.1`.
+<br>
 
 ---
 
