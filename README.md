@@ -8,16 +8,19 @@
     <img src="https://img.shields.io/github/forks/ScribbleCrew/FNF-AstroEngine?style=for-the-badge" />
     <img src="https://img.shields.io/github/license/ScribbleCrew/FNF-AstroEngine?style=for-the-badge" />
     <br>
-    <h2>Workflows</h2>
-    <img src="https://img.shields.io/github/actions/workflow/status/ScribbleCrew/FNF-AstroEngine/windows.yml?style=for-the-badge&label=Windows" /> 
-    <img src="https://img.shields.io/github/actions/workflow/status/ScribbleCrew/FNF-AstroEngine/linux.yml?style=for-the-badge&label=Linux" /> 
-    <img src="https://img.shields.io/github/actions/workflow/status/ScribbleCrew/FNF-AstroEngine/mac.yml?style=for-the-badge&label=MacOS" /> 
-    
+
+---
+
+<h2>Workflows</h2>
+<img src="https://img.shields.io/github/actions/workflow/status/ScribbleCrew/FNF-AstroEngine/windows.yml?style=for-the-badge&label=Windows" /> 
+<img src="https://img.shields.io/github/actions/workflow/status/ScribbleCrew/FNF-AstroEngine/linux.yml?style=for-the-badge&label=Linux" /> 
+<img src="https://img.shields.io/github/actions/workflow/status/ScribbleCrew/FNF-AstroEngine/mac.yml?style=for-the-badge&label=MacOS" /> 
+
+
 ---
 
 <h2>Description:</h2>
 todo lol
-<br>
 
 ---
 
@@ -26,13 +29,11 @@ todo lol
 **Unix-based systems (macOS, Linux):** Run the `setup.sh` file.
 
 After it finishes, run `lime test windows -debug` in order to compile a build of **Astro Engine!!!** :3c ⭐
-<br>
 
 ---
 
 <h2>Bugs:</h2>
 - "Could not parse frame number of x", install `haxelib install flixel 5.6.1`.
-<br>
 
 ---
 
