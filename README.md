@@ -1,7 +1,7 @@
 <!-- https://shields.io/badges/git-hub-actions-workflow-status -->
 
 <div align="center">
-    <img src="art/branding/4000x rounded.png" width="200" height="200" style="border-radius: 15%;"/>
+    <img src="art/branding/4000x rounded.png" width="250" height="250" style="border-radius: 15%;"/>
     <br>
     <h1>Friday Night Funkin' • AE [<strong>ALPHA</strong>]</h1>
     <br>    
