@@ -24,7 +24,7 @@ After it finishes, run `lime test windows -debug` in order to compile a build of
 
 ---
 
-## **BUGS:**
+<h2>Bugs:</h2>
 - "Could not parse frame number of x", install `haxelib install flixel 5.6.1`.
 
 ---
