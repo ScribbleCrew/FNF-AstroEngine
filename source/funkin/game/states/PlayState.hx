@@ -816,7 +816,7 @@ class PlayState extends MusicBeatState
 
 		#if desktop
 		// Updating Discord Rich Presence.
-		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.getCharacter());
+		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
 		WindowUtil.setTitle(detailsText);
 		#end
 
@@ -1139,13 +1139,13 @@ class PlayState extends MusicBeatState
 
 	var dialogueCount:Int = 0;
 
-	public var psychDialogue:DialogueBoxPsych;
+	public var astroDialogue:DialogueBoxPsych;
 
 	// You don't have to add a song, just saying. You can just do "startDialogue(dialogueJson);" and it should work
 	public function startDialogue(dialogueFile:funkin.game.objects.DialogueBoxPsych.DialogueFile, ?song:String = null):Void
 	{
 		// TO DO: Make this more flexible, maybe?
-		if (psychDialogue != null)
+		if (astroDialogue != null)
 			return;
 
 		if (dialogueFile.dialogue.length > 0)
@@ -1153,28 +1153,28 @@ class PlayState extends MusicBeatState
 			inCutscene = true;
 			precacheList.set('dialogue', 'sound');
 			precacheList.set('dialogueClose', 'sound');
-			psychDialogue = new DialogueBoxPsych(dialogueFile, song);
-			psychDialogue.scrollFactor.set();
+			astroDialogue = new DialogueBoxPsych(dialogueFile, song);
+			astroDialogue.scrollFactor.set();
 			if (endingSong)
 			{
-				psychDialogue.finishThing = function()
+				astroDialogue.finishThing = function()
 				{
-					psychDialogue = null;
+					astroDialogue = null;
 					endSong();
 				}
 			}
 			else
 			{
-				psychDialogue.finishThing = function()
+				astroDialogue.finishThing = function()
 				{
-					psychDialogue = null;
+					astroDialogue = null;
 					startCountdown();
 				}
 			}
-			psychDialogue.nextDialogueThing = startNextDialogue;
-			psychDialogue.skipDialogueThing = skipDialogue;
-			psychDialogue.cameras = [camHUD];
-			add(psychDialogue);
+			astroDialogue.nextDialogueThing = startNextDialogue;
+			astroDialogue.skipDialogueThing = skipDialogue;
+			astroDialogue.cameras = [camHUD];
+			add(astroDialogue);
 		}
 		else
 		{
@@ -1491,7 +1491,7 @@ class PlayState extends MusicBeatState
 
 		#if desktop
 		// Updating Discord Rich Presence (with Time Left)
-		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.getCharacter(), true, songLength);
+		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character, true, songLength);
 		WindowUtil.setTitle(detailsText + ' - ${SONG.song} (${storyDifficultyText})');
 		#end
 		setOnScripts('songLength', songLength);
@@ -1856,14 +1856,14 @@ class PlayState extends MusicBeatState
 				DiscordClient.changePresence(detailsText, SONG.song
 					+ " ("
 					+ storyDifficultyText
-					+ ")", baseUI.iconP2.getCharacter(), true,
+					+ ")", baseUI.iconP2.character, true,
 					songLength
 					- Conductor.songPosition
 					- ClientPrefs.data.noteOffset);
 			}
 			else
 			{
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.getCharacter());
+				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
 			}
 			#end
 
@@ -1885,14 +1885,14 @@ class PlayState extends MusicBeatState
 				DiscordClient.changePresence(detailsText, SONG.song
 					+ " ("
 					+ storyDifficultyText
-					+ ")", baseUI.iconP2.getCharacter(), true,
+					+ ")", baseUI.iconP2.character, true,
 					songLength
 					- Conductor.songPosition
 					- ClientPrefs.data.noteOffset);
 			}
 			else
 			{
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.getCharacter());
+				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
 			}
 
 			WindowUtil.setTitle('${SONG.song} (${storyDifficultyText.toUpperCase()})');
@@ -1907,7 +1907,7 @@ class PlayState extends MusicBeatState
 		#if desktop
 		if (health > 0 && !paused)
 		{
-			DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.getCharacter());
+			DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
 			WindowUtil.setTitle('Paused - ${SONG.song}');
 		}
 		#end
@@ -2189,7 +2189,7 @@ class PlayState extends MusicBeatState
 		// }
 
 		#if desktop
-		DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.getCharacter());
+		DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
 		WindowUtil.setTitle('Paused - ${SONG.song}');
 		#end
 	}
@@ -2283,7 +2283,7 @@ class PlayState extends MusicBeatState
 
 				#if desktop
 				// Game Over doesn't get his own variable because it's only used here
-				DiscordClient.changePresence("Game Over - " + detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.getCharacter());
+				DiscordClient.changePresence("Game Over - " + detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
 				WindowUtil.setTitle('Game Over - ${detailsText} - ${SONG.song}');
 				#end
 				isDead = true;

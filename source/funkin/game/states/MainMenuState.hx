@@ -93,11 +93,6 @@ class MainMenuState extends MusicBeatState
 			offset: new FlxPoint(0, 0)
 		},
 		{
-			name: 'Psych Engine v',
-			version: PsychData.psychVersion,
-			offset: new FlxPoint(0, 0)
-		},
-		{
 			name: 'Friday Night Funkin\' v',
 			version: Application.current.meta.get('version'),
 			offset: new FlxPoint(0, 0)

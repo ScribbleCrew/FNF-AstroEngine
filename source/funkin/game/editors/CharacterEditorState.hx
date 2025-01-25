@@ -632,7 +632,7 @@ class CharacterEditorState extends MusicBeatState implements FlxUIEventHandler.F
 				updateHealthBar();
 			});
 
-		healthIconInputText = new FlxUIInputText(15, imageInputText.y + 35, 75, healthIcon.getCharacter(), 8);
+		healthIconInputText = new FlxUIInputText(15, imageInputText.y + 35, 75, healthIcon.character, 8);
 
 		vocalsInputText = new FlxUIInputText(15, healthIconInputText.y + 35, 75, character.vocalsFile != null ? character.vocalsFile : '', 8);
 
@@ -707,10 +707,10 @@ class CharacterEditorState extends MusicBeatState implements FlxUIEventHandler.F
 		if(id == FlxUIInputText.CHANGE_EVENT)
 		{
 			if(sender == healthIconInputText) {
-				var lastIcon = healthIcon.getCharacter();
+				var lastIcon = healthIcon.character;
 				healthIcon.changeIcon(healthIconInputText.text);
 				character.healthIcon = healthIconInputText.text;
-				if(lastIcon != healthIcon.getCharacter()) updatePresence();
+				if(lastIcon != healthIcon.character) updatePresence();
 				unsavedProgress = true;
 			}
 			else if(sender == vocalsInputText)
@@ -1141,7 +1141,7 @@ class CharacterEditorState extends MusicBeatState implements FlxUIEventHandler.F
 	inline function updatePresence() {
 		#if DISCORD_ALLOWED
 		// Updating Discord Rich Presence
-		DiscordClient.changePresence("Character Editor", "Character: " + _char, healthIcon.getCharacter());
+		DiscordClient.changePresence("Character Editor", "Character: " + _char, healthIcon.character);
 		#end
 	}
 
