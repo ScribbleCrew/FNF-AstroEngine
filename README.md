@@ -13,10 +13,12 @@
     <img src="https://img.shields.io/github/actions/workflow/status/ScribbleCrew/FNF-AstroEngine/linux.yml?style=for-the-badge&label=Linux" /> 
     <img src="https://img.shields.io/github/actions/workflow/status/ScribbleCrew/FNF-AstroEngine/mac.yml?style=for-the-badge&label=MacOS" /> 
 
-## Description:
+<h2>Description:</h2>
 todo lol
 
-## Installation:
+---
+
+<h2>Installation:</h2>
 **Windows:** Run the `setup.bat` file.  
 **Unix-based systems (macOS, Linux):** Run the `setup.sh` file.
 
