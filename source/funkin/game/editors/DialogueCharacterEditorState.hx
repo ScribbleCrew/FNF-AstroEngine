@@ -81,7 +81,7 @@ class DialogueCharacterEditorState extends MusicBeatState implements FlxUIEventH
 		camHUD.bgColor.alpha = 0;
 		FlxG.cameras.add(camHUD, false);
 		
-		Paths.setCurrentLevel('week1');
+		Paths.currentLevel = 'week1';
 		new Stage();
 		var uhh = new FlxSprite().makeGraphic(FlxG.width,FlxG.height,FlxColor.BLACK);//im lazy to day Fuck types
 		uhh.alpha = 0.5;

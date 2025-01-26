@@ -888,7 +888,7 @@ class PlayState extends MusicBeatState
 		if (Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0)
 			foldersToCheck.insert(0, Paths.mods(Mods.currentModDirectory + '/shaders/'));
 
-		for (mod in Paths.getGlobalMods())
+		for (mod in Mods.getGlobalMods())
 			foldersToCheck.insert(0, Paths.mods(mod + '/shaders/'));
 
 		for (folder in foldersToCheck)

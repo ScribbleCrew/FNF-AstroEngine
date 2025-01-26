@@ -59,7 +59,7 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		addOption(option);
 		antialiasingOption = optionsArray.length - 1;
 
-		#if windows
+		#if (WINDOW_CUSTOMIZATION && windows)
 		var option:Option = new Option('Dark Mode', 'Enabled Dark Mode Support.', 'darkmodeEnabled', BOOL);
 		option.onChange = () -> WindowUtil.darkmode = ClientPrefs.data.darkmodeEnabled;
 		addOption(option);

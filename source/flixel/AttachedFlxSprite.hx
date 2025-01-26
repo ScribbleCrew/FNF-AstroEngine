@@ -17,15 +17,15 @@ class AttachedFlxSprite extends FlxSprite
 	public var copyAlpha:Bool = true;
 	public var copyVisible:Bool = false;
 
-	public function new(?file:String = null, ?anim:String = null, ?library:String = null, ?loop:Bool = false)
+	public function new(?file:String = null, ?anim:String = null, ?library:String = null, ?loop:Bool = false, ?allowGPU:Bool = true)
 	{
 		super();
 		if(anim != null) {
-			frames = Paths.getSparrowAtlas(file, library);
+			frames = Paths.getSparrowAtlas(file, library, allowGPU);
 			animation.addByPrefix('idle', anim, 24, loop);
 			animation.play('idle');
 		} else if(file != null) {
-			loadGraphic(Paths.image(file));
+			loadGraphic(Paths.image(file, allowGPU));
 		}
 		antialiasing = funkin.backend.utils.ClientPrefs.data.globalAntialiasing;
 		scrollFactor.set();

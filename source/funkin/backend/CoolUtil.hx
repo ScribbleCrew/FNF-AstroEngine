@@ -33,23 +33,23 @@ class CoolUtil
 		return newValue / tempMult;
 	}
 
-	
 	static var _mousePoint:FlxPoint = new FlxPoint();
 	static var _objPoint:FlxPoint = new FlxPoint();
+
 	public static function mouseOverlapping<T:flixel.FlxObject>(obj:T, ?mousePoint:FlxPoint, ?camera:flixel.FlxCamera)
+	{
+		if (camera == null)
+			camera = obj.camera;
+		if (mousePoint == null)
 		{
-			if (camera == null)
-				camera = obj.camera;
-			if (mousePoint == null)
-			{
-				mousePoint = _mousePoint;
-				FlxG.mouse.getScreenPosition(camera, mousePoint);
-			}
-			{
-				obj.getScreenPosition(_objPoint, camera);
-				return FlxMath.pointInCoordinates(mousePoint.x, mousePoint.y, _objPoint.x, _objPoint.y, obj.width, obj.height);
-			}
+			mousePoint = _mousePoint;
+			FlxG.mouse.getScreenPosition(camera, mousePoint);
 		}
+		{
+			obj.getScreenPosition(_objPoint, camera);
+			return FlxMath.pointInCoordinates(mousePoint.x, mousePoint.y, _objPoint.x, _objPoint.y, obj.width, obj.height);
+		}
+	}
 
 	public static function coolLerp(base:Float, target:Float, ratio:Float):Float
 		return base + cameraLerp(ratio) * (target - base);
@@ -105,38 +105,35 @@ class CoolUtil
 		return daList;
 	}
 
-	public static function dominantColor(sprite:flixel.FlxSprite):Int
+	inline public static function dominantColor(sprite:flixel.FlxSprite):Int
 	{
 		var countByColor:Map<Int, Int> = [];
 		for (col in 0...sprite.frameWidth)
 		{
 			for (row in 0...sprite.frameHeight)
 			{
-				var colorOfThisPixel:Int = sprite.pixels.getPixel32(col, row);
-				if (colorOfThisPixel != 0)
+				var colorOfThisPixel:FlxColor = sprite.pixels.getPixel32(col, row);
+				if (colorOfThisPixel.alphaFloat > 0.05)
 				{
-					if (countByColor.exists(colorOfThisPixel))
-					{
-						countByColor[colorOfThisPixel] = countByColor[colorOfThisPixel] + 1;
-					}
-					else if (countByColor[colorOfThisPixel] != 13520687 - (2 * 13520687))
-					{
-						countByColor[colorOfThisPixel] = 1;
-					}
+					colorOfThisPixel = FlxColor.fromRGB(colorOfThisPixel.red, colorOfThisPixel.green, colorOfThisPixel.blue, 255);
+					var count:Int = countByColor.exists(colorOfThisPixel) ? countByColor[colorOfThisPixel] : 0;
+					countByColor[colorOfThisPixel] = count + 1;
 				}
 			}
 		}
+
 		var maxCount = 0;
 		var maxKey:Int = 0; // after the loop this will store the max color
-		countByColor[flixel.util.FlxColor.BLACK] = 0;
-		for (key in countByColor.keys())
+		countByColor[FlxColor.BLACK] = 0;
+		for (key => count in countByColor)
 		{
-			if (countByColor[key] >= maxCount)
+			if (count >= maxCount)
 			{
-				maxCount = countByColor[key];
+				maxCount = count;
 				maxKey = key;
 			}
 		}
+		countByColor = [];
 		return maxKey;
 	}
 

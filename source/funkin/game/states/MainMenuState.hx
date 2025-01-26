@@ -33,6 +33,42 @@ import funkin.backend.system.MusicBeatState;
 import flixel.input.mouse.FlxMouseEvent;
 import funkin.game.states.*;
 
+/**
+	Structure For Main Menu Versions
+
+	@param name Name / Astro Engine v
+	@param version Version / 0.0.0
+	@param offset Offsets / FlxPoint.get(X,Y)
+**/
+typedef MenuVersionStructure =
+{
+	// Name
+	var name:Null<String>;
+	// Version
+	var version:Null<String>;
+	// Offsets | XY
+	@:optional var offset:FlxPoint;
+}
+
+/**
+	Structure For Versions
+
+	@param name Asset Name / menu_$name
+	@param state FlxState / FlxSubState
+	@param link Website Link
+**/
+typedef MenuItemsStructure =
+{
+	// Name
+	var name:Null<String>;
+
+	// State
+	@:optional var state:haxe.extern.EitherType<flixel.FlxSubState, flixel.FlxState>;
+
+	// Website Link
+	@:optional var link:Null<String>;
+}
+
 class MainMenuState extends MusicBeatState
 {
 	static var curSelected:Int = 0;
@@ -65,10 +101,12 @@ class MainMenuState extends MusicBeatState
 			state: new ModsMenuState()
 		},
 		#end
-		#if ACHIEVEMENTS_ALLOWED {
+		#if ACHIEVEMENTS_ALLOWED
+		{
 			name: 'awards',
 			state: new AchievementsMenuState()
-		}, #end
+		},
+		#end
 		{
 			name: 'credits',
 			state: new CreditsState()
@@ -180,7 +218,7 @@ class MainMenuState extends MusicBeatState
 		// Version Loop
 		for (i in 0...engineVersions.length)
 		{
-			final engineVersion:FlxText = new FlxText(12, FlxG.height - 22 * (i+1), 0, engineVersions[i].name + engineVersions[i].version);
+			final engineVersion:FlxText = new FlxText(12, FlxG.height - 22 * (i + 1), 0, engineVersions[i].name + engineVersions[i].version);
 			engineVersion.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			engineVersion.x += engineVersions[i].offset.x;
 			engineVersion.y += engineVersions[i].offset.y;
@@ -210,6 +248,7 @@ class MainMenuState extends MusicBeatState
 
 	var selectedSomethin:Bool = false;
 	var timeNotMoving:Float = 0;
+
 	override function update(elapsed:Float)
 	{
 		if (FlxG.sound.music.volume < 0.8)

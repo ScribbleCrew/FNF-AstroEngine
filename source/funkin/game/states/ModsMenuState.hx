@@ -769,22 +769,24 @@ class ModsMenuState extends MusicBeatState
 	}
 	
 	function saveTxt()
-	{
-		var fileStr:String = '';
-		for (mod in modsList.all)
 		{
-			if(mod.trim().length < 1) continue;
-
-			if(fileStr.length > 0) fileStr += '\n';
-
-			var on = '1';
-			if(modsList.disabled.contains(mod)) on = '0';
-			fileStr += '$mod|$on';
+			var fileStr:String = '';
+			for (mod in modsList.all)
+			{
+				if(mod.trim().length < 1) continue;
+	
+				if(fileStr.length > 0) fileStr += '\n';
+	
+				var on = '1';
+				if(modsList.disabled.contains(mod)) on = '0';
+				fileStr += '$mod|$on';
+			}
+	
+			var path:String = 'modsList.txt';
+			File.saveContent(path, fileStr);
+			Mods.parseList();
+			Mods.loadTopMod();
 		}
-
-		var path:String = 'modsList.txt';
-		File.saveContent(path, fileStr);
-	}
 }
 
 class ModItem extends FlxSpriteGroup

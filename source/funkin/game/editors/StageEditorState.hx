@@ -110,7 +110,7 @@ class StageEditorState extends MusicBeatState implements FlxUIEventHandler.FlxUI
 		var weekDir:String = stageJson.directory;
 		if (weekDir != null && weekDir.length > 0 && weekDir != '') directory = weekDir;
 
-		Paths.setCurrentLevel(directory);
+		Paths.currentLevel = directory;
 		trace('Setting asset folder to ' + directory);
 	}
 
@@ -1689,7 +1689,7 @@ class StageEditorState extends MusicBeatState implements FlxUIEventHandler.FlxUI
 					posTxt.text = 'X: ${selected.sprite.x}\nY: ${selected.sprite.y}';
 				}
 				_makeNewSprite = null;
-				//trace('Inside Psych Engine Folder');
+				//trace('Inside Astro Engine Folder');
 			}
 			else showOutput('Can\'t load files outside of "images/" folder', true);
 			//TO DO: Maybe make copy of loaded file to an usable folder automatically? That would be very practical

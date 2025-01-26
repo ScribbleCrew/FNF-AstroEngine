@@ -20,15 +20,20 @@
 ---
 
 <h2>Description:</h2>
-todo lol
+
+Astro Engine is a modded version of [FNF](https://github.com/FunkinCrew/Funkin) with enhanced features and optimizations.<br>
+More features coming soon...
 
 ---
 
 <h2>Installation:</h2>
-**Windows:** Run the `setup.bat` file.  
-**Unix-based systems (macOS, Linux):** Run the `setup.sh` file.
+
+**Windows:** Run the [`setup.bat`](setup.bat) file.  
+**Unix-based systems (macOS, Linux):** Run the [`setup.sh`](`setup.sh`) file.
 
 After it finishes, run `lime test windows -debug` in order to compile a build of **Astro Engine!!!** :3c ⭐
+
+also, refer to [BUILDING.md](BUILDING.md).
 
 ---
 
@@ -55,7 +60,7 @@ After it finishes, run `lime test windows -debug` in order to compile a build of
 
 <h2>Notice:</h2>
 
-- <p><strong>This Engine is not affiliated with Psych/Codename in any way!</strong></p>
+<p><strong>This Engine is not affiliated with <a href="https://github.com/ShadowMario/FNF-PsychEngine">Psych Engine</a> or <a href="https://github.com/CodenameCrew/CodenameEngine">Codename Engine</a> in any way!</strong></p>
 
 ---
 

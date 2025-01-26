@@ -49,7 +49,7 @@ class DialogueEditorState extends MusicBeatState implements FlxUIEventHandler.Fl
 		persistentUpdate = persistentDraw = true;
 		FlxG.camera.bgColor = FlxColor.fromHSL(0, 0, 0.5);
 
-		Paths.setCurrentLevel('week1');
+		Paths.currentLevel='week1';
 		new Stage();
 		var uhh = new FlxSprite().makeGraphic(FlxG.width,FlxG.height,FlxColor.BLACK);//im lazy to day Fuck types
 		uhh.alpha = 0.5;

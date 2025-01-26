@@ -95,12 +95,10 @@ class Paths
 		#if !html5 openfl.Assets.cache.clear("songs"); #end
 	}
 
-	static public var currentLevel:String;
+	static public var currentLevel(default, set):String;
 
-	static public function setCurrentLevel(name:String)
-	{
-		currentLevel = name.toLowerCase();
-	}
+	@:noCompletion private static inline function set_currentLevel(name:String)
+		return currentLevel = name.toLowerCase();
 
 	public static function getPath(file:String, ?type:AssetType = TEXT, ?parentfolder:String, ?modsAllowed:Bool = true):String
 	{
@@ -222,10 +220,7 @@ class Paths
 
 	static public function image(key:String, ?parentFolder:String = null, ?allowGPU:Bool = true):FlxGraphic
 	{
-		key = 'images/$key';
-		if (key.lastIndexOf('.') < 0)
-			key += '.png';
-
+		key = 'images/$key.png';
 		var bitmap:BitmapData = null;
 		if (currentTrackedAssets.exists(key))
 		{
@@ -247,7 +242,7 @@ class Paths
 
 			if (bitmap == null)
 			{
-				trace('oh no its returning null NOOOO ($file)');
+				trace('Bitmap not found: $file | key: $key');
 				return null;
 			}
 		}
@@ -267,7 +262,7 @@ class Paths
 			bitmap.readable = true;
 		}
 
-		var graph:FlxGraphic = FlxGraphic.fromBitmapData(bitmap, false, key);
+		final graph:FlxGraphic = FlxGraphic.fromBitmapData(bitmap, false, key);
 		graph.persist = true;
 		graph.destroyOnNoUse = false;
 
@@ -278,7 +273,7 @@ class Paths
 
 	inline static public function getTextFromFile(key:String, ?ignoreMods:Bool = false):String
 	{
-		var path:String = getPath(key, TEXT, true);
+		final path:String = getPath(key, TEXT, !ignoreMods);
 		#if sys
 		return (FileSystem.exists(path)) ? File.getContent(path) : null;
 		#else
@@ -286,46 +281,39 @@ class Paths
 		#end
 	}
 
-	inline static public function font(key:String)
+	static public function xmlAccess(path, ?mods:Bool = true):Access
+		return new Access(Xml.parse(!mods ? getTextFromFile(path, !mods) : File.getContent(path)).firstElement());
+
+	inline static public function font(key:String):String
 	{
 		#if MODS_ALLOWED
-		var file:String = modsFont(key);
+		final file:String = modsFont(key);
 		if (FileSystem.exists(file))
-		{
 			return file;
-		}
 		#end
 		return 'assets/fonts/$key';
 	}
 
-	inline static public function fileExists(key:String, type:AssetType, ?ignoreMods:Bool = false, ?library:String)
+	inline static public function fileExists(key:String, type:AssetType, ?ignoreMods:Bool = false, ?library:String):Bool
 	{
-		#if MODS_ALLOWED
-		if (FileSystem.exists(mods(Mods.currentModDirectory + '/' + key)) || FileSystem.exists(mods(key)))
-		{
-			return true;
-		}
-		#end
-
-		if (OpenFlAssets.exists(getPath(key, type)))
-		{
-			return true;
-		}
+		#if MODS_ALLOWED if (FileSystem.exists(mods(Mods.currentModDirectory + '/' + key)) || FileSystem.exists(mods(key))) return true; #end
+		if (OpenFlAssets.exists(getPath(key, type))) return true;
 		return false;
 	}
 
 	static public function getAtlas(key:String, ?parentFolder:String = null, ?allowGPU:Bool = true):FlxAtlasFrames
 	{
 		var useMod = false;
-		var imageLoaded:FlxGraphic = image(key, parentFolder);
+		
+		final loadedImage:FlxGraphic = image(key, parentFolder);
+		final myXml:Dynamic = getPath('images/$key.xml', TEXT, parentFolder, true);
 
-		var myXml:Dynamic = getPath('images/$key.xml', TEXT, parentFolder, true);
 		if (OpenFlAssets.exists(myXml) #if MODS_ALLOWED || (FileSystem.exists(myXml) && (useMod = true)) #end)
 		{
 			#if MODS_ALLOWED
-			return FlxAtlasFrames.fromSparrow(imageLoaded, (useMod ? File.getContent(myXml) : myXml));
+			return FlxAtlasFrames.fromSparrow(loadedImage, (useMod ? File.getContent(myXml) : myXml));
 			#else
-			return FlxAtlasFrames.fromSparrow(imageLoaded, myXml);
+			return FlxAtlasFrames.fromSparrow(loadedImage, myXml);
 			#end
 		}
 		else
@@ -334,9 +322,9 @@ class Paths
 			if (OpenFlAssets.exists(myJson) #if MODS_ALLOWED || (FileSystem.exists(myJson) && (useMod = true)) #end)
 			{
 				#if MODS_ALLOWED
-				return FlxAtlasFrames.fromTexturePackerJson(imageLoaded, (useMod ? File.getContent(myJson) : myJson));
+				return FlxAtlasFrames.fromTexturePackerJson(loadedImage, (useMod ? File.getContent(myJson) : myJson));
 				#else
-				return FlxAtlasFrames.fromTexturePackerJson(imageLoaded, myJson);
+				return FlxAtlasFrames.fromTexturePackerJson(loadedImage, myJson);
 				#end
 			}
 		}
@@ -434,6 +422,9 @@ class Paths
 	inline static public function modsFont(key:String)
 		return modFolders('fonts/' + key);
 
+	inline static public function modsDataXML(key:String)
+		return modFolders('data/' + key + '.xml');
+
 	inline static public function modsJson(key:String)
 		return modFolders('data/' + key + '.json');
 
@@ -479,74 +470,13 @@ class Paths
 			}
 		}
 
-		for (mod in getGlobalMods())
+		for (mod in Mods.getGlobalMods())
 		{
 			var fileToCheck:String = mods(mod + '/' + key);
 			if (FileSystem.exists(fileToCheck))
 				return fileToCheck;
 		}
 		return 'mods/' + key;
-	}
-
-	public static var globalMods:Array<String> = [];
-
-	static public function getGlobalMods()
-		return globalMods;
-
-	static public function pushGlobalMods() // prob a better way to do this but idc
-	{
-		globalMods = [];
-		var path:String = 'modsList.txt';
-		if (FileSystem.exists(path))
-		{
-			var list:Array<String> = CoolUtil.coolTextFile(path);
-			for (i in list)
-			{
-				var dat = i.split("|");
-				if (dat[1] == "1")
-				{
-					var folder = dat[0];
-					var path = Paths.mods(folder + '/pack.json');
-					if (FileSystem.exists(path))
-					{
-						try
-						{
-							var rawJson:String = File.getContent(path);
-							if (rawJson != null && rawJson.length > 0)
-							{
-								var stuff:Dynamic = Json.parse(rawJson);
-								var global:Bool = Reflect.getProperty(stuff, "runsGlobally");
-								if (global)
-									globalMods.push(dat[0]);
-							}
-						}
-						catch (e:Dynamic)
-						{
-							trace(e);
-						}
-					}
-				}
-			}
-		}
-		return globalMods;
-	}
-
-	static public function getModDirectories():Array<String>
-	{
-		var list:Array<String> = [];
-		var modsFolder:String = mods();
-		if (FileSystem.exists(modsFolder))
-		{
-			for (folder in FileSystem.readDirectory(modsFolder))
-			{
-				var path = haxe.io.Path.join([modsFolder, folder]);
-				if (sys.FileSystem.isDirectory(path) && !Mods.ignoreModFolders.contains(folder) && !list.contains(folder))
-				{
-					list.push(folder);
-				}
-			}
-		}
-		return list;
 	}
 	#end
 

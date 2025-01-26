@@ -21,31 +21,44 @@ class WindowUtil
 	#if (WINDOW_CUSTOMIZATION && windows)
 	@:isVar
 	public static var darkmode(default, set):Bool;
-
 	@:functionCode('
     int darkMode = enable ? 1 : 0;
     HWND window = GetActiveWindow();
     if (S_OK != DwmSetWindowAttribute(window, 19, &darkMode, sizeof(darkMode)))
         DwmSetWindowAttribute(window, 20, &darkMode, sizeof(darkMode));
     ')
-	@:noCompletion private static function set_darkmode(enable:Bool)
+	@:noCompletion private static function set_darkmode(enable:Bool):Bool
 	{
-		trace('Darkmode ${enable ? 'Enabled' : 'Disabled'}');
-
 		if (!OsAPI.osInfo.contains('11')) refreshWindow();
-
-		trace(enable);
+		trace('${enable ? 'enabled' : 'disabled'} darkmode');
 		return darkmode = enable;
 	}
 	#end
 
+	/**
+		Refreshes the current window;
+		NEEDS: hasn't been checked yet.
+	**/
+	#if windows
 	@:functionCode('
 	HWND hwnd = GetActiveWindow();
 	InvalidateRect(hwnd, NULL, TRUE);
 	UpdateWindow(hwnd);
 	') //idk if this actually works
-	public static function refreshWindow() {}
+	#end
+	public static function refreshWindow() : Void {
+		Application.current.window.width += 1;
+		Application.current.window.width -= 1;
+		/**
+		Application.current.window.borderless = true;
+		Application.current.window.borderless = false;
+		**/
+	}
 
+	
+	/**
+		Change the title.
+	**/
 	public static function setTitle(?title:String, ?normal:Bool = true):String
 	{
 		var titleChange:String = null;
@@ -53,11 +66,9 @@ class WindowUtil
 		return Application.current.window.title = titleChange ?? Application.current.meta.get('name');
 	}
 
+	/**
+		Reset the title.
+	**/
 	public static function resetTitle():String
 		return Application.current.window.title = Application.current.meta.get('name');
 }
-
-/**
-Application.current.window.borderless = true;
-Application.current.window.borderless = false;
-**/

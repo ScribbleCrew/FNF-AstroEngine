@@ -33,7 +33,6 @@ import funkin.backend.base.BaseStage.Countdown;
 import funkin.backend.ui.*;
 import funkin.backend.handlers.*;
 import funkin.backend.objects.*;
-import funkin.backend.Structures;
 import funkin.backend.objects.editers.*;
 import funkin.backend.objects.editers.VSlice;
 import funkin.backend.animation.*;

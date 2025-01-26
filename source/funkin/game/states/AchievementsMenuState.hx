@@ -1,10 +1,10 @@
 package funkin.game.states;
 
+#if ACHIEVEMENTS_ALLOWED
 import funkin.backend.Achievements.Achievement;
 import flixel.FlxObject;
 import flixel.util.FlxSort;
 
-#if ACHIEVEMENTS_ALLOWED
 class AchievementsMenuState extends MusicBeatState
 {
 	public var curSelected:Int = 0;

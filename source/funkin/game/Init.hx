@@ -50,28 +50,28 @@ class Init extends flixel.FlxState
 		// Extra stuff goes here :3
 
 		FlxG.switchState(new TitleState());
+		
 	}
 
 	private function init():Void
 	{
-		FlxG.fixedTimestep = #if html5 FlxG.mouse.visible = #end
-		false;
+		trace(OsAPI.osInfo + ' ' + OsAPI.osVersion);
+
+		FlxG.fixedTimestep = #if html5 FlxG.mouse.visible = #end false;
 		FlxG.keys.preventDefaultKeys = [TAB];
 		FlxG.game.focusLostFramerate = 30;
 
-		if (FlxG.save.data != null && FlxG.save.data.fullscreen)
-			FlxG.fullscreen = FlxG.save.data.fullscreen;
-		if (FlxG.save.data.weekCompleted != null)
-			funkin.game.states.StoryMenuState.weekCompleted = FlxG.save.data.weekCompleted;
+		if (FlxG.save.data != null && FlxG.save.data.fullscreen) FlxG.fullscreen = FlxG.save.data.fullscreen;
+		if (FlxG.save.data.weekCompleted != null) funkin.game.states.StoryMenuState.weekCompleted = FlxG.save.data.weekCompleted;
 	}
 
 	#if CRASH_HANDLER
-	private function initCrashHandler()
+	private function initCrashHandler():Void
 		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, CrashHandler.main);
 	#end
 
 	#if SHADERS_ALLOWED
-	private function fragFix()
+	private function fragFix():Void
 	{
 		FlxG.signals.gameResized.add(function(w, h)
 		{

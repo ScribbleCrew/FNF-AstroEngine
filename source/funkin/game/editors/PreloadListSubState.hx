@@ -142,7 +142,7 @@ class PreloadListSubState extends MusicBeatSubstate implements FlxUIEvent
 						showOutput('File must be inside assets/mods folder!', true);
 				}
 			}
-			else showOutput('File is not inside Psych Engine\'s folder!', true);
+			else showOutput('File is not inside Astro Engine\'s folder!', true);
 		}
 
 		var loadFileBtn:FlxUIButton = new FlxUIButton(0, bg.y + bg.height - 40, 'Load File', function()

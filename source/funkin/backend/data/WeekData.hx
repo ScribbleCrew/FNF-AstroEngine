@@ -126,7 +126,7 @@ class WeekData
 			}
 		}
 
-		var modsDirectories:Array<String> = Paths.getModDirectories();
+		var modsDirectories:Array<String> = Mods.getModDirectories();
 		for (folder in modsDirectories)
 		{
 			var pathThing:String = haxe.io.Path.join([Paths.mods(), folder]) + '/';

@@ -8,12 +8,13 @@ class HealthIcon extends FlxSprite
 	@:noCompletion private var _iconOffsets:Array<Float> = [0, 0];
 	@:noCompletion private var _character:String = '';
 
-	public var sprTracker:FlxSprite;
-	public var autoAdjustOffset:Bool = true;
-
+	@:isVar
 	public var character(get,never):String;
 	@:noCompletion private inline function get_character():String
 		return _character;
+	
+	public var sprTracker:FlxSprite;
+	public var autoAdjustOffset:Bool = true;
 
 	public function new(char:String = 'face', isPlayer:Bool = false, ?allowGPU:Bool = true)
 	{

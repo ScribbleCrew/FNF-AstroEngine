@@ -80,6 +80,8 @@ class TitleState extends MusicBeatState
 	override public function create():Void
 	{
 		Paths.clearStoredMemory();
+		super.create();
+		Paths.clearUnusedMemory();
 
 		#if desktop
 		DiscordClient.changePresence("Viewing The Title", null);
@@ -91,9 +93,7 @@ class TitleState extends MusicBeatState
 		curWacky = FlxG.random.getObject(getIntroTextShit());
 
 		// DEBUG BULLSHIT
-
 		swagShader = new ColorSwap();
-		super.create();
 
 		#if CHECK_FOR_UPDATES
 		if (ClientPrefs.data.checkForUpdates && !closedState)
