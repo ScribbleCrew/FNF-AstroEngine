@@ -1,4 +1,4 @@
-name: MacOs Build
+name: macOS
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   buildMac:
-    name: Macos Build
+    name: Release Build
     runs-on: macos-15
 
     steps:

@@ -1,4 +1,4 @@
-name: Windows Build
+name: Windows
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   buildWindows:
-    name: Windows Build
+    name: Release Build
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2.3.0

@@ -2,7 +2,7 @@
 <!-- Goofy ah code -orbl -->
 <credits>
     <category name="Astro Engine Team">
-        <credit name="YourFriendOrbl" icon="orbl" description="Main Programmer of Astro Engine" link="https://x.com/YourFriendOrbl" color="BA7EFF" />
+        <credit name="YourFriendOrbl" icon="orbl" description="Main Programmer of Astro Engine" link="https://x.com/YourFriendOrbl" /> <!-- color="BA7EFF" -->
     </category>
     <category name="Engine Contributors">
         <credit name="Keoiki" icon="keoiki" description="Note Splash Animations and Latin Alphabet" link="https://x.com/Keoiki_" color="D2D2D2" />

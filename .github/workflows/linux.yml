@@ -1,4 +1,4 @@
-name: Linux Build
+name: Linux
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
    buildLinux:
-    name: Linux Build
+    name: Release Build
     runs-on: ubuntu-24.04
 
     steps:
