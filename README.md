@@ -19,6 +19,7 @@
 
 ---
 
+<br>
 <h2>Description:</h2>
 
 Astro Engine is a modded version of [FNF](https://github.com/FunkinCrew/Funkin) with enhanced features and optimizations.<br>
@@ -26,6 +27,7 @@ More features coming soon...
 
 ---
 
+<br>
 <h2>Installation:</h2>
 
 **Windows:** Run the [`setup.bat`](setup.bat) file.  
@@ -37,18 +39,21 @@ also, refer to [BUILDING.md](BUILDING.md).
 
 ---
 
+<br>
 <h2>Known Bugs & Fixes:</h2>
 
-- "Could not parse frame number of x", install `haxelib install flixel 5.6.1`.
+**"Could not parse frame number of x"**, install `haxelib install flixel 5.6.1`.
 
 ---
 
+<br>
 <h2>AE Credits:</h2>
 
 **YourFriendOrbl** - Programmer of Astro Engine • **[X](https://x.com/YourFriendOrbl)**<br>
 
 ---
 
+<br>
 <h2>FNF Credits:</h2>
 
 **ninjamuffin99** - Programmer of Friday Night Funkin' • **[X](https://x.com/ninja_muffin99)**<br>
@@ -58,6 +63,7 @@ also, refer to [BUILDING.md](BUILDING.md).
 
 ---
 
+<br>
 <h2>Notice:</h2>
 
 <p><strong>This Engine is not affiliated with <a href="https://github.com/ShadowMario/FNF-PsychEngine">Psych Engine</a> or <a href="https://github.com/CodenameCrew/CodenameEngine">Codename Engine</a> in any way!</strong></p>
