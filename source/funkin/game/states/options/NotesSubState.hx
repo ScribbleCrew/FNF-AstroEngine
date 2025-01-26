@@ -1,45 +1,20 @@
-package funkin.game.options;
+package funkin.game.states.options;
 
+import flixel.FlxG;
+import flixel.math.FlxMath;
+import flixel.FlxSprite;
 import flixel.addons.display.shapes.FlxShapeCircle;
+import flixel.input.keyboard.FlxKey;
 import flixel.util.FlxGradient;
-import flixel.addons.display.FlxBackdrop;
-import funkin.backend.system.MusicBeatSubstate;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
+import flixel.group.FlxGroup.FlxTypedGroup;
+
+import lime.system.Clipboard;
+
 #if desktop
 import funkin.backend.client.Discord.DiscordClient;
 #end
-import flash.text.TextField;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import funkin.backend.utils.ClientPrefs;
-import flixel.addons.display.FlxGridOverlay;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxMath;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
-import lime.utils.Assets;
-import flixel.FlxSubState;
-import flash.text.TextField;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.util.FlxSave;
-import haxe.Json;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
-import funkin.game.objects.shaders.ColorSwap;
-import flixel.util.FlxTimer;
-import flixel.input.keyboard.FlxKey;
-import flixel.graphics.FlxGraphic;
-import funkin.backend.utils.Controls;
-import funkin.backend.data.*;
-import flixel.addons.display.FlxBackdrop;
-import flixel.addons.display.FlxGridOverlay;
-import flixel.addons.display.shapes.FlxShapeCircle;
-import flixel.input.keyboard.FlxKey;
-import flixel.input.gamepad.FlxGamepadInputID;
-import lime.system.Clipboard;
-import flixel.util.FlxGradient;
-
-
 
 class NotesSubState extends BaseMenu
 {

@@ -1,6 +1,6 @@
 package funkin.game.states.substates; 
 
-import funkin.game.options.objects.Option.OptionType;
+import funkin.game.objects.options.Option.OptionType;
 import flixel.AttachedFlxText;
 #if desktop
 import funkin.backend.client.Discord.DiscordClient;
@@ -27,7 +27,7 @@ import flixel.input.keyboard.FlxKey;
 import flixel.graphics.FlxGraphic;
 import funkin.backend.utils.Controls;
 import funkin.backend.system.MusicBeatSubstate;
-import funkin.game.options.objects.CheckboxThingie;
+import funkin.game.objects.options.CheckboxThingie;
 import funkin.game.objects.Alphabet;
 
 

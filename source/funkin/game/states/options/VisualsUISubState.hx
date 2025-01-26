@@ -1,4 +1,4 @@
-package funkin.game.options;
+package funkin.game.states.options;
 
 #if desktop
 import funkin.backend.client.Discord.DiscordClient;

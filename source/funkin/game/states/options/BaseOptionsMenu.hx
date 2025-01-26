@@ -1,4 +1,4 @@
-package funkin.game.options;
+package funkin.game.states.options;
 
 import flixel.input.gamepad.FlxGamepad;
 import flixel.input.gamepad.FlxGamepadInputID;
@@ -32,10 +32,9 @@ import funkin.backend.system.MusicBeatSubstate;
 import funkin.backend.system.MusicBeatState;
 import flixel.AttachedFlxText;
 import funkin.game.objects.*;
-import funkin.game.options.objects.CheckboxThingie;
 import funkin.game.objects.Alphabet;
 
-class BaseOptionsMenu extends MusicBeatSubstate
+class BaseOptionsMenu extends BaseMenu
 {
 	private var curOption:Option = null;
 	private var curSelected:Int = 0;
@@ -51,9 +50,6 @@ class BaseOptionsMenu extends MusicBeatSubstate
 	public var title:String;
 	public var rpcTitle:String;
 
-	public var bg:FlxSprite;
-	public var grid:FlxBackdrop;
-
 	public function new()
 	{
 		super();
@@ -67,18 +63,6 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		DiscordClient.changePresence(rpcTitle, null);
 		#end
 		WindowUtil.setTitle('Options - $title');
-
-		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		bg.color = EngineData.coreGame.menuColor;
-		bg.screenCenter();
-		bg.antialiasing = funkin.backend.utils.ClientPrefs.data.globalAntialiasing;
-		add(bg);
-
-		grid = new FlxBackdrop(FlxGridOverlay.createGrid(80, 80, 160, 160, true, 0x33FFFFFF, 0x0));
-		grid.velocity.set(40, 40);
-		grid.alpha = 0;
-		FlxTween.tween(grid, {alpha: 1}, 0.5, {ease: FlxEase.quadOut});
-		add(grid);
 
 		// avoids lagspikes while scrolling through menus!
 		grpOptions = new FlxTypedGroup<Alphabet>();

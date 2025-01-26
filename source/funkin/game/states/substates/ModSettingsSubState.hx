@@ -2,8 +2,7 @@ package funkin.game.states.substates;
 
 import flixel.input.keyboard.FlxKey;
 import flixel.input.gamepad.FlxGamepadInputID;
-import funkin.game.options.objects.Option.OptionType;
-import funkin.game.options.BaseOptionsMenu;
+import funkin.game.objects.options.Option.OptionType;
 
 class ModSettingsSubState extends BaseOptionsMenu
 {

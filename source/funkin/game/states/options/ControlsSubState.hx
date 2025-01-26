@@ -1,4 +1,4 @@
-package funkin.game.options;
+package funkin.game.states.options;
 
 import flixel.AttachedFlxText;
 import funkin.backend.system.MusicBeatSubstate;

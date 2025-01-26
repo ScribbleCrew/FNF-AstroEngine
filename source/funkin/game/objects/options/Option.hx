@@ -1,4 +1,4 @@
-package funkin.game.options.objects;
+package funkin.game.objects.options;
 
 typedef Keybind = {
 	keyboard:String,
