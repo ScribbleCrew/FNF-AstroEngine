@@ -41,6 +41,9 @@
 	<!-- Enables astro engine watermarks. -->
 	<define name="ASTRO_WATERMARKS"/>
 
+	<!-- Enables astro engine watermarks. -->
+	<define name="WINDOW_CUSTOMIZATION" if="desktop"/>
+	
 	<!-- Shaders Allowed -->
 	<define name="SHADERS_ALLOWED" unless="flash"/>
 	

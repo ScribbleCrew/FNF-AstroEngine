@@ -14,9 +14,13 @@ import lime.app.Application;
 #end
 class WindowUtil
 {
-	#if windows
+	/**
+		Set the window to darkmode.
+		REQUIRES: windows based system.
+	**/
+	#if (WINDOW_CUSTOMIZATION && windows)
 	@:isVar
-	public static var darkmode(default,set):Bool;
+	public static var darkmode(default, set):Bool;
 
 	@:functionCode('
     int darkMode = enable ? 1 : 0;
@@ -24,35 +28,36 @@ class WindowUtil
     if (S_OK != DwmSetWindowAttribute(window, 19, &darkMode, sizeof(darkMode)))
         DwmSetWindowAttribute(window, 20, &darkMode, sizeof(darkMode));
     ')
-	@:noCompletion private static function set_darkmode(enable:Bool){
+	@:noCompletion private static function set_darkmode(enable:Bool)
+	{
 		trace('Darkmode ${enable ? 'Enabled' : 'Disabled'}');
 
-		// Windows 11 support????????
-		if (!OsAPI.osInfo.contains('11')){
-			// meh
-			Application.current.window.borderless = true;
-			Application.current.window.borderless = false;
-		}
+		if (!OsAPI.osInfo.contains('11')) refreshWindow();
 
-		trace(OsAPI.osInfo + ' ' + OsAPI.osVersion);
 		trace(enable);
 		return darkmode = enable;
 	}
 	#end
 
-	public static function setTitle(?s:String, ?normal:Bool = true)
+	@:functionCode('
+	HWND hwnd = GetActiveWindow();
+	InvalidateRect(hwnd, NULL, TRUE);
+	UpdateWindow(hwnd);
+	') //idk if this actually works
+	public static function refreshWindow() {}
+
+	public static function setTitle(?title:String, ?normal:Bool = true):String
 	{
-		if (s != null)
-		{
-			if (normal)// dis it problem 
-				Application.current.window.title = Application.current.meta.get('name') + " - " + s;
-			else
-				Application.current.window.title = s;
-		} else {
-			Application.current.window.title = Application.current.meta.get('name');
-		}
+		var titleChange:String = null;
+		if (title != null) titleChange = (normal ? '${Application.current.meta.get('name')} - ' : '') + title;
+		return Application.current.window.title = titleChange ?? Application.current.meta.get('name');
 	}
 
-	public static function resetTitle()
-		Application.current.window.title = Application.current.meta.get('name');
+	public static function resetTitle():String
+		return Application.current.window.title = Application.current.meta.get('name');
 }
+
+/**
+Application.current.window.borderless = true;
+Application.current.window.borderless = false;
+**/
