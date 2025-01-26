@@ -1,7 +1,7 @@
 <!-- https://shields.io/badges/git-hub-actions-workflow-status -->
 
 <div align="center">
-    <img src="art/branding/4000x rounded.png" width="250" height="250" style="border-radius: 15%;"/>
+    <img src="https://raw.githubusercontent.com/ScribbleCrew/.github/refs/heads/main/branding/4000x%20rounded.png" width="250" height="250" style="border-radius: 15%;"/>
     <br>
     <h1>Friday Night Funkin' • AE [<strong>ALPHA</strong>]</h1>
     <br>    
@@ -32,12 +32,13 @@ After it finishes, run `lime test windows -debug` in order to compile a build of
 
 ---
 
-<h2>Bugs:</h2>
+<h2>Known Bugs & Fixes:</h2>
+
 - "Could not parse frame number of x", install `haxelib install flixel 5.6.1`.
 
 ---
 
-<h2>Credits:</h2>
+<h2>AE Credits:</h2>
 
 **YourFriendOrbl** - Programmer of Astro Engine • **[X](https://x.com/YourFriendOrbl)**<br>
 
@@ -49,6 +50,12 @@ After it finishes, run `lime test windows -debug` in order to compile a build of
 **PhantomArcade** - Animator of Friday Night Funkin' • **[X](https://x.com/PhantomArcade3K)**<br>
 **evilsk8r** - Artist of Friday Night Funkin' • **[X](https://x.com/evilsk8r)**<br>
 **kawaisprite** - Composer of Friday Night Funkin' • **[X](https://x.com/kawaisprite)**<br>
+
+---
+
+<h2>Notice:</h2>
+
+- <p><strong>This Engine is not affiliated with Psych/Codename in any way!</strong></p>
 
 ---
 
