@@ -14,8 +14,6 @@ import funkin.backend.utils.Paths;
 import funkin.backend.client.Discord.DiscordClient;
 #end
 
-
-
 class StatsSubState extends BaseMenu
 {
 	private var text:FlxText;
@@ -56,22 +54,23 @@ class StatsSubState extends BaseMenu
 
 		changeSelection();
 	}
-	
-	function regenStats() {
+
+	function regenStats()
+	{
 		grpTexts.clear();
 		for (i in 0...statID.length)
-			{
-				statsTxt = new Alphabet(0, 200, "N/A: 0000", false);
-				statsTxt.screenCenter();
-				statsTxt.text = statID[i] + ": " + ClientPrefs.data.stats.get(statID[i]);
-				statsTxt.screenCenter();
-				statsTxt.astroMenuItem = true;
-				statsTxt.changeX = false;
-				statsTxt.targetY = i;
-				statsTxt.ID = i;
-				statsTxt.changeX = false;
-				grpTexts.add(statsTxt);
-			}
+		{
+			statsTxt = new Alphabet(0, 200, "N/A: 0000", false);
+			statsTxt.screenCenter();
+			statsTxt.text = statID[i] + ": " + ClientPrefs.data.stats.get(statID[i]);
+			statsTxt.screenCenter();
+			statsTxt.astroMenuItem = true;
+			statsTxt.changeX = false;
+			statsTxt.targetY = i;
+			statsTxt.ID = i;
+			statsTxt.changeX = false;
+			grpTexts.add(statsTxt);
+		}
 	}
 
 	override function update(elapsed:Float)
