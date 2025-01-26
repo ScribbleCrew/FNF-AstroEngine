@@ -163,18 +163,18 @@ class PlayState extends MusicBeatState
 	/**
 	 * Set the song's speed.
 	 */
-	 public var songSpeed(default, set):Float = 1;
-	 @:dox(hide) @:noCompletion private inline function set_songSpeed(value:Float):Float
-	 {
-		 if (generatedMusic)
-		 {
-			 final ratio:Float = value / songSpeed; // funny word huh
-			 for (note in notes.members.concat(unspawnNotes))
-				 note.resizeByRatio(ratio);
-		 }
-		 noteKillOffset = 350 / songSpeed;
-		 return songSpeed = value;
-	 }
+	public var songSpeed(default, set):Float = 1;
+	@:dox(hide) @:noCompletion private inline function set_songSpeed(value:Float):Float
+	{
+		if (generatedMusic)
+		{
+			final ratio:Float = value / songSpeed; // funny word huh
+			for (note in notes.members.concat(unspawnNotes))
+				note.resizeByRatio(ratio);
+		}
+		noteKillOffset = 350 / songSpeed;
+		return songSpeed = value;
+	}
 
 	/**
 	 * If the current stage is the pixel stage.
@@ -188,7 +188,6 @@ class PlayState extends MusicBeatState
 	@:isVar
 	@:deprecated("Deprecated: Isn't really used much. i think...")
 	public static var isPixelStage(get, never):Bool;
-
 	@:dox(hide) @:noCompletion private inline static function get_isPixelStage():Bool
 		return stageUI == "pixel" || stageUI.endsWith("-pixel");
 
@@ -328,41 +327,124 @@ class PlayState extends MusicBeatState
 	 */
 	private var strumLine:FlxSprite;
 
-	// Handles the new epic mega sexy cam code that i've done
+	/**
+	 * The camera follow.
+	 */
 	public var camFollow:FlxObject;
 
+	/**
+	 * The previous camera follow.
+	 */
 	private static var prevCamFollow:FlxObject;
 
+	/**
+	 * The strum line notes group.
+	 */
 	public var strumLineNotes:FlxTypedGroup<StrumNote>;
+
+	/**
+	 * The opponents strums group.
+	 */
 	public var opponentStrums:FlxTypedGroup<StrumNote>;
+
+	/**
+	 * The players strums group.
+	 */
 	public var playerStrums:FlxTypedGroup<StrumNote>;
+
+	/**
+	 * The note splash group.
+	 */
 	public var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
 
+	/**
+	 * If the camera is allowed to zoom.
+	 */
 	public var camZooming:Bool = false;
+
+	/**
+	 * The camera's zoom multiplier.
+	 */
 	public var camZoomingMult:Float = 1;
+
+	/**
+	 * The camera's zoom decay.
+	 */
 	public var camZoomingDecay:Float = 1;
 
+	/**
+	 * Girlfriend's bop speed.
+	 */
 	public var gfSpeed:Int = 1;
+
+	/**
+	 * The player's health.
+	 */
 	public var health:Float = 1;
+
+	/**
+	 * The player's combo.
+	 */
 	public var combo:Int = 0;
 
-	var songPercent:Float = 0;
+	/**
+	 * The song's percent.
+	 */
+	private var songPercent:Float = 0;
 
+	/**
+	 * If the music has been generated.
+	 */
 	private var generatedMusic:Bool = false;
 
+	/**
+	 * Is the song ending.
+	 */
 	public var endingSong:Bool = false;
+
+	/**
+	 * Has the song started.
+	 */
 	public var startingSong:Bool = false;
 
+	/**
+	 * If timebar should update.
+	 */
 	private var updateTime:Bool = true;
 
+	/**
+	 * Has the difficulty been changed.
+	 */
 	public static var changedDifficulty:Bool = false;
+
+	/**
+	 * If the player is in charting mode.
+	 */
 	public static var chartingMode:Bool = false;
 
-	// Gameplay settings
+	/**
+	 * The amount the player gain on a hit.
+	 */
 	public var healthGain:Float = 1;
+
+	/**
+	 * The players health loss on a miss.
+	 */
 	public var healthLoss:Float = 1;
+
+	/**
+	 * If the player should be killed when missing a note.
+	 */
 	public var instakillOnMiss:Bool = false;
+
+	/**
+	 * Botplay.
+	 */
 	public var cpuControlled:Bool = false;
+
+	/**
+	 * Practice Mode.
+	 */
 	public var practiceMode:Bool = false;
 
 	// Cameras
@@ -3857,7 +3939,7 @@ class PlayState extends MusicBeatState
 		if(excludeValues == null) excludeValues = new Array();
 		excludeValues.push(LuaUtils.Function_Continue);
 
-		var len:Int = hscriptArray.length;
+		final len:Int = hscriptArray.length;
 		if (len < 1)
 			return returnVal;
 
@@ -3881,10 +3963,8 @@ class PlayState extends MusicBeatState
 				if(myValue != null && !excludeValues.contains(myValue))
 					returnVal = myValue;
 			}
-			catch(e:Dynamic)
-			{
-				addTextToDebug('ERROR (${script.origin}: $funcToCall) - $e', FlxColor.RED);
-			}
+			catch(error:Dynamic)
+				addTextToDebug('ERROR (${script.origin}: $funcToCall) - $error', FlxColor.RED);
 		}
 		#end
 
