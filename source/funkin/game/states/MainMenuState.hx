@@ -25,7 +25,6 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import lime.app.Application;
-import funkin.game.editors.MasterEditorMenu;
 import flixel.input.keyboard.FlxKey;
 import funkin.backend.data.*;
 import funkin.backend.system.MusicBeatSubstate;

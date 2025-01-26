@@ -1,6 +1,5 @@
 package funkin.backend.objects.editers;
 
-import funkin.game.editors.ChartingState;
 import flixel.addons.display.FlxGridOverlay;
 
 // Laggier than a single sprite for the grid, but this is to avoid having to re-create the sprite constantly

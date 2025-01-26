@@ -3,7 +3,7 @@ package funkin.game.states;
 #if desktop
 import funkin.backend.client.Discord.DiscordClient;
 #end
-import funkin.game.editors.ChartingState;
+
 import funkin.game.objects.HealthIcon;
 import funkin.game.states.PlayState;
 import funkin.game.states.substates.GameplayChangersSubstate;

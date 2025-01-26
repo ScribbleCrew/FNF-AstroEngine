@@ -1,4 +1,4 @@
-package funkin.game.editors;
+package funkin.game.states.editors;
 
 #if LUA_ALLOWED
 import llua.Lua;

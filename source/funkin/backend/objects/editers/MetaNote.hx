@@ -1,5 +1,5 @@
 package funkin.backend.objects.editers;
-import funkin.game.editors.ChartingState;
+
 import flixel.util.FlxDestroyUtil;
 
 class MetaNote extends Note

@@ -9,7 +9,7 @@ class ExitConfirmationPrompt extends Prompt
 		super('There\'s unsaved progress,\nare you sure you want to exit?', function()
 		{
 			FlxG.mouse.visible = false;
-			MusicBeatState.switchState(new funkin.game.editors.MasterEditorMenu());
+			MusicBeatState.switchState(new MasterEditorMenu());
 			FlxG.sound.playMusic(Paths.music('freakyMenu'));
 			if(finishCallback != null) finishCallback();
 		}, 'Exit');

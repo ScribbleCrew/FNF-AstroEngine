@@ -1,4 +1,4 @@
-package funkin.game.editors;
+package funkin.game.states.editors;
 
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxDestroyUtil;

@@ -473,7 +473,7 @@ class Character extends FlxSprite
 
 	// Atlas support
 	// special thanks ne_eo for the references, you're the goat!!
-	@:allow(funkin.game.editors.CharacterEditorState)
+	@:allow(funkin.game.states.editors.CharacterEditorState)
 	public var isAnimateAtlas(default, null):Bool = false;
 	#if FLXANIMATE_ALLOWED
 	public var atlas:FlxAnimate;

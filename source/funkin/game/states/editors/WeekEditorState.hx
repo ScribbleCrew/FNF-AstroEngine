@@ -1,4 +1,4 @@
-package funkin.game.editors;
+package funkin.game.states.editors;
 
 import funkin.backend.data.WeekData;
 import funkin.backend.data.WeekData.WeekFile;

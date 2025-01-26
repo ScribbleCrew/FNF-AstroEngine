@@ -1,7 +1,7 @@
 package funkin.game.objects.notes;
 
 import funkin.backend.animation.AstroAnimationController;
-import funkin.game.editors.ChartingState;
+
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
@@ -11,7 +11,7 @@ import flixel.util.FlxColor;
 import flash.display.BitmapData;
 import funkin.backend.Conductor;
 import funkin.backend.utils.ClientPrefs;
-import funkin.game.editors.ChartingState;
+
 import funkin.game.objects.shaders.ColorSwap;
 
 typedef EventNote =

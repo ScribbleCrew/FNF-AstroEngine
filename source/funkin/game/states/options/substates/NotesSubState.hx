@@ -1,4 +1,4 @@
-package funkin.game.states.options;
+package funkin.game.states.options.substates;
 
 import flixel.FlxG;
 import flixel.math.FlxMath;

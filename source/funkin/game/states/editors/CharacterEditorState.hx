@@ -1,4 +1,4 @@
-package funkin.game.editors;
+package funkin.game.states.editors;
 
 import funkin.game.objects.characters.Character.AnimArray;
 import flixel.graphics.FlxGraphic;
@@ -1067,7 +1067,7 @@ class CharacterEditorState extends MusicBeatState implements FlxUIEventHandler.F
 			{
 				if(!unsavedProgress)
 				{
-					MusicBeatState.switchState(new funkin.game.editors.MasterEditorMenu());
+					MusicBeatState.switchState(new MasterEditorMenu());
 					FlxG.sound.playMusic(Paths.music('freakyMenu'));
 				}
 				else openSubState(new Prompt.ExitConfirmationPrompt());

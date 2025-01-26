@@ -1,4 +1,4 @@
-package funkin.game.editors;
+package funkin.game.states.editors;
 import funkin.game.states.LoadingState;
 
 import funkin.backend.Song.SwagSong;

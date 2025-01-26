@@ -1,4 +1,4 @@
-package funkin.game.editors;
+package funkin.game.states.editors;
 
 import funkin.backend.ui.FlxUIRadioGroup.FlxUiRadioItem;
 import funkin.backend.data.StageData.LoadFilters;

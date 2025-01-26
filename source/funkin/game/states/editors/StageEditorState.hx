@@ -1,4 +1,4 @@
-package funkin.game.editors;
+package funkin.game.states.editors;
 
 import flixel.addons.transition.FlxTransitionableState;
 import funkin.game.objects.characters.Character.AnimArray;
