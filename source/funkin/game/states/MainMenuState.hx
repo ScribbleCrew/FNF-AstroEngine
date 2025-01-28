@@ -5,7 +5,7 @@ import flixel.FlxSubState;
 import haxe.extern.EitherType;
 import funkin.backend.CoolUtil;
 import funkin.backend.data.*;
-#if (desktop && DISCORD_ALLOWED)
+#if DISCORD_ALLOWED
 import funkin.backend.client.Discord.DiscordClient;
 #end
 import flixel.FlxG;
@@ -218,7 +218,7 @@ class MainMenuState extends MusicBeatState
 		for (i in 0...engineVersions.length)
 		{
 			final engineVersion:FlxText = new FlxText(12, FlxG.height - 22 * (i + 1), 0, engineVersions[i].name + engineVersions[i].version);
-			engineVersion.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			engineVersion.setFormat(Constants.DEFAULT_FONT, 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			engineVersion.x += engineVersions[i].offset.x;
 			engineVersion.y += engineVersions[i].offset.y;
 			engineVersion.scrollFactor.set();
@@ -285,6 +285,8 @@ class MainMenuState extends MusicBeatState
 							distItem = i;
 							allowMouse = true;
 						}
+						if(FlxG.mouse.justPressed)
+							onStateChange();
 					}
 				}
 
@@ -324,7 +326,7 @@ class MainMenuState extends MusicBeatState
 				MusicBeatState.switchState(new funkin.game.states.TitleState());
 			}
 
-			if (controls.ACCEPT || FlxG.mouse.justPressed || (FlxG.mouse.justPressedMiddle))
+			if (controls.ACCEPT || (FlxG.mouse.justPressedMiddle))
 				onStateChange();
 			#if desktop
 			else if (FlxG.keys.anyJustPressed(debugKeys))

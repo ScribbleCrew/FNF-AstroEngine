@@ -59,7 +59,7 @@ class MusicPlayer extends FlxGroup
 		for (i in 0...2)
 		{
 			var text:FlxText = new FlxText();
-			text.setFormat(Paths.font('vcr.ttf'), 32, FlxColor.WHITE, CENTER);
+			text.setFormat(Constants.DEFAULT_FONT, 32, FlxColor.WHITE, CENTER);
 			text.text = '^';
 			if (i == 1)
 				text.flipY = true;

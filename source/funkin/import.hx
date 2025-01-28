@@ -13,13 +13,16 @@ import funkin.game.transitions.*;
 import funkin.game.objects.characters.*;
 import funkin.game.objects.options.*;
 import funkin.game.editors.content.*;
+
 import funkin.game.states.substates.*;
 import funkin.game.states.options.*;
 import funkin.game.states.editors.*;
 import funkin.game.states.options.substates.*;
+
 import funkin.game.objects.shaders.*;
 import funkin.game.objects.scorebars.*;
 import funkin.game.objects.stages.*;
+import funkin.game.objects.mods.*;
 import funkin.game.objects.notes.Note.EventNote;
 import funkin.game.objects.shaders.RGBPalette.RGBShaderReference;
 
@@ -93,6 +96,7 @@ import haxe.*;
 
 //Openfl
 import openfl.utils.Assets as OpenFlAssets;
+import openfl.display.BitmapData;
 
 // Flixel
 import flixel.*;

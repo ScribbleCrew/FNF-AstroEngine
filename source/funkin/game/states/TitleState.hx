@@ -124,7 +124,7 @@ class TitleState extends MusicBeatState
 		#end
 
 		// IGNORE THIS!!!
-		titleJSON = tjson.TJSON.parse(Paths.getTextFromFile('data/titleJson.json'));
+		titleJSON = tjson.TJSON.parse(Paths.getTextFromFile('data/json/titleJson.json'));
 
 		if (!initialized)
 			persistentUpdate = persistentDraw = true;

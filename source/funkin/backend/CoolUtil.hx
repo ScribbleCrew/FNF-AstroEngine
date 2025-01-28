@@ -51,6 +51,20 @@ class CoolUtil
 		}
 	}
 
+	public static function openFolder(path:String):Dynamic
+	{
+		#if sys
+		final runProcess:String = #if windows "explorer" #elseif mac "open" #elseif linux "xdg-open" #else '' #end;
+		#if linux
+		return Sys.command(runProcess, [path]);
+		#else
+		return new sys.io.Process(runProcess, [path]);
+		#end
+		#else
+		return FlxG.log.error('Command `openFolder` isn\'t supported on your current platform, please try again later.')
+		#end
+	}
+
 	public static function coolLerp(base:Float, target:Float, ratio:Float):Float
 		return base + cameraLerp(ratio) * (target - base);
 
@@ -72,9 +86,7 @@ class CoolUtil
 		#end
 
 		for (i in 0...daList.length)
-		{
 			daList[i] = daList[i].trim();
-		}
 
 		return daList;
 	}

@@ -261,7 +261,7 @@ class StageEditorState extends MusicBeatState implements FlxUIEventHandler.FlxUI
 		visibilityFilterUpdate();
 
 		posTxt = new FlxText(0, 50, 500, 'X: 0\nY: 0', 24);
-		posTxt.setFormat(Paths.font('vcr.ttf'), 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		posTxt.setFormat(Constants.DEFAULT_FONT, 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		posTxt.borderSize = 2;
 		posTxt.cameras = [camHUD];
 		posTxt.screenCenter(X);

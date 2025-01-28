@@ -59,7 +59,7 @@ class WeekEditorState extends MusicBeatState implements FlxUIEventHandler.FlxUIE
 
 	override function create() {
 		txtWeekTitle = new FlxText(FlxG.width * 0.7, 10, 0, "", 32);
-		txtWeekTitle.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, RIGHT);
+		txtWeekTitle.setFormat(Constants.DEFAULT_FONT, 32, FlxColor.WHITE, RIGHT);
 		txtWeekTitle.alpha = 0.7;
 		
 		var ui_tex = Paths.getSparrowAtlas('campaign_menu_UI_assets');

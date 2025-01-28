@@ -102,19 +102,19 @@ class PauseSubState extends MusicBeatSubstate
 
 		var levelDifficulty:FlxText = new FlxText(20, 15 + 32, 0, Difficulty.getString().toUpperCase(), 32);
 		levelDifficulty.scrollFactor.set();
-		levelDifficulty.setFormat(Paths.font('vcr.ttf'), 32);
+		levelDifficulty.setFormat(Constants.DEFAULT_FONT, 32);
 		levelDifficulty.updateHitbox();
 		add(levelDifficulty);
 
 		var blueballedTxt:FlxText = new FlxText(20, 15 + 64, 0, "Blueballed: " + PlayState.deathCounter, 32);
 		blueballedTxt.scrollFactor.set();
-		blueballedTxt.setFormat(Paths.font('vcr.ttf'), 32);
+		blueballedTxt.setFormat(Constants.DEFAULT_FONT, 32);
 		blueballedTxt.updateHitbox();
 		add(blueballedTxt);
 
 		practiceText = new FlxText(20, 15 + 101, 0, "Practice Mode", 32);
 		practiceText.scrollFactor.set();
-		practiceText.setFormat(Paths.font('vcr.ttf'), 32);
+		practiceText.setFormat(Constants.DEFAULT_FONT, 32);
 		practiceText.x = FlxG.width - (practiceText.width + 20);
 		practiceText.updateHitbox();
 		practiceText.visible = PlayState.instance.practiceMode;
@@ -122,7 +122,7 @@ class PauseSubState extends MusicBeatSubstate
 
 		var chartingText:FlxText = new FlxText(20, 15 + 101, 0, "Charting Mode", 32);
 		chartingText.scrollFactor.set();
-		chartingText.setFormat(Paths.font('vcr.ttf'), 32);
+		chartingText.setFormat(Constants.DEFAULT_FONT, 32);
 		chartingText.x = FlxG.width - (chartingText.width + 20);
 		chartingText.y = FlxG.height - (chartingText.height + 20);
 		chartingText.updateHitbox();

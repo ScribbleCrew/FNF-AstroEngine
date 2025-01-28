@@ -10,12 +10,12 @@ class ObjectUtils
 	 *
 	 * @return Converted sprite.
 	 */
-	public static inline function centerOnObject(spr:flixel.FlxObject, spr2:flixel.FlxObject, axes:flixel.util.FlxAxes):flixel.FlxObject
+	public static inline function centerOnObject(spr:flixel.FlxObject, spr2:flixel.FlxObject, axes:flixel.util.FlxAxes = XY):flixel.FlxObject
 	{
 		if (axes.x)
-			spr.x = (spr.width - spr2.width) / 2;
+			spr.x = spr2.width / 2 - spr.width / 2;
 		if (axes.y)
-			spr.y = (spr.height - spr2.height) / 2;
+			spr.y = (spr2.height / 2) - (spr.height / 2);
 
 		return spr;
 	}

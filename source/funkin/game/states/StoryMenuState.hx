@@ -89,10 +89,10 @@ class StoryMenuState extends MusicBeatState
 			curWeek = 0;
 
 		scoreText = new FlxText(10, 10, 0, 'WEEK SCORE: $lerpScore');
-		scoreText.setFormat("VCR OSD Mono", 32);
+		scoreText.setFormat(Constants.DEFAULT_FONT, 32);
 
 		txtWeekTitle = new FlxText(FlxG.width * 0.7, 10, 0, "", 32);
-		txtWeekTitle.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, RIGHT);
+		txtWeekTitle.setFormat(Constants.DEFAULT_FONT, 32, FlxColor.WHITE, RIGHT);
 		txtWeekTitle.alpha = 0.7;
 
 		var ui_tex = Paths.getSparrowAtlas('campaign_menu_UI_assets');

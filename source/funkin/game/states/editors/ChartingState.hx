@@ -497,7 +497,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		add(tipBg);
 		
 		fullTipText = new FlxText(0, 0, FlxG.width - 200);
-		fullTipText.setFormat(Paths.font('vcr.ttf'), 24, FlxColor.WHITE, CENTER);
+		fullTipText.setFormat(Constants.DEFAULT_FONT, 24, FlxColor.WHITE, CENTER);
 		fullTipText.cameras = [camUI];
 		fullTipText.scrollFactor.set();
 		fullTipText.visible = fullTipText.active = false;
