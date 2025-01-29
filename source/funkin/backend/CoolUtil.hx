@@ -54,14 +54,12 @@ class CoolUtil
 	public static function openFolder(path:String):Dynamic
 	{
 		#if sys
-		final runProcess:String = #if windows "explorer" #elseif mac "open" #elseif linux "xdg-open" #else '' #end;
-		#if linux
-		return Sys.command(runProcess, [path]);
+		final runProcess:String = #if windows "explorer" #elseif mac "open" #elseif linux "xdg-open" #else '' /* to make sure */ #end;
+		final fullPath:String = haxe.io.Path.join([Sys.getCwd(), path]);
+
+		return Sys.command(runProcess, [fullPath.replace('/', '\\')]);
 		#else
-		return new sys.io.Process(runProcess, [path]);
-		#end
-		#else
-		return FlxG.log.error('Command `openFolder` isn\'t supported on your current platform, please try again later.')
+		return FlxG.log.error('Command `openFolder` isn\'t supported on your current platform, please try again later.');
 		#end
 	}
 

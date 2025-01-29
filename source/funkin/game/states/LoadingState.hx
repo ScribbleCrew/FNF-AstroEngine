@@ -441,6 +441,7 @@ class LoadingState extends MusicBeatState
 			}
 		}
 
+
 		var i:Int = 0;
 		while(i < arr.length)
 		{

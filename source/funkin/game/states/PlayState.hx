@@ -3846,15 +3846,16 @@ class PlayState extends MusicBeatState
 		}
 		return false;
 	}
-
+	
 	public function initHScript(file:String)
 	{
 		var newScript:HScript = null;
 		try
 		{
 			newScript = new HScript(null, file);
-			newScript.call('onCreate');
-			trace('Init HScript Interp For: $file');
+			if(newScript.get('onCreate') != null)
+				newScript.call('onCreate');
+			trace('initialized hscript interp successfully: $file');
 			hscriptArray.push(newScript);
 		}
 		catch (e:Dynamic)

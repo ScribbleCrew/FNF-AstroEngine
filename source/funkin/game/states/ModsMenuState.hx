@@ -68,6 +68,7 @@ class ModsMenuState extends MusicBeatState
 		WindowUtil.setTitle('Mods Menu');
 		#end
 
+		// Background
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.color = EngineData.coreGame.menuColor;
 		bg.screenCenter();
@@ -81,10 +82,20 @@ class ModsMenuState extends MusicBeatState
 		grid.alpha = 0;
 		FlxTween.tween(grid, {alpha: .2}, .9, {ease: FlxEase.cubeOut});
 		add(grid);
-		// 440
+
+		// Rounded Background's
 		bgList = FlxSpriteUtil.drawRoundRectComplex(new FlxSprite(40, 40).makeGraphic(340, 530, FlxColor.TRANSPARENT), 0, 0, 340, 530, 15, 15, 15, 15,
 			FlxColor.BLACK);
 		bgList.alpha = 0.6;
+		bgTitle = FlxSpriteUtil.drawRoundRectComplex(new FlxSprite(bgList.x + bgList.width + 20, 40).makeGraphic(840, 140, FlxColor.TRANSPARENT), 0, 0, 840,
+			140, 15, 15, 15, 15, FlxColor.BLACK);
+		bgTitle.alpha = 0.6;
+		bgTitle.updateHitbox();
+		add(bgTitle);
+		bgDescription = FlxSpriteUtil.drawRoundRectComplex(new FlxSprite(bgTitle.x, bgTitle.y + 160).makeGraphic(840, 370, FlxColor.TRANSPARENT), 0, 0, 840,
+			370, 15, 15, 15, 15, FlxColor.BLACK);
+		bgDescription.alpha = 0.6;
+		add(bgDescription);
 
 		modsGroup = new FlxTypedGroup<ModItem>();
 
@@ -111,7 +122,7 @@ class ModsMenuState extends MusicBeatState
 		var buttonWidth = Std.int(bgList.width);
 		var buttonHeight = 100;
 
-		var myY = (bgList.y + bgList.height - 100) + buttonHeight + 20;
+		var myY = (bgList.y + bgList.height - 100) + buttonHeight + 25;
 		/*	var buttonModFolder = new ModButton(buttonX, myY+40, buttonWidth, buttonHeight, "MODS FOLDER", function() {
 				var modFolder = Paths.mods();
 				if(!FileSystem.exists(modFolder))
@@ -128,7 +139,6 @@ class ModsMenuState extends MusicBeatState
 			buttonEnableAll.ignoreCheck = false;
 			for (mod in modsGroup.members)
 			{
-				trace('enabled');
 				if (modsList.disabled.contains(mod.folder))
 				{
 					modsList.disabled.remove(mod.folder);
@@ -153,7 +163,6 @@ class ModsMenuState extends MusicBeatState
 			{
 				if (modsList.enabled.contains(mod.folder))
 				{
-					trace('disabled');
 					modsList.enabled.remove(mod.folder);
 					modsList.disabled.push(mod.folder);
 					mod.icon.color = 0xFFFF6666;
@@ -194,12 +203,6 @@ class ModsMenuState extends MusicBeatState
 		}
 		//
 
-		bgTitle = FlxSpriteUtil.drawRoundRectComplex(new FlxSprite(bgList.x + bgList.width + 20, 40).makeGraphic(840, 140, FlxColor.TRANSPARENT), 0, 0, 840,
-			140, 15, 15, 15, 15, FlxColor.BLACK);
-		bgTitle.alpha = 0.6;
-		bgTitle.updateHitbox();
-		add(bgTitle);
-
 		icon = new FlxSprite(bgTitle.x + 15, bgTitle.y - 8);
 		icon.scale.x -= .25;
 		icon.scale.y -= .25;
@@ -210,10 +213,6 @@ class ModsMenuState extends MusicBeatState
 		modName.scaleY = 0.6;
 		add(modName);
 
-		bgDescription = FlxSpriteUtil.drawRoundRectComplex(new FlxSprite(bgTitle.x, bgTitle.y + 160).makeGraphic(840, 370, FlxColor.TRANSPARENT), 0, 0, 840,
-			370, 15, 15, 15, 15, FlxColor.BLACK);
-		bgDescription.alpha = 0.6;
-		add(bgDescription);
 
 		modDesc = new FlxText(bgDescription.x + 15, bgDescription.y + 15, bgDescription.width - 30, "", 24);
 		modDesc.setFormat(Constants.DEFAULT_FONT, 24, FlxColor.WHITE, LEFT);
@@ -257,21 +256,18 @@ class ModsMenuState extends MusicBeatState
 		add(button);
 		buttons.push(button);
 
-		final RELOAD_BUTTON = new ModButton(buttonsX - 300, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'), () ->
-		{
-			reload();
-		}, 54, 54);
+		final RELOAD_BUTTON = new ModButton(buttonsX - 300, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'), reload, 54, 54);
 		RELOAD_BUTTON.icon.animation.add('reloadBtn', [5]);
 		RELOAD_BUTTON.icon.animation.play('reloadBtn', true);
 		add(RELOAD_BUTTON);
 		buttons.push(button);
 
-		var button = new ModButton(buttonsX - 200, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'), function() moveModToPosition(curSelectedMod + 1),
+		final OPEN_FOLDER_BUTTON = new ModButton(buttonsX - 200, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'), function() CoolUtil.openFolder("mods"),
 			54, 54); // Move down
-		button.icon.animation.add('icon', [6]);
-		button.icon.animation.play('icon', true);
-		add(button);
-		buttons.push(button);
+		OPEN_FOLDER_BUTTON.icon.animation.add('icon', [6]);
+		OPEN_FOLDER_BUTTON.icon.animation.play('icon', true);
+		add(OPEN_FOLDER_BUTTON);
+		buttons.push(OPEN_FOLDER_BUTTON);
 
 		if (modsList.all.length < 2)
 		{
@@ -285,7 +281,6 @@ class ModsMenuState extends MusicBeatState
 			if (curMod != null && curMod.settings != null && curMod.settings.length > 0)
 				openSubState(new ModSettingsSubState(curMod.settings, curMod.folder, curMod.name));
 		}, 54, 54);
-
 		settingsButton.icon.animation.add('icon', [3]);
 		settingsButton.icon.animation.play('icon', true);
 		add(settingsButton);

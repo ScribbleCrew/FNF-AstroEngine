@@ -66,15 +66,19 @@ class CreditsState extends MusicBeatState
 		add(grpOptions);
 
 		final filePath:String = 'data/credits.xml';
-		grabXMLData(Paths.xmlAccess(filePath, false));
-		#if MODS_ALLOWED
-		for (mod in (Mods.parseList().enabled).concat(['']))
-		{
-			final creditsFile:String = Paths.mods(mod + '/$filePath');
-			if (FileSystem.exists(creditsFile))
-				grabXMLData(Paths.xmlAccess(creditsFile, true));
+		try{
+			grabXMLData(Paths.xmlAccess(filePath, false));
+			#if MODS_ALLOWED
+			for (mod in (Mods.parseList().enabled).concat(['']))
+			{
+				final creditsFile:String = Paths.mods(mod + '/$filePath');
+				if (FileSystem.exists(creditsFile))
+					grabXMLData(Paths.xmlAccess(creditsFile, true));
+			}
+			#end
+		}catch(e:Dynamic){
+			lime.app.Application.current.window.alert(e, "Error!");
 		}
-		#end
 		generateCredits();
 
 		descBox = new AttachedFlxSprite();

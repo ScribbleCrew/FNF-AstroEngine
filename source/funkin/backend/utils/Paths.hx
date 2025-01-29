@@ -281,6 +281,7 @@ class Paths
 		#end
 	}
 
+	// isn't protected, you'll need to do that yourself.
 	static public function xmlAccess(path, ?mods:Bool = true):Access
 		return new Access(Xml.parse(!mods ? getTextFromFile(path, !mods) : File.getContent(path)).firstElement());
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
-	<app title="Friday Night Funkin' Astro Engine" file="Astro Engine" version="0.2.8" packageName="com.asstro" main="funkin.game.Main" company="YourFriendOrbl" />
+	<app title="Friday Night Funkin' Astro Engine" file="Astro Engine" version="0.2.8" packageName="com.astro" main="funkin.game.Main" company="YourFriendOrbl" />
 	<!-- for your mod do like com.astro.MODNAME
 		Or  com.YOURNAME.MODNAME
 	-->
