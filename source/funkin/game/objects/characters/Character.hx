@@ -122,9 +122,9 @@ class Character extends FlxSprite
 		try
 		{
 			#if MODS_ALLOWED
-			loadCharacterFile(Json.parse(File.getContent(path)));
+			loadCharacterFile(tjson.TJSON.parse(File.getContent(path)));
 			#else
-			loadCharacterFile(Json.parse(Assets.getText(path)));
+			loadCharacterFile(tjson.TJSON.parse(Assets.getText(path)));
 			#end
 		}
 		catch(e:Dynamic)

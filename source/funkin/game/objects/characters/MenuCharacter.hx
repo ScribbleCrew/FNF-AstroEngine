@@ -70,9 +70,9 @@ class MenuCharacter extends FlxSprite
 				try
 				{
 					#if MODS_ALLOWED
-					charFile = Json.parse(File.getContent(path));
+					charFile = tjson.TJSON.parse(File.getContent(path));
 					#else
-					charFile = Json.parse(Assets.getText(path));
+					charFile = tjson.TJSON.parse(Assets.getText(path));
 					#end
 				}
 				catch(e:Dynamic)

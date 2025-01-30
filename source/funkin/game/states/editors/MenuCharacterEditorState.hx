@@ -301,7 +301,7 @@ class MenuCharacterEditorState extends MusicBeatState implements FlxUIEventHandl
 		if(fullPath != null) {
 			var rawJson:String = File.getContent(fullPath);
 			if(rawJson != null) {
-				var loadedChar:MenuCharacterFile = cast Json.parse(rawJson);
+				var loadedChar:MenuCharacterFile = cast tjson.TJSON.parse(rawJson);
 				if(loadedChar.idle_anim != null && loadedChar.confirm_anim != null) //Make sure it's really a character
 				{
 					var cutName:String = _file.name.substr(0, _file.name.length - 5);

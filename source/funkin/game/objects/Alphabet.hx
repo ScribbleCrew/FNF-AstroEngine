@@ -307,9 +307,9 @@ class AlphaCharacter extends FlxSprite
 		try
 		{
 			#if MODS_ALLOWED
-			var data:Dynamic = Json.parse(File.getContent(path));
+			var data:Dynamic = tjson.TJSON.parse(File.getContent(path));
 			#else
-			var data:Dynamic = Json.parse(Assets.getText(path));
+			var data:Dynamic = tjson.TJSON.parse(Assets.getText(path));
 			#end
 
 			if (data.allowed != null && data.allowed.length > 0)

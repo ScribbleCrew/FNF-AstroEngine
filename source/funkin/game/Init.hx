@@ -52,7 +52,6 @@ class Init extends flixel.FlxState
 		// Extra stuff goes here :3
 
 		FlxG.switchState(new TitleState());
-		
 	}
 
 	private function init():Void

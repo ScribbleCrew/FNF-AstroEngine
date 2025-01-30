@@ -25,7 +25,7 @@ class AstroFlxAnimate extends flxanimate.FlxAnimate
 
 			if (trimmed == '.json')
 				myJson = #if sys File.getContent(myJson) #else daList = Assets.getText(myJson) #end;
-			animJson = cast haxe.Json.parse(_removeBOM(myJson));
+			animJson = cast tjson.TJSON.parse(_removeBOM(myJson));
 		}
 		else
 			animJson = cast myJson;
@@ -54,11 +54,11 @@ class AstroFlxAnimate extends flxanimate.FlxAnimate
 			case true:
 				myData = Xml.parse(myData);
 			case false:
-				myData = haxe.Json.parse(myData);
+				myData = tjson.TJSON.parse(myData);
 			case null:
 				try
 				{
-					myData = haxe.Json.parse(myData);
+					myData = tjson.TJSON.parse(myData);
 					isXml = false;
 					// trace('JSON parsed successfully!');
 				}

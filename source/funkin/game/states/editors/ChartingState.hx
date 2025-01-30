@@ -3831,7 +3831,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 
 			fileDialog.open('chart.json', 'Open a V-Slice Chart file', function()
 			{
-				var chart:VSliceChart = cast Json.parse(fileDialog.data);
+				var chart:VSliceChart = cast tjson.TJSON.parse(fileDialog.data);
 				if(chart == null || chart.version == null || chart.notes == null || chart.scrollSpeed == null)
 				{
 					showOutput('Error: File loaded is not a valid FNF V-Slice chart.', true);
@@ -3840,7 +3840,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 
 				fileDialog.open('metadata.json', 'Open a V-Slice Metadata file', function()
 				{
-					var metadata:VSliceMetadata = cast Json.parse(fileDialog.data);
+					var metadata:VSliceMetadata = cast tjson.TJSON.parse(fileDialog.data);
 					if(metadata == null || metadata.version == null || metadata.playData == null || metadata.songName == null ||
 						metadata.playData.difficulties == null || metadata.timeChanges == null || metadata.timeChanges.length < 1)
 					{
@@ -4717,7 +4717,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 				#else
 				var unparsedJson = OpenFlAssets.getText(path);
 				#end
-				return cast Json.parse(unparsedJson);
+				return cast tjson.TJSON.parse(unparsedJson);
 			}
 			catch (e:Dynamic) {}
 		}

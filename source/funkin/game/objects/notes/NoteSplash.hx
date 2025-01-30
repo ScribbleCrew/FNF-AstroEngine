@@ -80,7 +80,7 @@ class NoteSplash extends FlxSprite
 		if (configs.exists(path)) this.config = configs.get(path);
 		else if (Paths.fileExists(path, TEXT))
 		{
-			var config:Dynamic = haxe.Json.parse(Paths.getTextFromFile(path));
+			var config:Dynamic = tjson.TJSON.parse(Paths.getTextFromFile(path));
 			if (config != null)
 			{
 				var tempConfig:NoteSplashConfig = {

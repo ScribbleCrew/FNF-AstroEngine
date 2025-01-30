@@ -463,7 +463,7 @@ class DialogueEditorState extends MusicBeatState implements FlxUIEventHandler.Fl
 		if(fullPath != null) {
 			var rawJson:String = File.getContent(fullPath);
 			if(rawJson != null) {
-				var loadedDialog:DialogueFile = cast Json.parse(rawJson);
+				var loadedDialog:DialogueFile = cast tjson.TJSON.parse(rawJson);
 				if(loadedDialog.dialogue != null && loadedDialog.dialogue.length > 0) //Make sure it's really a dialogue file
 				{
 					var cutName:String = _file.name.substr(0, _file.name.length - 5);

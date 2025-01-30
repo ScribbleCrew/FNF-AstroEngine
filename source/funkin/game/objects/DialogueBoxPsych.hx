@@ -107,7 +107,7 @@ class DialogueCharacter extends FlxSprite
 		rawJson = Assets.getText(path);
 		#end
 		
-		jsonFile = cast Json.parse(rawJson);
+		jsonFile = cast tjson.TJSON.parse(rawJson);
 	}
 
 	public function reloadAnimations() {
@@ -518,10 +518,10 @@ class DialogueBoxPsych extends FlxSpriteGroup
 		#if MODS_ALLOWED
 		if(FileSystem.exists(path))
 		{
-			return cast Json.parse(File.getContent(path));
+			return cast tjson.TJSON.parse(File.getContent(path));
 		}
 		#end
-		return cast Json.parse(Assets.getText(path));
+		return cast tjson.TJSON.parse(Assets.getText(path));
 	}
 
 	public static function updateBoxOffsets(box:FlxSprite) { //Had to make it static because of the editors

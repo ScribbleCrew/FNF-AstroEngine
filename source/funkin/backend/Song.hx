@@ -157,7 +157,7 @@ class Song
 
 	public static function parseJSON(rawData:String, ?nameForError:String = null, ?convertTo:String = 'astro_v0.3'):SwagSong
 	{
-		var songJson:SwagSong = cast Json.parse(rawData);
+		var songJson:SwagSong = cast tjson.TJSON.parse(rawData);
 		if(Reflect.hasField(songJson, 'song'))
 		{
 			var subSong:SwagSong = Reflect.field(songJson, 'song');
