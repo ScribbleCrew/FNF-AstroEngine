@@ -109,7 +109,8 @@ class Main extends Sprite
 
 	// Audio Fix
 	@:dox(hide) public static var audioDisconnected(default,set):Bool = false;
-	@:noCompletion private static function set_audioDisconnected(value:Bool) {
+	@:noCompletion private static function set_audioDisconnected(value:Bool) {// oops
+		audioDisconnected = value;
 		@:privateAccess AudioSwitchFix.onStateSwitch(FlxG.state);
 		return audioDisconnected = value;
 	}
