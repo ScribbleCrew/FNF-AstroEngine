@@ -19,40 +19,45 @@ class MusicBeatState extends FlxState
 
 	private var curDecStep:Float = 0;
 	private var curDecBeat:Float = 0;
+
 	public var controls(get, never):Controls;
 
+	private var shaderGroup:Array<ShaderBackend>;
+
 	var _astroCameraInitialized:Bool = false;
+
 	inline function get_controls():Controls
 		return Controls.instance;
 
 	public var variables:Map<String, Dynamic> = new Map<String, Dynamic>();
+
 	public static function getVariables()
 		return getState().variables;
 
 	override function create()
 	{
 		var skip:Bool = FlxTransitionableState.skipNextTransOut;
+		shaderGroup = null;
 		super.create();
 
-		if(!_astroCameraInitialized) initAstroCamera();
+		if (!_astroCameraInitialized)
+			initAstroCamera();
 
 		if (!skip)
-		{
 			openSubState(new FadeTransition(0.5, true));
-		}
+
 		FlxTransitionableState.skipNextTransOut = false;
 		timePassedOnState = 0;
 	}
 
-	
 	public function initAstroCamera():AstroCamera
-		{
-			var camera = new AstroCamera();
-			FlxG.cameras.reset(camera);
-			FlxG.cameras.setDefaultDrawTarget(camera, true);
-			_astroCameraInitialized = true;
-			return camera;
-		}
+	{
+		var camera = new AstroCamera();
+		FlxG.cameras.reset(camera);
+		FlxG.cameras.setDefaultDrawTarget(camera, true);
+		_astroCameraInitialized = true;
+		return camera;
+	}
 
 	public static function init()
 	{
@@ -66,6 +71,7 @@ class MusicBeatState extends FlxState
 		return insert(members.indexOf(obj2) + 1, obj);
 
 	public static var timePassedOnState:Float = 0;
+
 	override function update(elapsed:Float)
 	{
 		// everyStep();
@@ -73,6 +79,15 @@ class MusicBeatState extends FlxState
 
 		updateCurStep();
 		updateBeat();
+
+		if (shaderGroup != null)
+		{
+			for (i in shaderGroup)
+			{
+				@:privateAccess
+				i.update(elapsed);
+			}
+		}
 
 		if (oldStep != curStep)
 		{
@@ -147,40 +162,47 @@ class MusicBeatState extends FlxState
 	}
 
 	public static function switchState(nextState:FlxState)
+	{
+		if (nextState == null)
+			nextState = FlxG.state;
+		if (nextState == FlxG.state)
 		{
-			if(nextState == null) nextState = FlxG.state;
-			if(nextState == FlxG.state)
-			{
-				resetState();
-				return;
-			}
-	
-			if(FlxTransitionableState.skipNextTransIn) FlxG.switchState(nextState);
-			else startTransition(nextState);
-			FlxTransitionableState.skipNextTransIn = false;
+			resetState();
+			return;
 		}
-	
-		public static function resetState() {
-			if(FlxTransitionableState.skipNextTransIn) FlxG.resetState();
-			else startTransition();
-			FlxTransitionableState.skipNextTransIn = false;
-		}
-	
-		// Custom made Trans in
-		public static function startTransition(nextState:FlxState = null)
-		{
-			if(nextState == null)
-				nextState = FlxG.state;
-	
-			FlxG.state.openSubState(new FadeTransition(0.6, false));
-			if(nextState == FlxG.state)
-				FadeTransition.finishCallback = function() FlxG.resetState();
-			else
-				FadeTransition.finishCallback = function() FlxG.switchState(nextState);
-		}
+
+		if (FlxTransitionableState.skipNextTransIn)
+			FlxG.switchState(nextState);
+		else
+			startTransition(nextState);
+		FlxTransitionableState.skipNextTransIn = false;
+	}
+
+	public static function resetState()
+	{
+		if (FlxTransitionableState.skipNextTransIn)
+			FlxG.resetState();
+		else
+			startTransition();
+		FlxTransitionableState.skipNextTransIn = false;
+	}
+
+	// Custom made Trans in
+	public static function startTransition(nextState:FlxState = null)
+	{
+		if (nextState == null)
+			nextState = FlxG.state;
+
+		FlxG.state.openSubState(new FadeTransition(0.6, false));
+		if (nextState == FlxG.state)
+			FadeTransition.finishCallback = function() FlxG.resetState();
+		else
+			FadeTransition.finishCallback = function() FlxG.switchState(nextState);
+	}
+
 	public static function getState():MusicBeatState
 	{
-		return cast (FlxG.state, MusicBeatState);
+		return cast(FlxG.state, MusicBeatState);
 	}
 
 	public function stepHit():Void
