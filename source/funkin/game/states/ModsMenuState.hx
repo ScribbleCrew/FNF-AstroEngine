@@ -10,6 +10,8 @@ import openfl.display.BitmapData;
 import lime.utils.Assets;
 
 // todo: rewrite
+
+#if MODS_ALLOWED
 class ModsMenuState extends MusicBeatState
 {
 	var bg:FlxSprite;
@@ -345,7 +347,7 @@ class ModsMenuState extends MusicBeatState
 
 		if (controls.BACK && hoveringOnMods)
 		{
-			saveTxt();
+			Mods.saveModList(modsList);
 
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 			if (waitingToRestart)
@@ -828,34 +830,12 @@ class ModsMenuState extends MusicBeatState
 
 	function reload()
 	{
-		saveTxt();
+		Mods.saveModList(modsList);
 		// FlxG.autoPause = ClientPrefs.data.autoPause;
 		FlxTransitionableState.skipNextTransIn = true;
 		FlxTransitionableState.skipNextTransOut = true;
 		var curMod:ModItem = modsGroup.members[curSelectedMod];
 		MusicBeatState.switchState(new ModsMenuState(curMod != null ? curMod.folder : null));
 	}
-
-	function saveTxt()
-	{
-		var fileStr:String = '';
-		for (mod in modsList.all)
-		{
-			if (mod.trim().length < 1)
-				continue;
-
-			if (fileStr.length > 0)
-				fileStr += '\n';
-
-			var on = '1';
-			if (modsList.disabled.contains(mod))
-				on = '0';
-			fileStr += '$mod|$on';
-		}
-
-		var path:String = 'modsList.txt';
-		File.saveContent(path, fileStr);
-		Mods.parseList();
-		Mods.loadTopMod();
-	}
 }
+#end

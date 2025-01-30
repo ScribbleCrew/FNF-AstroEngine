@@ -172,7 +172,7 @@ class VSlice
 						lastMustHit = (char == '0');
 					}
 					sectionMustHits.push(lastMustHit);
-					sectionTime = Conductor.calculateCrochet(bpm) * 4;
+					sectionTime = Conductor.calcCrochet(bpm) * 4;
 					time += sectionTime;
 				}
 			}
@@ -195,7 +195,7 @@ class VSlice
 					bpm = bpmChange.bpm;
 				}
 			}
-			sectionTime = Conductor.calculateCrochet(bpm) * 4;
+			sectionTime = Conductor.calcCrochet(bpm) * 4;
 			sectionTimes.push(time);
 			time += sectionTime;
 
@@ -354,11 +354,11 @@ class VSlice
 				}
 
 				// Add camera events to act like the "Must hit section" camera focus
-				var beat:Float = Conductor.calculateCrochet(bpm);
+				var beat:Float = Conductor.calcCrochet(bpm);
 				if(section.changeBPM)
 				{
 					bpm = section.bpm;
-					beat = Conductor.calculateCrochet(bpm);
+					beat = Conductor.calcCrochet(bpm);
 					timeChanges.push({t: time, bpm: bpm});
 				}
 

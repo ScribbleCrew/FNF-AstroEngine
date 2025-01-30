@@ -155,7 +155,7 @@ class Mods
 
 		#if MODS_ALLOWED
 		try {
-			for (mod in CoolUtil.coolTextFile('modsList.txt'))
+			for (mod in CoolUtil.coolTextFile(Constants.MODS_LIST_FILE))
 			{
 				//trace('Mod: $mod');
 				if(mod.trim().length < 1) continue;
@@ -181,7 +181,7 @@ class Mods
 		var list:Array<Array<Dynamic>> = [];
 		var added:Array<String> = [];
 		try {
-			for (mod in CoolUtil.coolTextFile('modsList.txt'))
+			for (mod in CoolUtil.coolTextFile(Constants.MODS_LIST_FILE))
 			{
 				var dat:Array<String> = mod.split("|");
 				var folder:String = dat[0];
@@ -215,11 +215,36 @@ class Mods
 			fileStr += values[0] + '|' + (values[1] ? '1' : '0');
 		}
 
-		File.saveContent('modsList.txt', fileStr);
+		File.saveContent(Constants.MODS_LIST_FILE, fileStr);
 		updatedOnState = true;
 		//trace('Saved modsList.txt');
 		#end
 	}
+
+	
+	public static function saveModList(modsList:ModsList)
+		{
+			var fileStr:String = '';
+			for (mod in modsList.all)
+			{
+				if (mod.trim().length < 1)
+					continue;
+	
+				if (fileStr.length > 0)
+					fileStr += '\n';
+	
+				var on = '1';
+				if (modsList.disabled.contains(mod))
+					on = '0';
+				fileStr += '$mod|$on';
+			}
+	
+			File.saveContent(Constants.MODS_LIST_FILE, fileStr);
+			parseList();
+			loadTopMod();
+
+			trace('Saving ModsList');
+		}
 
 	public static function loadTopMod()
 	{

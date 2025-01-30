@@ -1991,7 +1991,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 			if(secs == null || Math.isNaN(secs) || secs <= 0) section.sectionBeats = 4;
 	
 			if(section.changeBPM) bpm = section.bpm;
-			var beat:Float = Conductor.calculateCrochet(bpm);
+			var beat:Float = Conductor.calcCrochet(bpm);
 			//trace(secBPM, beat);
 			
 			cachedSectionRow.push(row);
@@ -2035,7 +2035,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		if(FlxG.sound.music != null && !reachedLimit) //Created sections to fill blank space
 		{
 			var lastSection = PlayState.SONG.notes[PlayState.SONG.notes.length-1];
-			var beat:Float = Conductor.calculateCrochet(bpm);
+			var beat:Float = Conductor.calcCrochet(bpm);
 			var sectionBeats:Float = lastSection != null ? lastSection.sectionBeats : 4;
 			var rowRound:Int = Math.round(4 * sectionBeats);
 			var timeAdd:Float = beat * (rowRound / 4);

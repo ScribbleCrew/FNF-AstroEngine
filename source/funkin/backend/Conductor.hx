@@ -14,17 +14,21 @@ typedef BPMChangeEvent =
 class Conductor
 {
 	public static var bpm(default, set):Float = 100;
-	@:noCompletion private inline static function set_bpm(newBPM:Float):Float
+	@:noCompletion private inline static function set_bpm(BPMChange:Float):Float
 		{
-			bpm = newBPM;
-			crochet = calculateCrochet(bpm);
+			crochet = calcCrochet(BPMChange);
 			stepCrochet = crochet / 4;
-	
-			return bpm = newBPM;
+			return bpm = BPMChange;
 		}
 
-	public static var crochet:Float = ((60 / bpm) * 1000); // beats in milliseconds
-	public static var stepCrochet:Float = crochet / 4; // steps in milliseconds
+	public static var crochet(get,default):Float; // beats in milliseconds
+	@:noCompletion inline private static function get_crochet():Float
+		return calcCrochet(bpm);
+	
+	public static var stepCrochet(get,default):Float; // steps in milliseconds
+	@:noCompletion inline private static function get_stepCrochet():Float
+		return crochet / 4;
+
 	public static var songPosition:Float = 0;
 	public static var offset:Float = 0;
 
@@ -119,7 +123,7 @@ class Conductor
 					stepTime: totalSteps,
 					songTime: totalPos,
 					bpm: curBPM,
-					stepCrochet: calculateCrochet(curBPM) / 4
+					stepCrochet: calcCrochet(curBPM) / 4
 				};
 				bpmChangeMap.push(event);
 			}
@@ -128,7 +132,7 @@ class Conductor
 			totalSteps += deltaSteps;
 			totalPos += ((60 / curBPM) * 1000 / 4) * deltaSteps;
 		}
-		trace("new BPM map BUDDY " + bpmChangeMap);
+		trace('updated BPM map: $bpmChangeMap');
 	}
 
 	static function getSectionBeats(song:SwagSong, section:Int)
@@ -139,8 +143,7 @@ class Conductor
 		return val != null ? val : 4;
 	}
 
-	inline public static function calculateCrochet(bpm:Float)
-	{
+	inline public static function calcCrochet(bpm:Float)
 		return (60 / bpm) * 1000;
-	}
+
 }

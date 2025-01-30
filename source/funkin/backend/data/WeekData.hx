@@ -97,12 +97,11 @@ class WeekData
 		weeksLoaded.clear();
 		#if MODS_ALLOWED
 		var disabledMods:Array<String> = [];
-		var modsListPath:String = 'modsList.txt';
 		var directories:Array<String> = [Paths.mods(), Paths.getSharedPath()];
 		var originalLength:Int = directories.length;
-		if (FileSystem.exists(modsListPath))
+		if (FileSystem.exists(Constants.MODS_LIST_FILE))
 		{
-			var stuff:Array<String> = CoolUtil.coolTextFile(modsListPath);
+			var stuff:Array<String> = CoolUtil.coolTextFile(Constants.MODS_LIST_FILE);
 			for (i in 0...stuff.length)
 			{
 				var splitName:Array<String> = stuff[i].trim().split('|');
