@@ -6,17 +6,17 @@ import flixel.sound.FlxSound;
 
 @:dox(hide)
 class AudioSwitchFix {
-	@:noCompletion static function onStateSwitch(state:FlxState):Void {
+	@:noCompletion private static function onStateSwitch(state:FlxState):Void {
 		#if windows
 			if (Main.audioDisconnected) {
 				var playingList:Array<PlayingSound> = [];
-				for(e in FlxG.sound.list) {
-					if (e.playing) {
+				for(sound in FlxG.sound.list) {
+					if (sound.playing) {
 						playingList.push({
-							sound: e,
-							time: e.time
+							sound: sound,
+							time: sound.time
 						});
-						e.stop();
+						sound.stop();
 					}
 				}
 				if (FlxG.sound.music != null)
@@ -25,9 +25,8 @@ class AudioSwitchFix {
 				AudioManager.shutdown();
 				AudioManager.init();
 
-				for(e in playingList) {
-					e.sound.play(e.time);
-				}
+				for(sound in playingList)
+					sound.sound.play(sound.time);
 
 				Main.audioDisconnected = false;
 			}
