@@ -21,7 +21,6 @@ class ModsMenuState extends MusicBeatState
 	var modsList:Mods.ModsList = null;
 
 	var bgList:FlxSprite;
-	// var buttonModFolder:ModButton;
 	var buttonEnableAll:ModButton;
 	var buttonDisableAll:ModButton;
 	var buttons:Array<ModButton> = [];
@@ -123,16 +122,6 @@ class ModsMenuState extends MusicBeatState
 		var buttonHeight = 100;
 
 		var myY = (bgList.y + bgList.height - 100) + buttonHeight + 25;
-		/*	var buttonModFolder = new ModButton(buttonX, myY+40, buttonWidth, buttonHeight, "MODS FOLDER", function() {
-				var modFolder = Paths.mods();
-				if(!FileSystem.exists(modFolder))
-				{
-					trace('created missing folder');
-					FileSystem.createDirectory(modFolder);
-				}
-				CoolUtil.openFolder(modFolder);
-			});
-			add(buttonModFolder); */
 
 		buttonEnableAll = new ModButton(buttonX, myY, buttonWidth, buttonHeight, 'ENABLE ALL', function()
 		{
@@ -213,13 +202,13 @@ class ModsMenuState extends MusicBeatState
 		modName.scaleY = 0.6;
 		add(modName);
 
-
 		modDesc = new FlxText(bgDescription.x + 15, bgDescription.y + 15, bgDescription.width - 30, "", 24);
+		modDesc.fieldHeight = bgDescription.height - 30;
 		modDesc.setFormat(Constants.DEFAULT_FONT, 24, FlxColor.WHITE, LEFT);
 		add(modDesc);
 
 		final myHeight:Int = 100;
-		modRestartText = new FlxText(bgDescription.x + 15, bgDescription.y + bgDescription.height - myHeight - 25, bgDescription.width - 30, null, 16);
+		modRestartText = new FlxText(bgDescription.x + 15, bgDescription.y + bgDescription.height - 25, bgDescription.width - 30, null, 16);
 		modRestartText.text = '* Moving or Toggling On/Off this Mod will restart the game.';
 		modRestartText.setFormat(Constants.DEFAULT_FONT, 16, FlxColor.WHITE, RIGHT);
 		add(modRestartText);
@@ -230,44 +219,44 @@ class ModsMenuState extends MusicBeatState
 		bgButtons.color = FlxColor.BLACK;
 		bgButtons.alpha = 0.6;
 		add(bgButtons);
-	//	buttonReload.y = bgButtons.y;
+		//	buttonReload.y = bgButtons.y;
 
 		var buttonsX = bgButtons.x + 320;
 		var buttonsY = bgButtons.y + 10;
 
-		var button = new ModButton(buttonsX, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'), function() moveModToPosition(0), 54,
-			54); // Move to the top
-		button.icon.animation.add('icon', [0]); // big up idk???
-		button.icon.animation.play('icon', true);
-		add(button);
-		buttons.push(button);
-
-		var button = new ModButton(buttonsX + 100, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'), function() moveModToPosition(curSelectedMod - 1),
-			54, 54); // Move up
-		button.icon.animation.add('icon', [1]);
-		button.icon.animation.play('icon', true);
-		add(button);
-		buttons.push(button);
-
-		var button = new ModButton(buttonsX + 200, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'), function() moveModToPosition(curSelectedMod + 1),
-			54, 54); // Move down
-		button.icon.animation.add('icon', [2]);
-		button.icon.animation.play('icon', true);
-		add(button);
-		buttons.push(button);
-
+		/**
+			BUTTONS
+		**/
 		final RELOAD_BUTTON = new ModButton(buttonsX - 300, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'), reload, 54, 54);
 		RELOAD_BUTTON.icon.animation.add('reloadBtn', [5]);
 		RELOAD_BUTTON.icon.animation.play('reloadBtn', true);
 		add(RELOAD_BUTTON);
-		buttons.push(button);
+		buttons.push(RELOAD_BUTTON);
 
-		final OPEN_FOLDER_BUTTON = new ModButton(buttonsX - 200, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'), function() CoolUtil.openFolder("mods"),
-			54, 54); // Move down
+		final OPEN_FOLDER_BUTTON = new ModButton(buttonsX - 200, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'),
+			function() CoolUtil.openFolder("mods"), 54, 54); // Move down
 		OPEN_FOLDER_BUTTON.icon.animation.add('icon', [6]);
 		OPEN_FOLDER_BUTTON.icon.animation.play('icon', true);
 		add(OPEN_FOLDER_BUTTON);
 		buttons.push(OPEN_FOLDER_BUTTON);
+		
+		final MOVE_TO_TOP_BUTTON = new ModButton(buttonsX, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'), () -> moveModToPosition(0), 54, 54);
+		MOVE_TO_TOP_BUTTON.icon.animation.add('icon', [0]);
+		MOVE_TO_TOP_BUTTON.icon.animation.play('icon', true);
+		add(MOVE_TO_TOP_BUTTON);
+		buttons.push(MOVE_TO_TOP_BUTTON);
+
+		final MOVE_UP_BUTTON = new ModButton(buttonsX + 100, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'), () -> moveModToPosition(curSelectedMod - 1), 54, 54);
+		MOVE_UP_BUTTON.icon.animation.add('icon', [1]);
+		MOVE_UP_BUTTON.icon.animation.play('icon', true);
+		add(MOVE_UP_BUTTON);
+		buttons.push(MOVE_UP_BUTTON);
+
+		final MOVE_DOWN_BUTTON = new ModButton(buttonsX + 200, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'), () -> moveModToPosition(curSelectedMod + 1), 54, 54);
+		MOVE_DOWN_BUTTON.icon.animation.add('icon', [2]);
+		MOVE_DOWN_BUTTON.icon.animation.play('icon', true);
+		add(MOVE_DOWN_BUTTON);
+		buttons.push(MOVE_DOWN_BUTTON);
 
 		if (modsList.all.length < 2)
 		{
@@ -315,10 +304,10 @@ class ModsMenuState extends MusicBeatState
 		RELOAD_MOD_BUTTON.icon.animation.add('icon', [4]);
 		RELOAD_MOD_BUTTON.icon.animation.play('icon', true);
 		RELOAD_MOD_BUTTON.focusChangeCallback = function(focus:Bool)
-			{
-				if (!focus)
-					RELOAD_MOD_BUTTON.bg.color = modsList.enabled.contains(modsGroup.members[curSelectedMod].folder) ? FlxColor.GREEN : 0xFFFF6666;
-			};
+		{
+			if (!focus)
+				RELOAD_MOD_BUTTON.bg.color = modsList.enabled.contains(modsGroup.members[curSelectedMod].folder) ? FlxColor.GREEN : 0xFFFF6666;
+		};
 		add(RELOAD_MOD_BUTTON);
 		buttons.push(RELOAD_MOD_BUTTON);
 
@@ -344,9 +333,16 @@ class ModsMenuState extends MusicBeatState
 	var gottaClickAgain:Bool = false;
 
 	var holdTime:Float = 0;
+	var modRestartSine:Float = 0;
 
 	override function update(elapsed:Float)
 	{
+		if (modRestartText.visible)
+		{
+			modRestartSine += 180 * elapsed;
+			modRestartText.alpha = 1 - Math.sin((Math.PI * modRestartSine) / 180);
+		}
+
 		if (controls.BACK && hoveringOnMods)
 		{
 			saveTxt();
@@ -369,7 +365,6 @@ class ModsMenuState extends MusicBeatState
 				MusicBeatState.switchState(new MainMenuState());
 
 			persistentUpdate = false;
-			//	// FlxG.autoPause = ClientPrefs.data.autoPause;
 			FlxG.mouse.visible = false;
 			return;
 		}
@@ -733,6 +728,7 @@ class ModsMenuState extends MusicBeatState
 
 		icon.loadGraphic(curMod.icon.graphic, true, 150, 150);
 		icon.antialiasing = curMod.icon.antialiasing;
+		icon.centerOnObject(bgTitle,Y);
 
 		if (curMod.totalFrames > 0)
 		{
@@ -749,6 +745,7 @@ class ModsMenuState extends MusicBeatState
 		modName.y = modNameInitialY - (modName.height / 2);
 		modRestartText.visible = curMod.mustRestart;
 		modDesc.text = curMod.desc;
+		modName.centerOnObject(bgTitle,Y);
 
 		for (button in buttons)
 			if (button.focusChangeCallback != null)

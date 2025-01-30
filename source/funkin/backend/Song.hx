@@ -186,7 +186,3 @@ class Song
 		return songJson;
 	}
 }
-
-/**
- * TO DO: V-Slice Chart Data here.
- */

@@ -47,6 +47,8 @@ class Init extends flixel.FlxState
 
 		#if WATERMARK owoWatermark(); #end
 
+		AudioSwitchFix.init();
+
 		// Extra stuff goes here :3
 
 		FlxG.switchState(new TitleState());

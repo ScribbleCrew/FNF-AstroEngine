@@ -1,6 +1,5 @@
 package funkin.game.states.options.substates;
 
-import flixel.AttachedFlxText;
 #if desktop
 import funkin.backend.client.Discord.DiscordClient;
 #end
@@ -47,8 +46,8 @@ class ControlsSubState extends BaseMenu
 	];
 
 	private var grpOptions:FlxTypedGroup<funkin.game.objects.Alphabet>;
-	private var grpInputs:Array<AttachedFlxText> = [];
-	private var grpInputsAlt:Array<AttachedFlxText> = [];
+	private var grpInputs:Array<AttachedAlphabet> = [];
+	private var grpInputsAlt:Array<AttachedAlphabet> = [];
 	var rebindingKey:Bool = false;
 	var nextAccept:Int = 5;
 
@@ -321,13 +320,13 @@ class ControlsSubState extends BaseMenu
 	private function addBindTexts(optionText:funkin.game.objects.Alphabet, num:Int)
 	{
 		var keys:Array<Dynamic> = funkin.backend.utils.ClientPrefs.keyBinds.get(optionShit[num][1]);
-		var text1 = new AttachedFlxText(InputFormatter.getKeyName(keys[0]), 400, -55);
+		var text1 = new AttachedAlphabet(InputFormatter.getKeyName(keys[0]), 400, -55);
 		text1.setPosition(optionText.x + 400, optionText.y - 55);
 		text1.sprTracker = optionText;
 		grpInputs.push(text1);
 		add(text1);
 
-		var text2 = new AttachedFlxText(InputFormatter.getKeyName(keys[1]), 650, -55);
+		var text2 = new AttachedAlphabet(InputFormatter.getKeyName(keys[1]), 650, -55);
 		text2.setPosition(optionText.x + 650, optionText.y - 55);
 		text2.sprTracker = optionText;
 		grpInputsAlt.push(text2);
@@ -338,14 +337,14 @@ class ControlsSubState extends BaseMenu
 	{
 		while (grpInputs.length > 0)
 		{
-			var item:AttachedFlxText = grpInputs[0];
+			var item:AttachedAlphabet = grpInputs[0];
 			item.kill();
 			grpInputs.remove(item);
 			item.destroy();
 		}
 		while (grpInputsAlt.length > 0)
 		{
-			var item:AttachedFlxText = grpInputsAlt[0];
+			var item:AttachedAlphabet = grpInputsAlt[0];
 			item.kill();
 			grpInputsAlt.remove(item);
 			item.destroy();

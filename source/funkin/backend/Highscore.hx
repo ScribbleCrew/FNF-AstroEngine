@@ -1,9 +1,5 @@
 package funkin.backend;
 
-import flixel.FlxG;
-
-
-
 class Highscore
 {
 	#if (haxe >= "4.0.0")
@@ -16,7 +12,6 @@ class Highscore
 	public static var songRating:Map<String, Float> = new Map<String, Float>();
 	#end
 
-
 	public static function resetSong(song:String, diff:Int = 0):Void
 	{
 		var daSong:String = formatSong(song, diff);
@@ -25,40 +20,37 @@ class Highscore
 	}
 
 	public static function resetWeek(week:String, diff:Int = 0):Void
-	{
-		var daWeek:String = formatSong(week, diff);
-		setWeekScore(daWeek, 0);
-	}
+		setWeekScore(formatSong(week, diff), 0);
 
 	public static function floorDecimal(value:Float, decimals:Int):Float
 	{
-		if(decimals < 1)
-		{
+		if (decimals < 1)
 			return Math.floor(value);
-		}
 
 		var tempMult:Float = 1;
 		for (i in 0...decimals)
-		{
 			tempMult *= 10;
-		}
-		var newValue:Float = Math.floor(value * tempMult);
-		return newValue / tempMult;
+		return Math.floor(value * tempMult) / tempMult;
 	}
 
 	public static function saveScore(song:String, score:Int = 0, ?diff:Int = 0, ?rating:Float = -1):Void
 	{
 		var daSong:String = formatSong(song, diff);
 
-		if (songScores.exists(daSong)) {
-			if (songScores.get(daSong) < score) {
+		if (songScores.exists(daSong))
+		{
+			if (songScores.get(daSong) < score)
+			{
 				setScore(daSong, score);
-				if(rating >= 0) setRating(daSong, rating);
+				if (rating >= 0)
+					setRating(daSong, rating);
 			}
 		}
-		else {
+		else
+		{
 			setScore(daSong, score);
-			if(rating >= 0) setRating(daSong, rating);
+			if (rating >= 0)
+				setRating(daSong, rating);
 		}
 	}
 
@@ -85,6 +77,7 @@ class Highscore
 		FlxG.save.data.songScores = songScores;
 		FlxG.save.flush();
 	}
+
 	static function setWeekScore(week:String, score:Int):Void
 	{
 		// Reminder that I don't need to format this song, it should come formatted!

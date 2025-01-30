@@ -1,6 +1,6 @@
-package flixel;
+package funkin.game.objects;
 
-class AttachedFlxText extends funkin.game.objects.Alphabet
+class AttachedAlphabet extends funkin.game.objects.Alphabet
 {
 	public var offsetX:Float = 0;
 	public var offsetY:Float = 0;

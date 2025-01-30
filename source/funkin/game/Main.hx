@@ -106,4 +106,7 @@ class Main extends Sprite
 			fpsVar.visible = ClientPrefs.data.showFPS;
 		#end
 	}
+
+	// Audio Fix
+	@:dox(hide) public static var audioDisconnected:Bool = false;
 }

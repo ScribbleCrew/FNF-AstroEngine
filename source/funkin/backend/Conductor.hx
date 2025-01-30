@@ -14,6 +14,15 @@ typedef BPMChangeEvent =
 class Conductor
 {
 	public static var bpm(default, set):Float = 100;
+	@:noCompletion private inline static function set_bpm(newBPM:Float):Float
+		{
+			bpm = newBPM;
+			crochet = calculateCrochet(bpm);
+			stepCrochet = crochet / 4;
+	
+			return bpm = newBPM;
+		}
+
 	public static var crochet:Float = ((60 / bpm) * 1000); // beats in milliseconds
 	public static var stepCrochet:Float = crochet / 4; // steps in milliseconds
 	public static var songPosition:Float = 0;
@@ -34,11 +43,8 @@ class Conductor
 		return data[data.length - 1];
 	}
 
-	public static function getCrotchetAtTime(time:Float)
-	{
-		var lastChange = getBPMFromSeconds(time);
-		return lastChange.stepCrochet * 4;
-	}
+	public static function getCrotchetAtTime(time:Float):Float
+		return getBPMFromSeconds(time).stepCrochet * 4;
 
 	public static function getBPMFromSeconds(time:Float)
 	{
@@ -49,10 +55,8 @@ class Conductor
 			stepCrochet: stepCrochet
 		}
 		for (i in 0...Conductor.bpmChangeMap.length)
-		{
 			if (time >= Conductor.bpmChangeMap[i].songTime)
 				lastChange = Conductor.bpmChangeMap[i];
-		}
 
 		return lastChange;
 	}
@@ -65,11 +69,10 @@ class Conductor
 			bpm: bpm,
 			stepCrochet: stepCrochet
 		}
+
 		for (i in 0...Conductor.bpmChangeMap.length)
-		{
 			if (Conductor.bpmChangeMap[i].stepTime <= step)
 				lastChange = Conductor.bpmChangeMap[i];
-		}
 
 		return lastChange;
 	}
@@ -95,14 +98,10 @@ class Conductor
 	}
 
 	public static function getBeat(time:Float)
-	{
 		return getStep(time) / 4;
-	}
 
 	public static function getBeatRounded(time:Float):Int
-	{
 		return Math.floor(getStepRounded(time) / 4);
-	}
 
 	public static function mapBPMChanges(song:SwagSong)
 	{
@@ -143,14 +142,5 @@ class Conductor
 	inline public static function calculateCrochet(bpm:Float)
 	{
 		return (60 / bpm) * 1000;
-	}
-
-	public static function set_bpm(newBPM:Float):Float
-	{
-		bpm = newBPM;
-		crochet = calculateCrochet(bpm);
-		stepCrochet = crochet / 4;
-
-		return bpm = newBPM;
 	}
 }

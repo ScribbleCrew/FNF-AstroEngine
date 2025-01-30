@@ -52,9 +52,11 @@ class ModItem extends FlxSpriteGroup
 			#end
 		}
 
-		selectBg = new FlxSprite().makeGraphic(1, 1, FlxColor.TRANSPARENT);
-		selectBg.alpha = 0.8;
+	//	selectBg = new FlxSprite().makeGraphic(1, 1, FlxColor.TRANSPARENT);
+		selectBg = FlxSpriteUtil.drawRoundRectComplex(new FlxSprite().makeGraphic(325+5, 80+5, FlxColor.TRANSPARENT), 0, 0, 325+5, 80+5, 15, 15, 15, 15, FlxColor.BLACK);
+		selectBg.alpha = 0.6;
 		selectBg.visible = false;
+		selectBg.updateHitbox();
 		add(selectBg);
 
 		icon = new FlxSprite(5, 5);
@@ -91,6 +93,7 @@ class ModItem extends FlxSpriteGroup
 			icon.loadGraphic(Paths.image('unknownMod'), true, 150, 150);
 		icon.scale.set(0.5, 0.5);
 		icon.updateHitbox();
+		icon.centerOnObject(selectBg, Y);
 
 		this.name = folder;
 		if (pack != null)
@@ -117,8 +120,10 @@ class ModItem extends FlxSpriteGroup
 			icon.animation.play("icon");
 		}
 
-		selectBg = FlxSpriteUtil.drawRoundRectComplex(selectBg, 0, 0, 1, 1, 15, 15, 15, 15, FlxColor.BLACK);
-		selectBg.scale.set(width + 5, height + 5);
-		selectBg.updateHitbox();
+		//selectBg = FlxSpriteUtil.drawRoundRectComplex(selectBg, 0, 0, 1, 1, 15, 15, 15, 15, FlxColor.BLACK);
+		//selectBg.scale.set(width + 5, height + 5);
+		//trace(width);
+		//trace(height);
+	//	selectBg.updateHitbox();
 	}
 }

@@ -30,7 +30,6 @@ import funkin.backend.utils.Controls;
 import funkin.backend.data.*;
 import funkin.backend.system.MusicBeatSubstate;
 import funkin.backend.system.MusicBeatState;
-import flixel.AttachedFlxText;
 import funkin.game.objects.*;
 import funkin.game.objects.Alphabet;
 
@@ -42,7 +41,7 @@ class BaseOptionsMenu extends BaseMenu
 
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private var checkboxGroup:FlxTypedGroup<CheckboxThingie>;
-	private var grpTexts:FlxTypedGroup<AttachedFlxText>;
+	private var grpTexts:FlxTypedGroup<AttachedAlphabet>;
 
 	private var descBox:FlxSprite;
 	private var descText:FlxText;
@@ -68,7 +67,7 @@ class BaseOptionsMenu extends BaseMenu
 		grpOptions = new FlxTypedGroup<Alphabet>();
 		add(grpOptions);
 
-		grpTexts = new FlxTypedGroup<AttachedFlxText>();
+		grpTexts = new FlxTypedGroup<AttachedAlphabet>();
 		add(grpTexts);
 
 		checkboxGroup = new FlxTypedGroup<CheckboxThingie>();
@@ -110,7 +109,7 @@ class BaseOptionsMenu extends BaseMenu
 				optionText.x -= 80;
 				optionText.startPosition.x -= 80;
 				// optionText.xAdd -= 80;
-				var valueText:AttachedFlxText = new AttachedFlxText('' + optionsArray[i].getValue(), optionText.width + 60);
+				var valueText:AttachedAlphabet = new AttachedAlphabet('' + optionsArray[i].getValue(), optionText.width + 60);
 				valueText.sprTracker = optionText;
 				valueText.copyAlpha = true;
 				valueText.ID = i;
@@ -456,8 +455,8 @@ class BaseOptionsMenu extends BaseMenu
 				text = InputFormatter.getGamepadName(FlxGamepadInputID.fromString(text));
 		}
 
-		var bind:AttachedFlxText = cast option.child;
-		var attach:AttachedFlxText = new AttachedFlxText(text, bind.offsetX);
+		var bind:AttachedAlphabet = cast option.child;
+		var attach:AttachedAlphabet = new AttachedAlphabet(text, bind.offsetX);
 		attach.sprTracker = bind.sprTracker;
 		attach.copyAlpha = true;
 		attach.ID = bind.ID;

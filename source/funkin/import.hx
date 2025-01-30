@@ -1,5 +1,7 @@
 #if !macro 
 // Game
+import funkin.game.Main;
+
 import funkin.game.objects.characters.*;
 import funkin.game.objects.*;
 import funkin.game.objects.options.*;
@@ -35,6 +37,7 @@ import funkin.backend.*;
 import funkin.backend.Prompt;
 import funkin.backend.Achievements.Achievement;
 import funkin.backend.base.*;
+import funkin.backend.audio.*;
 import funkin.backend.utils.native.*;
 import funkin.backend.base.BaseStage.Countdown;
 import funkin.backend.ui.*;

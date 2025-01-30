@@ -1,7 +1,7 @@
 package funkin.game.states.substates; 
 
 import funkin.game.objects.options.Option.OptionType;
-import flixel.AttachedFlxText;
+
 #if desktop
 import funkin.backend.client.Discord.DiscordClient;
 #end
@@ -39,7 +39,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private var checkboxGroup:FlxTypedGroup<CheckboxThingie>;
-	private var grpTexts:FlxTypedGroup<AttachedFlxText>;
+	private var grpTexts:FlxTypedGroup<AttachedAlphabet>;
 
 	private var curOption(get, never):GameplayOption;
 	function get_curOption() return optionsArray[curSelected]; //shorter lol
@@ -121,7 +121,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 		grpOptions = new FlxTypedGroup<Alphabet>();
 		add(grpOptions);
 
-		grpTexts = new FlxTypedGroup<AttachedFlxText>();
+		grpTexts = new FlxTypedGroup<AttachedAlphabet>();
 		add(grpTexts);
 
 		checkboxGroup = new FlxTypedGroup<CheckboxThingie>();
@@ -152,7 +152,7 @@ class GameplayChangersSubstate extends MusicBeatSubstate
 			else
 			{
 				optionText.snapToPosition();
-				var valueText:AttachedFlxText = new AttachedFlxText(Std.string(optionsArray[i].getValue()), optionText.width + 40, 0, true, 0.8);
+				var valueText:AttachedAlphabet = new AttachedAlphabet(Std.string(optionsArray[i].getValue()), optionText.width + 40, 0, true, 0.8);
 				valueText.sprTracker = optionText;
 				valueText.copyAlpha = true;
 				valueText.ID = i;

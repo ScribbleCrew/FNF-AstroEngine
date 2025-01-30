@@ -6,19 +6,20 @@ class ObjectUtils
 	 * Center object on another sprite.
 	 *
 	 * @param spr Sprite you want to center.
-	 * @param spr2 Sprite you want your sprite to be centered on.
+	 * @param target Sprite you want your sprite to be centered on.
 	 *
 	 * @return Converted sprite.
 	 */
-	public static inline function centerOnObject(spr:flixel.FlxObject, spr2:flixel.FlxObject, axes:flixel.util.FlxAxes = XY):flixel.FlxObject
-	{
-		if (axes.x)
-			spr.x = spr2.width / 2 - spr.width / 2;
-		if (axes.y)
-			spr.y = (spr2.height / 2) - (spr.height / 2);
 
-		return spr;
-	}
+	public static inline function centerOnObject<T:flixel.FlxObject>(spr:T, target:flixel.FlxObject, axes:flixel.util.FlxAxes = XY):T
+		{
+			if (axes.x)
+				spr.x = target.x + (target.width - spr.width) / 2;
+			if (axes.y)
+				spr.y = target.y + (target.height - spr.height) / 2;
+
+			return spr;
+		}
 
 	/**
 	 * Sort strumTime by time.
