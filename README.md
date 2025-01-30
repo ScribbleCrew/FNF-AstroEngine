@@ -36,8 +36,6 @@ More features coming soon...
 
 After it finishes, run `lime test windows -debug` in order to compile a build of **Astro Engine!!!** :3c ⭐
 
-also, refer to [BUILDING.md](BUILDING.md).
-
 ---
 
 <br>
