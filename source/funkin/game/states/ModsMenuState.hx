@@ -64,7 +64,7 @@ class ModsMenuState extends MusicBeatState
 		#if DISCORD_ALLOWED
 		DiscordClient.changePresence("In the Menus", null);
 		#end
-		WindowUtil.setTitle('Mods Menu');
+		WindowUtil.title = ('%{GAME_TITLE} - Mods Menu');
 		#end
 
 		// Background

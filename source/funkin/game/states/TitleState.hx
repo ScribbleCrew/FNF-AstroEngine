@@ -84,7 +84,7 @@ class TitleState extends MusicBeatState
 
 		#if desktop
 		DiscordClient.changePresence("Viewing The Title", null);
-		WindowUtil.resetTitle();
+		WindowUtil.title = '%{GAME_TITLE}';
 		#end
 
 		FlxG.mouse.visible = false;

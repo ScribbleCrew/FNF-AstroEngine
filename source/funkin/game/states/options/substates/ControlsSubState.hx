@@ -57,7 +57,7 @@ class ControlsSubState extends BaseMenu
 
 		#if desktop
 		DiscordClient.changePresence('Controls', null);
-		WindowUtil.setTitle('Options - Controls');
+		WindowUtil.title = ('%{GAME_TITLE} - Options - Controls');
 		#end
 
 		grpOptions = new FlxTypedGroup<funkin.game.objects.Alphabet>();

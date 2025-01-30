@@ -54,7 +54,7 @@ class CreditsState extends MusicBeatState
 
 		#if desktop
 		#if DISCORD_ALLOWED DiscordClient.changePresence("Credits Menu", null); #end
-		WindowUtil.setTitle('Credits Menu');
+		WindowUtil.title = ('%{GAME_TITLE} - Credits Menu');
 		FlxG.mouse.visible = false;
 		#end
 

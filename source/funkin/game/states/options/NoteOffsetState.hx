@@ -51,7 +51,7 @@ class NoteOffsetState extends MusicBeatState
 	{
 		#if desktop
 		DiscordClient.changePresence('Viewing Note Offsets', null);
-		WindowUtil.setTitle('Options - Note Offsets');
+		WindowUtil.title = ('%{GAME_TITLE} - Options - Note Offsets');
 		#end
 
 		// Cameras

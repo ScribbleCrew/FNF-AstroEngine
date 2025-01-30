@@ -1820,7 +1820,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		#if DISCORD_ALLOWED 
 		DiscordClient.changePresence('Chart Editor', 'Song: ' + PlayState.SONG.song); 
 		#end
-		WindowUtil.setTitle('Chart Editor - ${PlayState.SONG.song} (${Difficulty.list[PlayState.storyDifficulty]})');
+		WindowUtil.title = ('%{GAME_TITLE} - Chart Editor - ${PlayState.SONG.song} (${Difficulty.list[PlayState.storyDifficulty]})');
 		
 
 		updateAudioVolume();

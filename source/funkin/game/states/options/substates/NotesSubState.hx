@@ -55,7 +55,7 @@ class NotesSubState extends BaseMenu
 		
 		#if DISCORD_ALLOWED
 		DiscordClient.changePresence("Note Colors Menu", null);
-		WindowUtil.setTitle("Note Colors");
+		WindowUtil.title = ("%{GAME_TITLE} - Note Colors");
 		#end
 
 		modeBG = new FlxSprite(215, 85).makeGraphic(315, 115, FlxColor.BLACK);

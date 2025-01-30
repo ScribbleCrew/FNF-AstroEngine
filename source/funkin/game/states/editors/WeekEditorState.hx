@@ -343,7 +343,7 @@ class WeekEditorState extends MusicBeatState implements FlxUIEventHandler.FlxUIE
 		#if DISCORD_ALLOWED
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("Week Editor", "Editting: " + weekFileName);
-		WindowUtil.setTitle('Week Editer: - $weekFileName');
+		WindowUtil.title = ('%{GAME_TITLE} - Week Editer: - $weekFileName');
 		#end
 	}
 	

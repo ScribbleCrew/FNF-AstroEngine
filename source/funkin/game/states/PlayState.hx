@@ -899,7 +899,7 @@ class PlayState extends MusicBeatState
 		#if desktop
 		// Updating Discord Rich Presence.
 		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
-		WindowUtil.setTitle(detailsText);
+		WindowUtil.title = ('%{GAME_TITLE} - $detailsText');
 		#end
 
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
@@ -1574,7 +1574,7 @@ class PlayState extends MusicBeatState
 		#if desktop
 		// Updating Discord Rich Presence (with Time Left)
 		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character, true, songLength);
-		WindowUtil.setTitle(detailsText + ' - ${SONG.song} (${storyDifficultyText})');
+		WindowUtil.title = ('%{GAME_TITLE} - $detailsText - ${SONG.song} (${storyDifficultyText})');
 		#end
 		setOnScripts('songLength', songLength);
 		callOnScripts('onSongStart', []);
@@ -1950,7 +1950,7 @@ class PlayState extends MusicBeatState
 			#end
 
 			#if desktop
-			WindowUtil.setTitle(detailsText + ' - ${SONG.song} (${storyDifficultyText})');
+			WindowUtil.title = '%{GAME_TITLE} - $detailsText - ${SONG.song} (${storyDifficultyText})';
 			#end
 		}
 
@@ -1977,7 +1977,7 @@ class PlayState extends MusicBeatState
 				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
 			}
 
-			WindowUtil.setTitle('${SONG.song} (${storyDifficultyText.toUpperCase()})');
+			WindowUtil.title = '%{GAME_TITLE} - ${SONG.song} (${storyDifficultyText.toUpperCase()})';
 		}
 		#end
 
@@ -1990,7 +1990,7 @@ class PlayState extends MusicBeatState
 		if (health > 0 && !paused)
 		{
 			DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
-			WindowUtil.setTitle('Paused - ${SONG.song}');
+			WindowUtil.title = ('%{GAME_TITLE} - Paused - ${SONG.song}');
 		}
 		#end
 
@@ -2272,7 +2272,7 @@ class PlayState extends MusicBeatState
 
 		#if desktop
 		DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
-		WindowUtil.setTitle('Paused - ${SONG.song}');
+		WindowUtil.title = ('%{GAME_TITLE} - Paused - ${SONG.song}');
 		#end
 	}
 
@@ -2366,7 +2366,7 @@ class PlayState extends MusicBeatState
 				#if desktop
 				// Game Over doesn't get his own variable because it's only used here
 				DiscordClient.changePresence("Game Over - " + detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
-				WindowUtil.setTitle('Game Over - ${detailsText} - ${SONG.song}');
+				WindowUtil.title = ('%{GAME_TITLE} - Game Over - ${detailsText} - ${SONG.song}');
 				#end
 				isDead = true;
 				return true;

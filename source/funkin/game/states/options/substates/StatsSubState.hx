@@ -34,7 +34,7 @@ class StatsSubState extends BaseMenu
 
 		#if desktop
 		DiscordClient.changePresence('Viewing Stats', null);
-		WindowUtil.setTitle('Options - Stats');
+		WindowUtil.title = ('%{GAME_TITLE} - Options - Stats');
 		#end
 
 		grpTexts = new FlxTypedGroup<Alphabet>();

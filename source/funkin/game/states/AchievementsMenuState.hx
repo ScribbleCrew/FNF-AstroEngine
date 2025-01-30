@@ -29,7 +29,7 @@ class AchievementsMenuState extends MusicBeatState
 		#if DISCORD_ALLOWED
 		DiscordClient.changePresence("Achievements Menu", null);
 		#end
-		WindowUtil.setTitle('Achievements Menu');
+		WindowUtil.title = ('%{GAME_TITLE} - Achievements Menu');
 		#end
 		FlxG.mouse.visible = false;
 

@@ -13,7 +13,7 @@ class Init extends flixel.FlxState
 	{
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
-		WindowUtil.resetTitle();
+		WindowUtil.title = '';
 
 		FlxG.save.bind('funkin', funkin.backend.CoolUtil.getSavePath());
 

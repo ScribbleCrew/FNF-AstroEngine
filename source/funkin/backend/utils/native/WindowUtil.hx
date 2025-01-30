@@ -9,7 +9,6 @@ import lime.app.Application;
 	<lib name="ole32.lib" if="windows" />
 </target>
 ')
-
 @:cppFileCode('
 #include "mmdeviceapi.h"
 #include <dwmapi.h>
@@ -147,21 +146,12 @@ class WindowUtil
 	}
 
 	/**
-	 *	Change the title.
+	 *	Title Stuff.
 	 */
-	public static function setTitle(?title:String, ?normal:Bool = true):String
-	{
-		var titleChange:String = null;
-		if (title != null)
-			titleChange = (normal ? '${Application.current.meta.get('name')} - ' : '') + title;
-		return Application.current.window.title = titleChange ?? Application.current.meta.get('name');
-	}
-
-	/**
-	 *	Reset the title.
-	 */
-	public static function resetTitle():String
-		return Application.current.window.title = Application.current.meta.get('name');
+	@:isVar
+	public static var title(default, set):String;
+	@:dox(hide) @:noCompletion private inline static function set_title(value:String):String
+		return Application.current.window.title = title = Std.string(value.replace('%{GAME_TITLE}', Application.current.meta.get('name')));
 
 	/**
 	 * Can be used to check if your using a specific version of an OS (or if your using a certain OS).

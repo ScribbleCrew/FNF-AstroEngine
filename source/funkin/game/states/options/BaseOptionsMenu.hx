@@ -61,7 +61,7 @@ class BaseOptionsMenu extends BaseMenu
 		#if DISCORD_ALLOWED
 		DiscordClient.changePresence(rpcTitle, null);
 		#end
-		WindowUtil.setTitle('Options - $title');
+		WindowUtil.title = ('%{GAME_TITLE} - Options - $title');
 
 		// avoids lagspikes while scrolling through menus!
 		grpOptions = new FlxTypedGroup<Alphabet>();
