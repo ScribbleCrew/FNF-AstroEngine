@@ -41,13 +41,13 @@ class Init extends flixel.FlxState
 
 		#if SHADERS_ALLOWED fragFix(); #end
 
+		#if windows AudioSwitchFix.init(); #end
+		
 		funkin.game.objects.Alphabet.AlphaCharacter.loadAlphabetData();
 
 		super.create();
 
 		#if WATERMARK owoWatermark(); #end
-
-		AudioSwitchFix.init();
 
 		// Extra stuff goes here :3
 
