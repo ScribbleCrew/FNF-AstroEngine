@@ -3,30 +3,25 @@ package source; // Yeah, I know...
 /**
  * A script which executes after the game is built.
  */
-class Postbuild
+final class Postbuild
 {
-  static inline final BUILD_TIME_FILE:String = '.build_time';
+	static inline final BUILD_TIME_FILE:String = '.build_time';
 
-  static function main():Void
-  {
-    printBuildTime();
-  }
+	static function main():Void
+	{
+		final endTime:Float = Sys.time();
 
-  static function printBuildTime():Void
-  {
-    // get buildEnd before fs operations since they are blocking
-    var end:Float = Sys.time();
-    if (sys.FileSystem.exists(BUILD_TIME_FILE))
-    {
-      final fi:sys.io.FileInput = sys.io.File.read(BUILD_TIME_FILE);
-      final start:Float = fi.readDouble();
-      fi.close();
+		if (sys.FileSystem.exists(BUILD_TIME_FILE))
+		{
+			final _fileInput:sys.io.FileInput = sys.io.File.read(BUILD_TIME_FILE);
+			final startTime:Float = _fileInput.readDouble();
+			_fileInput.close();
 
-      sys.FileSystem.deleteFile(BUILD_TIME_FILE);
+			sys.FileSystem.deleteFile(BUILD_TIME_FILE);
 
-      final buildTime:Float = Math.round((end - start) * 100) / 100;
+			final buildTime:Float = Math.round((endTime - startTime) * 100) / 100;
 
-      trace('Build took: ${buildTime} seconds');
-    }
-  }
+			trace('Build took: ${buildTime} seconds');
+		}
+	}
 }

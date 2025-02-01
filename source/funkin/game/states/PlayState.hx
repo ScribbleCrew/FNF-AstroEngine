@@ -1,7 +1,7 @@
 package funkin.game.states;
 
+#if flixel
 import flixel.util.*;
-import flixel.group.FlxSpriteGroup;
 import flixel.input.keyboard.FlxKey;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.addons.display.FlxGridOverlay;
@@ -9,22 +9,20 @@ import flixel.addons.transition.FlxTransitionableState;
 import flixel.util.FlxSpriteUtil;
 import flixel.AttachedFlxSprite;
 import flixel.graphics.FlxGraphic;
+#end
 
-import haxe.Json;
-import haxe.extern.EitherType;
-
+#if lime
 import lime.utils.Assets;
+#end
 
+#if openfl
 import openfl.Lib;
 import openfl.utils.Assets as OpenFlAssets;
 import openfl.events.KeyboardEvent;
+#end
 
 #if !flash
 import flixel.addons.display.FlxRuntimeShader;
-#end
-
-#if HSCRIPT_ALLOWED
-import crowplexus.iris.Iris;
 #end
 
 /**
@@ -45,6 +43,14 @@ import crowplexus.iris.Iris;
 **/
 class PlayState extends MusicBeatState
 {
+	/**
+	 * instance, bruh...
+	 */
+	public static var instance:PlayState;
+
+	/**
+	 * The rating data.
+	 */
 	public static var ratingStuff(default, null):Array<Dynamic> = [
 		['You Suck!', 0.2], // From 0% to 19%
 		['Shit', 0.4], // From 20% to 39%
@@ -451,42 +457,130 @@ class PlayState extends MusicBeatState
 	 */
 	public var practiceMode:Bool = false;
 
-	// Cameras
+	/**
+	 * The HUD camera.
+	 */
 	public var camHUD:FlxCamera;
+
+	/**
+	 * The game camera.
+	 */
 	public var camGame:FlxCamera;
+
+	/**
+	 * The other camera. 
+	 */
 	public var camOther:FlxCamera;
+
+	/**
+	 * The pause camera.
+	 */
 	public var camPause:FlxCamera;
+
+	/**
+	 * The cameras speed.
+	 */
 	public var cameraSpeed:Float = 1;
 
-	// Song Stats
+		/**
+	 * An array which contains all rating data.
+	 */
 	public var ratingsData:Array<Rating> = Rating.loadDefault();
+
+	/**
+	 * The songs score.
+	 */
 	public var songScore:Int = 0;
+
+	/**
+	 * The songs hits.
+	 */
 	public var songHits:Int = 0;
+
+	/**
+	 * The songs misses.
+	 */
 	public var songMisses:Int = 0;
 
-	// Tweens
+	/**
+	 * Score text tween.
+	 */
 	var scoreTxtTween:FlxTween;
 
+	/**
+	 * The campaign score.
+	 */
 	public static var campaignScore:Int = 0;
+
+	/**
+	 * The campaign misses.
+	 */
 	public static var campaignMisses:Int = 0;
+
+	/**
+	 * Has the player seen the cutscene.
+	 */
 	public static var seenCutscene:Bool = false;
+
+	/**
+	 * The death counter.
+	 */
 	public static var deathCounter:Int = 0;
 
+	/**
+	 * Is the player in a cutscene.
+	 */
 	public var inCutscene:Bool = false;
+
+	/**
+	 * Should the countdown be skipped.
+	 */
 	public var skipCountdown:Bool = false;
 
+	/**
+	 * The default camera zoom.
+	 */
 	public var defaultCamZoom:Float = 1.05;
+	
+	/**
+	 * Pixel assets zoom.
+	 */
+	public static inline final daPixelZoom:Float = 6;
 
-	// how big to stretch the pixel art assets
-	public static final daPixelZoom:Float = 6;
-
+	/**
+	 * Sing animations.
+	 */
 	private final singAnimations:Array<String> = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT'];
 
+	/**
+	 * The songs length.
+	 */
 	var songLength:Float = 0;
 
+	/**
+	 * Boyfriend camera offset.
+	 */
 	public var boyfriendCameraOffset:Array<Float> = null;
+
+	/**
+	 * Opponent camera offset.
+	 */
 	public var opponentCameraOffset:Array<Float> = null;
+
+	/**
+	 * Girlfriend camera offset.
+	 */
 	public var girlfriendCameraOffset:Array<Float> = null;
+
+	/**
+	 * The songs name.
+	 */
+	public var songName:String;
+
+	/**
+	 * Into sound suffix.
+	 */
+	public var introSoundsSuffix:String = '';
 
 	#if desktop
 	// Discord RPC variables
@@ -495,39 +589,74 @@ class PlayState extends MusicBeatState
 	var detailsPausedText:String = "";
 	#end
 
-	// Lua shit
-	public static var instance:PlayState;
 
 	#if LUA_ALLOWED
+	/**
+	 * An array of all running lua scripts?
+	 * i need to check :3c -orbl
+	 */
 	public var luaArray:Array<FunkinLua> = [];
 
+	/**
+	 * Lua debug text group.
+	 */
 	private var luaDebugGroup:FlxTypedGroup<DebugLuaText>;
 	#end
 
-	public var introSoundsSuffix:String = '';
-
-	// Debug buttons
+	/**
+	 * An array which contains debug chart keys.
+	 */
 	private var debugKeysChart:Array<FlxKey>;
+
+	/**
+	 * An array which contains debug character keys.
+	 */
 	private var debugKeysCharacter:Array<FlxKey>;
 
-	// Less laggy controls
+	/**
+	 * The key array.
+	 * less laggy controls.
+	 */
 	private var keysArray:Array<String>;
 
-	public var songName:String;
-
+	/**
+	 * The precache list.
+	 */
 	public var precacheList:Map<String, String> = new Map<String, String>();
 
-	// stores the last judgement object
+	/**
+	 * Stores the last judgement object.
+	 */
 	public static var lastRating:FlxSprite;
-	// stores the last combo sprite object
+
+	/**
+	 * Stores the last combo sprite object.
+	 */
 	public static var lastCombo:FlxSprite;
-	// stores the last combo score objects in an array
+
+	/**
+	 * Stores the last combo score objects in an array.
+	 */
 	public static var lastScore:Array<FlxSprite> = [];
 
-	// Callbacks
+	/**
+	 * Song start callback.
+	 */
 	public var startCallback:Void->Void = null;
+
+	/**
+	 * Song finished callback.
+	 */
 	public var endCallback:Void->Void = null;
+
+	/**
+	 * score update callback.
+	 */
 	public var scoreUpdate:Void->Void = null;
+
+	/**
+	 * stage update callback.
+	 */
 	public var stageUpdate:Void->Void = null;
 
 	override public function create()
@@ -900,11 +1029,8 @@ class PlayState extends MusicBeatState
 
 		precacheList.set('alphabet', 'image');
 
-		#if desktop
-		// Updating Discord Rich Presence.
-		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
-		WindowUtil.title = ('%{GAME_TITLE} - $detailsText');
-		#end
+		#if DISCORD_ALLOWED DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character); #end
+		#if desktop WindowUtil.title = ('%{GAME_TITLE} - $detailsText'); #end
 
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
@@ -1575,13 +1701,11 @@ class PlayState extends MusicBeatState
 			FlxTween.tween(spr, {alpha: 0.6}, 0.5, {ease: FlxEase.circOut});
 		});
 
-		#if desktop
-		// Updating Discord Rich Presence (with Time Left)
-		DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character, true, songLength);
-		WindowUtil.title = ('%{GAME_TITLE} - $detailsText - ${SONG.song} (${storyDifficultyText})');
-		#end
 		setOnScripts('songLength', songLength);
 		callOnScripts('onSongStart', []);
+
+		#if DISCORD_ALLOWED DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character, true, songLength); #end
+		#if desktop WindowUtil.title = ('%{GAME_TITLE} - $detailsText - ${SONG.song} (${storyDifficultyText})'); #end
 	}
 
 	private var noteTypes:Array<String> = [];
@@ -1922,6 +2046,7 @@ class PlayState extends MusicBeatState
 	@:dox(hide) override function closeSubState()
 	{
 		stagesFunc(function(stage:BaseStage) stage.closeSubState());
+		
 		if (paused)
 		{
 			if (FlxG.sound.music != null && !startingSong && canResync)
@@ -1936,7 +2061,7 @@ class PlayState extends MusicBeatState
 			paused = false;
 			callOnScripts('onResume', []);
 
-			#if desktop
+			#if DISCORD_ALLOWED
 			if (startTimer != null && startTimer.finished)
 			{
 				DiscordClient.changePresence(detailsText, SONG.song
@@ -1953,9 +2078,7 @@ class PlayState extends MusicBeatState
 			}
 			#end
 
-			#if desktop
-			WindowUtil.title = '%{GAME_TITLE} - $detailsText - ${SONG.song} (${storyDifficultyText})';
-			#end
+			#if desktop WindowUtil.title = '%{GAME_TITLE} - $detailsText - ${SONG.song} (${storyDifficultyText})'; #end
 		}
 
 		super.closeSubState();
@@ -1966,20 +2089,18 @@ class PlayState extends MusicBeatState
 		#if desktop
 		if (health > 0 && !paused)
 		{
+			#if DISCORD_ALLOWED
 			if (Conductor.songPosition > 0.0)
-			{
 				DiscordClient.changePresence(detailsText, SONG.song
 					+ " ("
 					+ storyDifficultyText
 					+ ")", baseUI.iconP2.character, true,
 					songLength
 					- Conductor.songPosition
-					- ClientPrefs.data.noteOffset);
-			}
+					- ClientPrefs.data.noteOffset)
 			else
-			{
 				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
-			}
+			#end
 
 			WindowUtil.title = '%{GAME_TITLE} - ${SONG.song} (${storyDifficultyText.toUpperCase()})';
 		}
@@ -1993,7 +2114,7 @@ class PlayState extends MusicBeatState
 		#if desktop
 		if (health > 0 && !paused)
 		{
-			DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
+			#if DISCORD_ALLOWED DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character); #end
 			WindowUtil.title = ('%{GAME_TITLE} - Paused - ${SONG.song}');
 		}
 		#end
@@ -2272,12 +2393,9 @@ class PlayState extends MusicBeatState
 			opponentVocals.pause();
 		}
 		openSubState(new PauseSubState());
-		// }
 
-		#if desktop
-		DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
-		WindowUtil.title = ('%{GAME_TITLE} - Paused - ${SONG.song}');
-		#end
+		#if DISCORD_ALLOWED DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character); #end
+		#if desktop WindowUtil.title = ('%{GAME_TITLE} - Paused - ${SONG.song}'); #end
 	}
 
 	function openChartEditor()
@@ -2296,9 +2414,8 @@ class PlayState extends MusicBeatState
 		MusicBeatState.switchState(new ChartingState());
 		chartingMode = true;
 
-		#if desktop
-		DiscordClient.changePresence("Chart Editor", null, null, true);
-		#end
+		#if DISCORD_ALLOWED DiscordClient.changePresence("Chart Editor", null, null, true); #end
+		#if desktop WindowUtil.title = ('%{GAME_TITLE} - Chart Editor'); #end
 	}
 
 	function openCharacterEditor()
@@ -2367,13 +2484,10 @@ class PlayState extends MusicBeatState
 					openSubState(new GameOverSubstate(boyfriend));
 				}
 
-				#if desktop
-				// Game Over doesn't get his own variable because it's only used here
-				DiscordClient.changePresence("Game Over - " + detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
-				WindowUtil.title = ('%{GAME_TITLE} - Game Over - ${detailsText} - ${SONG.song}');
-				#end
-				isDead = true;
-				return true;
+				#if DISCORD_ALLOWED DiscordClient.changePresence("Game Over - " + detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character); #end
+				#if desktop WindowUtil.title = ('%{GAME_TITLE} - Game Over - ${detailsText} - ${SONG.song}');#end
+
+				return isDead = true;
 			}
 		}
 		return false;

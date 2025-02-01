@@ -108,7 +108,6 @@ class WindowUtil
 	#if (WINDOW_CUSTOMIZATION && windows)
 	@:isVar
 	public static var darkmode(default, set):Bool;
-
 	@:functionCode('
     int darkMode = enable ? 1 : 0;
     HWND window = GetActiveWindow();

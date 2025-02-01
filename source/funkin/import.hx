@@ -94,6 +94,11 @@ import sys.FileSystem;
 import sys.io.File;
 #end
 
+// HSCRIPT
+#if HSCRIPT_ALLOWED
+import crowplexus.iris.Iris;
+#end
+
 // Haxe
 import haxe.*;
 

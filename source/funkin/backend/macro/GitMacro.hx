@@ -7,28 +7,27 @@ import sys.io.Process;
 class GitMacro
 {
 	/**
-		Current git commit number.
-	**/
+	 * Current git commit number.
+	 */
 	public static var commitNumber(get, never):Int;
-
-	/**
-		Current git commit hash.
-	**/
-	public static var commitHash(get, never):String;
-
-	/**
-		Current git branch.
-	**/
-	public static var branch(get, never):String;
-
-	@:noCompletion private static function get_branch()
-		return _currentBranch();
-
 	@:noCompletion private static function get_commitNumber()
 		return _commitNumber();
 
+	/**
+	 * Current git commit hash.
+	 */
+	public static var commitHash(get, never):String;
 	@:noCompletion private static function get_commitHash()
 		return _commitHash();
+
+	/**
+	 * Current git branch.
+	 */
+	public static var branch(get, never):String;
+	@:noCompletion private static function get_branch()
+		return _currentBranch();
+
+	//
 
 	@:noCompletion private static macro function _commitNumber()
 	{
@@ -62,7 +61,7 @@ class GitMacro
 			return macro $v{process.stdout.readLine()};
 		}
 		catch (e)
-		{ 
+		{
 			trace("Error getting current commit hash from git: " + e);
 		}
 		return macro $v{"~"} #end

@@ -2,12 +2,12 @@ package flixel.text;
 
 class AttachedAlphabet extends flixel.text.FlxText
 {
-	private var _tracker(default, null):FlxSprite;
+	@:noCompletion private var _tracker(default, null):FlxSprite;
 
 	@:isVar
 	public var sprTracker(get, set):FlxSprite;
 	@:noCompletion private function set_sprTracker(spr:FlxSprite):FlxSprite
-		return _tracker = sprTracker = spr;
+		return _tracker = spr;
 	@:noCompletion  private function get_sprTracker():FlxSprite
 		return _tracker;
 
