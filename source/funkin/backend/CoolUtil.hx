@@ -51,18 +51,6 @@ class CoolUtil
 		}
 	}
 
-	public static function openFolder(path:String):Dynamic
-	{
-		#if sys
-		final runProcess:String = #if windows "explorer" #elseif mac "open" #elseif linux "xdg-open" #else '' /* to make sure */ #end;
-		final fullPath:String = haxe.io.Path.join([Sys.getCwd(), path]);
-
-		return Sys.command(runProcess, [fullPath.replace('/', '\\')]);
-		#else
-		return FlxG.log.error('Command `openFolder` isn\'t supported on your current platform, please try again later.');
-		#end
-	}
-
 	public static function coolLerp(base:Float, target:Float, ratio:Float):Float
 		return base + cameraLerp(ratio) * (target - base);
 

@@ -26,7 +26,6 @@ class Init extends flixel.FlxState
 		Logs.init();
 		funkin.backend.Highscore.init();
 		funkin.backend.utils.ClientPrefs.init();
-		MusicBeatState.init();
 		init();
 
 		#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(CallbackHandler.call)); #end
@@ -54,8 +53,22 @@ class Init extends flixel.FlxState
 		FlxG.switchState(new TitleState());
 	}
 
+	static var loadedInitStuff:Int = 0;
 	private function init():Void
 	{
+		final daInitFiles:Array<Dynamic> = [funkin.backend.initialization.TemporaryFolder];
+		for(file in daInitFiles){
+			try{
+				var daFile:Dynamic = cast file;
+				daFile.main();
+				loadedInitStuff++;
+			}catch(e){
+				trace(e);
+			}
+		}
+
+		//
+
 		trace(OsAPI.osInfo + ' ' + OsAPI.osVersion);
 
 		FlxG.fixedTimestep = #if html5 FlxG.mouse.visible = #end false;
@@ -130,8 +143,6 @@ class Volume
 
 class Logs // Modded trace func
 {
-	private static final fembois:String = "[Astro System]"; // prefix i guess
-
 	public static function init():Void
 	{
 		haxe.Log.trace = __customTrace;
@@ -148,18 +159,18 @@ class Logs // Modded trace func
 				extra += ", " + v;
 			#if js
 			if (js.Syntax.typeof(untyped console) != "undefined" && (untyped console).log != null)
-				(untyped console).log('$fembois: ${v + extra} : $nerddd');
+				(untyped console).log('${Constants.LOGS_PREFIX}: ${v + extra} : $nerddd');
 			#elseif sys
-			Sys.println('$fembois: ${v + extra} : $nerddd');
+			Sys.println('${Constants.LOGS_PREFIX}: ${v + extra} : $nerddd');
 			#end
 		}
 		else
 		{
 			#if js
 			if (js.Syntax.typeof(untyped console) != "undefined" && (untyped console).log != null)
-				(untyped console).log('$fembois: $v : $nerddd');
+				(untyped console).log('${Constants.LOGS_PREFIX}: $v : $nerddd');
 			#elseif sys
-			Sys.println('$fembois: $v : $nerddd');
+			Sys.println('${Constants.LOGS_PREFIX}: $v : $nerddd');
 			#end
 		}
 	}

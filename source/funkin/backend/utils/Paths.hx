@@ -1,10 +1,6 @@
 package funkin.backend.utils;
 
 import flixel.system.FlxAssets;
-import flixel.math.FlxPoint;
-import flixel.graphics.frames.FlxFrame.FlxFrameAngle;
-import openfl.geom.Rectangle;
-import flixel.math.FlxRect;
 import haxe.xml.Access;
 import openfl.system.System;
 import flixel.FlxG;
@@ -12,19 +8,19 @@ import flixel.graphics.frames.FlxAtlasFrames;
 import openfl.utils.AssetType;
 import openfl.utils.Assets as OpenFlAssets;
 import lime.utils.Assets;
-import flixel.FlxSprite;
 #if sys
 import sys.io.File;
 import sys.FileSystem;
 #end
 import flixel.graphics.FlxGraphic;
 import openfl.display.BitmapData;
-import haxe.Json;
 import flash.media.Sound;
 
 @:access(openfl.display.BitmapData)
 class Paths
 {
+	public static var temp:Null<String> = null;
+
 	public static function excludeAsset(key:String)
 	{
 		if (!dumpExclusions.contains(key))
@@ -262,7 +258,7 @@ class Paths
 			bitmap.readable = true;
 		}
 
-		final graph:FlxGraphic = FlxGraphic.fromBitmapData(bitmap, false, key);
+		var graph:FlxGraphic = FlxGraphic.fromBitmapData(bitmap, false, key);
 		graph.persist = true;
 		graph.destroyOnNoUse = false;
 
@@ -297,15 +293,19 @@ class Paths
 
 	inline static public function fileExists(key:String, type:AssetType, ?ignoreMods:Bool = false, ?library:String):Bool
 	{
-		#if MODS_ALLOWED if (FileSystem.exists(mods(Mods.currentModDirectory + '/' + key)) || FileSystem.exists(mods(key))) return true; #end
-		if (OpenFlAssets.exists(getPath(key, type))) return true;
+		#if MODS_ALLOWED
+		if (FileSystem.exists(mods(Mods.currentModDirectory + '/' + key)) || FileSystem.exists(mods(key)))
+			return true;
+		#end
+		if (OpenFlAssets.exists(getPath(key, type)))
+			return true;
 		return false;
 	}
 
 	static public function getAtlas(key:String, ?parentFolder:String = null, ?allowGPU:Bool = true):FlxAtlasFrames
 	{
 		var useMod = false;
-		
+
 		final loadedImage:FlxGraphic = image(key, parentFolder);
 		final myXml:Dynamic = getPath('images/$key.xml', TEXT, parentFolder, true);
 

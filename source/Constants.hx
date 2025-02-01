@@ -2,6 +2,8 @@ import funkin.backend.utils.Paths;
 
 @:final class Constants
 {
+	public static inline final LOGS_PREFIX:String = "[System]";
+
 	public static inline final MODS_LIST_FILE:String = "modsList.txt";
 
 	public static inline final DEFAULT_DISCORD_ID:String = "1095422496473358356";

@@ -236,7 +236,7 @@ class ModsMenuState extends MusicBeatState
 		buttons.push(RELOAD_BUTTON);
 
 		final OPEN_FOLDER_BUTTON = new ModButton(buttonsX - 200, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'),
-			function() CoolUtil.openFolder("mods"), 54, 54); // Move down
+			function() FileUtil.openFolder("mods"), 54, 54); // Move down
 		OPEN_FOLDER_BUTTON.icon.animation.add('icon', [6]);
 		OPEN_FOLDER_BUTTON.icon.animation.play('icon', true);
 		add(OPEN_FOLDER_BUTTON);

@@ -46,7 +46,7 @@ class NoteSplash extends FlxSprite
 	{
 		super();
 
-        animation = new AstroAnimationController(this);
+        animation = new AnimationController(this);
 
 		rgbShader = new PixelSplashShaderRef();
 		shader = rgbShader.shader;

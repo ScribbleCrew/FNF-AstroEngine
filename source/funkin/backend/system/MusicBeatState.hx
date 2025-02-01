@@ -50,18 +50,13 @@ class MusicBeatState extends FlxState
 		timePassedOnState = 0;
 	}
 
-	public function initAstroCamera():AstroCamera
+	public function initAstroCamera():CustomCamera
 	{
-		var camera = new AstroCamera();
+		final camera = new CustomCamera();
 		FlxG.cameras.reset(camera);
 		FlxG.cameras.setDefaultDrawTarget(camera, true);
 		_astroCameraInitialized = true;
 		return camera;
-	}
-
-	public static function init()
-	{
-		trace('Initialization Complete'); // Makes Sure MusicBeatState isnt null fr
 	}
 
 	public function addBehindObject(obj:FlxBasic, obj2:FlxBasic)

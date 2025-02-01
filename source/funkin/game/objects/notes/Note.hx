@@ -1,6 +1,6 @@
 package funkin.game.objects.notes;
 
-import funkin.backend.animation.AstroAnimationController;
+import funkin.backend.animation.AnimationController;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -251,7 +251,7 @@ class Note extends FlxSprite
 	{
 		super();
 
-		animation = new AstroAnimationController(this);
+		animation = new AnimationController(this);
 
 		antialiasing = ClientPrefs.data.antialiasing;
 		if (createdFrom == null)

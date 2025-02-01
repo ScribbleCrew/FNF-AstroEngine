@@ -1,33 +1,44 @@
 package source;
-
 #if !display
+import sys.FileSystem;
 import sys.io.File;
 
 final class Prebuild
 {
-  private inline static final title:String = "
+	inline static final title:String = "
     ▄▀█ █▀ ▀█▀ █▀█ █▀█   █▀▀ █▄░█ █▀▀ █ █▄░█ █▀▀
     █▀█ ▄█ ░█░ █▀▄ █▄█   ██▄ █░▀█ █▄█ █ █░▀█ ██▄
   ";
 
-  private inline static final subtitle:String = "
+	inline static final subtitle:String = "
           █▀▀ █▀█ █▀▄▀█ █▀█ █ █░░ █▀▀ █▀█
           █▄▄ █▄█ █░▀░█ █▀▀ █ █▄▄ ██▄ █▀▄
   ";
-  private inline static final lines:String = "
+	inline static final lines:String = "
     --------------------------------------------
   ";
 
-  private inline static final owoquote:String = "
+	inline static final owoquote:String = "
             erm, what the sigma? :3c
   ";
 
-  private inline static final binded:String = '$lines$title$subtitle$owoquote$lines';
+	inline static final binded:String = '$lines$title$subtitle$owoquote$lines';
 
-  static function main():Void
-  {
-    //trace('Building!');
-    trace(binded);
-  }
+	static inline final BUILD_TIME_FILE:String = '.build_time';
+
+	static function main():Void
+	{
+		// trace('Building!');
+		saveBuildTime();
+		trace(binded);
+	}
+
+	static function saveBuildTime():Void
+	{
+		var fo:sys.io.FileOutput = File.write(BUILD_TIME_FILE);
+		var now:Float = Sys.time();
+		fo.writeDouble(now);
+		fo.close();
+	}
 }
 #end

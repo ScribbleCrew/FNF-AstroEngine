@@ -1,10 +1,7 @@
 package funkin.backend.animation;
 
-import lime.utils.Assets;
 import flxanimate.frames.FlxAnimateFrames;
-import flxanimate.data.AnimationData.AnimAtlas;
 import flixel.util.FlxDestroyUtil;
-import flixel.system.FlxAssets.FlxGraphicAsset;
 #if sys
 import sys.io.File;
 #else
@@ -13,11 +10,11 @@ import openfl.utils.Assets;
 
 using StringTools;
 
-class AstroFlxAnimate extends flxanimate.FlxAnimate
+class FlxAnimate extends flxanimate.FlxAnimate
 {
-	public function loadAtlasEx(img:FlxGraphicAsset, pathOrStr:String = null, myJson:Dynamic = null)
+	public function loadAtlasEx(img:flixel.system.FlxAssets.FlxGraphicAsset, pathOrStr:String = null, myJson:Dynamic = null):Void
 	{
-		var animJson:AnimAtlas = null;
+		var animJson:flxanimate.data.AnimationData.AnimAtlas = null;
 		if (myJson is String)
 		{
 			var trimmed:String = pathOrStr.trim();
@@ -25,6 +22,7 @@ class AstroFlxAnimate extends flxanimate.FlxAnimate
 
 			if (trimmed == '.json')
 				myJson = #if sys File.getContent(myJson) #else daList = Assets.getText(myJson) #end;
+
 			animJson = cast tjson.TJSON.parse(_removeBOM(myJson));
 		}
 		else
@@ -60,65 +58,65 @@ class AstroFlxAnimate extends flxanimate.FlxAnimate
 				{
 					myData = tjson.TJSON.parse(myData);
 					isXml = false;
-					// trace('JSON parsed successfully!');
 				}
 				catch (e)
 				{
 					myData = Xml.parse(myData);
 					isXml = true;
-					// trace('XML parsed successfully!');
 				}
 		}
 
 		anim._loadAtlas(animJson);
-		if (!isXml)
-			frames = FlxAnimateFrames.fromSpriteMap(cast myData, img);
-		else
-			frames = FlxAnimateFrames.fromSparrow(cast myData, img);
+		frames = !isXml ? FlxAnimateFrames.fromSpriteMap(cast myData, img) : FlxAnimateFrames.fromSparrow(cast myData, img);
 		origin = anim.curInstance.symbol.transformationPoint;
 	}
 
-	override function draw()
+	/**
+	 *	draw.
+	 */
+	override function draw():Void
 	{
-		if (anim.curInstance == null || anim.curSymbol == null)
-			return;
+		if (anim.curInstance == null || anim.curSymbol == null) return;
 		super.draw();
 	}
 
-	override function destroy()
+	/**
+	 *	destroy.
+	 */
+	override function destroy():Void
 	{
 		try
-		{
-			super.destroy();
-		}
-		catch (e:haxe.Exception)
+			super.destroy()
+		catch (e:Dynamic)
 		{
 			anim.curInstance = FlxDestroyUtil.destroy(anim.curInstance);
 			anim.stageInstance = FlxDestroyUtil.destroy(anim.stageInstance);
-			// anim.metadata = FlxDestroyUtil.destroy(anim.metadata);
 			anim.metadata.destroy();
 			anim.symbolDictionary = null;
 		}
 	}
 
-	function _removeBOM(str:String) // Removes BOM byte order indicator
-	{
-		if (str.charCodeAt(0) == 0xFEFF)
-			str = str.substr(1); // myData = myData.substr(2);
-		return str;
-	}
+	/**
+	 *	Removes BOM byte order indicator
+	 */
+	private function _removeBOM(str:String)
+		return str.charCodeAt(0) == 0xFEFF ? str.substr(1) : str;
 
-	public function pauseAnimation()
+	/**
+	 *	Resume the animation.
+	 */
+	public function resumeAnimation():Void
 	{
-		if (anim.curInstance == null || anim.curSymbol == null)
-			return;
-		anim.pause();
-	}
-
-	public function resumeAnimation()
-	{
-		if (anim.curInstance == null || anim.curSymbol == null)
-			return;
+		if (anim.curInstance == null || anim.curSymbol == null) return;
 		anim.play();
+	}
+
+	/**
+	 *	Pause the animation.
+	 */
+	public function pauseAnimation():Void
+	{
+		if (anim.curInstance == null || anim.curSymbol == null) return;
+		anim.pause();
 	}
 }

@@ -66,7 +66,7 @@ import llua.Lua;
 // FlxAnimate
 #if FLXANIMATE_ALLOWED
 import flxanimate.*;
-import funkin.backend.animation.AstroFlxAnimate as FlxAnimate;
+import funkin.backend.animation.FlxAnimate;
 #end
 
 // System

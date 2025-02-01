@@ -1,16 +1,14 @@
 package funkin.game.objects.characters;
 
 import funkin.backend.Song.SwagSection;
-import funkin.backend.animation.AstroAnimationController;
+import funkin.backend.animation.AnimationController;
 
 import flixel.graphics.frames.FlxAtlasFrames;
 
 import flixel.util.FlxSort;
 import flixel.util.FlxDestroyUtil;
 
-import openfl.utils.AssetType;
 import openfl.utils.Assets;
-import haxe.Json;
 
 typedef CharacterFile = {
 	var animations:Array<AnimArray>;
@@ -79,7 +77,7 @@ class Character extends FlxSprite
 	{
 		super(x, y);
 
-		animation = new AstroAnimationController(this);
+		animation = new AnimationController(this);
 
 		animOffsets = new Map<String, Array<Dynamic>>();
 		this.isPlayer = isPlayer;
@@ -434,9 +432,7 @@ class Character extends FlxSprite
 		}
 
 	function sortAnims(Obj1:Array<Dynamic>, Obj2:Array<Dynamic>):Int
-	{
 		return FlxSort.byValues(FlxSort.ASCENDING, Obj1[0], Obj2[0]);
-	}
 
 	public var danceEveryNumBeats:Int = 2;
 	private var settingCharacterUp:Bool = true;
@@ -462,14 +458,10 @@ class Character extends FlxSprite
 	}
 
 	public function addOffset(name:String, x:Float = 0, y:Float = 0)
-	{
 		animOffsets[name] = [x, y];
-	}
 
 	public function quickAnimAdd(name:String, anim:String)
-	{
 		animation.addByPrefix(name, anim, 24, false);
-	}
 
 	// Atlas support
 	// special thanks ne_eo for the references, you're the goat!!
@@ -477,7 +469,7 @@ class Character extends FlxSprite
 	public var isAnimateAtlas(default, null):Bool = false;
 	#if FLXANIMATE_ALLOWED
 	public var atlas:FlxAnimate;
-	public override function draw()
+	public override function draw():Void
 	{
 		var lastAlpha:Float = alpha;
 		var lastColor:FlxColor = color;
@@ -515,7 +507,7 @@ class Character extends FlxSprite
 		}
 	}
 
-	public function copyAtlasValues()
+	public function copyAtlasValues():Void
 	{
 		@:privateAccess
 		{
@@ -538,7 +530,7 @@ class Character extends FlxSprite
 		}
 	}
 
-	public override function destroy()
+	public override function destroy():Void
 	{
 		atlas = FlxDestroyUtil.destroy(atlas);
 		super.destroy();
