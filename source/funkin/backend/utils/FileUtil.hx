@@ -5,6 +5,7 @@ import sys.FileSystem;
 class FileUtil
 {
 	public static var originPath(get, null):String;
+
 	@:noCompletion static function get_originPath():String
 		return Sys.getCwd();
 
@@ -13,10 +14,10 @@ class FileUtil
 		#if sys
 		try
 		{
-			final editedPath:String = #if (!windows) '${hidden ? '.':''}' +#end '${origin ? originPath : ''}$path';
+			final editedPath:String = /*#if (!windows) '${hidden ? '.':''}' +#end*/ '${origin ? originPath : ''}$path';
 
-			if (!FileSystem.exists(path))
-				FileSystem.createDirectory('$editedPath');//hopefully macos & linux shit
+			if (!validDirectory(path))
+				FileSystem.createDirectory('$editedPath'); // hopefully macos & linux shit
 			#if windows
 			if (hidden)
 				Sys.command('attrib +h "$editedPath"');
@@ -32,11 +33,14 @@ class FileUtil
 		#end
 	}
 
+	public static inline function validDirectory(path:String, ?origin:Bool = true):Bool
+		return FileSystem.exists('${origin ? originPath : ''}$path');
+
 	public static function deleteDirectory(path:String, ?origin:Bool = true):Void
 	{
 		#if sys
 		try
-			if (FileSystem.exists(path))
+			if (validDirectory(path))
 				FileSystem.deleteDirectory('${origin ? originPath : ''}$path')
 		catch (e:Dynamic)
 			FlxG.log.error('delDir Error: $e');

@@ -217,17 +217,21 @@ class PlayState extends MusicBeatState
 	@:dox(hide) @:noCompletion private function set_playbackRate(value:Float):Float
 	{
 		#if FLX_PITCH
-		if (generatedMusic)
+		if(generatedMusic)
 		{
-			FlxG.sound.music.pitch = vocals.pitch = opponentVocals.pitch = value;
+			vocals.pitch = opponentVocals.pitch = FlxG.sound.music.pitch = value;
 
-			final ratio:Float = playbackRate / value; // funny word huh
-			if (ratio != 1)
-				for (note in notes.members.concat(unspawnNotes))
-					note.resizeByRatio(ratio);
+			final ratio:Float = playbackRate / value; //funny word huh
+			if(ratio != 1)
+			{
+				for (note in notes.members) note.resizeByRatio(ratio);
+				for (note in unspawnNotes) note.resizeByRatio(ratio);
+			}
 		}
-		FlxG.animationTimeScale = playbackRate = value;
+		playbackRate = FlxG.animationTimeScale = value;
+		Conductor.offset = Reflect.hasField(PlayState.SONG, 'offset') ? (PlayState.SONG.offset / value) : 0;
 		Conductor.safeZoneOffset = (ClientPrefs.data.safeFrames / 60) * 1000 * value;
+		#if VIDEOS_ALLOWED if(videoCutscene != null) videoCutscene.videoSprite.bitmap.rate = value; #end
 		setOnScripts('playbackRate', playbackRate);
 		#else
 		playbackRate = 1.0; // ensuring -Crow

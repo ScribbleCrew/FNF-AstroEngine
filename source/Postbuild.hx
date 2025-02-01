@@ -1,8 +1,5 @@
 package source; // Yeah, I know...
 
-import sys.FileSystem;
-import sys.io.File;
-
 /**
  * A script which executes after the game is built.
  */
@@ -19,10 +16,10 @@ class Postbuild
   {
     // get buildEnd before fs operations since they are blocking
     var end:Float = Sys.time();
-    if (FileSystem.exists(BUILD_TIME_FILE))
+    if (sys.FileSystem.exists(BUILD_TIME_FILE))
     {
-      var fi:sys.io.FileInput = File.read(BUILD_TIME_FILE);
-      var start:Float = fi.readDouble();
+      final fi:sys.io.FileInput = sys.io.File.read(BUILD_TIME_FILE);
+      final start:Float = fi.readDouble();
       fi.close();
 
       sys.FileSystem.deleteFile(BUILD_TIME_FILE);
