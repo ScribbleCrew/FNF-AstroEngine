@@ -59,7 +59,6 @@ class Init extends flixel.FlxState
 
 		hxvlc.util.Handle.initAsync(#if (hxvlc >= "1.8.0") ['--no-lua'] #end, _ -> {
 			trace(_ ? "LibVLC initialized" : "Error on initializing LibVLC!");
-			Main.fpsVar.visible = ClientPrefs.data.showFPS;
 			clearState();
 		});
 		#else
@@ -70,7 +69,7 @@ class Init extends flixel.FlxState
 	}
 
 	static function clearState() : Void {
-		trace('Leaving state');
+		Main.fpsVar.visible = ClientPrefs.data.showFPS;
 		FlxG.switchState(new TitleState());
 	}
 
@@ -131,6 +130,14 @@ class Init extends flixel.FlxState
 	#if SHADERS_ALLOWED
 	private function fragFix():Void
 	{
+		function resetSpriteCache(sprite:openfl.display.Sprite):Void
+		{
+			@:privateAccess {
+				sprite.__cacheBitmap = null;
+				sprite.__cacheBitmapData = null;
+			}
+		}
+
 		FlxG.signals.gameResized.add(function(w, h)
 		{
 			if (FlxG.cameras != null)
@@ -141,14 +148,6 @@ class Init extends flixel.FlxState
 			if (FlxG.game != null)
 				resetSpriteCache(FlxG.game);
 		});
-	}
-
-	private static function resetSpriteCache(sprite:openfl.display.Sprite):Void
-	{
-		@:privateAccess {
-			sprite.__cacheBitmap = null;
-			sprite.__cacheBitmapData = null;
-		}
 	}
 	#end
 

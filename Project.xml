@@ -76,11 +76,11 @@
 	<!-- Crisp Visuals -->
 	<define name="CRISP_VISUALS" if="windows" unless="32bits"/>
 
-	<!-- Preload Assets -->
-	<define name="PRELOAD_ALL" unless="web" />
-
 	<!-- Enables a terminal log prompt on debug builds -->
 	<define name="DEBUG_SERVER_ALLOWED" if="debug desktop"/>
+
+	<!-- Enables a terminal log prompt on debug builds -->
+	<define name="GIT_ALLOWED" if="debug"/>
 
 	<!-- Remove "officialBuild" to use videos on source mod -->
 	<define name="VIDEOS_ALLOWED" if="(windows || linux || android) officialBuild || debug" unless="32bits"/>

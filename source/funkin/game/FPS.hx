@@ -35,6 +35,9 @@ class FPS extends TextField
 	private var currentTime:Float;
 	private var times:Array<Float>;
 
+	private inline function addLine(str:String = "", ?lineDown:Bool = true):String
+		return text += '${lineDown ? '\n' : ''}$str';
+
 	public function new(x:Float = 10, y:Float = 10, color:Int = 0x000000)
 	{
 		super();
@@ -62,15 +65,6 @@ class FPS extends TextField
 		times = [];
 	}
 
-	// DO NOT USE// NOT CURRENTLY WORKIN ATM
-
-	@:deprecated("DON@T USE NOT DONE!!!!")
-	@:noCompletion override function set_alpha(val:Float):Float
-		return bgSprite.alpha = super.alpha = val;
-
-	@:noCompletion override function set_visible(val:Bool):Bool
-		return bgSprite.visible = super.visible = val;
-
 	@:noCompletion private override function __enterFrame(deltaTime:Float):Void
 	{
 		currentTime += deltaTime;
@@ -86,22 +80,18 @@ class FPS extends TextField
 
 		if (currentCount != cacheCount)
 		{
-			text = '${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "owo's per second" : #end 'FPS'}: $currentFPS';
-
-			var memoryMegas:Float = 0;
+			text = "";
+			addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "owo's per second" : #end 'FPS'}: $currentFPS', false);
 
 			#if openfl
+			var memoryMegas:Float = 0;
 			memoryMegas = Math.abs(FlxMath.roundDecimal(System.totalMemory / 1000000, 1));
-			text += '\n${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "proot mem usage" : #end 'Memory'}: ${memoryMegas} MB';
+			addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "proot mem usage" : #end 'Memory'}: ${memoryMegas} MB');
 			#end
 
-			#if debug
-			text += '\n${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "orbl pick one pls 🙏" : #end "Commit"}: ${GitMacro.commitNumber} [${GitMacro.commitHash}] ${GitMacro.branch}';
+			#if GIT_ALLOWED
+			addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "orbl pick one pls 🙏" : #end "Commit"}: ${GitMacro.commitNumber} [${GitMacro.commitHash}] ${GitMacro.branch}');
 			#end
-
-			textColor = 0xFFFFFFFF;
-			if (memoryMegas > 3000 || currentFPS <= ClientPrefs.data.framerate / 2)
-				textColor = 0xFFFF0000;
 
 			#if (gl_stats && !disable_cffi && (!html5 || !canvas))
 			addLine();
@@ -110,7 +100,11 @@ class FPS extends TextField
 			addLine('stage3DDC: ${Context3DStats.contextDrawCalls(DrawCallContext.STAGE3D)}');
 			#end
 
-			bgSprite.scaleX = this.width + offset.x * 2 + 10;
+			textColor = 0xFFFFFFFF;
+			if (#if openfl memoryMegas > 3000 || #end currentFPS <= ClientPrefs.data.framerate / 2)
+				textColor = 0xFFFF0000;
+
+			bgSprite.scaleX = this.width + offset.x * 2 - 10;
 			bgSprite.scaleY = this.height + offset.y * 2 + 3;
 		}
 
@@ -120,6 +114,11 @@ class FPS extends TextField
 		bgSprite.y = this.y - offset.y;
 	}
 
-	private inline function addLine(str:String = ""):String
-		return text += '\n$str';
+	@:deprecated("DON@T USE NOT DONE!!!!")
+	@:noCompletion override function set_alpha(val:Float):Float{
+		return bgSprite.alpha = super.alpha = val;
+	}
+
+	@:noCompletion override function set_visible(val:Bool):Bool
+		return bgSprite.visible = super.visible = val;
 }

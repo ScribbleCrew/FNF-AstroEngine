@@ -1,5 +1,6 @@
 package funkin.backend.macro;
 
+#if GIT_ALLOWED
 #if macro
 import sys.io.Process;
 #end
@@ -10,6 +11,7 @@ class GitMacro
 	 * Current git commit number.
 	 */
 	public static var commitNumber(get, never):Int;
+
 	@:noCompletion private static function get_commitNumber()
 		return _commitNumber();
 
@@ -17,6 +19,7 @@ class GitMacro
 	 * Current git commit hash.
 	 */
 	public static var commitHash(get, never):String;
+
 	@:noCompletion private static function get_commitHash()
 		return _commitHash();
 
@@ -24,6 +27,7 @@ class GitMacro
 	 * Current git branch.
 	 */
 	public static var branch(get, never):String;
+
 	@:noCompletion private static function get_branch()
 		return _currentBranch();
 
@@ -86,3 +90,4 @@ class GitMacro
 		return macro $v{""} #end
 	}
 }
+#end
