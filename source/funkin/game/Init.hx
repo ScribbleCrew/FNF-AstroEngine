@@ -59,6 +59,7 @@ class Init extends flixel.FlxState
 
 		hxvlc.util.Handle.initAsync(#if (hxvlc >= "1.8.0") ['--no-lua'] #end, _ -> {
 			trace(_ ? "LibVLC initialized" : "Error on initializing LibVLC!");
+			Main.fpsVar.visible = ClientPrefs.data.showFPS;
 			clearState();
 		});
 		#else

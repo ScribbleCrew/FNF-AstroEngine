@@ -84,7 +84,10 @@ class Main extends Sprite
 		fpsVar = new FPS(10, 3, 0xFFFFFF);
 		addChild(fpsVar.bgSprite);
 		addChild(fpsVar);
-		fpsVar.visible = fpsVar.bgSprite.visible = ClientPrefs.data.showFPS;
+		fpsVar.visible = false;
+		//fpsVar.visible = fpsVar.bgSprite.visible = ClientPrefs.data.showFPS;
+		fpsVar.offset.x += 25;
+		fpsVar.offset.y += 5;
 
 		// idk, lol...
 		Lib.current.stage.align = "tl";

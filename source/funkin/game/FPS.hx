@@ -1,22 +1,13 @@
 package funkin.game;
 
-import openfl.display.Sprite;
-import haxegithub.utils.*;
-import funkin.backend.data.EngineData;
-import haxe.Timer;
-import openfl.events.Event;
-import openfl.text.TextField;
-import openfl.text.TextFormat;
-import flixel.math.FlxMath;
-import funkin.backend.utils.ClientPrefs;
 #if gl_stats
 import openfl.display._internal.stats.Context3DStats;
 import openfl.display._internal.stats.DrawCallContext;
 #end
-#if flash
-import openfl.Lib;
-#end
 #if openfl
+import openfl.display.Sprite;
+import openfl.text.TextField;
+import openfl.text.TextFormat;
 import openfl.system.System;
 #end
 
@@ -28,6 +19,7 @@ import openfl.system.System;
 @:fileXml('tags="haxe,release"')
 @:noDebug
 #end
+@:access(openfl.display.DisplayObject)
 class FPS extends TextField
 {
 	/**
@@ -37,12 +29,11 @@ class FPS extends TextField
 
 	public var currentFPS(default, null):Int;
 	public var bgSprite:Sprite;
-	public var offsetX:Float;
-	public var offsetY:Float;
+	public var offset:FlxPoint = FlxPoint.get();
 
-	@:noCompletion private var cacheCount:Int;
-	@:noCompletion private var currentTime:Float;
-	@:noCompletion private var times:Array<Float>;
+	private var cacheCount:Int;
+	private var currentTime:Float;
+	private var times:Array<Float>;
 
 	public function new(x:Float = 10, y:Float = 10, color:Int = 0x000000)
 	{
@@ -71,16 +62,22 @@ class FPS extends TextField
 		times = [];
 	}
 
-	@:noCompletion
-	private #if !flash override #end function __enterFrame(deltaTime:Float):Void
+	// DO NOT USE// NOT CURRENTLY WORKIN ATM
+
+	@:deprecated("DON@T USE NOT DONE!!!!")
+	@:noCompletion override function set_alpha(val:Float):Float
+		return bgSprite.alpha = super.alpha = val;
+
+	@:noCompletion override function set_visible(val:Bool):Bool
+		return bgSprite.visible = super.visible = val;
+
+	@:noCompletion private override function __enterFrame(deltaTime:Float):Void
 	{
 		currentTime += deltaTime;
 		times.push(currentTime);
 
 		while (times[0] < currentTime - 1000)
-		{
 			times.shift();
-		}
 
 		var currentCount = times.length;
 		currentFPS = Math.round((currentCount + cacheCount) / 2);
@@ -107,18 +104,22 @@ class FPS extends TextField
 				textColor = 0xFFFF0000;
 
 			#if (gl_stats && !disable_cffi && (!html5 || !canvas))
-			text += "\ntotalDC: " + Context3DStats.totalDrawCalls();
-			text += "\nstageDC: " + Context3DStats.contextDrawCalls(DrawCallContext.STAGE);
-			text += "\nstage3DDC: " + Context3DStats.contextDrawCalls(DrawCallContext.STAGE3D);
+			addLine();
+			addLine('ntotalDC: ${Context3DStats.totalDrawCalls()}');
+			addLine('nstageDC: ${Context3DStats.contextDrawCalls(DrawCallContext.STAGE)}');
+			addLine('stage3DDC: ${Context3DStats.contextDrawCalls(DrawCallContext.STAGE3D)}');
 			#end
 
-			bgSprite.scaleX = this.width + offsetX * 2 + 10;
-			bgSprite.scaleY = this.height + offsetY * 2 + 3;
+			bgSprite.scaleX = this.width + offset.x * 2 + 10;
+			bgSprite.scaleY = this.height + offset.y * 2 + 3;
 		}
 
 		cacheCount = currentCount;
 
-		bgSprite.x = this.x - offsetX;
-		bgSprite.y = this.y - offsetY;
+		bgSprite.x = this.x - offset.x;
+		bgSprite.y = this.y - offset.y;
 	}
+
+	private inline function addLine(str:String = ""):String
+		return text += '\n$str';
 }

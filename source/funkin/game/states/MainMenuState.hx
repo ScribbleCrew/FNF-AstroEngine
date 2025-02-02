@@ -138,6 +138,11 @@ class MainMenuState extends MusicBeatState
 
 	override function create()
 	{
+		#if MODS_ALLOWED
+		Mods.pushGlobalMods();
+		#end
+		Mods.loadTopMod();
+
 		engineVersions.reverse();
 
 		// Updates
@@ -146,7 +151,7 @@ class MainMenuState extends MusicBeatState
 
 		// Discord RPC
 		#if desktop
-		DiscordClient.changePresence("Main Menu", null);
+		#if DISCORD_ALLOWED DiscordClient.changePresence("Main Menu", null); #end
 		WindowUtil.title = ('%{GAME_TITLE} - Main Menu');
 		#end
 

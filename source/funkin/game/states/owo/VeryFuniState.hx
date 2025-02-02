@@ -6,7 +6,7 @@ class VeryFuniState extends MusicBeatState
 	// The returning state, i guess.
 	@:noCompletion var _return(default, null):FlxState = null;
 
-	// Shouldn't be static since this is a returning state (going to be used more than once).
+	// Shouldn't be static as this is a returning state (going to be used more than once).
 	var leftState:Bool = false;
 
 	var background:FlxSprite;
