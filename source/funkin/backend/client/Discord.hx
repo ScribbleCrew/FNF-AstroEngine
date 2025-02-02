@@ -1,8 +1,8 @@
 package funkin.backend.client;
 
-import Sys.sleep;
-
+#if WATERMARK
 import funkin.game.Init;
+#end
 import funkin.game.Config;
 
 import funkin.backend.data.EngineData;
@@ -52,13 +52,11 @@ class DiscordClient
 
 	@:isVar
 	public static var clientName(default, set):String = null;
-
 	@:noCompletion private static inline function set_clientName(owo:String)
 		return clientName = owo;
 
 	@:isVar
 	public static var clientDiscrim(default, set):String = null;
-
 	@:noCompletion private static inline function set_clientDiscrim(owo:String)
 		return clientDiscrim = owo;
 

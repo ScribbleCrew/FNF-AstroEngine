@@ -1,22 +1,12 @@
 package funkin.game;
 
-import funkin.backend.handlers.CrashHandler;
-import flixel.graphics.FlxGraphic;
 import flixel.FlxG;
 import flixel.FlxGame;
-import flixel.FlxState;
-import openfl.Assets;
 import openfl.Lib;
-import openfl.display.FPS;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.display.StageScaleMode;
-import lime.app.Application;
 import funkin.backend.utils.ClientPrefs;
-#if DISCORD_ALLOWED
-import funkin.backend.client.Discord.DiscordClient;
-#end
-
 import funkin.backend.data.*;
 import funkin.game.FPS;
 
@@ -52,21 +42,15 @@ class Main extends Sprite
 		super();
 
 		if (stage != null)
-		{
 			init();
-		}
 		else
-		{
 			addEventListener(Event.ADDED_TO_STAGE, init);
-		}
 	}
 
 	private function init(?E:Event):Void
 	{
 		if (hasEventListener(Event.ADDED_TO_STAGE))
-		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
-		}
 
 		setupGame();
 	}
@@ -85,31 +69,34 @@ class Main extends Sprite
 			Config.gameSize[1] = Math.ceil(stageHeight / game.zoom);
 		}
 
-		ClientPrefs.loadDefaultKeys();
+		//		ClientPrefs.loadDefaultKeys();
 
-		var game:FlxGame = new FlxGame(Config.gameSize[0], Config.gameSize[1], Init, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate,
+		final game:FlxGame = new FlxGame(Config.gameSize[0], Config.gameSize[1], Init, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate,
 			Config.skipSplash, Config.startFullscreen);
-
 		#if BASE_GAME_FILES
 		@:privateAccess
 		game._customSoundTray = funkin.backend.system.ui.FunkinSoundTray;
 		#end
-
 		addChild(game);
 
 		#if !mobile
+		// FPS Stuff
 		fpsVar = new FPS(10, 3, 0xFFFFFF);
+		addChild(fpsVar.bgSprite);
 		addChild(fpsVar);
+		fpsVar.visible = fpsVar.bgSprite.visible = ClientPrefs.data.showFPS;
+
+		// idk, lol...
 		Lib.current.stage.align = "tl";
 		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
-		if (fpsVar != null)
-			fpsVar.visible = ClientPrefs.data.showFPS;
 		#end
 	}
 
 	// Audio Fix
-	@:dox(hide) public static var audioDisconnected(default,set):Bool = false;
-	@:noCompletion private static function set_audioDisconnected(value:Bool) {// oops
+	@:dox(hide) public static var audioDisconnected(default, set):Bool = false;
+
+	@:noCompletion private static function set_audioDisconnected(value:Bool):Bool
+	{ // oops
 		audioDisconnected = value;
 		@:privateAccess AudioSwitchFix.onStateSwitch(FlxG.state);
 		return audioDisconnected = value;

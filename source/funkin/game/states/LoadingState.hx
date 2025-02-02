@@ -10,10 +10,6 @@ import openfl.utils.AssetType;
 //Lime
 import lime.utils.Assets;
 
-// System
-import sys.thread.Thread;
-import sys.thread.Mutex;
-
 //Flixel
 import flixel.FlxState;
 import flixel.addons.transition.FlxTransitionableState;
@@ -477,7 +473,6 @@ class LoadingState extends MusicBeatState
 				mutex.acquire();
 				try {
 					var requestKey:String = 'images/$image';
-					#if TRANSLATIONS_ALLOWED requestKey = Language.getFileTranslation(requestKey); #end
 					if(requestKey.lastIndexOf('.') < 0) requestKey += '.png';
 
 					if (!Paths.currentTrackedAssets.exists(requestKey))

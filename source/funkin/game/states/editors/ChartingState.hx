@@ -693,7 +693,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 				Reflect.setField(songCopy, '__original_path', Song.chartPath);
 				var dataToSave:String = haxe.Json.stringify(songCopy);
 				//trace(chartName, dataToSave);
-				if(!FileSystem.isDirectory('backups')) FileSystem.createDirectory('backups');
+				if(!FileUtil.isDir('backups')) FileUtil.createDirectory('backups');
 				File.saveContent('backups/$chartName.$BACKUP_EXT', dataToSave);
 
 				if(backupLimit > 0)
@@ -4687,7 +4687,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 			for (file in FileSystem.readDirectory(directory))
 			{
 				var path = haxe.io.Path.join([directory, file.trim()]);
-				if (!FileSystem.isDirectory(path) && !file.startsWith('readme.'))
+				if (!FileUtil.isDir(path) && !file.startsWith('readme.'))
 				{
 					for (fileType in fileTypes)
 					{

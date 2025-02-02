@@ -113,7 +113,7 @@ class WeekData
 				{
 					var path = haxe.io.Path.join([Paths.mods(), splitName[0]]);
 					// trace('trying to push: ' + splitName[0]);
-					if (sys.FileSystem.isDirectory(path)
+					if (FileUtil.isDir(path)
 						&& !Mods.ignoreModFolders.contains(splitName[0])
 						&& !disabledMods.contains(splitName[0])
 						&& !directories.contains(path + '/'))
@@ -192,7 +192,7 @@ class WeekData
 				for (file in FileSystem.readDirectory(directory))
 				{
 					var path = haxe.io.Path.join([directory, file]);
-					if (!sys.FileSystem.isDirectory(path) && file.endsWith('.json'))
+					if (!FileUtil.isDir(path) && file.endsWith('.json'))
 					{
 						addWeek(file.substr(0, file.length - 5), path, directories[i], i, originalLength);
 					}

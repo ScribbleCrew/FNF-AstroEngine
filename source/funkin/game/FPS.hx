@@ -1,5 +1,6 @@
 package funkin.game;
 
+import openfl.display.Sprite;
 import haxegithub.utils.*;
 import funkin.backend.data.EngineData;
 import haxe.Timer;
@@ -29,7 +30,15 @@ import openfl.system.System;
 #end
 class FPS extends TextField
 {
+	/**
+	 * Because reading any data from DisplayObject is insanely expensive in hxcpp, keep track of whether we need to update it or not.
+	 */
+	public var active:Bool;
+
 	public var currentFPS(default, null):Int;
+	public var bgSprite:Sprite;
+	public var offsetX:Float;
+	public var offsetY:Float;
 
 	@:noCompletion private var cacheCount:Int;
 	@:noCompletion private var currentTime:Float;
@@ -49,6 +58,13 @@ class FPS extends TextField
 		autoSize = LEFT;
 		multiline = true;
 		text = "FPS: ";
+
+		bgSprite = new Sprite();
+		bgSprite.graphics.beginFill(0xFF000000);
+		bgSprite.graphics.drawRect(0, 0, 1, 1);
+		bgSprite.graphics.endFill();
+		bgSprite.alpha = 1 / 3;
+		visible = active = bgSprite.visible = ClientPrefs.data.showFPS;
 
 		cacheCount = 0;
 		currentTime = 0;
@@ -74,17 +90,15 @@ class FPS extends TextField
 		if (currentCount != cacheCount)
 		{
 			text = '${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "owo's per second" : #end 'FPS'}: $currentFPS';
-			
+
 			var memoryMegas:Float = 0;
 
 			#if openfl
 			memoryMegas = Math.abs(FlxMath.roundDecimal(System.totalMemory / 1000000, 1));
 			text += '\n${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "proot mem usage" : #end 'Memory'}: ${memoryMegas} MB';
 			#end
-			/*
-			text += '\nAstro Engine: ' + EngineData.engineData.coreVersion;
-		*/
-			#if debug 
+
+			#if debug
 			text += '\n${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "orbl pick one pls 🙏" : #end "Commit"}: ${GitMacro.commitNumber} [${GitMacro.commitHash}] ${GitMacro.branch}';
 			#end
 
@@ -97,8 +111,14 @@ class FPS extends TextField
 			text += "\nstageDC: " + Context3DStats.contextDrawCalls(DrawCallContext.STAGE);
 			text += "\nstage3DDC: " + Context3DStats.contextDrawCalls(DrawCallContext.STAGE3D);
 			#end
+
+			bgSprite.scaleX = this.width + offsetX * 2 + 10;
+			bgSprite.scaleY = this.height + offsetY * 2 + 3;
 		}
 
 		cacheCount = currentCount;
+
+		bgSprite.x = this.x - offsetX;
+		bgSprite.y = this.y - offsetY;
 	}
 }

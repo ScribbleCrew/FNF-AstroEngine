@@ -603,7 +603,7 @@ class StageEditorState extends MusicBeatState implements FlxUIEventHandler.FlxUI
 		var folderList:Array<String> = [''];
 		#if sys
 		for (folder in FileSystem.readDirectory('assets/'))
-			if(FileSystem.isDirectory('assets/$folder') && folder != 'shared' && !Mods.ignoreModFolders.contains(folder))
+			if(FileUtil.isDir('assets/$folder') && folder != 'shared' && !Mods.ignoreModFolders.contains(folder))
 				folderList.push(folder);
 		#end
 

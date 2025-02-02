@@ -303,13 +303,15 @@ class TitleState extends MusicBeatState
 
 		var pressedEnter:Bool = FlxG.keys.justPressed.ENTER || controls.ACCEPT;
 
+		if(FlxG.keys.justPressed.F5)
+			MusicBeatState.switchState(new funkin.game.states.owo.VeryFuniState());
+
 		#if mobile
 		for (touch in FlxG.touches.list)
 		{
 			if (touch.justPressed)
-			{
 				pressedEnter = true;
-			}
+			
 		}
 		#end
 

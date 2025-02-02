@@ -92,6 +92,10 @@ import openfl.filters.ShaderFilter;
 #if sys
 import sys.FileSystem;
 import sys.io.File;
+#if THREADING_ALLOWED
+import sys.thread.Thread;
+import sys.thread.Mutex;
+#end
 #end
 
 // HSCRIPT
@@ -113,6 +117,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxCamera;
+import flixel.util.*;
 import flixel.math.FlxMath;
 import flixel.math.FlxRect;
 import flixel.math.FlxPoint;

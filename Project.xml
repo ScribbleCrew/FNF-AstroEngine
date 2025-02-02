@@ -53,6 +53,9 @@
 	<!-- Enables Lua Support -->
 	<define name="LUA_ALLOWED" if="desktop" />
 
+	<!-- Enables Threading support -->
+	<define name="THREADING_ALLOWED" />
+
 	<!-- Enables Hscript Iris Debug Stuff -->
 	<define name="IRIS_DEBUG"/>
 

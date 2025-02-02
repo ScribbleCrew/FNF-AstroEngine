@@ -17,6 +17,8 @@ class Init extends flixel.FlxState
 
 		FlxG.save.bind('funkin', funkin.backend.CoolUtil.getSavePath());
 
+		ClientPrefs.loadDefaultKeys();
+
 		#if LUA_ALLOWED Mods.pushGlobalMods(); #end
 
 		Mods.loadTopMod();
@@ -26,7 +28,9 @@ class Init extends flixel.FlxState
 		Logs.init();
 		funkin.backend.Highscore.init();
 		funkin.backend.utils.ClientPrefs.init();
-		init();
+		this.init();
+
+		this.initFileThread();
 
 		#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(CallbackHandler.call)); #end
 
@@ -34,49 +38,88 @@ class Init extends flixel.FlxState
 
 		#if DISCORD_ALLOWED DiscordClient.prepare(); #end
 
-		#if VIDEOS_ALLOWED hxvlc.util.Handle.init(#if (hxvlc >= "1.8.0") ['--no-lua'] #end); #end
-
 		#if CRASH_HANDLER initCrashHandler(); #end
 
 		#if SHADERS_ALLOWED fragFix(); #end
 
 		#if windows AudioSwitchFix.init(); #end
-		
+
 		funkin.game.objects.Alphabet.AlphaCharacter.loadAlphabetData();
 
 		super.create();
 
 		#if WATERMARK owoWatermark(); #end
 
-		// Extra stuff goes here :3
+		#if VIDEOS_ALLOWED
+		final loadingText:FlxText = new FlxText();
+		loadingText.setFormat(Paths.font("Minecraft.ttf"), 24, FlxColor.WHITE);
+		loadingText.text = "Loading...";
+		loadingText.screenCenter();
+		add(loadingText);
 
+		hxvlc.util.Handle.initAsync(#if (hxvlc >= "1.8.0") ['--no-lua'] #end, _ -> {
+			trace(_ ? "LibVLC initialized" : "Error on initializing LibVLC!");
+			clearState();
+		});
+		#else
+		clearState();
+		#end
+		
+		// Extra stuff goes here :3
+	}
+
+	static function clearState() : Void {
+		trace('Leaving state');
 		FlxG.switchState(new TitleState());
 	}
 
-	static var loadedInitStuff:Int = 0;
-	private function init():Void
+	#if THREADING_ALLOWED
+	static var mutex:Mutex = new Mutex();
+	#end
+	static var threadedInitialization:Int = 0;
+
+	private function initFileThread():Void
 	{
 		final daInitFiles:Array<Dynamic> = [funkin.backend.initialization.TemporaryFolder];
-		for(file in daInitFiles){
-			try{
-				var daFile:Dynamic = cast file;
-				daFile.main();
-				loadedInitStuff++;
-			}catch(e){
-				trace(e);
-			}
+
+		for (file in daInitFiles)
+		{
+			#if THREADING_ALLOWED
+			Thread.create(() -> {
+				mutex.acquire();
+			#end
+				try
+				{
+					final daFile:Dynamic = cast file;
+					daFile.main();
+				}
+				catch (e:Dynamic)
+				{
+					trace('ERROR! : $e');
+				}
+				#if THREADING_ALLOWED
+				mutex.release();
+				#end
+				threadedInitialization++;
+			#if THREADING_ALLOWED
+			});
+			#end
 		}
+	}
 
-		//
-
+	private function init():Void
+	{
 		trace(OsAPI.osInfo + ' ' + OsAPI.osVersion);
 
-		FlxG.fixedTimestep = #if html5 FlxG.mouse.visible = #end false;
+		FlxG.fixedTimestep = #if html5 FlxG.mouse.visible = #end
+		false;
 		FlxG.keys.preventDefaultKeys = [TAB];
 		FlxG.game.focusLostFramerate = 30;
 
-		if (FlxG.save.data != null && FlxG.save.data.fullscreen) FlxG.fullscreen = FlxG.save.data.fullscreen;
-		if (FlxG.save.data.weekCompleted != null) funkin.game.states.StoryMenuState.weekCompleted = FlxG.save.data.weekCompleted;
+		if (FlxG.save.data != null && FlxG.save.data.fullscreen)
+			FlxG.fullscreen = FlxG.save.data.fullscreen;
+		if (FlxG.save.data.weekCompleted != null)
+			funkin.game.states.StoryMenuState.weekCompleted = FlxG.save.data.weekCompleted;
 	}
 
 	#if CRASH_HANDLER
@@ -151,27 +194,22 @@ class Logs // Modded trace func
 
 	@:noCompletion private static function __customTrace(v:Dynamic, ?infos:haxe.PosInfos):Void
 	{
-		final nerddd = infos.fileName + ":" + infos.lineNumber;
+		var extra:String = "";
 		if (infos != null && infos.customParams != null)
-		{
-			var extra:String = "";
-			for (v in infos.customParams)
-				extra += ", " + v;
-			#if js
-			if (js.Syntax.typeof(untyped console) != "undefined" && (untyped console).log != null)
-				(untyped console).log('${Constants.LOGS_PREFIX}: ${v + extra} : $nerddd');
-			#elseif sys
-			Sys.println('${Constants.LOGS_PREFIX}: ${v + extra} : $nerddd');
-			#end
-		}
-		else
-		{
-			#if js
-			if (js.Syntax.typeof(untyped console) != "undefined" && (untyped console).log != null)
-				(untyped console).log('${Constants.LOGS_PREFIX}: $v : $nerddd');
-			#elseif sys
-			Sys.println('${Constants.LOGS_PREFIX}: $v : $nerddd');
-			#end
-		}
+			for (param in infos.customParams)
+				extra += ", " + param;
+
+		final logThing:String = '${Constants.LOGS_PREFIX}: ${v + (extra == "" ? '' : extra)} : ${infos.fileName + ":" + infos.lineNumber}';
+
+		#if js
+		if (js.Syntax.typeof(untyped console) != "undefined" && (untyped console).log != null)
+			(untyped console).log(logThing);
+		#elseif lua
+		untyped __define_feature__("use._hx_print", _hx_print(logThing));
+		#elseif sys
+		Sys.println(logThing);
+		#else
+		throw new haxe.exceptions.NotImplementedException();
+		#end
 	}
 }

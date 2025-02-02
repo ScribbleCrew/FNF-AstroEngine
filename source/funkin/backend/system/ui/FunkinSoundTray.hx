@@ -12,7 +12,8 @@ import openfl.utils.Assets;
  */
 class FunkinSoundTray extends FlxSoundTray
 {
-	var graphicScale:Float = 0.30;
+	inline static final _graphicScale:Float = 0.30;
+	
 	var lerpYPos:Float = 0;
 	var alphaTarget:Float = 0;
 
@@ -25,8 +26,8 @@ class FunkinSoundTray extends FlxSoundTray
 		removeChildren();
 
 		var bg:Bitmap = new Bitmap(getPathImage("soundtray/volumebox"));
-		bg.scaleX = graphicScale;
-		bg.scaleY = graphicScale;
+		bg.scaleX = _graphicScale;
+		bg.scaleY = _graphicScale;
 		addChild(bg);
 
 		y = -height;
@@ -35,8 +36,8 @@ class FunkinSoundTray extends FlxSoundTray
 		var backingBar:Bitmap = new Bitmap(getPathImage('soundtray/bars_10'));
 		backingBar.x = 9;
 		backingBar.y = 5;
-		backingBar.scaleX = graphicScale;
-		backingBar.scaleY = graphicScale;
+		backingBar.scaleX = _graphicScale;
+		backingBar.scaleY = _graphicScale;
 		addChild(backingBar);
 		backingBar.alpha = 0.4;
 
@@ -44,11 +45,11 @@ class FunkinSoundTray extends FlxSoundTray
 
 		for (i in 1...11)
 		{
-			var bar:Bitmap = new Bitmap(getPathImage('soundtray/bars_$i'), false);
+			final bar:Bitmap = new Bitmap(getPathImage('soundtray/bars_$i'), false);
 			bar.x = 9;
 			bar.y = 5;
-			bar.scaleX = graphicScale;
-			bar.scaleY = graphicScale;
+			bar.scaleX = _graphicScale;
+			bar.scaleY = _graphicScale;
 			addChild(bar);
 			_bars.push(bar);
 		}
@@ -109,12 +110,10 @@ class FunkinSoundTray extends FlxSoundTray
 		lerpYPos = 10;
 		visible = true;
 		active = true;
-		var globalVolume:Int = Math.round(FlxG.sound.volume * 10);
 
+		var globalVolume:Int = Math.round(FlxG.sound.volume * 10);
 		if (FlxG.sound.muted)
-		{
 			globalVolume = 0;
-		}
 
 		if (!silent)
 		{
@@ -132,9 +131,8 @@ class FunkinSoundTray extends FlxSoundTray
 				#else
 				sound = FlxAssets.getSound('assets/shared/sounds/soundtray/$volumeMaxSound');
 				#end
-
-			if (sound != null)
-				FlxG.sound.load(sound).play();
+				if (sound != null)
+					FlxG.sound.load(sound).play();
 		}
 
 		for (i in 0..._bars.length)

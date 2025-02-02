@@ -38,8 +38,8 @@ class CrashHandler
 			+ EngineData.engineData.repository
 			+ "\n\n---------------------------------------------------------\n> Crash Handler written by: sqirra-rng";
 
-		if (!FileSystem.exists("./crash/"))
-			FileSystem.createDirectory("./crash/");
+		if(!FileUtil.validDirectory("./crash/"))
+			FileUtil.createDirectory("./crash/");
 
 		File.saveContent(path, errMsg + "\n");
 

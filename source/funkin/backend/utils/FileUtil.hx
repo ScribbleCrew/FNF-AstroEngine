@@ -5,9 +5,14 @@ import sys.FileSystem;
 class FileUtil
 {
 	public static var originPath(get, null):String;
-
 	@:noCompletion static function get_originPath():String
 		return Sys.getCwd();
+
+	public static inline function validDirectory(path:String, ?origin:Bool = true):Bool
+		return FileSystem.exists('${origin ? originPath : ''}$path');
+
+	public static inline function isDir(path:String):Bool
+		return FileSystem.isDirectory(path);
 
 	public static function createDirectory(path:String, ?hidden:Bool = false, ?origin:Bool = true):Null<String>
 	{
@@ -22,7 +27,7 @@ class FileUtil
 			if (hidden)
 				Sys.command('attrib +h "$editedPath"');
 			#end
-			return path;
+			return editedPath;
 		}
 		catch (e:Dynamic)
 			FlxG.log.error('CreateDir Error: $e');
@@ -32,9 +37,6 @@ class FileUtil
 		return;
 		#end
 	}
-
-	public static inline function validDirectory(path:String, ?origin:Bool = true):Bool
-		return FileSystem.exists('${origin ? originPath : ''}$path');
 
 	public static function deleteDirectory(path:String, ?origin:Bool = true):Void
 	{
