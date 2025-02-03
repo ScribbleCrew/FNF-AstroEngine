@@ -1,6 +1,7 @@
 package funkin.game.states.owo;
 
 #if ASTRO_WATERMARKS
+@:access(funkin.game.FPS)
 class VeryFuniState extends MusicBeatState
 {
 	// The returning state, i guess.
@@ -27,8 +28,9 @@ class VeryFuniState extends MusicBeatState
 		add(background);
 
 		title = new FlxText();
-		title.setFormat(Paths.font("PhantomMuff.ttf"), 80, FlxColorPastel.PASTELPINK, CENTER);
-		title.text = "Oooooo you like boys\nur a boykisser";
+		title.setFormat(Paths.font("Futura-CondensedExtraBold.otf"), 70, FlxColor.BLACK, CENTER);
+		title.text = "Oooooo you like boys\nur a boykisser".toLowerCase();
+		//title.borderSize = 2;
 		title.y += 25;
 		title.screenCenter(X);
 		title.updateHitbox();
@@ -37,27 +39,27 @@ class VeryFuniState extends MusicBeatState
 		daKisser = new FlxSprite().loadGraphic(Paths.image('extra/kisser', 'embed'));
 		daKisser.screenCenter();
 		daKisser.updateHitbox();
+		daKisser.y+=25;
 		add(daKisser);
-		FlxTween.tween(daKisser, {x: daKisser.x + 10}, 0.3, {
+		FlxTween.tween(daKisser, {x: daKisser.x}, 0.3, {
 			ease: FlxEase.expoOut,
 			type: FlxTween.PINGPONG,
-			onComplete: (twn) ->
-			{
-				daKisser.flipX = !daKisser.flipX;
-			}
+			onComplete: (twn) -> daKisser.flipX = !daKisser.flipX
 		});
+		FlxTween.num(Main.fpsVar.alpha, 0, .6, {ease: FlxEase.expoOut, startDelay: .2}, Main.fpsVar.set_alpha);
 	}
 
 	override function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
 
-		if (!leftState && controls.BACK)
+		if (!leftState && FlxG.keys.justPressed.ANY)
 		{
 			leftState = true;
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 			FlxTween.cancelTweensOf(daKisser);
 			FlxG.camera.flash(FlxColorPastel.PASTELPINK);
+			FlxTween.num(Main.fpsVar.alpha, ClientPrefs.data.fpsCounterAlpha, .5, {ease: FlxEase.expoOut}, Main.fpsVar.set_alpha);
 
 			new FlxTimer().start(4.25, _ ->
 			{

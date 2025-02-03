@@ -184,8 +184,6 @@ class HScript extends Iris
 		set('FlxAnimate', FlxAnimate);
 		#end
 		set('osName', OsAPI.username);
-		// MD5
-		set('osNameHash', OsAPI.hashUsernameMD5);
 
 		// Functions & Variables
 		set('setVar', function(name:String, value:Dynamic)

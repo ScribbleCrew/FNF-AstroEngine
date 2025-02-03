@@ -27,7 +27,7 @@ class Init extends flixel.FlxState
 
 		Logs.init();
 		funkin.backend.Highscore.init();
-		funkin.backend.utils.ClientPrefs.init();
+		trace('ClientPrefs loaded: ${funkin.backend.utils.ClientPrefs.init()}');
 		this.init();
 
 		this.initFileThread();
@@ -57,18 +57,22 @@ class Init extends flixel.FlxState
 		loadingText.screenCenter();
 		add(loadingText);
 
-		hxvlc.util.Handle.initAsync(#if (hxvlc >= "1.8.0") ['--no-lua'] #end, _ -> {
+		hxvlc.util.Handle.initAsync(#if (hxvlc >= "1.8.0") ['--no-lua'] #end, _ ->
+		{
 			trace(_ ? "LibVLC initialized" : "Error on initializing LibVLC!");
 			clearState();
 		});
 		#else
 		clearState();
 		#end
-		
 		// Extra stuff goes here :3
 	}
 
-	static function clearState() : Void {
+	static function clearState():Void
+	{
+		#if windows WindowUtil.darkmode = ClientPrefs.data.darkmodeEnabled; #end
+		#if !mobile Main.fpsVar.alpha = ClientPrefs.data.fpsCounterAlpha; #end
+		
 		Main.fpsVar.visible = ClientPrefs.data.showFPS;
 		FlxG.switchState(new TitleState());
 	}
@@ -152,12 +156,13 @@ class Init extends flixel.FlxState
 	#end
 
 	#if WATERMARK
-	public static var watermark:openfl.text.TextField;
+	@:allow(funkin.backend.client.Discord.DiscordClient)
+	static var watermark:openfl.text.TextField;
 
 	private function owoWatermark():Void
 	{
 		// uhh tester text lmao
-		final watermarkText:String = '${OsAPI.username}\n${HashUtils.hash(OsAPI.username, MD5)}';
+		final watermarkText:String = '${OsAPI.username}}';
 
 		final format:openfl.text.TextFormat = new openfl.text.TextFormat("assets/fonts/OswaldMedium.ttf", 50, FlxColor.WHITE);
 		format.align = openfl.text.TextFormatAlign.CENTER;

@@ -34,6 +34,7 @@ class FPS extends TextField
 	private var cacheCount:Int;
 	private var currentTime:Float;
 	private var times:Array<Float>;
+	var bgAlpha:Float = 1 / 3;
 
 	inline function addLine(str:String = "", ?lineDown:Bool = true):String
 		return text += '${lineDown ? '\n' : ''}$str';
@@ -57,7 +58,7 @@ class FPS extends TextField
 		bgSprite.graphics.beginFill(0xFF000000);
 		bgSprite.graphics.drawRect(0, 0, 1, 1);
 		bgSprite.graphics.endFill();
-		bgSprite.alpha = 1 / 3;
+		bgSprite.alpha = bgAlpha;
 		visible = active = bgSprite.visible = ClientPrefs.data.showFPS;
 
 		cacheCount = 0;
@@ -114,9 +115,10 @@ class FPS extends TextField
 		bgSprite.y = this.y - offset.y;
 	}
 
-	@:deprecated("DON@T USE NOT DONE!!!!")
 	@:noCompletion override function set_alpha(val:Float):Float{
-		return bgSprite.alpha = super.alpha = val;
+		if(val < bgAlpha)
+			bgSprite.alpha = val;
+		return super.alpha = val;
 	}
 
 	@:noCompletion override function set_visible(val:Bool):Bool

@@ -122,7 +122,6 @@ class Option
 
 	var _name:String = null;
 	var _text:String = null;
-	var _translationKey:String = null;
 	private function get_text()
 		return _text;
 

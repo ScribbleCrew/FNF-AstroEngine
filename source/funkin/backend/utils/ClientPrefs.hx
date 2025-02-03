@@ -43,6 +43,7 @@ import funkin.game.Init.Volume;
 	public var scoreZoom:Bool = true;
 	public var noReset:Bool = false;
 	public var healthBarAlpha:Float = 1;
+	public var fpsCounterAlpha:Float = 1;
 	public var controllerMode:Bool = false;
 	public var mouseEvents:Bool = false;
 	public var hitsoundVolume:Float = 0;
@@ -232,17 +233,20 @@ class ClientPrefs
 		reloadVolumeKeys();
 	}
 
-	public static function init()
+	public static function init():Bool
 	{
 		try
 		{
 			loadPrefs();
 			saveSettings();
-			#if windows WindowUtil.darkmode = data.darkmodeEnabled; #end
-			trace("Initialization Successful");
+//			#if windows WindowUtil.darkmode = data.darkmodeEnabled; #end
+//			#if !mobile Main.fpsVar.alpha = data.fpsCounterAlpha; #end
+			//trace("Initialization Successful");
+			return true;
 		}
 		catch (e)
 			trace("Initialization Unsuccessful : " + e);
+		return false;
 	}
 
 	inline public static function getGameplaySetting(name:String, defaultValue:Dynamic = null, ?customDefaultValue:Bool = false):Dynamic

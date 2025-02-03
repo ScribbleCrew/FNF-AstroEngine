@@ -16,12 +16,6 @@ class OsAPI
 		return '???';
 	}
 
-	@:isVar
-	@:deprecated("useless, going soon. -orbl")
-	public static var hashUsernameMD5(get, null):String;
-	@:noCompletion private inline static function get_hashUsernameMD5()
-		return HashUtils.hash(username, MD5);
-
 	/**
 	 * Os Version
 	 */
