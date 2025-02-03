@@ -118,8 +118,6 @@ class WindowUtil
 	{
 		if (OsAPI.hasVersion('Windows 10'))
 			refreshWindow();
-		else if(OsAPI.hasVersion('Windows 11'))
-			trace('11');
 		trace('${enable ? 'enabled' : 'disabled'} darkmode');
 		return darkmode = enable;
 	}

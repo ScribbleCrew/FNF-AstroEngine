@@ -52,5 +52,5 @@ class OsAPI
 	 * Checking is the user has a specific os version, thingy. Sowwy~ i don't wat i was owo thinking :3c
 	 */
 	public static function hasVersion(index:String)
-		return osVersion.toLowerCase().indexOf(index.toLowerCase()) != -1;
+		return osInfo.toLowerCase().indexOf(index.toLowerCase()) != -1;
 }
