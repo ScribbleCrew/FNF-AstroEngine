@@ -9,23 +9,24 @@ class OutdatedState extends MusicBeatState
 
 	var warnText:FlxText;
 
-	override function create()
+	final text:String = "Sup bro, looks like you're running an   \n
+			outdated version of Astro Engine ["
+		+ EngineData.engineData.coreVersion
+		+ "],\n
+			please update to "
+		+ funkin.game.states.TitleState.updateVersion
+		+ "!\n
+			Press ESCAPE to proceed anyway.\n
+			\n
+			Thank you for using the Engine!\n>;3c";
+
+	override function create():Void
 	{
 		super.create();
 
-		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
-		add(bg);
+		add(new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK));
 
-		warnText = new FlxText(0, 0, FlxG.width, "Sup bro, looks like you're running an   \n
-			outdated version of Astro Engine ["
-			+ EngineData.engineData.coreVersion
-			+ "],\n
-			please update to "
-			+ funkin.game.states.TitleState.updateVersion
-			+ "!\n
-			Press ESCAPE to proceed anyway.\n
-			\n
-			Thank you for using the Engine!", 32);
+		warnText = new FlxText(0, 0, FlxG.width, text, 32);
 		warnText.setFormat(Constants.DEFAULT_FONT, 32, FlxColor.WHITE, CENTER);
 		warnText.screenCenter(Y);
 		add(warnText);
@@ -41,19 +42,12 @@ class OutdatedState extends MusicBeatState
 				CoolUtil.browserLoad('${EngineData.engineData.repository}/releases');
 			}
 			else if (controls.BACK)
-			{
 				leftState = true;
-			}
 
 			if (leftState)
 			{
 				FlxG.sound.play(Paths.sound('cancelMenu'));
-				FlxTween.tween(warnText, {alpha: 0}, 1, {
-					onComplete: function(twn:FlxTween)
-					{
-						MusicBeatState.switchState(new funkin.game.states.MainMenuState());
-					}
-				});
+				FlxTween.tween(warnText, {alpha: 0}, 1, {onComplete: (twn) -> MusicBeatState.switchState(new funkin.game.states.MainMenuState())});
 			}
 		}
 		super.update(elapsed);

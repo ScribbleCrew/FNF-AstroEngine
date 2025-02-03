@@ -410,18 +410,16 @@ class TitleState extends MusicBeatState
 			}
 		}
 	}
-
 	function addMoreText(text:String, ?offset:Float = 0)
-	{
-		if (textGroup != null && credGroup != null)
 		{
-			var coolText:Alphabet = new Alphabet(0, 0, text, true);
-			coolText.screenCenter(X);
-			coolText.y += (textGroup.length * 60) + 200 + offset;
-			credGroup.add(coolText);
-			textGroup.add(coolText);
+			if(textGroup != null && credGroup != null) {
+				var coolText:Alphabet = new Alphabet(0, 0, text, true);
+				coolText.screenCenter(X);
+				coolText.y += (textGroup.length * 60) + 200 + offset;
+				credGroup.add(coolText);
+				textGroup.add(coolText);
+			}
 		}
-	}
 
 	function deleteCoolText()
 	{
