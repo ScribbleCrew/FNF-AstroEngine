@@ -32,7 +32,7 @@ More features coming soon...
 <h2>Installation</h2>
 
 **Windows:** Run the [`setup.bat`](setup.bat) file.  
-**Unix-based systems (macOS, Linux):** Run the [`setup.sh`](`setup.sh`) file.
+**Unix-based systems (macOS, Linux):** Run the [`setup.sh`](setup.sh) file.
 
 After it finishes, run `lime test windows -debug` in order to compile a build of **Astro Engine!!!** :3c ⭐
 
