@@ -52,7 +52,8 @@ class MenuCharacter extends FlxSprite
 				visible = false;
 				dontPlayAnim = true;
 			default:
-				var characterPath:String = 'images/menucharacters/' + character + '.json';
+				trace(character);
+				var characterPath:String = 'data/menucharacters/' + character + '.json';
 
 				var path:String = Paths.getPath(characterPath, TEXT);
 				#if MODS_ALLOWED

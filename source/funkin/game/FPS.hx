@@ -35,7 +35,7 @@ class FPS extends TextField
 	private var currentTime:Float;
 	private var times:Array<Float>;
 
-	private inline function addLine(str:String = "", ?lineDown:Bool = true):String
+	inline function addLine(str:String = "", ?lineDown:Bool = true):String
 		return text += '${lineDown ? '\n' : ''}$str';
 
 	public function new(x:Float = 10, y:Float = 10, color:Int = 0x000000)

@@ -6,48 +6,30 @@ import openfl.Lib;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.display.StageScaleMode;
-import funkin.backend.utils.ClientPrefs;
-import funkin.backend.data.*;
 import funkin.game.FPS;
 
-/*
-	No need to change anything here unless you know what your doin' :3c
-	If you want to add something that will run once the game has started, edit Init.hx
+/**
+ * No need to change anything here unless you know what your doin' :3c
+ * If you want to add something that will run once the game has started, edit Init.hx
+ *
+ * You can pretty much ignore everything from here on - your code should go in your funkin.game.states
  */
 class Main extends Sprite
 {
-	final game = {
-		zoom: -1.0, // game state bounds
-		framerate: 144, // default framerate
-	};
-
+	private static var _game:FlxGame;
 	public static var fpsVar:FPS;
 
-	// You can pretty much ignore everything from here on - your code should go in your game.states.
-
 	public static function main():Void
-	{
-		Lib.current.addChild(new funkin.game.Main());
-	}
+		Lib.current.addChild(new Main());
 
-	public static function exitOn(?type:Int = 0, ?traceE:Bool = false)
-	{
-		if (traceE)
-			trace('Exited at ${Date.now().toString()}');
-		Sys.exit(type);
-	}
-
-	public function new()
+	public function new():Void
 	{
 		super();
 
-		if (stage != null)
-			init();
-		else
-			addEventListener(Event.ADDED_TO_STAGE, init);
+		stage != null ? init() : addEventListener(Event.ADDED_TO_STAGE, init);
 	}
 
-	private function init(?E:Event):Void
+	private function init(?evnt:Event):Void
 	{
 		if (hasEventListener(Event.ADDED_TO_STAGE))
 			removeEventListener(Event.ADDED_TO_STAGE, init);
@@ -57,37 +39,30 @@ class Main extends Sprite
 
 	private function setupGame():Void
 	{
-		var stageWidth:Int = Lib.current.stage.stageWidth;
-		var stageHeight:Int = Lib.current.stage.stageHeight;
+		final stageWidth:Int = Lib.current.stage.stageWidth;
+		final stageHeight:Int = Lib.current.stage.stageHeight;
 
-		if (game.zoom == -1.0)
+		if (Config.zoom == -1.0)
 		{
-			var ratioX:Float = stageWidth / Config.gameSize[0];
-			var ratioY:Float = stageHeight / Config.gameSize[1];
-			game.zoom = Math.min(ratioX, ratioY);
-			Config.gameSize[0] = Math.ceil(stageWidth / game.zoom);
-			Config.gameSize[1] = Math.ceil(stageHeight / game.zoom);
+			final ratioX:Float = stageWidth / Config.gameSize.width;
+			final ratioY:Float = stageHeight / Config.gameSize.height;
+			
+			Config.zoom = Math.min(ratioX, ratioY);
+			Config.gameSize.width = Math.ceil(stageWidth / Config.zoom);
+			Config.gameSize.height = Math.ceil(stageHeight / Config.zoom);
 		}
 
-		//		ClientPrefs.loadDefaultKeys();
-
-		final game:FlxGame = new FlxGame(Config.gameSize[0], Config.gameSize[1], Init, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate,
+		_game = new FlxGame(Config.gameSize.width, Config.gameSize.height, Init, #if (flixel < "5.0.0") Config.zoom, #end Config.framerate, Config.framerate,
 			Config.skipSplash, Config.startFullscreen);
-		#if BASE_GAME_FILES
+		#if (FUNKIN_SOUNDTRAY || BASE_GAME_FILES)
 		@:privateAccess
-		game._customSoundTray = funkin.backend.system.ui.FunkinSoundTray;
+		_game._customSoundTray = funkin.backend.system.ui.FunkinSoundTray;
 		#end
-		addChild(game);
+		addChild(_game);
 
 		#if !mobile
 		// FPS Stuff
-		fpsVar = new FPS(10, 3, 0xFFFFFF);
-		addChild(fpsVar.bgSprite);
-		addChild(fpsVar);
-		fpsVar.visible = false;
-		//fpsVar.visible = fpsVar.bgSprite.visible = ClientPrefs.data.showFPS;
-		fpsVar.offset.x += 25;
-		fpsVar.offset.y += 5;
+		fpsVar = setupFPS();
 
 		// idk, lol...
 		Lib.current.stage.align = "tl";
@@ -95,11 +70,24 @@ class Main extends Sprite
 		#end
 	}
 
+	#if !mobile
+	// FPS Stuff
+	private function setupFPS():FPS {
+		final fpsVar:FPS = new FPS(10, 3, 0xFFFFFF);
+		fpsVar.visible = false;
+		fpsVar.offset.x += 25;
+		fpsVar.offset.y += 5;
+		addChild(fpsVar.bgSprite);
+		addChild(fpsVar);
+
+		return fpsVar;
+	}
+	#end
+
 	// Audio Fix
 	@:dox(hide) public static var audioDisconnected(default, set):Bool = false;
-
-	@:noCompletion private static function set_audioDisconnected(value:Bool):Bool
-	{ // oops
+	@:noCompletion private static function set_audioDisconnected(value:Bool):Bool //oops
+	{
 		audioDisconnected = value;
 		@:privateAccess AudioSwitchFix.onStateSwitch(FlxG.state);
 		return audioDisconnected = value;

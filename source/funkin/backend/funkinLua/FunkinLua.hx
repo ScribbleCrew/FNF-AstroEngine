@@ -1818,6 +1818,8 @@ class FunkinLua
 		#if HSCRIPT_ALLOWED HScript.implement(this); #end
 		#if flxanimate FlxAnimateFunctions.implement(this); #end
 		#if SHADERS_ALLOWED ShaderFunctions.implement(this); #end
+		#if FLX_SAVE SaveFunctions.implement(this);#end
+		
 		ReflectionFunctions.implement(this);
 		TextFunctions.implement(this);
 		ExtraFunctions.implement(this);

@@ -1,6 +1,9 @@
 <!DOCTYPE AE-credits>
 <!-- Goofy ah code -orbl -->
 <credits>
+    <category name="Scribble Discord">
+        <credit name="(Coming Soon)" icon="discord" />
+    </category>
     <category name="Astro Engine Team">
         <credit name="YourFriendOrbl" icon="orbl" description="Main Programmer of Astro Engine" link="https://x.com/YourFriendOrbl" /> <!-- color="BA7EFF" -->
     </category>
@@ -14,8 +17,5 @@
         <credit name="PhantomArcade" icon="phantomarcade" description="Animator of Friday Night Funkin'" link="https://x.com/PhantomArcade3K" color="FADC45" />
         <credit name="evilsk8r" icon="evilsk8r" description="Artist of Friday Night Funkin'" link="https://x.com/evilsk8r" color="5ABD4B" />
         <credit name="kawaisprite" icon="kawaisprite" description="Composer of Friday Night Funkin'" link="https://x.com/kawaisprite" color="378FC7" />
-    </category>
-    <category name="Scribble Discord">
-        <credit name="(Coming Soon)" icon="discord" />
     </category>
 </credits>

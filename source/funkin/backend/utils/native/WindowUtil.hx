@@ -116,8 +116,10 @@ class WindowUtil
     ')
 	@:noCompletion private static function set_darkmode(enable:Bool):Bool
 	{
-		if (!OsAPI.hasVersion('Windows 11'))
+		if (OsAPI.hasVersion('Windows 10'))
 			refreshWindow();
+		else if(OsAPI.hasVersion('Windows 11'))
+			trace('11');
 		trace('${enable ? 'enabled' : 'disabled'} darkmode');
 		return darkmode = enable;
 	}
