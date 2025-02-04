@@ -33,7 +33,7 @@ class StatsSubState extends BaseMenu
 		ClientPrefs.loadPrefs();
 
 		#if desktop
-		DiscordClient.changePresence('Viewing Stats', null);
+		DiscordClient.changePresence('Browsing the menus', null);
 		WindowUtil.title = ('%{GAME_TITLE} - Options - Stats');
 		#end
 

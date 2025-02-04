@@ -84,7 +84,7 @@ class FreeplayState extends MusicBeatState
 
 		#if DISCORD_ALLOWED
 		// Updating Discord Rich Presence
-		DiscordClient.changePresence("Freeplay Menu", null);
+		DiscordClient.changePresence("Browsing the menus", null);
 		#end
 		WindowUtil.title = ('%{GAME_TITLE} - Freeplay');
 
@@ -100,7 +100,7 @@ class FreeplayState extends MusicBeatState
 
 		for (i in 0...WeekData.weeksList.length)
 		{
-			if(weekIsLocked(WeekData.weeksList[i])) continue;
+			if(Week.isWeekLocked(WeekData.weeksList[i])) continue;
 
 			var leWeek:WeekData = WeekData.weeksLoaded.get(WeekData.weeksList[i]);
 			var leSongs:Array<String> = [];
@@ -225,12 +225,6 @@ class FreeplayState extends MusicBeatState
 		songs.push(new SongMetadata(songName, weekNum, songCharacter, color));
 	}
 
-	function weekIsLocked(name:String):Bool
-	{
-		var leWeek:WeekData = WeekData.weeksLoaded.get(name);
-		return (!leWeek.startUnlocked && leWeek.weekBefore.length > 0 && (!StoryMenuState.weekCompleted.exists(leWeek.weekBefore) || !StoryMenuState.weekCompleted.get(leWeek.weekBefore)));
-	}
-
 	public static function destroyFreeplayVocals() {
 		if(vocals != null) vocals.stop();
 		vocals = FlxDestroyUtil.destroy(vocals);
@@ -342,7 +336,7 @@ class FreeplayState extends MusicBeatState
 				player.playingMusic = false;
 				player.switchPlayMusic();
 				#if DISCORD_ALLOWED
-				DiscordClient.changePresence("Freeplay", null);
+				DiscordClient.changePresence("Browsing the menus", null);
 				#end
 				WindowUtil.title = ('%{GAME_TITLE} - Freeplay');
 				FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);

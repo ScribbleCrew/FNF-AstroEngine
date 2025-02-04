@@ -54,7 +54,7 @@ class NotesSubState extends BaseMenu
 		super();
 		
 		#if DISCORD_ALLOWED
-		DiscordClient.changePresence("Note Colors Menu", null);
+		DiscordClient.changePresence("Browsing the menus", null);
 		WindowUtil.title = ("%{GAME_TITLE} - Note Colors");
 		#end
 

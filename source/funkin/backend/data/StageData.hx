@@ -236,7 +236,7 @@ class StageData
 		return addedObjects;
 	}
 
-	public static function validateVisibility(filters:LoadFilters)
+	public static function validateVisibility(filters:LoadFilters):Bool
 	{
 		if ((filters & STORY_MODE) == STORY_MODE)
 			if (!PlayState.isStoryMode)

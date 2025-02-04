@@ -1,13 +1,5 @@
 package funkin.game.states;
 
-import funkin.backend.CoolUtil;
-import funkin.backend.data.WeekData;
-import funkin.game.objects.MenuItem;
-import funkin.game.objects.characters.MenuCharacter;
-#if desktop
-import funkin.backend.client.Discord.DiscordClient;
-#end
-import funkin.backend.utils.ClientPrefs;
 import flixel.FlxG;
 import funkin.game.states.PlayState;
 import funkin.game.states.substates.GameplayChangersSubstate;
@@ -24,16 +16,11 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
-import lime.net.curl.CURLCode;
 import flixel.graphics.FlxGraphic;
 import funkin.backend.Song;
-import funkin.backend.system.MusicBeatSubstate;
-import funkin.backend.system.MusicBeatState;
 
 class StoryMenuState extends MusicBeatState
 {
-	public static var weekCompleted:Map<String, Bool> = new Map<String, Bool>();
-
 	var scoreText:FlxText;
 
 	private static var lastDifficultyName:String = '';
@@ -70,10 +57,14 @@ class StoryMenuState extends MusicBeatState
 		PlayState.isStoryMode = true;
 		WeekData.reloadWeekFiles(true);
 
+		#if desktop
 		#if DISCORD_ALLOWED
-		// Updating Discord Rich Presence
-		DiscordClient.changePresence("In the Menus", null);
+		DiscordClient.changePresence("Browsing the menus", null);
 		#end
+		WindowUtil.title = '%{GAME_TITLE} Story Menu';
+		#end
+
+		final ui_tex = Paths.getSparrowAtlas('campaign_menu_UI_assets');
 
 		if (WeekData.weeksList.length < 1)
 		{
@@ -95,7 +86,6 @@ class StoryMenuState extends MusicBeatState
 		txtWeekTitle.setFormat(Constants.DEFAULT_FONT, 32, FlxColor.WHITE, RIGHT);
 		txtWeekTitle.alpha = 0.7;
 
-		var ui_tex = Paths.getSparrowAtlas('campaign_menu_UI_assets');
 		var bgYellow:FlxSprite = new FlxSprite(0, 56).makeGraphic(FlxG.width, 386, 0xFFF9CF51);
 		bgSprite = new FlxSprite(0, 56);
 
@@ -115,8 +105,8 @@ class StoryMenuState extends MusicBeatState
 		for (i in 0...WeekData.weeksList.length)
 		{
 			var weekFile:WeekData = WeekData.weeksLoaded.get(WeekData.weeksList[i]);
-			var isLocked:Bool = weekIsLocked(WeekData.weeksList[i]);
-			if (!isLocked || !weekFile.hiddenUntilUnlocked)
+			var _isLocked:Bool = Week.isWeekLocked(WeekData.weeksList[i]);
+			if (!_isLocked || !weekFile.hiddenUntilUnlocked)
 			{
 				loadedWeeks.push(weekFile);
 				WeekData.setDirectoryFromWeek(weekFile);
@@ -131,7 +121,7 @@ class StoryMenuState extends MusicBeatState
 				// weekThing.updateHitbox();
 
 				// Needs an offset thingie
-				if (isLocked)
+				if (_isLocked)
 				{
 					var lock:FlxSprite = new FlxSprite(weekThing.width + 10 + weekThing.x);
 					lock.antialiasing = ClientPrefs.data.antialiasing;
@@ -321,7 +311,7 @@ class StoryMenuState extends MusicBeatState
 
 	function selectWeek()
 	{
-		if (!weekIsLocked(loadedWeeks[curWeek].fileName))
+		if (!Week.isWeekLocked(loadedWeeks[curWeek].fileName))
 		{
 			// We can't use Dynamic Array .copy() because that crashes HTML5, here's a workaround.
 			var songArray:Array<String> = [];
@@ -441,7 +431,7 @@ class StoryMenuState extends MusicBeatState
 		txtWeekTitle.text = leName.toUpperCase();
 		txtWeekTitle.x = FlxG.width - (txtWeekTitle.width + 10);
 
-		var unlocked:Bool = !weekIsLocked(leWeek.fileName);
+		var unlocked:Bool = !Week.isWeekLocked(leWeek.fileName);
 		for (num => item in grpWeekText.members)
 		{
 			item.alpha = 0.6;
@@ -478,34 +468,25 @@ class StoryMenuState extends MusicBeatState
 		updateText();
 	}
 
-	function weekIsLocked(name:String):Bool
-	{
-		var leWeek:WeekData = WeekData.weeksLoaded.get(name);
-		return (!leWeek.startUnlocked
-			&& leWeek.weekBefore.length > 0
-			&& (!weekCompleted.exists(leWeek.weekBefore) || !weekCompleted.get(leWeek.weekBefore)));
-	}
-
 	function updateText()
 	{
 		var weekArray:Array<String> = loadedWeeks[curWeek].weekCharacters;
 		for (i in 0...grpWeekCharacters.length)
-		{
+		
 			grpWeekCharacters.members[i].changeCharacter(weekArray[i]);
-		}
+		
 
 		var leWeek:WeekData = loadedWeeks[curWeek];
 		var stringThing:Array<String> = [];
 		for (i in 0...leWeek.songs.length)
-		{
 			stringThing.push(leWeek.songs[i][0]);
-		}
+		
 
 		txtTracklist.text = '';
 		for (i in 0...stringThing.length)
-		{
+		
 			txtTracklist.text += stringThing[i] + '\n';
-		}
+		
 
 		txtTracklist.text = txtTracklist.text.toUpperCase();
 

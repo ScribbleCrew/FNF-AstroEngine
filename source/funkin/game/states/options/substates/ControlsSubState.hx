@@ -56,7 +56,7 @@ class ControlsSubState extends BaseMenu
 		super();
 
 		#if desktop
-		DiscordClient.changePresence('Controls', null);
+		DiscordClient.changePresence('Browsing the menus', null);
 		WindowUtil.title = ('%{GAME_TITLE} - Options - Controls');
 		#end
 

@@ -83,7 +83,7 @@ class TitleState extends MusicBeatState
 		Paths.clearUnusedMemory();
 
 		#if desktop
-		DiscordClient.changePresence("Viewing The Title", null);
+		DiscordClient.changePresence("Browsing the menus", null);
 		WindowUtil.title = '%{GAME_TITLE}';
 		#end
 

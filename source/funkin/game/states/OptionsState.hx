@@ -74,7 +74,7 @@ class OptionsState extends MusicBeatState
 	override function create()
 	{
 		#if desktop
-		DiscordClient.changePresence('Options Menu', null);
+		DiscordClient.changePresence('Browsing the menus', null);
 		WindowUtil.title = ('%{GAME_TITLE} - Options');
 		#end
 		FlxG.mouse.visible = false;
@@ -122,7 +122,7 @@ class OptionsState extends MusicBeatState
 		super.closeSubState();
 		funkin.backend.utils.ClientPrefs.saveSettings();
 		#if desktop
-		DiscordClient.changePresence('Options Menu', null);
+		DiscordClient.changePresence('Browsing the menus', null);
 		WindowUtil.title = ('%{GAME_TITLE} - Options');
 		#end
 	}

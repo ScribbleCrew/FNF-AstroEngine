@@ -2,8 +2,7 @@ package funkin.backend.funkinLua.functions;
 
 import flixel.util.FlxSave;
 import openfl.utils.Assets;
-import haxe.crypto.Md5;
-import haxe.crypto.Sha1;
+import haxe.crypto.*;
 
 //
 // Things to trivialize some dumb stuff like splitting strings on older Lua
@@ -25,7 +24,22 @@ class ExtraFunctions
 		});
 		#end
 
-		Lua_helper.add_callback(lua, "hash", function(txt:String, type:String = "md5") return HashUtils.hash(txt, HashUtils.convertHashType(type)));
+		Lua_helper.add_callback(lua, "hash", function(txt:String, type:String = "md5") return function(){
+			switch (type)
+			{
+				case 'md5':
+					return Md5.encode(txt);
+				case 'sha1':
+					return Sha1.encode(txt);
+				case 'sha224':
+					return Sha224.encode(txt);
+				case 'sha256':
+					return Sha256.encode(txt);
+				default:
+					FunkinLua.luaTrace("Unsupported hash type: " + type, false, false, FlxColor.RED);
+					return null;
+			}
+		});
 
 		// Keyboard & Gamepads
 		Lua_helper.add_callback(lua, "keyboardJustPressed", function(name:String) return Reflect.getProperty(FlxG.keys.justPressed, name));

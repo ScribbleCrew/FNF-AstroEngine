@@ -123,7 +123,7 @@ class Init extends flixel.FlxState
 		if (FlxG.save.data != null && FlxG.save.data.fullscreen)
 			FlxG.fullscreen = FlxG.save.data.fullscreen;
 		if (FlxG.save.data.weekCompleted != null)
-			funkin.game.states.StoryMenuState.weekCompleted = FlxG.save.data.weekCompleted;
+			funkin.game.states.Weeks.weekCompleted = FlxG.save.data.weekCompleted;
 	}
 
 	#if CRASH_HANDLER

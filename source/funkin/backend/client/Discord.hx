@@ -97,13 +97,13 @@ class DiscordClient
 		if (Std.parseInt(cast(requestPtr.discriminator, String)) != 0)
 		{ // Old discriminators
 			final userDiscriminator = '${cast (requestPtr.username, String)}#${cast (requestPtr.discriminator, String)}';
-			#if WATERMARK Init.watermark.text += '\n$userDiscriminator\n${HashUtils.hash(cast(requestPtr.username, String), MD5)}'; #end
+			#if WATERMARK Init.watermark.text += '\n$userDiscriminator'; #end
 			trace('Connected to User ($userDiscriminator)');
 		}
 		else
 		{ // New Discord IDs/Discriminator system
 			final user = cast(requestPtr.username, String);
-			#if WATERMARK Init.watermark.text += '\n@$user\n${HashUtils.hash(user, MD5)}'; #end
+			#if WATERMARK Init.watermark.text += '\n@$user'; #end
 			trace('Connected to User ($user)');
 		}
 
