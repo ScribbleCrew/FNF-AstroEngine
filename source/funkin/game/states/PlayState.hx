@@ -41,6 +41,7 @@ import flixel.addons.display.FlxRuntimeShader;
  * "function eventEarlyTrigger" - Used for making your event start a few MILLISECONDS earlier
  * "function triggerEvent" - Called when the song hits your event's timestamp, this is probably what you were looking for
 **/
+@:allow(funkin.game.objects.scorebars.DefaultHUD)
 class PlayState extends MusicBeatState
 {
 	/**
@@ -583,12 +584,21 @@ class PlayState extends MusicBeatState
 	public var introSoundsSuffix:String = '';
 
 	#if desktop
-	// Discord RPC variables
+	/**
+	 * Story Mode Diff.
+	 */
 	var storyDifficultyText:String = "";
+
+	/**
+	 * The non-paused details.
+	 */
 	var detailsText:String = "";
+
+	/**
+	 * The paused details.
+	 */
 	var detailsPausedText:String = "";
 	#end
-
 
 	#if LUA_ALLOWED
 	/**
@@ -738,7 +748,7 @@ class PlayState extends MusicBeatState
 		Conductor.mapBPMChanges(SONG);
 		Conductor.bpm = SONG.bpm;
 
-		#if desktop
+		#if DISCORD_ALLOWED
 		storyDifficultyText = Difficulty.list[storyDifficulty];
 
 		// String that contains the mode defined here so it isn't necessary to call changePresence for each mode
@@ -1011,22 +1021,19 @@ class PlayState extends MusicBeatState
 		startCallback();
 		RecalculateRating();
 
-		// PRECACHING MISS SOUNDS BECAUSE I THINK THEY CAN LAG PEOPLE AND FUCK THEM UP IDK HOW HAXE WORKS
+		/**
+		 * Precaching stuff...
+		 * PRECACHING MISS SOUNDS BECAUSE I THINK THEY CAN LAG PEOPLE AND FUCK THEM UP IDK HOW HAXE WORKS
+		 */
 		if (ClientPrefs.data.hitsoundVolume > 0)
 			precacheList.set('hitsound', 'sound');
 		precacheList.set('missnote1', 'sound');
 		precacheList.set('missnote2', 'sound');
 		precacheList.set('missnote3', 'sound');
-
 		if (PauseSubState.songName != null)
-		{
 			precacheList.set(PauseSubState.songName, 'music');
-		}
 		else if (ClientPrefs.data.pauseMusic != 'None')
-		{
 			precacheList.set(Paths.formatToSongPath(ClientPrefs.data.pauseMusic), 'music');
-		}
-
 		precacheList.set('alphabet', 'image');
 
 		#if DISCORD_ALLOWED DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character); #end
@@ -1055,6 +1062,7 @@ class PlayState extends MusicBeatState
 					Paths.music(key);
 			}
 		}
+
 		Paths.clearUnusedMemory();
 
 		if (eventNotes.length < 1)
@@ -1084,7 +1092,6 @@ class PlayState extends MusicBeatState
 		#end
 	}
 
-	#if SHADERS_ALLOWED
 	public function initLuaShader(name:String, ?glslVersion:Int = 120)
 	{
 		if (!ClientPrefs.data.shaders)
@@ -1137,7 +1144,6 @@ class PlayState extends MusicBeatState
 		FlxG.log.warn('Missing shader $name .frag AND .vert files!');
 		return false;
 	}
-	#end
 	#end
 
 	public function addTextToDebug(text:String, color:FlxColor)
@@ -1281,9 +1287,10 @@ class PlayState extends MusicBeatState
 		char.y += char.positionArray[1];
 	}
 
+	#if VIDEOS_ALLOWED
 	public var videoCutscene:VideoSprite = null;
-
-	public function startVideo(name:String, forMidSong:Bool = false, canSkip:Bool = true, loop:Bool = false, playOnLoad:Bool = true)
+	#end
+	public function startVideo(name:String, forMidSong:Bool = false, canSkip:Bool = true, loop:Bool = false, playOnLoad:Bool = true):VideoSprite
 	{
 		#if VIDEOS_ALLOWED
 		inCutscene = true;
@@ -1341,7 +1348,7 @@ class PlayState extends MusicBeatState
 		return null;
 	}
 
-	function startAndEnd()
+	function startAndEnd():Void
 	{
 		if (endingSong)
 			endSong();
@@ -1350,11 +1357,10 @@ class PlayState extends MusicBeatState
 	}
 
 	var dialogueCount:Int = 0;
-
-	public var astroDialogue:DialogueBoxPsych;
+	public var astroDialogue:DialogueBoxBubbly;
 
 	// You don't have to add a song, just saying. You can just do "startDialogue(dialogueJson);" and it should work
-	public function startDialogue(dialogueFile:funkin.game.objects.DialogueBoxPsych.DialogueFile, ?song:String = null):Void
+	public function startDialogue(dialogueFile:funkin.game.objects.DialogueBoxBubbly.DialogueFile, ?song:String = null):Void
 	{
 		// TO DO: Make this more flexible, maybe?
 		if (astroDialogue != null)
@@ -1365,7 +1371,7 @@ class PlayState extends MusicBeatState
 			inCutscene = true;
 			precacheList.set('dialogue', 'sound');
 			precacheList.set('dialogueClose', 'sound');
-			astroDialogue = new DialogueBoxPsych(dialogueFile, song);
+			astroDialogue = new DialogueBoxBubbly(dialogueFile, song);
 			astroDialogue.scrollFactor.set();
 			if (endingSong)
 			{
@@ -1477,15 +1483,15 @@ class PlayState extends MusicBeatState
 						FlxG.sound.play(Paths.sound('intro3' + introSoundsSuffix), 0.6);
 						tick = THREE;
 					case 1:
-						countdownReady = createCountdownSprite(introAlts[0], antialias);
+						countdownReady = baseUI.createCountdownSprite(introAlts[0], antialias);
 						FlxG.sound.play(Paths.sound('intro2' + introSoundsSuffix), 0.6);
 						tick = TWO;
 					case 2:
-						countdownSet = createCountdownSprite(introAlts[1], antialias);
+						countdownSet = baseUI.createCountdownSprite(introAlts[1], antialias);
 						FlxG.sound.play(Paths.sound('intro1' + introSoundsSuffix), 0.6);
 						tick = ONE;
 					case 3:
-						countdownGo = createCountdownSprite(introAlts[2], antialias);
+						countdownGo = baseUI.createCountdownSprite(introAlts[2], antialias);
 						FlxG.sound.play(Paths.sound('introGo' + introSoundsSuffix), 0.6);
 						tick = GO;
 					case 4:
@@ -1515,45 +1521,15 @@ class PlayState extends MusicBeatState
 		}
 		return true;
 	}
-
-	inline private function createCountdownSprite(image:String, antialias:Bool):FlxSprite
-	{
-		var spr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(image));
-		spr.cameras = [camHUD];
-		spr.scrollFactor.set();
-		spr.updateHitbox();
-
-		if (PlayState.isPixelStage)
-			spr.setGraphicSize(Std.int(spr.width * daPixelZoom));
-
-		spr.screenCenter();
-		spr.antialiasing = antialias;
-		insert(members.indexOf(noteGroup), spr);
-		FlxTween.tween(spr, {/*y: spr.y + 100,*/ alpha: 0}, Conductor.crochet / 1000, {
-			ease: FlxEase.cubeInOut,
-			onComplete: function(twn:FlxTween)
-			{
-				remove(spr);
-				spr.destroy();
-			}
-		});
-		return spr;
-	}
-
 	public function addBehindGF(obj:FlxBasic)
-	{
 		insert(members.indexOf(gfGroup), obj);
-	}
 
 	public function addBehindBF(obj:FlxBasic)
-	{
 		insert(members.indexOf(boyfriendGroup), obj);
-	}
 
 	public function addBehindDad(obj:FlxBasic)
-	{
 		insert(members.indexOf(dadGroup), obj);
-	}
+	
 
 	public function clearNotesBefore(time:Float)
 	{
@@ -2077,7 +2053,6 @@ class PlayState extends MusicBeatState
 				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
 			}
 			#end
-
 			#if desktop WindowUtil.title = '%{GAME_TITLE} - $detailsText - ${SONG.song} (${storyDifficultyText})'; #end
 		}
 
@@ -2102,7 +2077,7 @@ class PlayState extends MusicBeatState
 				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
 			#end
 
-			WindowUtil.title = '%{GAME_TITLE} - ${SONG.song} (${storyDifficultyText.toUpperCase()})';
+			#if desktop WindowUtil.title = '%{GAME_TITLE} - ${SONG.song} (${storyDifficultyText.toUpperCase()})'; #end
 		}
 		#end
 
@@ -2115,7 +2090,7 @@ class PlayState extends MusicBeatState
 		if (health > 0 && !paused)
 		{
 			#if DISCORD_ALLOWED DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character); #end
-			WindowUtil.title = ('%{GAME_TITLE} - Paused - ${SONG.song}');
+			#if desktop WindowUtil.title = ('%{GAME_TITLE} - Paused - ${SONG.song}'); #end
 		}
 		#end
 
@@ -2999,11 +2974,11 @@ class PlayState extends MusicBeatState
 					// if ()
 					if (!ClientPrefs.getGameplaySetting('practice', false) && !ClientPrefs.getGameplaySetting('botplay', false))
 					{
-						Weeks.weekCompleted.set(WeekData.weeksList[storyWeek], true);
+						Week.weekCompleted.set(WeekData.weeksList[storyWeek], true);
 
 						Highscore.saveWeekScore(WeekData.getWeekFileName(), campaignScore, storyDifficulty);
 
-						FlxG.save.data.weekCompleted = Weeks.weekCompleted;
+						FlxG.save.data.weekCompleted = Week.weekCompleted;
 						FlxG.save.flush();
 					}
 					changedDifficulty = false;
@@ -3819,7 +3794,7 @@ class PlayState extends MusicBeatState
 	}
 
 	@:noCompletion private var _lastStepHit:Int = -1;
-	@:dox(hide) override function stepHit()
+	@:dox(hide) override function stepHit():Void
 	{
 		super.stepHit();
 		if (Math.abs(FlxG.sound.music.time - (Conductor.songPosition - Conductor.offset)) > (20 * playbackRate)
@@ -3837,7 +3812,7 @@ class PlayState extends MusicBeatState
 	}
 
 	@:noCompletion private var _lastBeatHit:Int = -1;
-	@:dox(hide) override function beatHit()
+	@:dox(hide) override function beatHit():Void
 	{
 		super.beatHit();
 

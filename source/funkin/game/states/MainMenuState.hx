@@ -2,7 +2,6 @@ package funkin.game.states;
 
 import flixel.FlxState;
 import flixel.FlxSubState;
-import haxe.extern.EitherType;
 import funkin.backend.CoolUtil;
 import funkin.backend.data.*;
 #if DISCORD_ALLOWED
@@ -32,40 +31,19 @@ import funkin.backend.system.MusicBeatState;
 import flixel.input.mouse.FlxMouseEvent;
 import funkin.game.states.*;
 
-/**
-	Structure For Main Menu Versions
-
-	@param name Name / Astro Engine v
-	@param version Version / 0.0.0
-	@param offset Offsets / FlxPoint.get(X,Y)
-**/
 typedef MenuVersionStructure =
 {
-	// Name
 	var name:Null<String>;
-	// Version
-	var version:Null<String>;
-	// Offsets | XY
 	@:optional var offset:FlxPoint;
 }
 
-/**
-	Structure For Versions
-
-	@param name Asset Name / menu_$name
-	@param state FlxState / FlxSubState
-	@param link Website Link
-**/
 typedef MenuItemsStructure =
 {
-	// Name
 	var name:Null<String>;
-
-	// State
-	@:optional var state:haxe.extern.EitherType<flixel.FlxSubState, flixel.FlxState>;
-
-	// Website Link
+	@:optional var state:EitherTwo<flixel.FlxSubState, flixel.FlxState>;
 	@:optional var link:Null<String>;
+	@:optional var onChange:Void -> Void;
+	@:optional var preloaded:Null<Bool>;
 }
 
 class MainMenuState extends MusicBeatState
@@ -82,10 +60,12 @@ class MainMenuState extends MusicBeatState
 	// Sprites
 	var bgFlashing:FlxSprite;
 	var camFollow:FlxObject;
+
+	// debug
 	var debugKeys:Array<FlxKey>;
 
 	// Items
-	final menuButtons:Array<MenuItemsStructure> = [
+	static final menuButtons:Array<MenuItemsStructure> = [
 		{
 			name: 'story mode',
 			state: new StoryMenuState()
@@ -94,46 +74,66 @@ class MainMenuState extends MusicBeatState
 			name: 'freeplay',
 			state: new FreeplayState()
 		},
-		#if MODS_ALLOWED
+		/*#if MODS_ALLOWED
 		{
+			preloaded: true,
 			name: 'mods',
 			state: new ModsMenuState()
 		},
-		#end
+		#end */
 		#if ACHIEVEMENTS_ALLOWED
 		{
 			name: 'awards',
 			state: new AchievementsMenuState()
 		},
 		#end
-		{
-			name: 'credits',
-			state: new CreditsState()
-		},
-		#if (!switch && switch)
+		/*#if !switch
 		{ // idon'trllywantdisherelol i'm not even trying to being selfish
 			name: 'donate',
 			link: 'https://ninja-muffin24.itch.io/funkin'
 		},
-		#end
+		#end */
 		{
+			name: 'credits',
+			state: new CreditsState()
+		},
+		{
+			preloaded: true,
 			name: 'options',
-			state: new OptionsState()
+			state: new OptionsState(),
+			onChange: ()->{
+				if (PlayState.SONG != null)
+				{
+					PlayState.SONG.arrowSkin = null;
+					PlayState.SONG.splashSkin = null;
+					PlayState.stageUI = 'normal';
+				}
+			}
 		}
 	];
 
 	// Version
 	final engineVersions:Array<MenuVersionStructure> = [
 		{
-			name: 'Astro Engine v',
-			version: EngineData.engineData.coreVersion,
+			name: 'Astro Engine v${EngineData.engineData.coreVersion}',
 			offset: new FlxPoint(0, 0)
-		},
-		{
-			name: 'Friday Night Funkin\' v',
-			version: Application.current.meta.get('version'),
+		}
+		// {
+		// 	name: 'Friday Night Funkin\' v${Application.current.meta.get('version')}',
+		// 	offset: new FlxPoint(0, 0)
+		// },
+		#if GIT_ALLOWED 
+		,{
+			name: 'Commit: ${GitMacro.commitNumber} (${GitMacro.commitHash})',
 			offset: new FlxPoint(0, 0)
-		},
+		}
+		#end
+		#if MODS_ALLOWED
+		,{
+			name: '[TAB] Open Mods Menu',
+			offset: new FlxPoint(0, 0)
+		}
+		#end
 	];
 
 	override function create()
@@ -176,7 +176,7 @@ class MainMenuState extends MusicBeatState
 		bg.color = bgColor;
 		bg.updateHitbox();
 		bg.screenCenter();
-		bg.antialiasing = ClientPrefs.data.globalAntialiasing;
+		bg.antialiasing = ClientPrefs.data.antialiasing;
 		add(bg);
 
 		if (ClientPrefs.data.flashing)
@@ -187,7 +187,7 @@ class MainMenuState extends MusicBeatState
 			bgFlashing.updateHitbox();
 			bgFlashing.screenCenter();
 			bgFlashing.visible = false;
-			bgFlashing.antialiasing = ClientPrefs.data.globalAntialiasing;
+			bgFlashing.antialiasing = ClientPrefs.data.antialiasing;
 			bgFlashing.color = bgColor.getDarkened(.4);
 			add(bgFlashing);
 		}
@@ -215,14 +215,14 @@ class MainMenuState extends MusicBeatState
 			menuItems.add(menuItem);
 
 			menuItem.scrollFactor.set(0, scr);
-			menuItem.antialiasing = ClientPrefs.data.globalAntialiasing;
+			menuItem.antialiasing = ClientPrefs.data.antialiasing;
 			menuItem.updateHitbox();
 		}
 
 		// Version Loop
 		for (i in 0...engineVersions.length)
 		{
-			final engineVersion:FlxText = new FlxText(12, FlxG.height - 22 * (i + 1), 0, engineVersions[i].name + engineVersions[i].version);
+			final engineVersion:FlxText = new FlxText(12, FlxG.height - 22 * (i + 1), 0, engineVersions[i].name);
 			engineVersion.setFormat(Constants.DEFAULT_FONT, 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			engineVersion.x += engineVersions[i].offset.x;
 			engineVersion.y += engineVersions[i].offset.y;
@@ -310,6 +310,9 @@ class MainMenuState extends MusicBeatState
 					FlxG.mouse.visible = false;
 			}
 
+			if(FlxG.keys.justPressed.TAB)
+				LoadingState.loadAndSwitchState(new ModsMenuState());
+
 			if (controls.UI_UP_P)
 			{
 				FlxG.sound.list.add(FlxG.sound.play(Paths.sound('scrollMenu')));
@@ -374,12 +377,15 @@ class MainMenuState extends MusicBeatState
 				{
 					FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker)
 					{
-						final daChoice:EitherType<FlxState, FlxSubState> = menuButtons[curSelected].state;
+						final daChoice:EitherTwo<FlxState, FlxSubState> = menuButtons[curSelected].state;
 
 						if (daChoice is FlxState)
-							MusicBeatState.switchState(daChoice);
+							(menuButtons[curSelected].preloaded ?? false) ? FlxG.switchState(daChoice) :  LoadingState.loadAndSwitchState(daChoice);
 						else
 							openSubState(daChoice);
+
+						if(menuButtons[curSelected].onChange != null)
+							menuButtons[curSelected].onChange();
 					});
 				}
 			});

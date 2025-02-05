@@ -64,6 +64,30 @@ class DefaultHUD extends FlxBasic
 		game.uiGroup.add(iconP2);
 	}
 
+	inline public function createCountdownSprite(image:String, antialias:Bool):FlxSprite
+		{
+			var spr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(image));
+			spr.cameras = [game.camHUD];
+			spr.scrollFactor.set();
+			spr.updateHitbox();
+	
+			if (PlayState.isPixelStage)
+				spr.setGraphicSize(Std.int(spr.width * PlayState.daPixelZoom));
+	
+			spr.screenCenter();
+			spr.antialiasing = antialias;
+			game.insert(game.members.indexOf(game.noteGroup), spr);
+			FlxTween.tween(spr, {/*y: spr.y + 100,*/ alpha: 0}, Conductor.crochet / 1000, {
+				ease: FlxEase.cubeInOut,
+				onComplete: function(twn:FlxTween)
+				{
+					game.remove(spr);
+					spr.destroy();
+				}
+			});
+			return spr;
+		}
+
 	public function beatHit()
 	{
 		iconP1.scale.set(1.2, 1.2);

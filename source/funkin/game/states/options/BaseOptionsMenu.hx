@@ -531,6 +531,19 @@ class BaseOptionsMenu extends BaseMenu
 		descText.screenCenter(Y);
 		descText.y += 270;
 
+		if(optionsArray[curSelected].onMove!=null) 
+			optionsArray[curSelected].onMove(true);
+
+		for(i in 0...optionsArray.length){
+			final lol = optionsArray[i];
+			if(lol.onMove==null)continue;
+			if(i == curSelected){
+				lol.onMove(true);
+			} else {
+				lol.onMove(false);
+			}
+		}
+
 		for (num => item in grpOptions.members)
 		{
 			item.targetY = num - curSelected;

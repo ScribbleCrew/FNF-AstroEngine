@@ -3,10 +3,6 @@ package funkin.game;
 import openfl.Lib;
 import flixel.input.keyboard.FlxKey;
 import funkin.backend.utils.Paths;
-#if CRASH_HANDLER
-import openfl.events.UncaughtErrorEvent;
-#end
-
 class Init extends flixel.FlxState
 {
 	override public function create():Void
@@ -27,21 +23,16 @@ class Init extends flixel.FlxState
 
 		Logs.init();
 		funkin.backend.Highscore.init();
-		trace('ClientPrefs loaded: ${funkin.backend.utils.ClientPrefs.init()}');
+		funkin.backend.utils.ClientPrefs.init();
 		this.init();
 
 		this.initFileThread();
 
 		#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(CallbackHandler.call)); #end
-
+		#if CRASH_HANDLER Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR, CrashHandler.main); #end
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
-
 		#if DISCORD_ALLOWED DiscordClient.prepare(); #end
-
-		#if CRASH_HANDLER initCrashHandler(); #end
-
 		#if SHADERS_ALLOWED fragFix(); #end
-
 		#if windows AudioSwitchFix.init(); #end
 
 		funkin.game.objects.Alphabet.AlphaCharacter.loadAlphabetData();
@@ -115,21 +106,15 @@ class Init extends flixel.FlxState
 	{
 		trace(OsAPI.osInfo + ' ' + OsAPI.osVersion);
 
-		FlxG.fixedTimestep = #if html5 FlxG.mouse.visible = #end
-		false;
+		FlxG.fixedTimestep = #if html5 FlxG.mouse.visible = #end false;
 		FlxG.keys.preventDefaultKeys = [TAB];
 		FlxG.game.focusLostFramerate = 30;
 
 		if (FlxG.save.data != null && FlxG.save.data.fullscreen)
 			FlxG.fullscreen = FlxG.save.data.fullscreen;
 		if (FlxG.save.data.weekCompleted != null)
-			funkin.game.states.Weeks.weekCompleted = FlxG.save.data.weekCompleted;
+			Week.weekCompleted = FlxG.save.data.weekCompleted;
 	}
-
-	#if CRASH_HANDLER
-	private function initCrashHandler():Void
-		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, CrashHandler.main);
-	#end
 
 	#if SHADERS_ALLOWED
 	private function fragFix():Void

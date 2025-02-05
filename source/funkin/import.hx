@@ -50,6 +50,9 @@ import funkin.backend.Song.SwagSong;
 import funkin.backend.Song.SwagSection;
 import funkin.backend.data.StageData.StageFile;
 
+// Haxe
+import haxe.extern.*;
+
 //Discord API
 #if DISCORD_ALLOWED
 import funkin.backend.client.Discord;

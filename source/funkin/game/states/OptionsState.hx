@@ -84,7 +84,7 @@ class OptionsState extends MusicBeatState
 		bg.color = EngineData.coreGame.menuColor;
 		bg.updateHitbox();
 		bg.screenCenter();
-		bg.antialiasing = funkin.backend.utils.ClientPrefs.data.globalAntialiasing;
+		bg.antialiasing = funkin.backend.utils.ClientPrefs.data.antialiasing;
 		add(bg);
 
 		grpOptions = new FlxTypedGroup<funkin.game.objects.Alphabet>();

@@ -23,16 +23,23 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		boyfriend.animation.finishCallback = function(name:String) boyfriend.dance();
 		boyfriend.visible = false;
 
-		// I'd suggest using "Low Quality" as an example for making your own option since it is the simplest here
-		var option:Option = new Option('Low Quality', // Name
-			'If checked, disables some background details,\ndecreases loading times and improves performance.', // Description
-			'lowQuality', // Save data variable name
-			BOOL); // Default value
+		var option:Option = new Option('Low Quality', 'If checked, disables some background details,\ndecreases loading times and improves performance.',
+			'lowQuality', BOOL);
 		addOption(option);
 
 		var option:Option = new Option('Anti-Aliasing', 'If unchecked, disables anti-aliasing, increases performance\nat the cost of sharper visuals.',
 			'antialiasing', BOOL);
-		option.onChange = onChangeAntiAliasing; // Changing onChange is only needed if you want to make a special interaction after it changes the value
+		option.onChange = () ->
+		{
+			for (sprite in members)
+			{
+				var sprite:Dynamic = sprite; // Make it check for FlxSprite instead of FlxBasic
+				var sprite:FlxSprite = sprite; // Don't judge me ok
+				if (sprite != null && (sprite is FlxSprite) && !(sprite is FlxText))
+					sprite.antialiasing = ClientPrefs.data.antialiasing;
+			}
+		};
+		option.onMove = (selected:Bool) -> boyfriend.visible = selected;
 		addOption(option);
 		antialiasingOption = optionsArray.length - 1;
 
@@ -64,43 +71,27 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		option.maxValue = 240;
 		option.defaultValue = Std.int(FlxMath.bound(refreshRate, option.minValue, option.maxValue));
 		option.displayFormat = '%v FPS';
-		option.onChange = onChangeFramerate;
+		option.onChange = () ->
+		{
+			if (ClientPrefs.data.framerate > FlxG.drawFramerate)
+			{
+				FlxG.updateFramerate = ClientPrefs.data.framerate;
+				FlxG.drawFramerate = ClientPrefs.data.framerate;
+			}
+			else
+			{
+				FlxG.drawFramerate = ClientPrefs.data.framerate;
+				FlxG.updateFramerate = ClientPrefs.data.framerate;
+			}
+		};
 		#end
 
 		super();
 		insert(1, boyfriend);
 	}
 
-	function onChangeAntiAliasing()
-	{
-		for (sprite in members)
-		{
-			var sprite:Dynamic = sprite; // Make it check for FlxSprite instead of FlxBasic
-			var sprite:FlxSprite = sprite; // Don't judge me ok
-			if (sprite != null && (sprite is FlxSprite) && !(sprite is FlxText))
-			{
-				sprite.antialiasing = ClientPrefs.data.globalAntialiasing;
-			}
-		}
-	}
-
-	function onChangeFramerate()
-	{
-		if (ClientPrefs.data.framerate > FlxG.drawFramerate)
-		{
-			FlxG.updateFramerate = ClientPrefs.data.framerate;
-			FlxG.drawFramerate = ClientPrefs.data.framerate;
-		}
-		else
-		{
-			FlxG.drawFramerate = ClientPrefs.data.framerate;
-			FlxG.updateFramerate = ClientPrefs.data.framerate;
-		}
-	}
-
 	override function changeSelection(change:Int = 0, ?snd:Bool = true)
 	{
 		super.changeSelection(change, snd);
-		boyfriend.visible = (antialiasingOption == curSelected);
 	}
 }

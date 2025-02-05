@@ -16,12 +16,12 @@ import flixel.sound.FlxSound;
 import flixel.ui.FlxButton;
 import openfl.net.FileReference;
 
-import funkin.game.objects.DialogueBoxPsych;
+import funkin.game.objects.DialogueBoxBubbly;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import flash.net.FileFilter;
 import haxe.Json;
-import funkin.game.objects.DialogueBoxPsych;
+import funkin.game.objects.DialogueBoxBubbly;
 import lime.system.Clipboard;
 import funkin.game.objects.Alphabet;
 #if sys
@@ -105,7 +105,7 @@ class DialogueEditorState extends MusicBeatState implements FlxUIEventHandler.Fl
 		animText.scrollFactor.set();
 		add(animText);
 		
-		daText = new TypedAlphabet(DialogueBoxPsych.DEFAULT_TEXT_X, DialogueBoxPsych.DEFAULT_TEXT_Y, DEFAULT_TEXT);
+		daText = new TypedAlphabet(DialogueBoxBubbly.DEFAULT_TEXT_X, DialogueBoxBubbly.DEFAULT_TEXT_Y, DEFAULT_TEXT);
 		daText.setScale(0.7);
 		add(daText);
 		changeText();
@@ -199,7 +199,7 @@ class DialogueEditorState extends MusicBeatState implements FlxUIEventHandler.Fl
 				}
 		}
 		box.animation.play(anim, true);
-		DialogueBoxPsych.updateBoxOffsets(box);
+		DialogueBoxBubbly.updateBoxOffsets(box);
 	}
 
 	function reloadCharacter() {
@@ -208,12 +208,12 @@ class DialogueEditorState extends MusicBeatState implements FlxUIEventHandler.Fl
 		character.reloadAnimations();
 		character.setGraphicSize(Std.int(character.width * DialogueCharacter.DEFAULT_SCALE * character.jsonFile.scale));
 		character.updateHitbox();
-		character.x = DialogueBoxPsych.LEFT_CHAR_X;
-		character.y = DialogueBoxPsych.DEFAULT_CHAR_Y;
+		character.x = DialogueBoxBubbly.LEFT_CHAR_X;
+		character.y = DialogueBoxBubbly.DEFAULT_CHAR_Y;
 
 		switch(character.jsonFile.dialogue_pos) {
 			case 'right':
-				character.x = FlxG.width - character.width + DialogueBoxPsych.RIGHT_CHAR_X;
+				character.x = FlxG.width - character.width + DialogueBoxBubbly.RIGHT_CHAR_X;
 			
 			case 'center':
 				character.x = FlxG.width / 2;
@@ -250,8 +250,8 @@ class DialogueEditorState extends MusicBeatState implements FlxUIEventHandler.Fl
 			characterAnimSpeed();
 		}
 
-		daText.y = DialogueBoxPsych.DEFAULT_TEXT_Y;
-		if(daText.rows > 2) daText.y -= DialogueBoxPsych.LONG_TEXT_ADD;
+		daText.y = DialogueBoxBubbly.DEFAULT_TEXT_Y;
+		if(daText.rows > 2) daText.y -= DialogueBoxBubbly.LONG_TEXT_ADD;
 
 		#if DISCORD_ALLOWED
 		// Updating Discord Rich Presence

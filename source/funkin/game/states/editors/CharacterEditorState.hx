@@ -79,13 +79,13 @@ class CharacterEditorState extends MusicBeatState implements FlxUIEventHandler.F
 		add(silhouettes);
 
 		var dad:FlxSprite = new FlxSprite(dadPosition.x, dadPosition.y).loadGraphic(Paths.image('editors/silhouetteDad', 'embed'));
-		dad.antialiasing = ClientPrefs.data.globalAntialiasing;
+		dad.antialiasing = ClientPrefs.data.antialiasing;
 		dad.active = false;
 		dad.offset.set(-4, 1);
 		silhouettes.add(dad);
 
 		var boyfriend:FlxSprite = new FlxSprite(bfPosition.x, bfPosition.y + 350).loadGraphic(Paths.image('editors/silhouetteBF', 'embed'));
-		boyfriend.antialiasing = ClientPrefs.data.globalAntialiasing;
+		boyfriend.antialiasing = ClientPrefs.data.antialiasing;
 		boyfriend.active = false;
 		boyfriend.offset.set(-6, 2);
 		silhouettes.add(boyfriend);
@@ -652,7 +652,7 @@ class CharacterEditorState extends MusicBeatState implements FlxUIEventHandler.F
 		noAntialiasingCheckBox.checked = character.noAntialiasing;
 		noAntialiasingCheckBox.onClick = function() {
 			character.antialiasing = false;
-			if(!noAntialiasingCheckBox.checked && ClientPrefs.data.globalAntialiasing) {
+			if(!noAntialiasingCheckBox.checked && ClientPrefs.data.antialiasing) {
 				character.antialiasing = true;
 			}
 			character.noAntialiasing = noAntialiasingCheckBox.checked;

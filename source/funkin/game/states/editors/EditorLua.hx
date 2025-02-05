@@ -27,7 +27,7 @@ import sys.io.File;
 #end
 import Type.ValueType;
 import funkin.backend.utils.Controls;
-import funkin.game.objects.DialogueBoxPsych;
+import funkin.game.objects.DialogueBoxBubbly;
 
 #if (desktop && DISCORD_ALLOWED)
 import funkin.backend.client.Discord.DiscordClient;

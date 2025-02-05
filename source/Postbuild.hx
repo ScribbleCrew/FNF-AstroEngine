@@ -3,7 +3,7 @@ package source; // Yeah, I know...
 /**
  * A script which executes after the game is built.
  */
-final class Postbuild
+@:final class Postbuild
 {
 	static inline final BUILD_TIME_FILE:String = '.build_time';
 

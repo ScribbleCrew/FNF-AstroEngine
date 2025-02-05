@@ -252,7 +252,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		chartEditorSave.bind('chart_editor_data', CoolUtil.getSavePath());
 
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		bg.antialiasing = ClientPrefs.data.globalAntialiasing;
+		bg.antialiasing = ClientPrefs.data.antialiasing;
 		bg.scrollFactor.set();
 		add(bg);
 
@@ -332,7 +332,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		if(SHOW_EVENT_COLUMN)
 		{
 			eventIcon = new FlxSprite(0, iconY).loadGraphic(Paths.image('editors/eventIcon', 'embed'));
-			eventIcon.antialiasing = ClientPrefs.data.globalAntialiasing;
+			eventIcon.antialiasing = ClientPrefs.data.antialiasing;
 			eventIcon.alpha = 0.6;
 			eventIcon.setGraphicSize(30, 30);
 			eventIcon.updateHitbox();
@@ -396,7 +396,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		autoSaveIcon = new FlxSprite(50).loadGraphic(Paths.image('editors/autosave', 'embed'));
 		autoSaveIcon.screenCenter(Y);
 		autoSaveIcon.scale.set(0.6, 0.6);
-		autoSaveIcon.antialiasing = ClientPrefs.data.globalAntialiasing;
+		autoSaveIcon.antialiasing = ClientPrefs.data.antialiasing;
 		autoSaveIcon.scrollFactor.set();
 		autoSaveIcon.alpha = 0;
 		add(autoSaveIcon);
@@ -1818,7 +1818,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		}
 
 		#if DISCORD_ALLOWED 
-		DiscordClient.changePresence('Browsing the menus', 'Song: ' + PlayState.SONG.song); 
+		DiscordClient.changePresence('Chart Editor', 'Song: ' + PlayState.SONG.song); 
 		#end
 		WindowUtil.title = ('%{GAME_TITLE} - Chart Editor - ${PlayState.SONG.song} (${Difficulty.list[PlayState.storyDifficulty]})');
 		

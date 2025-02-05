@@ -20,7 +20,7 @@ import openfl.events.Event;
 import openfl.events.IOErrorEvent;
 import flash.net.FileFilter;
 import haxe.Json;
-import funkin.game.objects.DialogueBoxPsych;
+import funkin.game.objects.DialogueBoxBubbly;
 import flixel.FlxCamera;
 import flixel.group.FlxSpriteGroup;
 import lime.system.Clipboard;
@@ -154,7 +154,7 @@ class DialogueCharacterEditorState extends MusicBeatState implements FlxUIEventH
 		reloadCharacter();
 		updateTextBox();
 
-		daText = new TypedAlphabet(DialogueBoxPsych.DEFAULT_TEXT_X, DialogueBoxPsych.DEFAULT_TEXT_Y, '', 0.05, false);
+		daText = new TypedAlphabet(DialogueBoxBubbly.DEFAULT_TEXT_X, DialogueBoxBubbly.DEFAULT_TEXT_Y, '', 0.05, false);
 		daText.setScale(0.7);
 		daText.text = DEFAULT_TEXT;
 		hudGroup.add(daText);
@@ -393,12 +393,12 @@ class DialogueCharacterEditorState extends MusicBeatState implements FlxUIEventH
 			char.setGraphicSize(Std.int(char.width * DialogueCharacter.DEFAULT_SCALE * character.jsonFile.scale));
 			char.updateHitbox();
 		}
-		character.x = DialogueBoxPsych.LEFT_CHAR_X;
-		character.y = DialogueBoxPsych.DEFAULT_CHAR_Y;
+		character.x = DialogueBoxBubbly.LEFT_CHAR_X;
+		character.y = DialogueBoxBubbly.DEFAULT_CHAR_Y;
 
 		switch(character.jsonFile.dialogue_pos) {
 			case 'right':
-				character.x = FlxG.width - character.width + DialogueBoxPsych.RIGHT_CHAR_X;
+				character.x = FlxG.width - character.width + DialogueBoxBubbly.RIGHT_CHAR_X;
 			
 			case 'center':
 				character.x = FlxG.width / 2;
@@ -435,7 +435,7 @@ class DialogueCharacterEditorState extends MusicBeatState implements FlxUIEventH
 				anim = 'center';
 		}
 		box.animation.play(anim, true);
-		DialogueBoxPsych.updateBoxOffsets(box);
+		DialogueBoxBubbly.updateBoxOffsets(box);
 	}
 
 	public function UIEvent(id:String, sender:Dynamic) {

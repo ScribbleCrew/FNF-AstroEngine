@@ -9,13 +9,7 @@ import funkin.game.Init.Volume;
 
 @:structInit class SaveVariables
 {
-	// if u use psych
-	@:deprecated("Psych Support") @:isVar public var antialiasing(get, set):Bool = true;
-	public var globalAntialiasing:Bool = true;
-	@:dox(hide) @:noCompletion private inline function set_antialiasing(value:Bool)
-		return globalAntialiasing = antialiasing = value;
-	@:dox(hide) @:noCompletion private inline function get_antialiasing()
-		return globalAntialiasing;
+	public var antialiasing:Bool = true;
 
 	public var downScroll:Bool = false;
 	public var middleScroll:Bool = false;
@@ -233,8 +227,9 @@ class ClientPrefs
 		reloadVolumeKeys();
 	}
 
-	public static function init():Bool
+	public static function init():Void
 	{
+		var is:Bool =false;
 		try
 		{
 			loadPrefs();
@@ -242,11 +237,12 @@ class ClientPrefs
 //			#if windows WindowUtil.darkmode = data.darkmodeEnabled; #end
 //			#if !mobile Main.fpsVar.alpha = data.fpsCounterAlpha; #end
 			//trace("Initialization Successful");
-			return true;
+			is = true;
 		}
 		catch (e)
-			trace("Initialization Unsuccessful : " + e);
-		return false;
+		{}
+		trace('ClientPrefs loaded: $is');
+		return;
 	}
 
 	inline public static function getGameplaySetting(name:String, defaultValue:Dynamic = null, ?customDefaultValue:Bool = false):Dynamic

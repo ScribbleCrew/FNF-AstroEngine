@@ -73,7 +73,7 @@ class ModsMenuState extends MusicBeatState
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.color = EngineData.coreGame.menuColor;
 		bg.screenCenter();
-		bg.antialiasing = funkin.backend.utils.ClientPrefs.data.globalAntialiasing;
+		bg.antialiasing = funkin.backend.utils.ClientPrefs.data.antialiasing;
 		add(bg);
 
 		grid = new FlxBackdrop(Paths.image('ui/grids/grid', 'embed'), XY);

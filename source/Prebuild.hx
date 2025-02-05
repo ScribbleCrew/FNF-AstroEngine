@@ -2,7 +2,7 @@ package source;
 #if !display
 import sys.io.File;
 
-final class Prebuild
+@:final class Prebuild
 {
 	inline static final title:String = "
     ▄▀█ █▀ ▀█▀ █▀█ █▀█   █▀▀ █▄░█ █▀▀ █ █▄░█ █▀▀

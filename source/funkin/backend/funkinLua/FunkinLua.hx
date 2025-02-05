@@ -53,7 +53,7 @@ import sys.io.File;
 #end
 import Type.ValueType;
 import funkin.backend.utils.Controls;
-import funkin.game.objects.DialogueBoxPsych;
+import funkin.game.objects.DialogueBoxBubbly;
 import funkin.backend.system.MusicBeatSubstate;
 import funkin.backend.system.MusicBeatState;
 #if (desktop && DISCORD_ALLOWED)
@@ -1501,7 +1501,7 @@ class FunkinLua
 			if (Assets.exists(path, TEXT))
 			#end
 			{
-				var shit:DialogueFile = DialogueBoxPsych.parseDialogue(path);
+				var shit:DialogueFile = DialogueBoxBubbly.parseDialogue(path);
 				if (shit.dialogue.length > 0)
 				{
 					game.startDialogue(shit, music);

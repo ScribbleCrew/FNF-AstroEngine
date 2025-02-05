@@ -3,8 +3,6 @@ package flixel;
 import funkin.backend.utils.Paths;
 import flixel.FlxSprite;
 
-
-
 class AttachedFlxSprite extends FlxSprite
 {
 	public var sprTracker:FlxSprite;
@@ -20,14 +18,16 @@ class AttachedFlxSprite extends FlxSprite
 	public function new(?file:String = null, ?anim:String = null, ?library:String = null, ?loop:Bool = false, ?allowGPU:Bool = true)
 	{
 		super();
-		if(anim != null) {
+		if (anim != null)
+		{
 			frames = Paths.getSparrowAtlas(file, library, allowGPU);
 			animation.addByPrefix('idle', anim, 24, loop);
 			animation.play('idle');
-		} else if(file != null) {
-			loadGraphic(Paths.image(file, allowGPU));
 		}
-		antialiasing = funkin.backend.utils.ClientPrefs.data.globalAntialiasing;
+		else if (file != null)
+			loadGraphic(Paths.image(file, allowGPU));
+
+		antialiasing = funkin.backend.utils.ClientPrefs.data.antialiasing;
 		scrollFactor.set();
 	}
 
@@ -35,17 +35,18 @@ class AttachedFlxSprite extends FlxSprite
 	{
 		super.update(elapsed);
 
-		if (sprTracker != null) {
+		if (sprTracker != null)
+		{
 			setPosition(sprTracker.x + xAdd, sprTracker.y + yAdd);
 			scrollFactor.set(sprTracker.scrollFactor.x, sprTracker.scrollFactor.y);
 
-			if(copyAngle)
+			if (copyAngle)
 				angle = sprTracker.angle + angleAdd;
 
-			if(copyAlpha)
+			if (copyAlpha)
 				alpha = sprTracker.alpha * alphaMult;
 
-			if(copyVisible) 
+			if (copyVisible)
 				visible = sprTracker.visible;
 		}
 	}

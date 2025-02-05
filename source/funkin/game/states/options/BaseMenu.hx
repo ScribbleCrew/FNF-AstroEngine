@@ -10,7 +10,7 @@ class BaseMenu extends MusicBeatSubstate
 		super();
 
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		bg.antialiasing = funkin.backend.utils.ClientPrefs.data.globalAntialiasing;
+		bg.antialiasing = funkin.backend.utils.ClientPrefs.data.antialiasing;
 		bg.color = EngineData.coreGame.menuColor;
 		bg.screenCenter();
 		add(bg);

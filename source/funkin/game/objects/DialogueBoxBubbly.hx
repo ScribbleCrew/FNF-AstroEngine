@@ -83,7 +83,7 @@ class DialogueCharacter extends FlxSprite
 		frames = Paths.getSparrowAtlas('dialogue/' + jsonFile.image);
 		reloadAnimations();
 
-		antialiasing = funkin.backend.utils.ClientPrefs.data.globalAntialiasing;
+		antialiasing = funkin.backend.utils.ClientPrefs.data.antialiasing;
 		if(jsonFile.no_antialiasing == true) antialiasing = false;
 	}
 
@@ -163,7 +163,7 @@ class DialogueCharacter extends FlxSprite
 }
 
 // TO DO: Clean code? Maybe? idk
-class DialogueBoxPsych extends FlxSpriteGroup
+class DialogueBoxBubbly extends FlxSpriteGroup
 {
 	var dialogue:TypedAlphabet;
 	var dialogueList:DialogueFile = null;
@@ -206,7 +206,7 @@ class DialogueBoxPsych extends FlxSpriteGroup
 		box = new FlxSprite(70, 370);
 		box.frames = Paths.getSparrowAtlas('speech_bubble');
 		box.scrollFactor.set();
-		box.antialiasing = funkin.backend.utils.ClientPrefs.data.globalAntialiasing;
+		box.antialiasing = funkin.backend.utils.ClientPrefs.data.antialiasing;
 		box.animation.addByPrefix('normal', 'speech bubble normal', 24);
 		box.animation.addByPrefix('normalOpen', 'Speech Bubble Normal Open', 24, false);
 		box.animation.addByPrefix('angry', 'AHH speech bubble', 24);

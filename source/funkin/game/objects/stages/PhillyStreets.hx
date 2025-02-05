@@ -50,7 +50,7 @@ class PhillyStreets extends BaseStage
 		{
 			var skyImage = Paths.image('phillyStreets/phillySkybox');
 			scrollingSky = new FlxTiledSprite(skyImage, skyImage.width + 400, skyImage.height, true, false);
-			scrollingSky.antialiasing = ClientPrefs.data.globalAntialiasing;
+			scrollingSky.antialiasing = ClientPrefs.data.antialiasing;
 			scrollingSky.setPosition(-650, -375);
 			scrollingSky.scrollFactor.set(0.1, 0.1);
 			scrollingSky.scale.set(0.65, 0.65);
@@ -126,7 +126,7 @@ class PhillyStreets extends BaseStage
 		if (!ClientPrefs.data.lowQuality)
 		{
 			picoFade = new FlxSprite();
-			picoFade.antialiasing = ClientPrefs.data.globalAntialiasing;
+			picoFade.antialiasing = ClientPrefs.data.antialiasing;
 			picoFade.alpha = 0;
 			add(picoFade);
 			darkenable.push(picoFade);

@@ -41,7 +41,7 @@ class CheckboxThingie extends FlxRGBSprite
 		animation.addByPrefix("checking", "selected", 24, false);
 		animation.addByPrefix("checked", "finished", 1, false);
 
-		antialiasing = funkin.backend.utils.ClientPrefs.data.globalAntialiasing;
+		antialiasing = funkin.backend.utils.ClientPrefs.data.antialiasing;
 		setGraphicSize(Std.int(0.9 * width));
 		updateHitbox();
 

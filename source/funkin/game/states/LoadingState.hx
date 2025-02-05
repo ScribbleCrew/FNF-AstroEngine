@@ -77,7 +77,7 @@ class LoadingState extends MusicBeatState
 			#end
 		}
 
-		#if ASTRO_WATERMARKS // PSYCH LOADING SCREEN
+		#if ASTRO_WATERMARKS // ASTRO LOADING SCREEN
 		var bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.setGraphicSize(Std.int(FlxG.width));
 		bg.color = 0xFFD16FFF;
@@ -89,7 +89,7 @@ class LoadingState extends MusicBeatState
 		loadingText.borderSize = 2;
 		add(loadingText);
 	
-		logo = new FlxSprite(0, 0).loadGraphic(Paths.image('psych'));
+		logo = new FlxSprite(0, 0);//.loadGraphic(Paths.image('psych'));
 		logo.scale.set(0.75, 0.75);
 		logo.updateHitbox();
 		logo.antialiasing = ClientPrefs.data.antialiasing;
@@ -154,7 +154,7 @@ class LoadingState extends MusicBeatState
 			bar.updateHitbox();
 		}
 
-		#if ASTRO_WATERMARKS // PSYCH LOADING SCREEN
+		#if ASTRO_WATERMARKS // ASTRO LOADING SCREEN
 		timePassed += elapsed;
 		shakeFl += elapsed * 3000;
 		var dots:String = '';
