@@ -1483,7 +1483,7 @@
 		"song": "Cocoa",
 		"needsVoices": true,
 		"stage": "mall",
-		"format": "astro_v0.3_convert",
+		"format": "astro_v0.3.0_convert",
 		"speed": 1.3,
 		"bpm": 100
 	}

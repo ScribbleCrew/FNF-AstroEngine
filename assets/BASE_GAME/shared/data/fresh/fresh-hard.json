@@ -1580,6 +1580,6 @@
 		"needsVoices": true,
 		"bpm": 120,
 		"speed": 1.8,
-		"format": "astro_v0.3_convert"
+		"format": "astro_v0.3.0_convert"
 	}
 }

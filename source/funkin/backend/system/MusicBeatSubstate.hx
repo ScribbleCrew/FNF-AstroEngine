@@ -1,14 +1,10 @@
 package funkin.backend.system;
 
-import funkin.backend.Conductor.BPMChangeEvent;
-import flixel.FlxG;
 import flixel.FlxSubState;
 import funkin.backend.Conductor;
-import flixel.FlxBasic;
 import funkin.backend.utils.Controls;
-import flixel.FlxSprite;
 
-class MusicBeatSubstate extends FlxSubState
+abstract class MusicBeatSubstate extends FlxSubState
 {
 	public function new()
 	{
@@ -34,8 +30,7 @@ class MusicBeatSubstate extends FlxSubState
 	override function update(elapsed:Float)
 	{
 		// everyStep();
-		if (!persistentUpdate)
-			MusicBeatState.timePassedOnState += elapsed;
+		if (!persistentUpdate) MusicBeatState.timePassedOnState += elapsed;
 		var oldStep:Int = curStep;
 
 		updateCurStep();

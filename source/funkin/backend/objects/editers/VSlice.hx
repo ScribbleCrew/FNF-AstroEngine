@@ -257,12 +257,12 @@ class VSlice
 				player2: metadata.playData.characters.opponent,
 				gfVersion: metadata.playData.characters.girlfriend,
 				stage: stage,
-				format: 'astro_v0.3_convert'
+				format: 'astro_v${EngineData.VERSION}_convert'
 			}
 
 			Reflect.setField(swagSong, 'artist', metadata.artist);
 			Reflect.setField(swagSong, 'charter', metadata.charter);
-			Reflect.setField(swagSong, 'generatedBy', 'Astro Engine v${EngineData.engineData.coreVersion} - Chart Editor V-Slice Importer');
+			Reflect.setField(swagSong, 'generatedBy', 'Astro Engine v${EngineData.VERSION} - Chart Editor V-Slice Importer');
 			songDifficulties.set(diff, swagSong);
 		}
 		var pack:AstroPackage = {difficulties: songDifficulties, events: null};
@@ -307,7 +307,7 @@ class VSlice
 				fileEvents.push([event.t, [fields]]);
 			}
 			fileEvents.sort(sortByTime);
-			pack.events = {events: fileEvents, format: 'astro_v0.3_convert'};
+			pack.events = {events: fileEvents, format: 'astro_v${EngineData.VERSION}_convert'};
 		}
 		return pack;
 	}
@@ -327,7 +327,7 @@ class VSlice
 		}
 
 		var notes:Array<VSliceNote> = [];
-		var generatedBy:String = 'Astro Engine v${EngineData.engineData.coreVersion} - Chart Editor V-Slice Exporter';
+		var generatedBy:String = 'Astro Engine v${EngineData.VERSION} - Chart Editor V-Slice Exporter';
 		var timeChanges:Array<VSliceTimeChange> = [];
 
 		var time:Float = 0;

@@ -11,7 +11,7 @@ class OutdatedState extends MusicBeatState
 
 	final text:String = "Sup bro, looks like you're running an   \n
 			outdated version of Astro Engine ["
-		+ EngineData.engineData.coreVersion
+		+ EngineData.VERSION
 		+ "],\n
 			please update to "
 		+ funkin.game.states.TitleState.updateVersion
@@ -22,6 +22,11 @@ class OutdatedState extends MusicBeatState
 
 	override function create():Void
 	{
+		#if desktop
+		WindowUtil.title = ('%{GAME_TITLE} - Outdated');
+		FlxG.mouse.visible = false;
+		#end
+
 		super.create();
 
 		add(new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK));
@@ -39,7 +44,7 @@ class OutdatedState extends MusicBeatState
 			if (controls.ACCEPT)
 			{
 				leftState = true;
-				CoolUtil.browserLoad('${EngineData.engineData.repository}/releases');
+				CoolUtil.browserLoad('${EngineData.REPOSITORY}/releases');
 			}
 			else if (controls.BACK)
 				leftState = true;

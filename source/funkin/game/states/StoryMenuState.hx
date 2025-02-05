@@ -62,6 +62,7 @@ class StoryMenuState extends MusicBeatState
 		DiscordClient.changePresence("Browsing the menus", null);
 		#end
 		WindowUtil.title = '%{GAME_TITLE} Story Menu';
+		FlxG.mouse.visible = false;
 		#end
 
 		final ui_tex = Paths.getSparrowAtlas('campaign_menu_UI_assets');

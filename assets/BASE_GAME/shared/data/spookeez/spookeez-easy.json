@@ -1863,7 +1863,7 @@
 		"song": "Spookeez",
 		"validScore": true,
 		"needsVoices": true,
-		"format": "astro_v0.3_convert",
+		"format": "astro_v0.3.0_convert",
 		"speed": 1,
 		"bpm": 150
 	}

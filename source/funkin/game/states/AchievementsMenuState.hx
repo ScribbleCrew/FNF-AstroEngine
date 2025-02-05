@@ -26,12 +26,10 @@ class AchievementsMenuState extends MusicBeatState
 		Paths.clearUnusedMemory();
 
 		#if desktop
-		#if DISCORD_ALLOWED
-		DiscordClient.changePresence("Achievements Menu", null);
-		#end
+		#if DISCORD_ALLOWED DiscordClient.changePresence("Achievements Menu", null); #end
 		WindowUtil.title = ('%{GAME_TITLE} - Achievements Menu');
-		#end
 		FlxG.mouse.visible = false;
+		#end
 
 		// prepare achievement list
 		for (achievement => data in Achievements.achievements)

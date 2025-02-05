@@ -75,7 +75,7 @@ class DialogueCharacterEditorState extends MusicBeatState implements FlxUIEventH
 
 	override function create() {
 		persistentUpdate = persistentDraw = true;
-		camGame = initAstroCamera();
+		camGame = setupCustomCamera();
 		camGame.bgColor = FlxColor.fromHSL(0, 0, 0.5);
 		camHUD = new FlxCamera();
 		camHUD.bgColor.alpha = 0;

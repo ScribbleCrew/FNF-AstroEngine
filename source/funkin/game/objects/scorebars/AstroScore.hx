@@ -40,7 +40,7 @@ class AstroScore extends BaseScorebar
 		songLeft.visible = !ClientPrefs.data.hideHud;
 		add(songLeft);
 
-		versionTxtSmth = new FlxText(FlxG.width - 320, 10, 400, "Astro Engine: v" + EngineData.engineData.coreVersion, 32);
+		versionTxtSmth = new FlxText(FlxG.width - 320, 10, 400, "Astro Engine: v" + EngineData.VERSION, 32);
 		versionTxtSmth.setFormat(Paths.font("PhantomMuff.ttf"), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		versionTxtSmth.scrollFactor.set();
 		versionTxtSmth.updateHitbox();

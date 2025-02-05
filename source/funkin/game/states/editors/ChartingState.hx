@@ -243,7 +243,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		opponentVocals.autoDestroy = false;
 		opponentVocals.looped = true;
 
-		initAstroCamera();
+		setupCustomCamera();
 		camUI = new FlxCamera();
 		camUI.bgColor.alpha = 0;
 		FlxG.cameras.add(camUI, false);
@@ -425,9 +425,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		add(outputTxt);
 
 		if(PlayState.SONG == null) //Atleast try to avoid crashes
-		{
 			openNewChart();
-		}
 
 		updateJsonData();
 		
@@ -584,26 +582,10 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		}
 	}
 
-	function openNewChart()
+	function openNewChart():Void
 	{
-		var song:SwagSong = {
-			song: 'Test',
-			notes: [],
-			events: [],
-			bpm: 150,
-			needsVoices: true,
-			speed: 1,
-			offset: 0,
-
-			player1: 'bf',
-			player2: 'dad',
-			gfVersion: 'gf',
-			stage: 'stage',
-			format: 'astro_v0.2',
-			songColor: '0xFFFFFF'
-		};
 		Song.chartPath = null;
-		loadChart(song);
+		loadChart(Song.DEFAULT_CHART);
 	}
 
 	function prepareReload()
@@ -628,8 +610,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 
 		// SONG TAB
 		songNameInputText.text = PlayState.SONG.song;
-		songColorInputText.text = PlayState.SONG.songColor;
-
+	
 		allowVocalsCheckBox.checked = (PlayState.SONG.needsVoices != false); //If the song for some reason does not have this value, it will be set to true
 
 		bpmStepper.value = PlayState.SONG.bpm;
@@ -3135,7 +3116,6 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 	}
 
 	var songNameInputText:FlxUIInputText;
-	var songColorInputText:FlxUIInputText;
 	var allowVocalsCheckBox:FlxUICheckBox;
 
 	var bpmStepper:FlxUINumericStepper;
@@ -3155,9 +3135,6 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 
 		songNameInputText = new FlxUIInputText(objX, objY, 100, 'None', 8);
 		songNameInputText.onChange = function(old:String, cur:String) PlayState.SONG.song = cur;
-
-		songColorInputText = new FlxUIInputText(objX + 120, objY, 100, 'None', 8);
-		songColorInputText.onChange = function(old:String, cur:String) PlayState.SONG.songColor = cur;
 
 		allowVocalsCheckBox = new FlxUICheckBox(objX, objY + 20, 'Allow Vocals', 80, function()
 		{
@@ -3188,9 +3165,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		};
 
 		tab_group.add(new FlxText(songNameInputText.x, songNameInputText.y - 15, 80, 'Song Name:'));
-		//tab_group.add(new FlxText(songColorInputText.x, songColorInputText.y - 15, 80, 'Song Color:'));
 		tab_group.add(songNameInputText);
-		tab_group.add(songColorInputText);
 		tab_group.add(allowVocalsCheckBox);
 		tab_group.add(reloadAudioButton);
 
@@ -3527,7 +3502,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 				upperBox.isMinimized = true;
 	
 				updateChartData();
-				fileDialog.save('events.json', AstroJsonPrinter.print({events: PlayState.SONG.events, format: 'Astro_v0.3'}, ['events']),
+				fileDialog.save('events.json', AstroJsonPrinter.print({events: PlayState.SONG.events, format: 'Astro_v${EngineData.VERSION}'}, ['events']),
 					function() showOutput('Events saved successfully to: ${fileDialog.path}'), null,
 					function() showOutput('Error on saving events!', true));
 			}, btnWid);
@@ -3930,12 +3905,12 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 					if(fmt == null || fmt.length < 1)
 						fmt = loadedChart.format = 'unknown';
 
-					if(!fmt.startsWith('Astro_v0.3'))
+					if(!fmt.startsWith('Astro_v${EngineData.VERSION}'))
 					{
-						loadedChart.format = 'Astro_v0.3_convert';
+						loadedChart.format = 'Astro_v${EngineData.VERSION}_convert';
 						Song.convert(loadedChart);
 						File.saveContent(fileDialog.path, AstroJsonPrinter.print(loadedChart, ['sectionNotes', 'events']));
-						showOutput('Updated "$filePath" from format "$fmt" to "Astro_v0.3" successfully!');
+						showOutput('Updated "$filePath" from format "$fmt" to "Astro_v${EngineData.VERSION}" successfully!');
 					}
 					else showOutput('Chart is already up-to-date! Format: "$fmt"', true);
 				}
@@ -4457,7 +4432,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 			note.rgbShader.enabled = !noRGBCheckBox.checked;
 			if(note.rgbShader.enabled)
 			{
-				var data = NoteTypesConfig.loadNoteTypeData(note.noteType);
+				var data = CustomNoteTypes.loadNoteTypeData(note.noteType);
 				if(data == null || data.length < 1) continue;
 
 				for (line in data)
@@ -4656,7 +4631,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 	override function destroy()
 	{
 		Note.globalRgbShaders = [];
-		NoteTypesConfig.clearNoteTypesData();
+		CustomNoteTypes.clearNoteTypesData();
 
 		for (num => text in MetaNote.noteTypeTexts)
 			text.destroy();

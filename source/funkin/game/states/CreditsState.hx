@@ -31,7 +31,7 @@ typedef CreditsOptions =
 
 class CreditsState extends MusicBeatState
 {
-	@:noCompletion static private final offsetThing:Float = -75;
+	var offsetThing:Float = -75;
 
 	var curSelected:Int = -1;
 
@@ -50,23 +50,25 @@ class CreditsState extends MusicBeatState
 
 	override function create():Void
 	{
-		persistentUpdate = true;
-
 		#if desktop
 		#if DISCORD_ALLOWED DiscordClient.changePresence("Credits Menu", null); #end
 		WindowUtil.title = ('%{GAME_TITLE} - Credits Menu');
 		FlxG.mouse.visible = false;
 		#end
 
+		persistentUpdate = true;
+
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		bg.screenCenter();
+		bg.antialiasing = ClientPrefs.data.antialiasing;
 		add(bg);
+		bg.screenCenter();
 
 		grpOptions = new FlxTypedGroup<funkin.game.objects.Alphabet>();
 		add(grpOptions);
 
-		final filePath:String = 'data/credits.xml';
-		try{
+		try
+		{
+			final filePath:String = 'data/credits.xml';
 			grabXMLData(Paths.xmlAccess(filePath, false));
 			#if MODS_ALLOWED
 			for (mod in (Mods.parseList().enabled).concat(['']))
@@ -76,8 +78,12 @@ class CreditsState extends MusicBeatState
 					grabXMLData(Paths.xmlAccess(creditsFile, true));
 			}
 			#end
-		}catch(e:Dynamic){
-			lime.app.Application.current.window.alert(e, "Error!");
+		}
+		catch (e:Dynamic)
+		{
+			#if (desktop && lime) 
+			lime.app.Application.current.window.alert(e, "Error!"); 
+			#end
 		}
 		generateCredits();
 
@@ -311,5 +317,10 @@ class CreditsState extends MusicBeatState
 		}
 		else
 			descText.visible = descBox.visible = false;
+	}
+
+	override function destroy() {
+		this.bg = FlxDestroyUtil.destroy(bg);
+		super.destroy();
 	}
 }

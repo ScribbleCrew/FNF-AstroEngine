@@ -55,7 +55,7 @@ class NoteOffsetState extends MusicBeatState
 		#end
 
 		// Cameras
-		camGame = initAstroCamera();
+		camGame = setupCustomCamera();
 		camHUD = new FlxCamera();
 		camOther = new FlxCamera();
 		camHUD.bgColor.alpha = 0;

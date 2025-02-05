@@ -5,7 +5,7 @@ typedef NoteTypeProperty = {
 	value:Dynamic
 }
 
-class NoteTypesConfig
+class CustomNoteTypes
 {
 	private static var noteTypesData:Map<String, Array<NoteTypeProperty>> = new Map<String, Array<NoteTypeProperty>>();
 	public static function clearNoteTypesData()

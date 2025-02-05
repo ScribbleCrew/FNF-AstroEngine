@@ -71,7 +71,7 @@ class ModsMenuState extends MusicBeatState
 
 		// Background
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		bg.color = EngineData.coreGame.menuColor;
+		bg.color = EngineData.MENU_COLOR;
 		bg.screenCenter();
 		bg.antialiasing = funkin.backend.utils.ClientPrefs.data.antialiasing;
 		add(bg);
@@ -172,8 +172,11 @@ class ModsMenuState extends MusicBeatState
 
 		if (modsList.all.length < 1)
 		{
-			buttonDisableAll.visible = buttonDisableAll.enabled = false;
+			bgTitle.visible = buttonDisableAll.visible = buttonDisableAll.enabled = false;
+			bgDescription.setGraphicSize(FlxG.width - 50,FlxG.height - 50);
+			bgDescription.screenCenter();
 			buttonEnableAll.visible = true;
+			buttonEnableAll.y -= 20;
 
 			var myX = bgList.x + bgList.width + 20;
 			noModsTxt = new FlxText(myX, 0, FlxG.width - myX - 20, 'NO MODS INSTALLED\nPRESS BACK TO EXIT OR INSTALL A MOD', 48);
@@ -182,7 +185,7 @@ class ModsMenuState extends MusicBeatState
 			noModsTxt.setFormat(Constants.DEFAULT_FONT, 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			noModsTxt.borderSize = 2;
 			add(noModsTxt);
-			noModsTxt.screenCenter(Y);
+			noModsTxt.screenCenter(/*Y*/);
 
 			var txt = new FlxText(bgList.x + 15, bgList.y + 15, bgList.width - 30, "No Mods found.", 16);
 			txt.setFormat(Constants.DEFAULT_FONT, 16, FlxColor.WHITE);
@@ -339,7 +342,7 @@ class ModsMenuState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
-		if (modRestartText.visible)
+		if (modRestartText != null && modRestartText.visible)
 		{
 			modRestartSine += 180 * elapsed;
 			modRestartText.alpha = 1 - Math.sin((Math.PI * modRestartSine) / 180);

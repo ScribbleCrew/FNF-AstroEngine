@@ -85,9 +85,8 @@ class TitleState extends MusicBeatState
 		#if desktop
 		#if DISCORD_ALLOWED DiscordClient.changePresence("Browsing the menus", null); #end
 		WindowUtil.title = '%{GAME_TITLE}';
-		#end
-
 		FlxG.mouse.visible = false;
+		#end
 
 		curWacky = FlxG.random.getObject(getIntroTextShit());
 
@@ -104,7 +103,7 @@ class TitleState extends MusicBeatState
 			{
 				updateVersion = data.split('\n')[0].trim();
 
-				var curVersion:String = EngineData.engineData.coreVersion.trim();
+				var curVersion:String = EngineData.VERSION.trim();
 
 				trace('version online: ' + updateVersion + ', your version: ' + curVersion);
 				if (updateVersion != curVersion)
@@ -303,9 +302,11 @@ class TitleState extends MusicBeatState
 
 		var pressedEnter:Bool = FlxG.keys.justPressed.ENTER || controls.ACCEPT;
 
-		if(FlxG.keys.justPressed.F5)
+		#if ASTRO_WATERMARKS
+		if(FlxG.keys.justPressed.SEVEN)
 			MusicBeatState.switchState(new funkin.game.states.owo.VeryFuniState(new TitleState()));
-
+		#end
+		
 		#if mobile
 		for (touch in FlxG.touches.list)
 		{

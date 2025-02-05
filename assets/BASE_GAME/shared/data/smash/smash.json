@@ -2028,7 +2028,7 @@
 		"song": "Smash",
 		"needsVoices": false,
 		"validScore": true,
-		"format": "astro_v0.3_convert",
+		"format": "astro_v0.3.0_convert",
 		"bpm": 144,
 		"speed": 2
 	}

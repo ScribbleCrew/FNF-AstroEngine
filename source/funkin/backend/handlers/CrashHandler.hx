@@ -35,7 +35,7 @@ class CrashHandler
 		errMsg += "\nUncaught Error: "
 			+ e.error
 			+ "\nPlease report this error to the GitHub page:"
-			+ EngineData.engineData.repository
+			+ EngineData.REPOSITORY
 			+ "\n\n---------------------------------------------------------\n> Crash Handler written by: sqirra-rng";
 
 		if(!FileUtil.validDirectory("./crash/"))

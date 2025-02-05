@@ -9,8 +9,12 @@ import funkin.backend.utils.Controls;
 import flixel.FlxCamera;
 import flixel.FlxBasic;
 
-class MusicBeatState extends FlxState
+abstract class MusicBeatState extends FlxState
 {
+	private var shaderGroup:Array<ShaderBackend>;
+	
+	private var customCameraLoaded:Bool = false;
+
 	private var curSection:Int = 0;
 	private var stepsToDo:Int = 0;
 
@@ -21,27 +25,21 @@ class MusicBeatState extends FlxState
 	private var curDecBeat:Float = 0;
 
 	public var controls(get, never):Controls;
-
-	private var shaderGroup:Array<ShaderBackend>;
-
-	var _astroCameraInitialized:Bool = false;
-
-	inline function get_controls():Controls
+	@:dox(hide) @:noCompletion private inline function get_controls():Controls
 		return Controls.instance;
 
 	public var variables:Map<String, Dynamic> = new Map<String, Dynamic>();
-
 	public static function getVariables()
 		return getState().variables;
 
-	override function create()
+	override function create():Void
 	{
 		var skip:Bool = FlxTransitionableState.skipNextTransOut;
 		shaderGroup = null;
 		super.create();
 
-		if (!_astroCameraInitialized)
-			initAstroCamera();
+		if (!customCameraLoaded)
+			setupCustomCamera();
 
 		if (!skip)
 			openSubState(new FadeTransition(0.5, true));
@@ -50,27 +48,27 @@ class MusicBeatState extends FlxState
 		timePassedOnState = 0;
 	}
 
-	public function initAstroCamera():CustomCamera
+	public function setupCustomCamera():CustomCamera
 	{
 		final camera = new CustomCamera();
 		FlxG.cameras.reset(camera);
 		FlxG.cameras.setDefaultDrawTarget(camera, true);
-		_astroCameraInitialized = true;
+		customCameraLoaded = true;
 		return camera;
 	}
 
-	public function addBehindObject(obj:FlxBasic, obj2:FlxBasic)
+	public function addBehindObject(obj:FlxBasic, obj2:FlxBasic):FlxBasic
 		return insert(members.indexOf(obj2), obj);
 
-	public function addAheadObject(obj:FlxBasic, obj2:FlxBasic)
+	public function addAheadObject(obj:FlxBasic, obj2:FlxBasic):FlxBasic
 		return insert(members.indexOf(obj2) + 1, obj);
 
 	public static var timePassedOnState:Float = 0;
-
-	override function update(elapsed:Float)
+	override function update(elapsed:Float):Void
 	{
 		// everyStep();
 		var oldStep:Int = curStep;
+		timePassedOnState += elapsed;
 
 		updateCurStep();
 		updateBeat();
@@ -202,7 +200,7 @@ class MusicBeatState extends FlxState
 
 	public function stepHit():Void
 	{
-		stagesFunc(function(stage:BaseStage)
+		stageAccess(function(stage:BaseStage)
 		{
 			stage.curStep = curStep;
 			stage.curDecStep = curDecStep;
@@ -218,7 +216,7 @@ class MusicBeatState extends FlxState
 	public function beatHit():Void
 	{
 		// trace('Beat: ' + curBeat);
-		stagesFunc(function(stage:BaseStage)
+		stageAccess(function(stage:BaseStage)
 		{
 			stage.curBeat = curBeat;
 			stage.curDecBeat = curDecBeat;
@@ -229,21 +227,21 @@ class MusicBeatState extends FlxState
 	public function sectionHit():Void
 	{
 		// trace('Section: ' + curSection + ', Beat: ' + curBeat + ', Step: ' + curStep);
-		stagesFunc(function(stage:BaseStage)
+		stageAccess(function(stage:BaseStage)
 		{
 			stage.curSection = curSection;
 			stage.sectionHit();
 		});
 	}
 
-	function stagesFunc(func:BaseStage->Void)
+	function stageAccess(func:BaseStage->(Void)):Void
 	{
 		for (stage in stages)
 			if (stage != null && stage.exists && stage.active)
 				func(stage);
 	}
 
-	function getBeatsOnSection()
+	function getBeatsOnSection():Float
 	{
 		var val:Null<Float> = 4;
 		if (PlayState.SONG != null && PlayState.SONG.notes[curSection] != null)

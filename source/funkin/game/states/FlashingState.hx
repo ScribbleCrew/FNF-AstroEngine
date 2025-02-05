@@ -17,6 +17,10 @@ class FlashingState extends MusicBeatState
 	var warnText:FlxText;
 	override function create()
 	{
+		#if desktop
+		WindowUtil.title = ('%{GAME_TITLE}');
+		#end
+		
 		super.create();
 
 		var bg:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);

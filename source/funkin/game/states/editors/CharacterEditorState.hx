@@ -67,7 +67,7 @@ class CharacterEditorState extends MusicBeatState implements FlxUIEventHandler.F
 		if(ClientPrefs.data.cacheOnGPU) Paths.clearStoredMemory();
 
 		FlxG.sound.music.stop();
-		camEditor = initAstroCamera();
+		camEditor = setupCustomCamera();
 
 		camHUD = new FlxCamera();
 		camHUD.bgColor.alpha = 0;

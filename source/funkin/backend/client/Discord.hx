@@ -167,7 +167,7 @@ class DiscordClient
 		presence.details = details;
 		presence.state = state;
 		presence.largeImageKey = largeImageKey;
-		presence.largeImageText = "Engine Version: " + cast(EngineData.engineData.coreVersion, String);
+		presence.largeImageText = "Engine Version: " + cast(EngineData.VERSION, String);
 		presence.smallImageKey = smallImageKey;
 
 		presence.startTimestamp = Std.int(startTimestamp / 1000);

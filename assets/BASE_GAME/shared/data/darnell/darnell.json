@@ -1130,7 +1130,7 @@
 	"generatedBy": "Astro Engine v0.3.0 - Chart Editor V-Slice Importer",
 	"stage": "phillyStreets",
 	"bpm": 155,
-	"format": "astro_v0.3_convert",
+	"format": "astro_v0.3.0_convert",
 	"speed": 2,
 	"artist": "Kawai Sprite"
 }

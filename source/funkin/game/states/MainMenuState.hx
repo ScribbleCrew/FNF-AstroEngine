@@ -65,7 +65,7 @@ class MainMenuState extends MusicBeatState
 	var debugKeys:Array<FlxKey>;
 
 	// Items
-	static final menuButtons:Array<MenuItemsStructure> = [
+	final menuButtons:Array<MenuItemsStructure> = [
 		{
 			name: 'story mode',
 			state: new StoryMenuState()
@@ -94,10 +94,6 @@ class MainMenuState extends MusicBeatState
 		},
 		#end */
 		{
-			name: 'credits',
-			state: new CreditsState()
-		},
-		{
 			preloaded: true,
 			name: 'options',
 			state: new OptionsState(),
@@ -109,13 +105,17 @@ class MainMenuState extends MusicBeatState
 					PlayState.stageUI = 'normal';
 				}
 			}
+		},
+		{
+			name: 'credits',
+			state: new CreditsState()
 		}
 	];
 
 	// Version
 	final engineVersions:Array<MenuVersionStructure> = [
 		{
-			name: 'Astro Engine v${EngineData.engineData.coreVersion}',
+			name: 'Astro Engine v${EngineData.VERSION}',
 			offset: new FlxPoint(0, 0)
 		}
 		// {
@@ -143,8 +143,6 @@ class MainMenuState extends MusicBeatState
 		#end
 		Mods.loadTopMod();
 
-		engineVersions.reverse();
-
 		// Updates
 		persistentUpdate = persistentDraw = true;
 		FlxG.mouse.visible = ClientPrefs.data.mouseEvents;
@@ -168,12 +166,12 @@ class MainMenuState extends MusicBeatState
 		add(camFollow);
 
 		// Background
-		var bgColor:FlxColor = EngineData.coreGame.menuColor;
+		var bgColor:FlxColor = EngineData.MENU_COLOR;
 		var yScroll:Float = Math.max(0.25 - (0.05 * (menuButtons.length - 4)), 0.1);
-		var bg:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('menuDesat'));
+		var bg:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('menuBG'));
 		bg.scrollFactor.set(0, yScroll);
 		bg.setGraphicSize(Std.int(bg.width * 1.175));
-		bg.color = bgColor;
+		//bg.color = bgColor;
 		bg.updateHitbox();
 		bg.screenCenter();
 		bg.antialiasing = ClientPrefs.data.antialiasing;
@@ -188,7 +186,8 @@ class MainMenuState extends MusicBeatState
 			bgFlashing.screenCenter();
 			bgFlashing.visible = false;
 			bgFlashing.antialiasing = ClientPrefs.data.antialiasing;
-			bgFlashing.color = bgColor.getDarkened(.4);
+			//bgFlashing.color = bgColor.getDarkened(.4);
+			bgFlashing.color = 0xFFfd719b;
 			add(bgFlashing);
 		}
 
@@ -220,16 +219,7 @@ class MainMenuState extends MusicBeatState
 		}
 
 		// Version Loop
-		for (i in 0...engineVersions.length)
-		{
-			final engineVersion:FlxText = new FlxText(12, FlxG.height - 22 * (i + 1), 0, engineVersions[i].name);
-			engineVersion.setFormat(Constants.DEFAULT_FONT, 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-			engineVersion.x += engineVersions[i].offset.x;
-			engineVersion.y += engineVersions[i].offset.y;
-			engineVersion.scrollFactor.set();
-			versionTextGroup.add(engineVersion);
-		}
-
+		versionInfo();
 		changeItem();
 
 		// Achievement Check
@@ -250,9 +240,21 @@ class MainMenuState extends MusicBeatState
 		FlxG.camera.follow(camFollow, null, 0.15);
 	}
 
+	function versionInfo() {
+		engineVersions.reverse();
+		for (i in 0...engineVersions.length)
+		{
+			final engineVersion:FlxText = new FlxText(12, FlxG.height - 22 * (i + 1), 0, engineVersions[i].name);
+			engineVersion.setFormat(Constants.DEFAULT_FONT, 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			engineVersion.x += engineVersions[i].offset.x;
+			engineVersion.y += engineVersions[i].offset.y;
+			engineVersion.scrollFactor.set();
+			versionTextGroup.add(engineVersion);
+		}
+	}
+
 	var selectedSomethin:Bool = false;
 	var timeNotMoving:Float = 0;
-
 	override function update(elapsed:Float)
 	{
 		if(FlxG.sound.music == null)
@@ -380,7 +382,7 @@ class MainMenuState extends MusicBeatState
 						final daChoice:EitherTwo<FlxState, FlxSubState> = menuButtons[curSelected].state;
 
 						if (daChoice is FlxState)
-							(menuButtons[curSelected].preloaded ?? false) ? FlxG.switchState(daChoice) :  LoadingState.loadAndSwitchState(daChoice);
+							(menuButtons[curSelected].preloaded ?? false) ? MusicBeatState.switchState(daChoice) :  LoadingState.loadAndSwitchState(daChoice);
 						else
 							openSubState(daChoice);
 

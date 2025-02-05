@@ -8,4 +8,4 @@ Once compiled, the folders will be moved to assets/ and will look like this:
 assets/week1/
 assets/weekCosmo/
 
-Check assets/base_game/week7/ for a good example of the file structure
+Check assets/BASE_GAME/week7/ for a good example of the file structure

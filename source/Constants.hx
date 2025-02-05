@@ -1,5 +1,3 @@
-import funkin.backend.utils.Paths;
-
 @:final class Constants
 {
 	public static inline final LOGS_PREFIX:String = "[System]";
@@ -15,5 +13,5 @@ import funkin.backend.utils.Paths;
 
 	public static var DEFAULT_FONT(get, null):String;
 	@:noCompletion private inline static function get_DEFAULT_FONT():String
-		return DEFAULT_FONT == null ? Paths.font("vcr.ttf") : DEFAULT_FONT;
+		return DEFAULT_FONT == null ? funkin.backend.utils.Paths.font("vcr.ttf") : DEFAULT_FONT;
 }

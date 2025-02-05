@@ -137,11 +137,39 @@ class ClientPrefs
 	public static var defaultKeys:Map<String, Array<FlxKey>> = null;
 	public static var defaultButtons:Map<String, Array<FlxGamepadInputID>> = null;
 
-	public static function loadDefaultKeys()
-	{
-		defaultKeys = keyBinds.copy();
-		// trace(defaultKeys);
-	}
+	public static function resetKeys(controller:Null<Bool> = null) //Null = both, False = Keyboard, True = Controller
+		{
+			if(controller != true)
+				for (key in keyBinds.keys())
+					if(defaultKeys.exists(key))
+						keyBinds.set(key, defaultKeys.get(key).copy());
+	
+			if(controller != false)
+				for (button in gamepadBinds.keys())
+					if(defaultButtons.exists(button))
+						gamepadBinds.set(button, defaultButtons.get(button).copy());
+		}
+
+
+		public static function clearInvalidKeys(key:String)
+			{
+				var keyBind:Array<FlxKey> = keyBinds.get(key);
+				var gamepadBind:Array<FlxGamepadInputID> = gamepadBinds.get(key);
+				while(keyBind != null && keyBind.contains(NONE)) keyBind.remove(NONE);
+				while(gamepadBind != null && gamepadBind.contains(NONE)) gamepadBind.remove(NONE);
+			}
+		
+			public static function loadDefaultKeys()
+			{
+				defaultKeys = keyBinds.copy();
+				defaultButtons = gamepadBinds.copy();
+			}
+
+	// public static function loadDefaultKeys()
+	// {
+	// 	defaultKeys = keyBinds.copy();
+	// 	// trace(defaultKeys);
+	// }
 
 	public static function saveSettings()
 	{

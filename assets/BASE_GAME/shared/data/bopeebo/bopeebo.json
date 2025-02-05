@@ -845,7 +845,7 @@
 		"song": "Bopeebo",
 		"needsVoices": true,
 		"validScore": true,
-		"format": "astro_v0.3_convert",
+		"format": "astro_v0.3.0_convert",
 		"bpm": 100,
 		"speed": 1
 	}

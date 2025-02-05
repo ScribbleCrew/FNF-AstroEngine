@@ -1449,7 +1449,7 @@
 			}
 		],
 		"gfVersion": "nene",
-		"format": "astro_v0.3_convert",
+		"format": "astro_v0.3.0_convert",
 		"bpm": 182,
 		"needsVoices": true,
 		"song": "2Hot",

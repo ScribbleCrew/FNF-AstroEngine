@@ -1792,7 +1792,7 @@
 		"song": "Senpai",
 		"needsVoices": true,
 		"stage": "school",
-		"format": "astro_v0.3_convert",
+		"format": "astro_v0.3.0_convert",
 		"speed": 1,
 		"bpm": 144
 	}

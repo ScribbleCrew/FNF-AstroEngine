@@ -82,11 +82,10 @@ class FreeplayState extends MusicBeatState
 		PlayState.isStoryMode = FlxG.mouse.visible = false;
 		WeekData.reloadWeekFiles(false);
 
-		#if DISCORD_ALLOWED
-		// Updating Discord Rich Presence
-		DiscordClient.changePresence("Browsing the menus", null);
-		#end
+		#if desktop
+		#if DISCORD_ALLOWED DiscordClient.changePresence("Browsing the menus", null); #end
 		WindowUtil.title = ('%{GAME_TITLE} - Freeplay');
+		#end
 
 		if(WeekData.weeksList.length < 1)
 			{

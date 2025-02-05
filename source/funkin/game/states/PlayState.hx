@@ -722,7 +722,7 @@ class PlayState extends MusicBeatState
 		cpuControlled = ClientPrefs.getGameplaySetting('botplay', false);
 
 		// Cameras
-		camGame = initAstroCamera();
+		camGame = setupCustomCamera();
 
 		camHUD = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
@@ -1042,7 +1042,7 @@ class PlayState extends MusicBeatState
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
 
-		stagesFunc(function(stage:BaseStage) stage.createPost());
+		stageAccess(function(stage:BaseStage) stage.createPost());
 		callOnScripts('onCreatePost', []);
 
 		super.create();
@@ -1512,7 +1512,7 @@ class PlayState extends MusicBeatState
 					});
 				}
 
-				stagesFunc(function(stage:BaseStage) stage.countdownTick(tick, swagCounter));
+				stageAccess(function(stage:BaseStage) stage.countdownTick(tick, swagCounter));
 				callOnLuas('onCountdownTick', [swagCounter]);
 				callOnHScript('onCountdownTick', [tick, swagCounter]);
 
@@ -1661,7 +1661,7 @@ class PlayState extends MusicBeatState
 			opponentVocals.pause();
 		}
 
-		stagesFunc(function(stage:BaseStage) stage.startSong());
+		stageAccess(function(stage:BaseStage) stage.startSong());
 
 		// Song duration in a float, useful for the time left feature
 		songLength = FlxG.sound.music.length;
@@ -1900,7 +1900,7 @@ class PlayState extends MusicBeatState
 			return;
 		}
 
-		stagesFunc(function(stage:BaseStage) stage.eventPushed(event));
+		stageAccess(function(stage:BaseStage) stage.eventPushed(event));
 		eventsPushed.push(event.event);
 	}
 
@@ -1929,7 +1929,7 @@ class PlayState extends MusicBeatState
 			case 'Play Sound':
 				Paths.sound(event.value1); // Precache sound
 		}
-		stagesFunc(function(stage:BaseStage) stage.eventPushedUnique(event));
+		stageAccess(function(stage:BaseStage) stage.eventPushedUnique(event));
 	}
 
 	function eventNoteEarlyTrigger(event:EventNote):Float
@@ -1999,7 +1999,7 @@ class PlayState extends MusicBeatState
 
 	@:dox(hide) override function openSubState(SubState:flixel.FlxSubState)
 	{
-		stagesFunc(function(stage:BaseStage) stage.openSubState(SubState));
+		stageAccess(function(stage:BaseStage) stage.openSubState(SubState));
 		if (paused)
 		{
 			if (FlxG.sound.music != null)
@@ -2021,7 +2021,7 @@ class PlayState extends MusicBeatState
 
 	@:dox(hide) override function closeSubState()
 	{
-		stagesFunc(function(stage:BaseStage) stage.closeSubState());
+		stageAccess(function(stage:BaseStage) stage.closeSubState());
 		
 		if (paused)
 		{
@@ -2789,7 +2789,7 @@ class PlayState extends MusicBeatState
 					flValue2 = 1;
 				FlxG.sound.play(Paths.sound(value1), flValue2);
 		}
-		stagesFunc(function(stage:BaseStage) stage.eventCalled(eventName, value1, value2, flValue1, flValue2, strumTime));
+		stageAccess(function(stage:BaseStage) stage.eventCalled(eventName, value1, value2, flValue1, flValue2, strumTime));
 
 		callOnScripts('onEvent', [eventName, value1, value2]);
 	}
@@ -3440,7 +3440,7 @@ class PlayState extends MusicBeatState
 			char.playAnim(animToPlay, true);
 		}
 
-		stagesFunc(function(stage:BaseStage) stage.noteMiss(daNote));
+		stageAccess(function(stage:BaseStage) stage.noteMiss(daNote));
 		callOnScripts('noteMiss', [
 			notes.members.indexOf(daNote),
 			daNote.noteData,
@@ -3496,7 +3496,7 @@ class PlayState extends MusicBeatState
 			}
 			vocals.volume = 0;
 		}
-		stagesFunc(function(stage:BaseStage) stage.noteMissPress(direction));
+		stageAccess(function(stage:BaseStage) stage.noteMissPress(direction));
 		callOnScripts('noteMissPress', [direction]);
 	}
 
@@ -3551,7 +3551,7 @@ class PlayState extends MusicBeatState
 		if (ClientPrefs.data.opnoteSplashes && !note.isSustainNote)
 			spawnNoteSplashOnNote(note);
 
-		stagesFunc(function(stage:BaseStage) stage.opponentNoteHit(note));
+		stageAccess(function(stage:BaseStage) stage.opponentNoteHit(note));
 		callOnScripts('opponentNoteHit', [
 			notes.members.indexOf(note),
 			Math.abs(note.noteData),
@@ -3679,7 +3679,7 @@ class PlayState extends MusicBeatState
 			var leData:Int = Math.round(Math.abs(note.noteData));
 			var leType:String = note.noteType;
 
-			stagesFunc(function(stage:BaseStage) stage.goodNoteHit(note));
+			stageAccess(function(stage:BaseStage) stage.goodNoteHit(note));
 			callOnScripts('goodNoteHit', [notes.members.indexOf(note), leData, leType, isSus]);
 
 			if (!note.isSustainNote)
