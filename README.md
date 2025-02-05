@@ -39,13 +39,6 @@ After it finishes, run `lime test windows -debug` in order to compile a build of
 ---
 
 <br>
-<h2>Known Bugs & Fixes</h2>
-
-**"Could not parse frame number of x"**, install `haxelib install flixel 5.6.1`.
-
----
-
-<br>
 <h2>AE Credits</h2>
 
 **YourFriendOrbl** - Programmer of Astro Engine • **[X](https://x.com/YourFriendOrbl)**<br>
@@ -63,6 +56,13 @@ After it finishes, run `lime test windows -debug` in order to compile a build of
 ---
 
 <br>
+<h2>Known Bugs & Fixes</h2>
+
+**"Could not parse frame number of x"**, install `haxelib install flixel 5.6.1`.
+
+---
+
+<br>
 <h2>Notice</h2>
 
 <p><strong>This Engine is not affiliated with <a href="https://github.com/ShadowMario/FNF-PsychEngine">Psych Engine</a> or <a href="https://github.com/CodenameCrew/CodenameEngine">Codename Engine</a> in any way!</strong></p>
@@ -70,3 +70,5 @@ After it finishes, run `lime test windows -debug` in order to compile a build of
 ---
 
 </div>
+
+©2025 ScribbleCrew
