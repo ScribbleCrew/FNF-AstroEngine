@@ -63,12 +63,15 @@ After it finishes, run `lime test windows -debug` in order to compile a build of
 ---
 
 <br>
-<h2>Notice</h2>
+<h2>Other</h2>
 
-<p><strong>This Engine is not affiliated with <a href="https://github.com/ShadowMario/FNF-PsychEngine">Psych Engine</a> or <a href="https://github.com/CodenameCrew/CodenameEngine">Codename Engine</a> in any way!</strong></p>
+For more information please refer to [`Q&A.md`](art/qna.md)
 
 ---
 
 </div>
 
-©2025 ScribbleCrew
+<br>
+<br>
+
+©2025 • <strong>ScribbleCrew</strong> • engine is not affiliated with <a href="https://github.com/ShadowMario/FNF-PsychEngine">Psych Engine</a> or <a href="https://github.com/CodenameCrew/CodenameEngine">Codename Engine</a> in any way! • <strong>:3</strong>
