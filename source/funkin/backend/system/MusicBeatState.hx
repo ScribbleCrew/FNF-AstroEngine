@@ -42,7 +42,7 @@ abstract class MusicBeatState extends FlxState
 			setupCustomCamera();
 
 		if (!skip)
-			openSubState(new FadeTransition(0.5, true));
+			openSubState(new FunkinFadeTransition(0.5, true));
 
 		FlxTransitionableState.skipNextTransOut = false;
 		timePassedOnState = 0;
@@ -186,11 +186,11 @@ abstract class MusicBeatState extends FlxState
 		if (nextState == null)
 			nextState = FlxG.state;
 
-		FlxG.state.openSubState(new FadeTransition(0.6, false));
+		FlxG.state.openSubState(new FunkinFadeTransition(0.6, false));
 		if (nextState == FlxG.state)
-			FadeTransition.finishCallback = function() FlxG.resetState();
+			FunkinFadeTransition.finishCallback = function() FlxG.resetState();
 		else
-			FadeTransition.finishCallback = function() FlxG.switchState(nextState);
+			FunkinFadeTransition.finishCallback = function() FlxG.switchState(nextState);
 	}
 
 	public static function getState():MusicBeatState

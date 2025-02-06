@@ -17,9 +17,12 @@ import funkin.game.objects.options.*;
 import funkin.game.editors.content.*;
 
 import funkin.game.states.substates.*;
+
 import funkin.game.states.options.*;
-import funkin.game.states.editors.*;
 import funkin.game.states.options.substates.*;
+
+import funkin.game.states.editors.*;
+import funkin.game.states.editors.substates.*;
 
 import funkin.game.objects.shaders.*;
 import funkin.game.objects.scorebars.*;
