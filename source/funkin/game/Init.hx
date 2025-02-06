@@ -62,9 +62,10 @@ class Init extends flixel.FlxState
 	static function clearState():Void
 	{
 		#if windows WindowUtil.darkmode = ClientPrefs.data.darkmodeEnabled; #end
-		#if !mobile Main.fpsVar.alpha = ClientPrefs.data.fpsCounterAlpha; #end
-		
+		#if !mobile 		
 		Main.fpsVar.visible = ClientPrefs.data.showFPS;
+		Main.fpsVar.alpha = ClientPrefs.data.fpsCounterAlpha; 
+		#end
 		FlxG.switchState(new TitleState());
 	}
 
@@ -141,7 +142,7 @@ class Init extends flixel.FlxState
 	#end
 
 	#if WATERMARK
-	@:allow(funkin.backend.client.Discord.DiscordClient)
+	#if DISCORD_ALLOWED @:allow(funkin.backend.client.Discord.DiscordClient) #end
 	static var watermark:openfl.text.TextField;
 
 	private function owoWatermark():Void

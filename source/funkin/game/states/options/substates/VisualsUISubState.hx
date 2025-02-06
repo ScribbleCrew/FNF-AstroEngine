@@ -1,8 +1,5 @@
 package funkin.game.states.options.substates;
 
-#if desktop
-import funkin.backend.client.Discord.DiscordClient;
-#end
 import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;

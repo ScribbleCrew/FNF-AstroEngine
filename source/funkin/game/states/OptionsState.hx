@@ -1,8 +1,5 @@
 package funkin.game.states;
 
-#if desktop
-import funkin.backend.client.Discord.DiscordClient;
-#end
 import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -74,7 +71,7 @@ class OptionsState extends MusicBeatState
 	override function create()
 	{
 		#if desktop
-		DiscordClient.changePresence('Browsing the menus', null);
+		#if DISCORD_ALLOWED DiscordClient.changePresence('Browsing the menus', null); #end
 		WindowUtil.title = ('%{GAME_TITLE} - Options');
 		#end
 		FlxG.mouse.visible = false;
@@ -122,7 +119,7 @@ class OptionsState extends MusicBeatState
 		super.closeSubState();
 		funkin.backend.utils.ClientPrefs.saveSettings();
 		#if desktop
-		DiscordClient.changePresence('Browsing the menus', null);
+		#if DISCORD_ALLOWED DiscordClient.changePresence('Browsing the menus', null); #end
 		WindowUtil.title = ('%{GAME_TITLE} - Options');
 		#end
 	}

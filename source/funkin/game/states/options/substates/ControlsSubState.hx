@@ -4,9 +4,6 @@ import flixel.input.gamepad.FlxGamepad;
 import flixel.input.gamepad.FlxGamepad.FlxGamepadModel;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.input.gamepad.FlxGamepadInputID;
-#if desktop
-import funkin.backend.client.Discord.DiscordClient;
-#end
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.FlxG;
 import flixel.input.keyboard.FlxKey;

@@ -1,8 +1,5 @@
 package funkin.game.states.editors;
 
-#if desktop
-import funkin.backend.client.Discord.DiscordClient;
-#end
 import flixel.FlxG;
 import flixel.FlxSprite;
 import funkin.game.objects.characters.Character;
@@ -45,8 +42,10 @@ class MasterEditorMenu extends MusicBeatState
 	{
 		FlxG.camera.bgColor = FlxColor.BLACK;
 		#if desktop
-		// Updating Discord Rich Presence
+		#if DISCORD_ALLOWED 
 		DiscordClient.changePresence("Browsing the menus", null);
+		#end
+		WindowUtil.title = ('%{GAME_TITLE} - Master Editor');
 		#end
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));

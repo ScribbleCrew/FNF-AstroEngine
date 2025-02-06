@@ -12,10 +12,6 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 
 import lime.system.Clipboard;
 
-#if desktop
-import funkin.backend.client.Discord.DiscordClient;
-#end
-
 class NotesSubState extends BaseMenu
 {
 	var onModeColumn:Bool = true;

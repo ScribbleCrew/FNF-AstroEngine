@@ -1,9 +1,6 @@
 package funkin.game.states.editors;
 
 import funkin.game.objects.characters.MenuCharacter;
-#if desktop
-import funkin.backend.client.Discord.DiscordClient;
-#end
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
@@ -47,9 +44,11 @@ class MenuCharacterEditorState extends MusicBeatState implements FlxUIEventHandl
 			antialiasing: true
 		};
 		
+		#if desktop
 		#if DISCORD_ALLOWED
-		// Updating Discord Rich Presence
 		DiscordClient.changePresence("Menu Character Editor", "Editting: " + characterFile.image);
+		#end
+		WindowUtil.title = ('%{GAME_TITLE} - Menu Character Editor');
 		#end
 
 		grpWeekCharacters = new FlxTypedGroup<MenuCharacter>();

@@ -37,7 +37,6 @@ import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import openfl.Assets;
 import funkin.backend.data.*;
-import funkin.backend.client.Discord.DiscordClient;
 import funkin.backend.system.MusicBeatState;
 import funkin.backend.utils.Paths;
 

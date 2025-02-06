@@ -4,9 +4,6 @@ import flixel.FlxState;
 import flixel.FlxSubState;
 import funkin.backend.CoolUtil;
 import funkin.backend.data.*;
-#if DISCORD_ALLOWED
-import funkin.backend.client.Discord.DiscordClient;
-#end
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;

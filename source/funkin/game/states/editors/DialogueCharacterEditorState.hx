@@ -2,9 +2,6 @@ package funkin.game.states.editors;
 
 
 import funkin.game.objects.TypedAlphabet;
-#if (desktop && DISCORD_ALLOWED)
-import funkin.backend.client.Discord.DiscordClient;
-#end
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;
@@ -420,7 +417,6 @@ class DialogueCharacterEditorState extends MusicBeatState implements FlxUIEventH
 		animText.text = 'Animation: ' + character.jsonFile.animations[curAnim].anim + ' (' + (curAnim + 1) +' / ' + character.jsonFile.animations.length + ') - Press W or S to scroll';
 
 		#if DISCORD_ALLOWED
-		// Updating Discord Rich Presence
 		DiscordClient.changePresence("Dialogue Character Editor", "Editting: " + character.jsonFile.image);
 		#end
 	}

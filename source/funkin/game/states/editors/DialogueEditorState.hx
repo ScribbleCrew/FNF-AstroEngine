@@ -1,9 +1,6 @@
 package funkin.game.states.editors;
 
 import funkin.game.objects.TypedAlphabet;
-#if desktop
-import funkin.backend.client.Discord.DiscordClient;
-#end
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.display.FlxGridOverlay;

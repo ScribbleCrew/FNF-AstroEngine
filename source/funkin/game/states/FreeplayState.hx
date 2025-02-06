@@ -1,6 +1,6 @@
 package funkin.game.states;
 
-#if desktop
+#if DISCORD_ALLOWED
 import funkin.backend.client.Discord.DiscordClient;
 #end
 

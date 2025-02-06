@@ -5,9 +5,6 @@ import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxStringUtil;
 import funkin.game.states.LoadingState;
 import funkin.backend.CoolUtil;
-#if desktop
-import funkin.backend.client.Discord.DiscordClient;
-#end
 import flash.geom.Rectangle;
 import funkin.backend.Prompt;
 import haxe.Json;
@@ -1798,11 +1795,12 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 			catch (e:Dynamic) {}
 		}
 
+		#if desktop
 		#if DISCORD_ALLOWED 
 		DiscordClient.changePresence('Chart Editor', 'Song: ' + PlayState.SONG.song); 
 		#end
 		WindowUtil.title = ('%{GAME_TITLE} - Chart Editor - ${PlayState.SONG.song} (${Difficulty.list[PlayState.storyDifficulty]})');
-		
+		#end
 
 		updateAudioVolume();
 		setPitch();

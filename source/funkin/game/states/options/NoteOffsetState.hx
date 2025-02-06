@@ -50,7 +50,7 @@ class NoteOffsetState extends MusicBeatState
 	override public function create()
 	{
 		#if desktop
-		DiscordClient.changePresence('Browsing the menus', null);
+		#if DISCORD_ALLOWED  DiscordClient.changePresence('Browsing the menus', null); #end
 		WindowUtil.title = ('%{GAME_TITLE} - Options - Note Offsets');
 		#end
 

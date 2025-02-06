@@ -4,9 +4,6 @@ import funkin.backend.data.WeekData;
 import funkin.backend.data.WeekData.WeekFile;
 import funkin.game.objects.MenuItem;
 import funkin.game.objects.characters.MenuCharacter;
-#if desktop
-import funkin.backend.client.Discord.DiscordClient;
-#end
 import funkin.backend.utils.ClientPrefs;
 import flixel.FlxG;
 import flixel.FlxSprite;

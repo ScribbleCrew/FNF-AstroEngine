@@ -10,9 +10,6 @@ import funkin.game.objects.Alphabet;
 import funkin.backend.data.*;
 import funkin.backend.system.MusicBeatSubstate;
 import funkin.backend.utils.Paths;
-#if desktop
-import funkin.backend.client.Discord.DiscordClient;
-#end
 
 class StatsSubState extends BaseMenu
 {
@@ -33,7 +30,7 @@ class StatsSubState extends BaseMenu
 		ClientPrefs.loadPrefs();
 
 		#if desktop
-		DiscordClient.changePresence('Browsing the menus', null);
+		#if DISCORD_ALLOWED  DiscordClient.changePresence('Browsing the menus', null);#end
 		WindowUtil.title = ('%{GAME_TITLE} - Options - Stats');
 		#end
 

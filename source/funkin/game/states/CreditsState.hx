@@ -10,7 +10,7 @@ import flixel.util.FlxColor;
 import flixel.tweens.FlxTween;
 import flixel.AttachedFlxSprite;
 import haxe.xml.Access;
-#if desktop
+#if DISCORD_ALLOWED
 import funkin.backend.client.Discord.DiscordClient;
 #end
 #if MODS_ALLOWED

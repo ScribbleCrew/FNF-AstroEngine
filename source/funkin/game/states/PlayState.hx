@@ -6,7 +6,6 @@ import flixel.input.keyboard.FlxKey;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.transition.FlxTransitionableState;
-import flixel.util.FlxSpriteUtil;
 import flixel.AttachedFlxSprite;
 import flixel.graphics.FlxGraphic;
 #end
@@ -1896,9 +1895,7 @@ class PlayState extends MusicBeatState
 	{
 		eventPushedUnique(event);
 		if (eventsPushed.contains(event.event))
-		{
 			return;
-		}
 
 		stageAccess(function(stage:BaseStage) stage.eventPushed(event));
 		eventsPushed.push(event.event);

@@ -1,8 +1,11 @@
 package funkin.backend.client;
 
+#if DISCORD_ALLOWED
+
 #if WATERMARK
 import funkin.game.Init;
 #end
+
 import funkin.game.Config;
 
 import funkin.backend.data.EngineData;
@@ -226,3 +229,5 @@ class DiscordClient
 	}
 	#end
 }
+
+#end

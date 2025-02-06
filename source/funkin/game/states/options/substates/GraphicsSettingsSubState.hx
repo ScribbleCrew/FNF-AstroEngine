@@ -8,15 +8,12 @@ import funkin.backend.utils.ClientPrefs;
 
 class GraphicsSettingsSubState extends BaseOptionsMenu
 {
-	var antialiasingOption:Int;
-	var boyfriend:Character = null;
-
 	public function new()
 	{
 		title = 'Graphics';
 		rpcTitle = 'Graphics Settings Menu'; // for Discord Rich Presence
 
-		boyfriend = new Character(840, 170, 'bf', true);
+		var boyfriend = new Character(840, 170, 'bf', true);
 		boyfriend.setGraphicSize(Std.int(boyfriend.width * 0.75));
 		boyfriend.updateHitbox();
 		boyfriend.dance();
@@ -41,7 +38,6 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		};
 		option.onMove = (selected:Bool) -> boyfriend.visible = selected;
 		addOption(option);
-		antialiasingOption = optionsArray.length - 1;
 
 		#if (WINDOW_CUSTOMIZATION && windows)
 		var option:Option = new Option('Dark Mode', 'Enabled Dark Mode Support.', 'darkmodeEnabled', BOOL);

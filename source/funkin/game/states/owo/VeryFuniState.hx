@@ -30,7 +30,7 @@ class VeryFuniState extends MusicBeatState
 		title = new FlxText();
 		title.setFormat(Paths.font("Futura-CondensedExtraBold.otf"), 70, FlxColor.BLACK, CENTER);
 		title.text = "Oooooo you like boys\nur a boykisser".toLowerCase();
-		//title.borderSize = 2;
+		// title.borderSize = 2;
 		title.y += 25;
 		title.screenCenter(X);
 		title.updateHitbox();
@@ -39,7 +39,7 @@ class VeryFuniState extends MusicBeatState
 		daKisser = new FlxSprite().loadGraphic(Paths.image('extra/kisser', 'embed'));
 		daKisser.screenCenter();
 		daKisser.updateHitbox();
-		daKisser.y+=25;
+		daKisser.y += 25;
 		add(daKisser);
 		FlxTween.tween(daKisser, {x: daKisser.x}, 0.3, {
 			ease: FlxEase.expoOut,
@@ -60,28 +60,12 @@ class VeryFuniState extends MusicBeatState
 			FlxTween.cancelTweensOf(daKisser);
 			FlxG.camera.flash(FlxColorPastel.PASTELPINK);
 			FlxTween.num(Main.fpsVar.alpha, ClientPrefs.data.fpsCounterAlpha, .5, {ease: FlxEase.expoOut}, Main.fpsVar.set_alpha);
-
-			new FlxTimer().start(4.25, _ ->
-			{
-				FlxG.camera.fade(FlxColor.BLACK, .1, false, () ->
-				{
-					trace('left state');
-					MusicBeatState.switchState(_return ?? new MainMenuState());
-				});
-			});
-
+			FlxTween.tween(FlxG.camera, {zoom: 1.8}, 6, {ease: FlxEase.expoOut});
+			new FlxTimer().start(5.55, _ -> FlxG.camera.fade(FlxColor.BLACK, .1, false, () -> MusicBeatState.switchState(_return ?? new MainMenuState())));
 			FlxTween.tween(title, {alpha: 0}, .5, {ease: FlxEase.expoOut});
 			FlxTween.tween(background, {alpha: 0}, .75, {
 				ease: FlxEase.expoOut,
-				onComplete: _ ->
-				{
-					FlxTween.tween(daKisser, {
-						alpha: 0 // ,
-						// y: daKisser.y + 50
-					}, 3.5, {
-						ease: FlxEase.expoOut
-					});
-				}
+				onComplete: _ -> FlxTween.tween(daKisser, {alpha: 0}, 3.5, {ease: FlxEase.expoOut})
 			});
 		}
 	}

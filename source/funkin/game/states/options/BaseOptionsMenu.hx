@@ -2,9 +2,6 @@ package funkin.game.states.options;
 
 import flixel.input.gamepad.FlxGamepad;
 import flixel.input.gamepad.FlxGamepadInputID;
-#if desktop
-import funkin.backend.client.Discord.DiscordClient;
-#end
 import flash.text.TextField;
 import flixel.FlxG;
 import funkin.game.objects.characters.Character;
@@ -58,10 +55,12 @@ class BaseOptionsMenu extends BaseMenu
 		if (rpcTitle == null)
 			rpcTitle = 'Options Menu';
 
+		#if desktop
 		#if DISCORD_ALLOWED
 		DiscordClient.changePresence(rpcTitle, null);
 		#end
 		WindowUtil.title = ('%{GAME_TITLE} - Options - $title');
+		#end
 
 		// avoids lagspikes while scrolling through menus!
 		grpOptions = new FlxTypedGroup<Alphabet>();
