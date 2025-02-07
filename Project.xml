@@ -140,8 +140,8 @@
 	<assets path='art/icons/iconOG.png' rename='icon.png' if="linux" />
 
 	<section if="BASE_GAME_FILES">
-		<assets path="assets/BASE_GAME" rename="assets" exclude="*.ogg" if="web"/>
-		<assets path="assets/BASE_GAME" rename="assets" exclude="*.mp3" unless="web"/>
+		<assets path="assets/base_funkin" rename="assets" exclude="*.ogg" if="web"/>
+		<assets path="assets/base_funkin" rename="assets" exclude="*.mp3" unless="web"/>
 		<haxelib name="grig.audio" if="BASE_GAME_FILES"/>
 		<haxelib name="funkin.vis" if="BASE_GAME_FILES"/>
 	</section>
@@ -186,7 +186,8 @@
 
 	<!-- Debug Sever -->
 	<haxelib name="hxcpp-debug-server" if="DEBUG_SERVER_ALLOWED"/>
-
+	<haxedef name="HXC_LIBVLC_LOGGING" if="VIDEOS_ALLOWED DEBUG_SERVER_ALLOWED" />
+	<haxedef name="HXVLC_NO_SHARE_DIRECTORY" if="VIDEOS_ALLOWED" />
 	<define name="x86_BUILD" if="32bits" />
 
 	<!-- ______________________________ Haxedefines _____________________________ -->

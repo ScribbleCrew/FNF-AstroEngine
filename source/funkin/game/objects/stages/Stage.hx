@@ -4,6 +4,7 @@ class Stage extends BaseStage
 {
 	var dadbattleBlack:BGSprite;
 	var dadbattleLight:BGSprite;
+	var dadbattleFog:DadBattleFog;
 
 	override function create()
 	{
@@ -49,15 +50,20 @@ class Stage extends BaseStage
 				dadbattleLight.blend = ADD;
 				dadbattleLight.visible = false;
 				add(dadbattleLight);
+
+				dadbattleFog = new DadBattleFog();
+				dadbattleFog.visible = false;
+				add(dadbattleFog);
 		}
 	}
 
 	override function eventCalled(eventName:String, value1:String, value2:String, flValue1:Null<Float>, flValue2:Null<Float>, strumTime:Float)
-		{
+	{
 		switch (eventName)
 		{
 			case "Dadbattle Spotlight":
-				if(flValue1 == null) flValue1 = 0;
+				if (flValue1 == null)
+					flValue1 = 0;
 				var val:Int = Math.round(flValue1);
 
 				switch (val)
@@ -67,6 +73,7 @@ class Stage extends BaseStage
 						{
 							dadbattleBlack.visible = true;
 							dadbattleLight.visible = true;
+							dadbattleFog.visible = true;
 							defaultCamZoom += 0.12;
 						}
 
@@ -80,11 +87,13 @@ class Stage extends BaseStage
 							dadbattleLight.alpha = 0.375;
 						});
 						dadbattleLight.setPosition(who.getGraphicMidpoint().x - dadbattleLight.width / 2, who.y + who.height - dadbattleLight.height + 50);
+						FlxTween.tween(dadbattleFog, {alpha: 0.7}, 1.5, {ease: FlxEase.quadInOut});
 
 					default:
 						dadbattleBlack.visible = false;
 						dadbattleLight.visible = false;
 						defaultCamZoom -= 0.12;
+						FlxTween.tween(dadbattleFog, {alpha: 0}, 0.7, {onComplete: function(twn:FlxTween) dadbattleFog.visible = false});
 				}
 		}
 	}

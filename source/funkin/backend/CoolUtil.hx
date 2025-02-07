@@ -139,9 +139,8 @@ class CoolUtil
 	{
 		var dumbArray:Array<Int> = [];
 		for (i in min...max)
-		{
 			dumbArray.push(i);
-		}
+
 		return dumbArray;
 	}
 
@@ -163,10 +162,10 @@ class CoolUtil
 		since newer flixel versions are being enforced anyways.
 		@crowplexus
 	**/
+	@:access(flixel.util.FlxSave.validate)
 	inline public static function getSavePath():String
 	{
 		final company:String = FlxG.stage.application.meta.get('company');
-		@:privateAccess
 		return '${company}/${FlxSave.validate(FlxG.stage.application.meta.get('file'))}';
 	}
 

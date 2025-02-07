@@ -385,27 +385,26 @@ class Paths
 	}
 
 	public static var currentTrackedSounds:Map<String, Sound> = [];
-
 	public static function returnSound(key:String, ?path:String, ?modsAllowed:Bool = true, ?beepOnNull:Bool = true)
 	{
-		var file:String = getPath(key + '.${Constants.SOUND_EXT}', SOUND, path, modsAllowed);
+		var file:String = getPath('$key.${Constants.SOUND_EXT}', SOUND, path, modsAllowed);
 
-		// trace('precaching sound: $file');
-		if (!currentTrackedSounds.exists(file))
+		//trace('precaching sound: $file');
+		if(!currentTrackedSounds.exists(file))
 		{
 			#if sys
-			if (FileSystem.exists(file))
+			if(FileSystem.exists(file))
 				currentTrackedSounds.set(file, Sound.fromFile(file));
 			#else
-			if (OpenFlAssets.exists(file, SOUND))
+			if(OpenFlAssets.exists(file, SOUND))
 				currentTrackedSounds.set(file, OpenFlAssets.getSound(file));
 			#end
-		else if (beepOnNull)
-		{
-			trace('SOUND NOT FOUND: $key, PATH: $path');
-			FlxG.log.error('SOUND NOT FOUND: $key, PATH: $path');
-			return FlxAssets.getSound('flixel/sounds/beep');
-		}
+			else if(beepOnNull)
+			{
+				trace('SOUND NOT FOUND: $key, PATH: $path');
+				FlxG.log.error('SOUND NOT FOUND: $key, PATH: $path');
+				return FlxAssets.getSound('flixel/sounds/beep');
+			}
 		}
 		localTrackedAssets.push(file);
 		return currentTrackedSounds.get(file);
