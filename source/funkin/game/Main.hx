@@ -8,6 +8,11 @@ import openfl.events.Event;
 import openfl.display.StageScaleMode;
 import funkin.game.FPS;
 
+#if desktop
+import funkin.backend.initialization.ALSoftConfig; // Just to make sure DCE doesn't remove this, since it's not directly referenced anywhere else.
+#end
+
+
 /**
  * No need to change anything here unless you know what your doin' :3c
  * If you want to add something that will run once the game has started, edit Init.hx
@@ -25,6 +30,13 @@ class Main extends Sprite
 	public function new():Void
 	{
 		super();
+
+		// Credits to MAJigsaw77 (he's the og author for this code)
+		#if android
+		Sys.setCwd(Path.addTrailingSlash(Context.getExternalFilesDir()));
+		#elseif ios
+		Sys.setCwd(lime.system.System.applicationStorageDirectory);
+		#end
 
 		stage != null ? init() : addEventListener(Event.ADDED_TO_STAGE, init);
 	}
