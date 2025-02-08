@@ -25,3 +25,5 @@ dump/*
 pages
 docs
 bin
+
+.build_time

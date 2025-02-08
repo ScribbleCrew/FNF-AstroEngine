@@ -6,7 +6,7 @@ class FileUtil
 {
 	public static var originPath(get, null):String;
 	@:noCompletion static function get_originPath():String
-		return Sys.getCwd();
+		return  #if hl Sys.getCwd() #else Sys.programPath() #end;
 
 	public static inline function validDirectory(path:String, ?origin:Bool = true):Bool
 		return FileSystem.exists('${origin ? originPath : ''}$path');
@@ -57,7 +57,6 @@ class FileUtil
 		#if sys
 		final runProcess:String = #if windows "explorer" #elseif mac "open" #elseif linux "xdg-open" #else '' #end;
 		final fullPath:String = haxe.io.Path.join([originPath, path]);
-
 		return Sys.command(runProcess, [fullPath.replace('/', '\\')]);
 		#else
 		errorMsg('openFolder');

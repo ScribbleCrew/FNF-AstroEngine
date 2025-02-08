@@ -87,7 +87,10 @@ class Init extends flixel.FlxState
 				try
 				{
 					final daFile:Dynamic = cast file;
-					daFile.main();
+					if(daFile.main != null)
+						daFile.main();
+					if(daFile.__init__ != null)
+						daFile.__init__();
 				}
 				catch (e:Dynamic)
 				{
