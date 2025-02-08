@@ -22,8 +22,8 @@ import openfl.events.KeyboardEvent;
 
 #if !flash
 import flixel.addons.display.FlxRuntimeShader;
+import openfl.filters.ShaderFilter;
 #end
-
 /**
  * This is where all the Gameplay stuff happens and is managed
  *
@@ -225,19 +225,20 @@ class PlayState extends MusicBeatState
 		#if FLX_PITCH
 		if(generatedMusic)
 		{
-			vocals.pitch = opponentVocals.pitch = FlxG.sound.music.pitch = value;
+			vocals.pitch = value;
+			opponentVocals.pitch = value;
+			FlxG.sound.music.pitch = value;
 
-			final ratio:Float = playbackRate / value; //funny word huh
+			var ratio:Float = playbackRate / value; //funny word huh
 			if(ratio != 1)
 			{
 				for (note in notes.members) note.resizeByRatio(ratio);
 				for (note in unspawnNotes) note.resizeByRatio(ratio);
 			}
 		}
-		playbackRate = FlxG.animationTimeScale = value;
-		Conductor.offset = Reflect.hasField(PlayState.SONG, 'offset') ? (PlayState.SONG.offset / value) : 0;
+		playbackRate = value;
+		FlxG.animationTimeScale = value;
 		Conductor.safeZoneOffset = (ClientPrefs.data.safeFrames / 60) * 1000 * value;
-		#if VIDEOS_ALLOWED if(videoCutscene != null) videoCutscene.videoSprite.bitmap.rate = value; #end
 		setOnScripts('playbackRate', playbackRate);
 		#else
 		playbackRate = 1.0; // ensuring -Crow
@@ -1092,57 +1093,52 @@ class PlayState extends MusicBeatState
 	}
 
 	public function initLuaShader(name:String, ?glslVersion:Int = 120)
-	{
-		if (!ClientPrefs.data.shaders)
-			return false;
-
-		if (runtimeShaders.exists(name))
 		{
-			FlxG.log.warn('Shader $name was already initialized!');
-			return true;
-		}
-
-		var foldersToCheck:Array<String> = [Paths.mods('shaders/')];
-		if (Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0)
-			foldersToCheck.insert(0, Paths.mods(Mods.currentModDirectory + '/shaders/'));
-
-		for (mod in Mods.getGlobalMods())
-			foldersToCheck.insert(0, Paths.mods(mod + '/shaders/'));
-
-		for (folder in foldersToCheck)
-		{
-			if (FileSystem.exists(folder))
+			if(!ClientPrefs.data.shaders) return false;
+	
+			#if (MODS_ALLOWED && !flash && sys)
+			if(runtimeShaders.exists(name))
+			{
+				FlxG.log.warn('Shader $name was already initialized!');
+				return true;
+			}
+	
+			for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'shaders/'))
 			{
 				var frag:String = folder + name + '.frag';
 				var vert:String = folder + name + '.vert';
 				var found:Bool = false;
-				if (FileSystem.exists(frag))
+				if(FileSystem.exists(frag))
 				{
 					frag = File.getContent(frag);
 					found = true;
 				}
-				else
-					frag = null;
-
-				if (FileSystem.exists(vert))
+				else frag = null;
+	
+				if(FileSystem.exists(vert))
 				{
 					vert = File.getContent(vert);
 					found = true;
 				}
-				else
-					vert = null;
-
-				if (found)
+				else vert = null;
+	
+				if(found)
 				{
 					runtimeShaders.set(name, [frag, vert]);
-					// trace('Found shader $name!');
+					//trace('Found shader $name!');
 					return true;
 				}
 			}
+				#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
+				addTextToDebug('Missing shader $name .frag AND .vert files!', FlxColor.RED);
+				#else
+				FlxG.log.warn('Missing shader $name .frag AND .vert files!');
+				#end
+			#else
+			FlxG.log.warn('This platform doesn\'t support Runtime Shaders!');
+			#end
+			return false;
 		}
-		FlxG.log.warn('Missing shader $name .frag AND .vert files!');
-		return false;
-	}
 	#end
 
 	public function addTextToDebug(text:String, color:FlxColor)
@@ -1286,10 +1282,8 @@ class PlayState extends MusicBeatState
 		char.y += char.positionArray[1];
 	}
 
-	#if VIDEOS_ALLOWED
 	public var videoCutscene:VideoSprite = null;
-	#end
-	public function startVideo(name:String, forMidSong:Bool = false, canSkip:Bool = true, loop:Bool = false, playOnLoad:Bool = true):VideoSprite
+	public function startVideo(name:String, forMidSong:Bool = false, canSkip:Bool = true, loop:Bool = false, playOnLoad:Bool = true)
 	{
 		#if VIDEOS_ALLOWED
 		inCutscene = true;
@@ -1334,11 +1328,9 @@ class PlayState extends MusicBeatState
 			return videoCutscene;
 		}
 		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
-		else
-			addTextToDebug("Video not found: " + fileName, FlxColor.RED);
+		else addTextToDebug("Video not found: " + fileName, FlxColor.RED);
 		#else
-		else
-			FlxG.log.error("Video not found: " + fileName);
+		else FlxG.log.error("Video not found: " + fileName);
 		#end
 		#else
 		FlxG.log.warn('Platform not supported!');
@@ -2402,16 +2394,13 @@ class PlayState extends MusicBeatState
 			var ret:Dynamic = callOnScripts('onGameOver', [], false);
 			if (ret != LuaUtils.Function_Stop)
 			{
+				FlxG.animationTimeScale = 1;
 				boyfriend.stunned = true;
 				deathCounter++;
 
 				paused = true;
 				canResync = false;
 				canPause = false;
-
-				vocals.stop();
-				opponentVocals.stop();
-				FlxG.sound.music.stop();
 
 				persistentUpdate = false;
 				persistentDraw = false;
@@ -2783,10 +2772,7 @@ class PlayState extends MusicBeatState
 
 		if (gf != null && SONG.notes[sec].gfSection)
 		{
-			camFollow.setPosition(gf.getMidpoint().x, gf.getMidpoint().y);
-			camFollow.x += gf.cameraPosition[0] + girlfriendCameraOffset[0];
-			camFollow.y += gf.cameraPosition[1] + girlfriendCameraOffset[1];
-			tweenCamIn();
+			moveCameraToGirlfriend();
 			callOnScripts('onMoveCamera', ['gf']);
 			return;
 		}
@@ -2797,6 +2783,14 @@ class PlayState extends MusicBeatState
 			callOnScripts('onMoveCamera', ['dad']);
 		else
 			callOnScripts('onMoveCamera', ['boyfriend']);
+	}
+	
+	public function moveCameraToGirlfriend()
+	{
+		camFollow.setPosition(gf.getMidpoint().x, gf.getMidpoint().y);
+		camFollow.x += gf.cameraPosition[0] + girlfriendCameraOffset[0];
+		camFollow.y += gf.cameraPosition[1] + girlfriendCameraOffset[1];
+		tweenCamIn();
 	}
 
 	var cameraTwn:FlxTween;
@@ -3706,7 +3700,7 @@ class PlayState extends MusicBeatState
 				strum = opponentStrums.members[note.noteData];
 
 			if (strum != null)
-				spawnNoteSplash(note, strum);
+				spawnNoteSplash(strum.x, strum.y, note.noteData, note, strum);
 		}
 	}
 
@@ -3716,42 +3710,50 @@ class PlayState extends MusicBeatState
 	 * This creates a new `NoteSplash`, 
 	 * sets it up with the note's data then adds it to `grpNoteSplashes`.
 	 *
+	 * @param x X pos.
+	 * @param y X pos.
+	 * @param data Data.
 	 * @param note The note tied to this splash effect.
 	 * @param strum The strum connected to the note.
 	 */
-	public function spawnNoteSplash(note:Note, strum:StrumNote)
-	{
-		var splash:NoteSplash = new NoteSplash();
+	 public function spawnNoteSplash(x:Float = 0, y:Float = 0, ?data:Int = 0, ?note:Note, ?strum:StrumNote) {
+		var splash:NoteSplash = grpNoteSplashes.recycle(NoteSplash);
 		splash.babyArrow = strum;
-		splash.spawnSplashNote(note);
+		splash.spawnSplashNote(x, y, data, note);
 		grpNoteSplashes.add(splash);
 	}
 
 	@:dox(hide) override function destroy()
 	{
-		#if LUA_ALLOWED
-		for (lua in luaArray)
-		{
-			lua.call('onDestroy', []);
-			lua.stop();
-		}
-		luaArray = [];
-		FunkinLua.customFunctions.clear();
-		#end
-
-		#if HSCRIPT_ALLOWED
-		for (script in hscriptArray)
-			if (script != null)
-			{	
-				final ON_DESTORY:Dynamic = script.get('onDestroy');
-				if(ON_DESTORY != null && Reflect.isFunction(ON_DESTORY)) ON_DESTORY();
-				script.destroy();
+		if (CustomSubstate.instance != null)
+			{
+				closeSubState();
+				resetSubState();
 			}
-
-		while (hscriptArray.length > 0)
-			hscriptArray.pop();
-		#end
-
+	
+			#if LUA_ALLOWED
+			for (lua in luaArray)
+			{
+				lua.call('onDestroy', []);
+				lua.stop();
+			}
+			luaArray = null;
+			FunkinLua.customFunctions.clear();
+			#end
+	
+			#if HSCRIPT_ALLOWED
+			for (script in hscriptArray)
+				if(script != null)
+				{
+					var ny:Dynamic = script.get('onDestroy');
+					if(ny != null && Reflect.isFunction(ny)) ny();
+					script.destroy();
+				}
+	
+			hscriptArray = null;
+			#end
+			stageAccess(function(stage:BaseStage) stage.destroy());
+	
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
 
@@ -3760,6 +3762,10 @@ class PlayState extends MusicBeatState
 		#if FLX_PITCH FlxG.sound.music.pitch = 1; #end
 		FlxG.animationTimeScale = 1;
 
+		Note.globalRgbShaders = [];
+		NoteTypesConfig.clearNoteTypesData();
+
+		NoteSplash.configs.clear();
 		instance = null;
 		super.destroy();
 	}
@@ -4172,62 +4178,54 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-	#if ACHIEVEMENTS_ALLOWED
-	private function checkForAchievement(achievesToCheck:Array<String> = null)
-	{
-		if (chartingMode)
-			return;
-
-		var usedPractice:Bool = (ClientPrefs.getGameplaySetting('practice') || ClientPrefs.getGameplaySetting('botplay'));
-		if (cpuControlled)
-			return;
-
-		for (name in achievesToCheck)
+		#if ACHIEVEMENTS_ALLOWED
+		private function checkForAchievement(achievesToCheck:Array<String> = null)
 		{
-			if (!Achievements.exists(name))
-				continue;
-
-			var unlock:Bool = false;
-			if (name != WeekData.getWeekFileName() + '_nomiss') // common achievements
-			{
-				switch (name)
+			if(chartingMode) return;
+	
+			var usedPractice:Bool = (ClientPrefs.getGameplaySetting('practice') || ClientPrefs.getGameplaySetting('botplay'));
+			if(cpuControlled) return;
+	
+			for (name in achievesToCheck) {
+				if(!Achievements.exists(name)) continue;
+	
+				var unlock:Bool = false;
+				if (name != WeekData.getWeekFileName() + '_nomiss') // common achievements
 				{
-					case 'ur_bad':
-						unlock = (ratingPercent < 0.2 && !practiceMode);
-
-					case 'ur_good':
-						unlock = (ratingPercent >= 1 && !usedPractice);
-
-					case 'oversinging':
-						unlock = (boyfriend.holdTimer >= 10 && !usedPractice);
-
-					case 'hype':
-						unlock = (!boyfriendIdled && !usedPractice);
-
-					case 'two_keys':
-						unlock = (!usedPractice && keysPressed.length <= 2);
-
-					case 'toastie':
-						unlock = (!ClientPrefs.data.cacheOnGPU && !ClientPrefs.data.shaders && ClientPrefs.data.lowQuality && !ClientPrefs.data.antialiasing);
-
-					case 'debugger':
-						unlock = (songName == 'test' && !usedPractice);
+					switch(name)
+					{
+						case 'ur_bad':
+							unlock = (ratingPercent < 0.2 && !practiceMode);
+	
+						case 'ur_good':
+							unlock = (ratingPercent >= 1 && !usedPractice);
+	
+						case 'oversinging':
+							unlock = (boyfriend.holdTimer >= 10 && !usedPractice);
+	
+						case 'hype':
+							unlock = (!boyfriendIdled && !usedPractice);
+	
+						case 'two_keys':
+							unlock = (!usedPractice && keysPressed.length <= 2);
+	
+						case 'toastie':
+							unlock = (!ClientPrefs.data.cacheOnGPU && !ClientPrefs.data.shaders && ClientPrefs.data.lowQuality && !ClientPrefs.data.antialiasing);
+	
+						case 'debugger':
+							unlock = (songName == 'test' && !usedPractice);
+					}
 				}
+				else // any FC achievements, name should be "weekFileName_nomiss", e.g: "week3_nomiss";
+				{
+					if(isStoryMode && campaignMisses + songMisses < 1 && Difficulty.getString().toUpperCase() == 'HARD'
+						&& storyPlaylist.length <= 1 && !changedDifficulty && !usedPractice)
+						unlock = true;
+				}
+	
+				if(unlock) Achievements.unlock(name);
 			}
-			else // any FC achievements, name should be "weekFileName_nomiss", e.g: "week3_nomiss";
-			{
-				if (isStoryMode
-					&& campaignMisses + songMisses < 1
-					&& Difficulty.getString().toUpperCase() == 'HARD'
-					&& storyPlaylist.length <= 1
-					&& !changedDifficulty
-					&& !usedPractice)
-					unlock = true;
-			}
-
-			if (unlock)
-				Achievements.unlock(name);
 		}
-	}
-	#end
+		#end
+	
 }

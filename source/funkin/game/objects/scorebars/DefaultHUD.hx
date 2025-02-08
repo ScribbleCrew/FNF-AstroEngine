@@ -1,13 +1,13 @@
 package funkin.game.objects.scorebars;
 
-import flixel.util.FlxStringUtil;
 //TODO: import notes here.
 class DefaultHUD extends FlxBasic
 {
 	private var game(get,null):PlayState;
-	@:noCompletion private inline function get_game():PlayState
+	@:dox(hide) @:noCompletion private inline function get_game():PlayState
 		return PlayState.instance;
 
+	// Bars
 	public var timeBar:Bar;
 	public var timeTxt:FlxText;
 	public var healthBar:Bar;
@@ -16,7 +16,7 @@ class DefaultHUD extends FlxBasic
 	public var iconP1:HealthIcon;
 	public var iconP2:HealthIcon;
 
-	
+	// Botplay Txt
 	public var botplaySine:Float = 0;
 	public var botplayTxt:FlxText;
 

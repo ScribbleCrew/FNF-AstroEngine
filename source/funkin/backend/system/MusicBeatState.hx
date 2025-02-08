@@ -99,6 +99,8 @@ abstract class MusicBeatState extends FlxState
 		if (FlxG.save.data != null)
 			FlxG.save.data.fullscreen = FlxG.fullscreen;
 
+		stageAccess((stage:BaseStage) ->stage.update(elapsed));
+
 		super.update(elapsed);
 	}
 

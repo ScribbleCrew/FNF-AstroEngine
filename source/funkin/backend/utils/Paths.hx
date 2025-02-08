@@ -183,7 +183,7 @@ class Paths
 			return file;
 		}
 		#end
-		return 'assets/videos/$key.$Constants.VIDEO_EXT';
+		return 'assets/videos/$key.${Constants.VIDEO_EXT}';
 	}
 
 	inline static public function soundRandom(key:String, min:Int, max:Int, ?modsAllowed:Bool = true)

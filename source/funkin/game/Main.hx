@@ -19,6 +19,12 @@ import funkin.backend.initialization.ALSoftConfig; // Just to make sure DCE does
  *
  * You can pretty much ignore everything from here on - your code should go in your funkin.game.states
  */
+#if linux
+@:cppInclude('./backend/external/gamemode_client.h')
+@:cppFileCode('
+	#define GAMEMODE_AUTO
+')
+#end
 class Main extends Sprite
 {
 	private static var _game:FlxGame;

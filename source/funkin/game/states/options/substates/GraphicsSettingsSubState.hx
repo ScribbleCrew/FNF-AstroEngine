@@ -83,7 +83,7 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		#end
 
 		super();
-		insert(1, boyfriend);
+		insert(999, boyfriend);
 	}
 
 	override function changeSelection(change:Int = 0, ?snd:Bool = true)

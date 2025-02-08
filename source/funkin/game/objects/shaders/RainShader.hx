@@ -1,5 +1,6 @@
 package funkin.game.objects.shaders;
 
+#if SHADERS_ALLOWED
 import flixel.system.FlxAssets.FlxShader;
 import openfl.display.BitmapData;
 import openfl.display.ShaderParameter;
@@ -498,7 +499,7 @@ class RainShader extends FlxShader
 	@:access(openfl.display.ShaderParameter)
 	function addFloatUniform(name:String, length:Int):ShaderParameter<Float>
 	{
-		final res = new ShaderParameter<Float>();
+		final res:ShaderParameter<Float> = new ShaderParameter<Float>();
 		res.name = name;
 		res.type = [null, FLOAT, FLOAT2, FLOAT3, FLOAT4][length];
 		res.__arrayLength = 1;
@@ -509,3 +510,4 @@ class RainShader extends FlxShader
 		return res;
 	}
 }
+#end
