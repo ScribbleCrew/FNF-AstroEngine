@@ -106,8 +106,13 @@ import sys.thread.Mutex;
 
 // HSCRIPT
 #if HSCRIPT_ALLOWED
+import funkin.backend.funkinLua.HScript.HScriptInfos;
 import crowplexus.iris.Iris;
+import crowplexus.iris.IrisConfig;
+import crowplexus.hscript.Expr.Error as IrisError;
+import crowplexus.hscript.Printer;
 #end
+
 
 // Haxe
 import haxe.*;

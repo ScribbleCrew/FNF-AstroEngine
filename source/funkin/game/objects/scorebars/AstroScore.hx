@@ -47,7 +47,7 @@ class AstroScore extends BaseScorebar
 		versionTxtSmth.visible = !ClientPrefs.data.hideHud;
 		add(versionTxtSmth);
 
-		watermark.text = PlayState.SONG.song.formatText() + " • " + Difficulty.list[PlayState.storyDifficulty];
+		watermark.text = PlayState.SONG.song.replace("-",'').capitalize() + " • " + Difficulty.list[PlayState.storyDifficulty];
 		addCurveBG(watermark.x - 10, scoreText.y + 4.5, watermark.fieldWidth + 20, 35, 35, 0, game.uiBackgroundGroup); // WaterMark
 		addCurveBG(defaultPos.x, scoreText.y + 4.5, 600, 35, 35, 0, game.uiBackgroundGroup); // ScoreBar
 		addCurveBG(songLeft.x - 12.5, scoreText.y + 4.5, 125, 35, 35, 0, game.uiBackgroundGroup); // TimeBar (Alt)

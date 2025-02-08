@@ -3,6 +3,7 @@ package funkin.game;
 import openfl.Lib;
 import flixel.input.keyboard.FlxKey;
 import funkin.backend.utils.Paths;
+
 class Init extends flixel.FlxState
 {
 	override public function create():Void
@@ -41,6 +42,75 @@ class Init extends flixel.FlxState
 
 		#if WATERMARK owoWatermark(); #end
 
+		#if HSCRIPT_ALLOWED
+		Iris.warn = function(x, ?pos:haxe.PosInfos)
+		{
+			Iris.logLevel(WARN, x, pos);
+			var newPos:HScriptInfos = cast pos;
+			if (newPos.showLine == null)
+				newPos.showLine = true;
+			var msgInfo:String = (newPos.funcName != null ? '(${newPos.funcName}) - ' : '') + '${newPos.fileName}:';
+			#if LUA_ALLOWED
+			if (newPos.isLua == true)
+			{
+				msgInfo += 'HScript:';
+				newPos.showLine = false;
+			}
+			#end
+			if (newPos.showLine == true)
+			{
+				msgInfo += '${newPos.lineNumber}:';
+			}
+			msgInfo += ' $x';
+			if (PlayState.instance != null)
+				PlayState.instance.addTextToDebug('WARNING: $msgInfo', FlxColor.YELLOW);
+		}
+		Iris.error = function(x, ?pos:haxe.PosInfos)
+		{
+			Iris.logLevel(ERROR, x, pos);
+			var newPos:HScriptInfos = cast pos;
+			if (newPos.showLine == null)
+				newPos.showLine = true;
+			var msgInfo:String = (newPos.funcName != null ? '(${newPos.funcName}) - ' : '') + '${newPos.fileName}:';
+			#if LUA_ALLOWED
+			if (newPos.isLua == true)
+			{
+				msgInfo += 'HScript:';
+				newPos.showLine = false;
+			}
+			#end
+			if (newPos.showLine == true)
+			{
+				msgInfo += '${newPos.lineNumber}:';
+			}
+			msgInfo += ' $x';
+			if (PlayState.instance != null)
+				PlayState.instance.addTextToDebug('ERROR: $msgInfo', FlxColor.RED);
+		}
+		Iris.fatal = function(x, ?pos:haxe.PosInfos)
+		{
+			Iris.logLevel(FATAL, x, pos);
+			var newPos:HScriptInfos = cast pos;
+			if (newPos.showLine == null)
+				newPos.showLine = true;
+			var msgInfo:String = (newPos.funcName != null ? '(${newPos.funcName}) - ' : '') + '${newPos.fileName}:';
+			#if LUA_ALLOWED
+			if (newPos.isLua == true)
+			{
+				msgInfo += 'HScript:';
+				newPos.showLine = false;
+			}
+			#end
+			if (newPos.showLine == true)
+			{
+				msgInfo += '${newPos.lineNumber}:';
+			}
+			msgInfo += ' $x';
+			if (PlayState.instance != null)
+				PlayState.instance.addTextToDebug('FATAL: $msgInfo', 0xFFBB0000);
+		}
+		#end
+
 		#if VIDEOS_ALLOWED
 		final loadingText:FlxText = new FlxText();
 		loadingText.setFormat(Paths.font("Minecraft.ttf"), 24, FlxColor.WHITE);
@@ -62,9 +132,9 @@ class Init extends flixel.FlxState
 	static function clearState():Void
 	{
 		#if windows WindowUtil.darkmode = ClientPrefs.data.darkmodeEnabled; #end
-		#if !mobile 		
+		#if !mobile
 		Main.fpsVar.visible = ClientPrefs.data.showFPS;
-		Main.fpsVar.alpha = ClientPrefs.data.fpsCounterAlpha; 
+		Main.fpsVar.alpha = ClientPrefs.data.fpsCounterAlpha;
 		#end
 		FlxG.switchState(new TitleState());
 	}
@@ -87,9 +157,9 @@ class Init extends flixel.FlxState
 				try
 				{
 					final daFile:Dynamic = cast file;
-					if(daFile.main != null)
+					if (daFile.main != null)
 						daFile.main();
-					if(daFile.__init__ != null)
+					if (daFile.__init__ != null)
 						daFile.__init__();
 				}
 				catch (e:Dynamic)
@@ -110,7 +180,8 @@ class Init extends flixel.FlxState
 	{
 		trace(OsAPI.osInfo + ' ' + OsAPI.osVersion);
 
-		FlxG.fixedTimestep = #if html5 FlxG.mouse.visible = #end false;
+		FlxG.fixedTimestep = #if html5 FlxG.mouse.visible = #end
+		false;
 		FlxG.keys.preventDefaultKeys = [TAB];
 		FlxG.game.focusLostFramerate = 30;
 

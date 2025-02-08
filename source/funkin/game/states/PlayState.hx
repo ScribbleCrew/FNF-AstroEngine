@@ -24,6 +24,7 @@ import openfl.events.KeyboardEvent;
 import flixel.addons.display.FlxRuntimeShader;
 import openfl.filters.ShaderFilter;
 #end
+
 /**
  * This is where all the Gameplay stuff happens and is managed
  *
@@ -1141,20 +1142,22 @@ class PlayState extends MusicBeatState
 		}
 	#end
 
-	public function addTextToDebug(text:String, color:FlxColor)
-	{
-		#if LUA_ALLOWED
-		luaDebugGroup.forEachAlive(function(spr:DebugLuaText) spr.y += 20);
+	#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
+	public function addTextToDebug(text:String, color:FlxColor) {
+		var newText:DebugLuaText = luaDebugGroup.recycle(DebugLuaText);
+		newText.text = text;
+		newText.color = color;
+		newText.disableTime = 6;
+		newText.font = Paths.font('OswaldMedium.ttf');
+		newText.alpha = 1;
+		newText.setPosition(10, 8 - newText.height);
 
-		if (luaDebugGroup.members.length > 34)
-		{
-			final blah = luaDebugGroup.members[34];
-			blah.destroy();
-			luaDebugGroup.remove(blah);
-		}
-		luaDebugGroup.insert(0, new DebugLuaText(text, luaDebugGroup, color, Paths.font('OswaldMedium.ttf')));
-		#end
+		luaDebugGroup.forEachAlive(function(spr:DebugLuaText) spr.y += newText.height + 2);
+		luaDebugGroup.add(newText);
+
+		Sys.println(text);
 	}
+	#end
 
 
 	public function addCharacterToList(newCharacter:String, type:Int)
@@ -3933,16 +3936,16 @@ class PlayState extends MusicBeatState
 		try
 		{
 			newScript = new HScript(null, file);
-			if(newScript.get('onCreate') != null)
-				newScript.call('onCreate');
+			if (newScript.exists('onCreate')) newScript.call('onCreate');
 			trace('initialized hscript interp successfully: $file');
 			hscriptArray.push(newScript);
 		}
-		catch (e:Dynamic)
+		catch(e:IrisError)
 		{
-			addTextToDebug('ERROR ON LOADING ($file) - $e', FlxColor.RED);
-			var newScript:HScript = cast(Iris.instances.get(file), HScript);
-			if (newScript != null)
+			var pos:HScriptInfos = cast {fileName: file, showLine: false};
+			Iris.error(Printer.errorToString(e, false), pos);
+			var newScript:HScript = cast (Iris.instances.get(file), HScript);
+			if(newScript != null)
 				newScript.destroy();
 		}
 	}
