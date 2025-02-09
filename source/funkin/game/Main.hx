@@ -73,7 +73,7 @@ class Main extends openfl.display.Sprite
 		#end
 
 		#if linux
-		Lib.current.stage.window.setIcon(Image.fromFile("icon.png"));
+		Lib.current.stage.window.setIcon(lime.graphics.Image.fromFile("icon.png"));
 		#end
 	}
 
