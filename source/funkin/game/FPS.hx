@@ -1,41 +1,53 @@
 package funkin.game;
 
-#if gl_stats
-import openfl.display._internal.stats.Context3DStats;
-import openfl.display._internal.stats.DrawCallContext;
-#end
-#if openfl
 import openfl.display.Sprite;
-import openfl.text.TextField;
-import openfl.text.TextFormat;
-import openfl.system.System;
-#end
 
 /**
-	The FPS class provides an easy-to-use monitor to display
-	the current frame rate of an OpenFL project
-**/
-#if !openfl_debug
-@:fileXml('tags="haxe,release"')
-@:noDebug
-#end
+ * The FPS class provides an easy-to-use monitor to display
+ * the current frame rate of an OpenFL project.
+ *
+ * NOTICE:
+ * Slightly modified for Astro Engine.
+ */
 @:access(openfl.display.DisplayObject)
-class FPS extends TextField
+class FPS extends openfl.text.TextField
 {
 	/**
 	 * Because reading any data from DisplayObject is insanely expensive in hxcpp, keep track of whether we need to update it or not.
 	 */
 	public var active:Bool;
 
+	/**
+	 *	The current frame rate (expressed using frames-per-second)
+	 */
 	public var currentFPS(default, null):Int;
-	public var bgSprite:Sprite;
-	public var offset:FlxPoint = FlxPoint.get();
 
-	private var cacheCount:Int;
-	private var currentTime:Float;
+	/**
+	 * Amount of times fps updated?
+	 */
 	private var times:Array<Float>;
-	var bgAlpha:Float = 1 / 3;
 
+	/**
+	 *	The current memory usage (WARNING: this is NOT your total program memory usage, rather it shows the garbage collector memory)
+	 */
+	@:isVar
+	public var memoryMegas(get, never):Float;
+	@:noCompletion private inline function get_memoryMegas():Float
+		return cpp.vm.Gc.memInfo64(cpp.vm.Gc.MEM_INFO_USAGE);
+
+	/**
+	 * The background sprite.
+	 */
+	public var bgSprite:Sprite;
+
+	/**
+	 * The background offset.
+	 */
+	public var bgOffset:FlxPoint = FlxPoint.get();
+
+	/**
+	 * Pushes a string to the text variable (FPS Stuff)
+	 */
 	inline function addLine(str:String = "", ?lineDown:Bool = true):String
 		return text += '${lineDown ? '\n' : ''}$str';
 
@@ -49,7 +61,7 @@ class FPS extends TextField
 		currentFPS = 0;
 		selectable = false;
 		mouseEnabled = false;
-		defaultTextFormat = new TextFormat("_sans", 14, color, false);
+		defaultTextFormat = new openfl.text.TextFormat("_sans", 14, color, false);
 		autoSize = LEFT;
 		multiline = true;
 		text = "FPS: ";
@@ -61,62 +73,62 @@ class FPS extends TextField
 		bgSprite.alpha = bgAlpha;
 		visible = active = bgSprite.visible = ClientPrefs.data.showFPS;
 
-		cacheCount = 0;
-		currentTime = 0;
 		times = [];
 	}
 
-	@:noCompletion private override function __enterFrame(deltaTime:Float):Void
-	{
-		currentTime += deltaTime;
-		times.push(currentTime);
+	/**
+	 * prevents the overlay from updating every frame, why would you need to anyways.
+	 * @author @crowplexus
+	 */
+	var deltaTimeout:Float = 0.0;
 
-		while (times[0] < currentTime - 1000)
+	private override function __enterFrame(deltaTime:Float):Void
+	{
+		final now:Float = haxe.Timer.stamp() * 1000;
+		times.push(now);
+		while (times[0] < now - 1000)
 			times.shift();
 
-		var currentCount = times.length;
-		currentFPS = Math.round((currentCount + cacheCount) / 2);
-		if (currentFPS > ClientPrefs.data.framerate)
-			currentFPS = ClientPrefs.data.framerate;
-
-		if (currentCount != cacheCount)
+		if (deltaTimeout < 50)
 		{
-			text = "";
-			addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "owo's per second" : #end 'FPS'}: $currentFPS', false);
-
-			#if openfl
-			var memoryMegas:Float = 0;
-			memoryMegas = Math.abs(FlxMath.roundDecimal(System.totalMemory / 1000000, 1));
-			addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "proot mem usage" : #end 'Memory'}: ${memoryMegas} MB');
-			#end
-
-			#if GIT_ALLOWED
-			addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "orbl pick one pls 🙏" : #end "Commit"}: ${GitMacro.commitNumber} [${GitMacro.commitHash}] ${GitMacro.branch}');
-			#end
-
-			#if (gl_stats && !disable_cffi && (!html5 || !canvas))
-			addLine();
-			addLine('ntotalDC: ${Context3DStats.totalDrawCalls()}');
-			addLine('nstageDC: ${Context3DStats.contextDrawCalls(DrawCallContext.STAGE)}');
-			addLine('stage3DDC: ${Context3DStats.contextDrawCalls(DrawCallContext.STAGE3D)}');
-			#end
-
-			textColor = 0xFFFFFFFF;
-			if (#if openfl memoryMegas > 3000 || #end currentFPS <= ClientPrefs.data.framerate / 2)
-				textColor = 0xFFFF0000;
-
-			bgSprite.scaleX = this.width + offset.x * 2 - 10;
-			bgSprite.scaleY = this.height + offset.y * 2 + 3;
+			deltaTimeout += deltaTime;
+			return;
 		}
 
-		cacheCount = currentCount;
+		currentFPS = times.length < FlxG.updateFramerate ? times.length : FlxG.updateFramerate;
+		framerateUpdate();
+		deltaTimeout = 0.0;
 
-		bgSprite.x = this.x - offset.x;
-		bgSprite.y = this.y - offset.y;
+		bgSprite.scaleX = this.width + bgOffset.x * 2 - 10;
+		bgSprite.scaleY = this.height + bgOffset.y * 2 + 3;
+		bgSprite.x = this.x - bgOffset.x;
+		bgSprite.y = this.y - bgOffset.y;
 	}
 
-	@:noCompletion override function set_alpha(val:Float):Float{
-		if(val < bgAlpha)
+	/**
+	 * Framerate update function.
+	 */
+	public dynamic function framerateUpdate():Void
+	{
+		text = "";
+		addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "owo's per second" : #end 'FPS'}: $currentFPS', false);
+		addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "proot mem usage" : #end 'Memory'}: ${flixel.util.FlxStringUtil.formatBytes(memoryMegas)}');
+
+		#if GIT_ALLOWED addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "orbl pick one pls 🙏" : #end "Commit"}: ${GitMacro.commitNumber} [${GitMacro.commitHash}] ${GitMacro.branch}'); #end
+		
+		textColor = 0xFFFFFFFF;
+		if (currentFPS < FlxG.drawFramerate * 0.5)
+			textColor = 0xFFFF0000;
+	}
+
+	/**
+	 * Framerate background alpha float.
+	 */
+	private static inline final bgAlpha:Float = (1 / 3);
+
+	@:noCompletion override function set_alpha(val:Float):Float
+	{
+		if (val < bgAlpha)
 			bgSprite.alpha = val;
 		return super.alpha = val;
 	}

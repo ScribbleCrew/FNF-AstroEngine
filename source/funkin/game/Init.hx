@@ -1,11 +1,19 @@
 package funkin.game;
 
-import openfl.Lib;
 import flixel.input.keyboard.FlxKey;
 import funkin.backend.utils.Paths;
+import funkin.backend.initialization.*;
 
+/**
+ * Credits:
+ * MAJigsaw77 - Og author of line 23.
+ */
 class Init extends flixel.FlxState
 {
+	#if WATERMARK
+	public static var watermark:Watermark; 
+	#end
+
 	override public function create():Void
 	{
 		Paths.clearStoredMemory();
@@ -14,7 +22,8 @@ class Init extends flixel.FlxState
 
 		FlxG.save.bind('funkin', funkin.backend.CoolUtil.getSavePath());
 
-		ClientPrefs.loadDefaultKeys();
+		ClientPrefs.loadDefaultKeys();  
+		#if (android || ios) Sys.setCwd(#if android Path.addTrailingSlash(Context.getExternalFilesDir()) #elseif ios lime.system.System.applicationStorageDirectory #end); #end
 
 		#if LUA_ALLOWED Mods.pushGlobalMods(); #end
 
@@ -30,7 +39,8 @@ class Init extends flixel.FlxState
 		this.initFileThread();
 
 		#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(CallbackHandler.call)); #end
-		#if CRASH_HANDLER Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR, CrashHandler.main); #end
+		#if CRASH_HANDLER openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR,
+			CrashHandler.main); #end
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
 		#if DISCORD_ALLOWED DiscordClient.prepare(); #end
 		#if SHADERS_ALLOWED fragFix(); #end
@@ -40,12 +50,14 @@ class Init extends flixel.FlxState
 
 		super.create();
 
-		#if WATERMARK owoWatermark(); #end
+		#if WATERMARK
+		watermark = new Watermark();
+		openfl.Lib.current.addChild(watermark);
+		#end
 
 		#if HSCRIPT_ALLOWED
-		Iris.warn = function(x, ?pos:haxe.PosInfos)
+		function laFunc(x, ?pos:haxe.PosInfos)
 		{
-			Iris.logLevel(WARN, x, pos);
 			var newPos:HScriptInfos = cast pos;
 			if (newPos.showLine == null)
 				newPos.showLine = true;
@@ -62,52 +74,26 @@ class Init extends flixel.FlxState
 				msgInfo += '${newPos.lineNumber}:';
 			}
 			msgInfo += ' $x';
+			return msgInfo;
+		}
+
+		Iris.warn = function(x, ?pos:haxe.PosInfos)
+		{
+			Iris.logLevel(WARN, x, pos);
 			if (PlayState.instance != null)
-				PlayState.instance.addTextToDebug('WARNING: $msgInfo', FlxColor.YELLOW);
+				PlayState.instance.addTextToDebug('WARNING: ${laFunc(x, pos)}', FlxColor.YELLOW);
 		}
 		Iris.error = function(x, ?pos:haxe.PosInfos)
 		{
 			Iris.logLevel(ERROR, x, pos);
-			var newPos:HScriptInfos = cast pos;
-			if (newPos.showLine == null)
-				newPos.showLine = true;
-			var msgInfo:String = (newPos.funcName != null ? '(${newPos.funcName}) - ' : '') + '${newPos.fileName}:';
-			#if LUA_ALLOWED
-			if (newPos.isLua == true)
-			{
-				msgInfo += 'HScript:';
-				newPos.showLine = false;
-			}
-			#end
-			if (newPos.showLine == true)
-			{
-				msgInfo += '${newPos.lineNumber}:';
-			}
-			msgInfo += ' $x';
 			if (PlayState.instance != null)
-				PlayState.instance.addTextToDebug('ERROR: $msgInfo', FlxColor.RED);
+				PlayState.instance.addTextToDebug('ERROR: ${laFunc(x, pos)}', FlxColor.RED);
 		}
 		Iris.fatal = function(x, ?pos:haxe.PosInfos)
 		{
 			Iris.logLevel(FATAL, x, pos);
-			var newPos:HScriptInfos = cast pos;
-			if (newPos.showLine == null)
-				newPos.showLine = true;
-			var msgInfo:String = (newPos.funcName != null ? '(${newPos.funcName}) - ' : '') + '${newPos.fileName}:';
-			#if LUA_ALLOWED
-			if (newPos.isLua == true)
-			{
-				msgInfo += 'HScript:';
-				newPos.showLine = false;
-			}
-			#end
-			if (newPos.showLine == true)
-			{
-				msgInfo += '${newPos.lineNumber}:';
-			}
-			msgInfo += ' $x';
 			if (PlayState.instance != null)
-				PlayState.instance.addTextToDebug('FATAL: $msgInfo', 0xFFBB0000);
+				PlayState.instance.addTextToDebug('FATAL: ${laFunc(x, pos)}', 0xFFBB0000);
 		}
 		#end
 
@@ -212,32 +198,6 @@ class Init extends flixel.FlxState
 			if (FlxG.game != null)
 				resetSpriteCache(FlxG.game);
 		});
-	}
-	#end
-
-	#if WATERMARK
-	#if DISCORD_ALLOWED @:allow(funkin.backend.client.Discord.DiscordClient) #end
-	static var watermark:openfl.text.TextField;
-
-	private function owoWatermark():Void
-	{
-		// uhh tester text lmao
-		final watermarkText:String = '${OsAPI.username}}';
-
-		final format:openfl.text.TextFormat = new openfl.text.TextFormat("assets/fonts/OswaldMedium.ttf", 50, FlxColor.WHITE);
-		format.align = openfl.text.TextFormatAlign.CENTER;
-
-		watermark = new openfl.text.TextField();
-		watermark.defaultTextFormat = format;
-		watermark.text = watermarkText;
-		watermark.alpha = .55;
-		watermark.width = FlxG.width;
-		watermark.height = FlxG.height;
-		watermark.selectable = false;
-
-		watermark.y = (FlxG.height - watermark.textHeight) / 2;
-
-		Lib.current.addChild(watermark);
 	}
 	#end
 }

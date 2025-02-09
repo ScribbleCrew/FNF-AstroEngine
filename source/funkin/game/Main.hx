@@ -20,7 +20,7 @@ import funkin.backend.initialization.ALSoftConfig; // Just to make sure DCE does
  * You can pretty much ignore everything from here on - your code should go in your funkin.game.states
  */
 #if linux
-@:cppInclude('../backend/external/gamemode_client.h')
+@:cppInclude('../../backend/external/gamemode_client.h')
 @:cppFileCode('
 	#define GAMEMODE_AUTO
 ')
@@ -85,8 +85,8 @@ class Main extends Sprite
 	private function setupFPS():FPS {
 		final fpsVar:FPS = new FPS(10, 3, 0xFFFFFF);
 		fpsVar.visible = false;
-		fpsVar.offset.x += 25;
-		fpsVar.offset.y += 5;
+		fpsVar.bgOffset.x += 25;
+		fpsVar.bgOffset.y += 5;
 		addChild(fpsVar.bgSprite);
 		addChild(fpsVar);
 
