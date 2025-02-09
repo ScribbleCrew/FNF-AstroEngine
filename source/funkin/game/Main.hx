@@ -20,9 +20,23 @@ import funkin.backend.initialization.ALSoftConfig; // Just to make sure DCE does
  * You can pretty much ignore everything from here on - your code should go in your funkin.game.states
  */
 #if linux
-@:cppInclude('../../backend/external/gamemode_client.h')
+@:cppInclude('./external/gamemode_client.h')
 @:cppFileCode('
 	#define GAMEMODE_AUTO
+')
+#end
+#if windows
+@:buildXml('
+<target id="haxe">
+	<lib name="wininet.lib" if="windows" />
+	<lib name="dwmapi.lib" if="windows" />
+</target>
+')
+@:cppFileCode('
+#include <windows.h>
+#include <winuser.h>
+#pragma comment(lib, "Shell32.lib")
+extern "C" HRESULT WINAPI SetCurrentProcessExplicitAppUserModelID(PCWSTR AppID);
 ')
 #end
 class Main extends Sprite
