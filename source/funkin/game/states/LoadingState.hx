@@ -33,7 +33,7 @@ class LoadingState extends MusicBeatState
 
 	function new(target:FlxState, stopMusic:Bool)
 	{
-		Logs.prefix = 'PRECACHE';
+		Logs.prefix = 'Precache Log';
 		this.target = target;
 		this.stopMusic = stopMusic;
 		
@@ -410,9 +410,9 @@ class LoadingState extends MusicBeatState
 		loaded = 0;
 
 		//then start threads
-		for (sound in soundsToPrepare) initThread(() -> preloadSound('sounds/$sound'), 'sound $sound');
-		for (music in musicToPrepare) initThread(() -> preloadSound('music/$music'), 'music $music');
-		for (song in songsToPrepare) initThread(() -> preloadSound(song, 'songs', true, false), 'song $song');
+		for (sound in soundsToPrepare) initThread(() -> preloadSound('sounds/$sound'), 'sound, PATH: $sound');
+		for (music in musicToPrepare) initThread(() -> preloadSound('music/$music'), 'music, PATH: $music');
+		for (song in songsToPrepare) initThread(() -> preloadSound(song, 'songs', true, false), 'song, PATH: $song');
 
 		// for images, they get to have their own thread
 		for (image in imagesToPrepare) initThread(() -> preloadGraphic(image), 'image $image');
@@ -422,7 +422,7 @@ class LoadingState extends MusicBeatState
 	{
 		Thread.create(() -> {
 			try {
-				if (func() != null) trace('finished preloading $traceData');
+				if (func() != null) trace('Preladed (TYPE: $traceData)');
 				else trace('ERROR! fail on preloading $traceData');
 			}
 			catch(e:Dynamic) {

@@ -895,10 +895,7 @@ class FunkinLua
 				FlxTransitionableState.skipNextTransOut = true;
 			}
 
-			if (PlayState.isStoryMode)
-				MusicBeatState.switchState(new StoryMenuState());
-			else
-				MusicBeatState.switchState(new FreeplayState());
+			PlayState.instance.leaveState();
 
 			#if DISCORD_ALLOWED DiscordClient.clientID = null; #end
 

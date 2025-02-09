@@ -1,20 +1,20 @@
 package funkin.game;
 
+#if desktop
+// Just to make sure DCE doesn't remove this, since it's not directly referenced anywhere else.
+import funkin.backend.initialization.ALSoftConfig;
+#end
+
 import flixel.FlxG;
 import flixel.FlxGame;
 import openfl.Lib;
 import openfl.display.StageScaleMode;
 import funkin.game.FPS;
 
-#if desktop
-// Just to make sure DCE doesn't remove this, since it's not directly referenced anywhere else.
-import funkin.backend.initialization.ALSoftConfig;
-#end
-
 /**
  * No need to change anything here unless you know what your doin' :3c
  * If you want to add something that will run once the game has started, edit Init.hx
- *
+ * ---------------------------------------------------------
  * You can pretty much ignore everything from here on - your code should go in your funkin.game.states
  */
 #if linux
@@ -39,6 +39,10 @@ extern "C" HRESULT WINAPI SetCurrentProcessExplicitAppUserModelID(PCWSTR AppID);
 #end
 class Main extends openfl.display.Sprite
 {
+	/**	
+	* Framerate variable.
+	* used for my new sexy fps thingy.
+	*/
 	public static var fpsVar:FPS;
 
 	private static var _game:FlxGame;
@@ -49,14 +53,17 @@ class Main extends openfl.display.Sprite
 	public function new():Void
 	{
 		super();
-		
+
 		#if windows
-		// DPI Scaling fix for windows 
-		// this shouldn't be needed for other systems
-		// Credit to YoshiCrafter29 for finding this function
+		/** 
+		 * DPI Scaling fix for windows 
+		 * this shouldn't be needed for other systems
+		 * -----------------------------------------
+		 * Credit to YoshiCrafter29 for finding this function
+		 */
 		untyped __cpp__("SetProcessDPIAware();");
 		#end
-	
+
 		_game = new FlxGame(Config.gameSize.width, Config.gameSize.height, Init, #if (flixel < "5.0.0") Config.zoom, #end Config.framerate, Config.framerate,
 			Config.skipSplash, Config.startFullscreen);
 		#if (FUNKIN_SOUNDTRAY || BASE_GAME_FILES)
@@ -72,14 +79,13 @@ class Main extends openfl.display.Sprite
 		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
 		#end
 
-		#if linux
-		Lib.current.stage.window.setIcon(lime.graphics.Image.fromFile("icon.png"));
-		#end
+		#if linux Lib.current.stage.window.setIcon(lime.graphics.Image.fromFile("icon.png")); #end
 	}
 
 	#if !mobile
 	// FPS Stuff
-	private function setupFPS():FPS {
+	private function setupFPS():FPS
+	{
 		final fpsVar:FPS = new FPS(10, 3, 0xFFFFFF);
 		fpsVar.visible = false;
 		fpsVar.bgOffset.x += 25;
@@ -92,7 +98,8 @@ class Main extends openfl.display.Sprite
 
 	// Audio Fix
 	@:dox(hide) public static var audioDisconnected(default, set):Bool = false;
-	@:noCompletion private static function set_audioDisconnected(value:Bool):Bool //oops
+
+	@:dox(hide) @:noCompletion private static function set_audioDisconnected(value:Bool):Bool // oops
 	{
 		audioDisconnected = value;
 		@:privateAccess AudioSwitchFix.onStateSwitch(FlxG.state);

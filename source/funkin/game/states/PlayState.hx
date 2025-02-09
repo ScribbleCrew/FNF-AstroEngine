@@ -651,24 +651,19 @@ class PlayState extends MusicBeatState
 	public static var lastScore:Array<FlxSprite> = [];
 
 	/**
-	 * Song start callback.
+	 * Called when the song startes.
 	 */
 	public var startCallback:Void->Void = null;
 
 	/**
-	 * Song finished callback.
+	 * Called once the song has finished.
 	 */
 	public var endCallback:Void->Void = null;
 
 	/**
-	 * score update callback.
+	 * Called every time the score updates (used on custom HUDS).
 	 */
 	public var scoreUpdate:Void->Void = null;
-
-	/**
-	 * stage update callback.
-	 */
-	public var stageUpdate:Void->Void = null;
 
 	override public function create()
 	{
@@ -2105,8 +2100,6 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float)
 	{
-		stageUpdate();
-
 		callOnScripts('onUpdate', [elapsed]);
 
 		if (!inCutscene && !paused && !freezeCamera)
@@ -3012,6 +3005,15 @@ class PlayState extends MusicBeatState
 		}
 		unspawnNotes = [];
 		eventNotes = [];
+	}
+
+	public function leaveState() {
+		Main.fpsVar.updateFPS = Main.fpsVar.defaultFramerateUpdate;
+		if (isStoryMode)
+			MusicBeatState.switchState(new StoryMenuState());
+		else
+			MusicBeatState.switchState(new FreeplayState());
+		trace('leaving...');
 	}
 
 	public var totalPlayed:Int = 0;

@@ -2,15 +2,17 @@ package funkin.backend.initialization;
 
 
 /**
-* Modded trace because it just makes sense.
-* Also has a changeable prefix exmp: [SYSTEM]: <blah blah blah>
-*
-* @author YourFriendOrbl
-*/
+ * Modded trace because it just makes sense.
+ * Also has a customizable prefix, example: [SYSTEM]: <blah blah blah>
+ */
 class Logs // Modded trace func
 {
+    /**
+     * Custom prefix, mainly used on the loading screen, but can be used anywhere.
+     * If left blank it reverts to its default value, which is `Constants.DEFAULT_LOGS_PREFIX`.
+     */
 	public static var prefix(default, set):String = Constants.DEFAULT_LOGS_PREFIX;
-	@:noCompletion private static function set_prefix(yeah:String):String {
+	@:dox(hide) @:noCompletion private static function set_prefix(yeah:String):String {
 		if (yeah == '' || yeah == null) return prefix = Constants.DEFAULT_LOGS_PREFIX;
 		return prefix = yeah;
 	}
@@ -23,7 +25,7 @@ class Logs // Modded trace func
 		trace('Finished Setting up custom trace.');
 	}
 
-	@:noCompletion private static function __customTrace(v:Dynamic, ?infos:haxe.PosInfos):Void
+	@:dox(hide) @:noCompletion private static function __customTrace(v:Dynamic, ?infos:haxe.PosInfos):Void
 	{
 		var extra:String = "";
 		if (infos != null && infos.customParams != null)

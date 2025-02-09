@@ -8,8 +8,6 @@ import funkin.backend.initialization.*;
  * very simple initialization state (WARNING: MUST BE LOADED BEFORE ANYTHING ELSE!!!)
  * i just like having a separate file for initializing stuff, instead of throwing it all 
  * into Main.hx.
- *
- * @author YourFriendOrbl
  */
 class Init extends flixel.FlxState
 {
@@ -44,11 +42,10 @@ class Init extends flixel.FlxState
 		funkin.backend.initialization.TemporaryFolder.main();
 
 		#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(CallbackHandler.call)); #end
-		#if CRASH_HANDLER openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR,
-			CrashHandler.main); #end
+		#if CRASH_HANDLER openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR, CrashHandler.main); #end
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
 		#if DISCORD_ALLOWED DiscordClient.prepare(); #end
-		#if SHADERS_ALLOWED fragFix(); #end
+		#if SHADERS_ALLOWED ShaderCoordsFix.fix(); #end
 		#if windows AudioSwitchFix.init(); #end
 
 		funkin.game.objects.Alphabet.AlphaCharacter.loadAlphabetData();
@@ -145,28 +142,4 @@ class Init extends flixel.FlxState
 		if (FlxG.save.data.weekCompleted != null)
 			Week.weekCompleted = FlxG.save.data.weekCompleted;
 	}
-
-	#if SHADERS_ALLOWED
-	private function fragFix():Void
-	{
-		function resetSpriteCache(sprite:openfl.display.Sprite):Void
-		{
-			@:privateAccess {
-				sprite.__cacheBitmap = null;
-				sprite.__cacheBitmapData = null;
-			}
-		}
-
-		FlxG.signals.gameResized.add(function(w, h)
-		{
-			if (FlxG.cameras != null)
-				for (cam in FlxG.cameras.list)
-					if (cam != null && cam.filters != null)
-						resetSpriteCache(cam.flashSprite);
-
-			if (FlxG.game != null)
-				resetSpriteCache(FlxG.game);
-		});
-	}
-	#end
 }

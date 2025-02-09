@@ -2,6 +2,8 @@ package funkin.backend.audio;
 
 /**
  *	This class is used to add sound effects to different FlxSounds.
+ *  Made using normal flx funcs.
+ *  very simple & basic :3
  *	TODO: let lua be able to interact with this.
  *
  *	@author YourFriendOrbl

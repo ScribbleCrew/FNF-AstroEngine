@@ -48,8 +48,14 @@ class FPS extends openfl.text.TextField
 	/**
 	 * Pushes a string to the text variable (FPS Stuff)
 	 */
-	inline function addLine(str:String = "", ?lineDown:Bool = true):String
-		return text += '${lineDown ? '\n' : ''}$str';
+	public inline function addLine(str:String = ""):String
+		return text += '${text != '' ? '\n' : ''}$str';
+
+	/**
+	 * Reset's everything lol...
+	 */
+	public inline function clear():String
+		return text = '';
 
 	public function new(x:Float = 10, y:Float = 10, color:Int = 0x000000)
 	{
@@ -74,14 +80,15 @@ class FPS extends openfl.text.TextField
 		visible = active = bgSprite.visible = ClientPrefs.data.showFPS;
 
 		times = [];
+
+		updateFPS = defaultFramerateUpdate;
 	}
 
 	/**
-	 * prevents the overlay from updating every frame, why would you need to anyways.
-	 * @author @crowplexus
+	 * prevents the overlay from updating every frame, why would you need to anyways. - @crowplexus
 	 */
 	var deltaTimeout:Float = 0.0;
-
+	public var updateFPS:Void->Void;
 	private override function __enterFrame(deltaTime:Float):Void
 	{
 		final now:Float = haxe.Timer.stamp() * 1000;
@@ -96,7 +103,7 @@ class FPS extends openfl.text.TextField
 		}
 
 		currentFPS = times.length < FlxG.updateFramerate ? times.length : FlxG.updateFramerate;
-		framerateUpdate();
+		updateFPS();
 		deltaTimeout = 0.0;
 
 		bgSprite.scaleX = this.width + bgOffset.x * 2 - 10;
@@ -107,11 +114,12 @@ class FPS extends openfl.text.TextField
 
 	/**
 	 * Framerate update function.
+	 * can be used in hscript.
 	 */
-	public dynamic function framerateUpdate():Void
+	public dynamic function defaultFramerateUpdate():Void
 	{
-		text = "";
-		addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "owo's per second" : #end 'FPS'}: $currentFPS', false);
+		clear();
+		addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "owo's per second" : #end 'FPS'}: $currentFPS');
 		addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "proot mem usage" : #end 'Memory'}: ${flixel.util.FlxStringUtil.formatBytes(memoryMegas)}');
 		#if GIT_ALLOWED addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "orbl pick one pls 🙏" : #end "Commit"}: ${GitMacro.commitNumber} [${GitMacro.commitHash}] ${GitMacro.branch}'); #end
 		
@@ -122,7 +130,6 @@ class FPS extends openfl.text.TextField
 	 * Framerate background alpha float.
 	 */
 	private static inline final bgAlpha:Float = (1 / 3);
-
 	@:noCompletion override function set_alpha(val:Float):Float
 	{
 		if (val < bgAlpha)
