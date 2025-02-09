@@ -20,7 +20,7 @@ import funkin.backend.initialization.ALSoftConfig; // Just to make sure DCE does
  * You can pretty much ignore everything from here on - your code should go in your funkin.game.states
  */
 #if linux
-@:cppInclude('././backend/external/gamemode_client.h')
+@:cppInclude('../backend/external/gamemode_client.h')
 @:cppFileCode('
 	#define GAMEMODE_AUTO
 ')
@@ -28,6 +28,7 @@ import funkin.backend.initialization.ALSoftConfig; // Just to make sure DCE does
 class Main extends Sprite
 {
 	private static var _game:FlxGame;
+
 	public static var fpsVar:FPS;
 
 	public static function main():Void
@@ -36,22 +37,13 @@ class Main extends Sprite
 	public function new():Void
 	{
 		super();
-
-		// Credits to MAJigsaw77 (he's the og author for this code)
-		#if android
-		Sys.setCwd(Path.addTrailingSlash(Context.getExternalFilesDir()));
-		#elseif ios
-		Sys.setCwd(lime.system.System.applicationStorageDirectory);
-		#end
-
+		
 		stage != null ? init() : addEventListener(Event.ADDED_TO_STAGE, init);
 	}
 
 	private function init(?evnt:Event):Void
 	{
-		if (hasEventListener(Event.ADDED_TO_STAGE))
-			removeEventListener(Event.ADDED_TO_STAGE, init);
-
+		if (hasEventListener(Event.ADDED_TO_STAGE)) removeEventListener(Event.ADDED_TO_STAGE, init);
 		setupGame();
 	}
 
