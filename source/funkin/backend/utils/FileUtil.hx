@@ -6,7 +6,7 @@ class FileUtil
 {
 	public static var originPath(get, null):String;
 	@:noCompletion static function get_originPath():String
-		return  #if hl Sys.getCwd() #else Sys.programPath() #end;
+		return  Sys.getCwd();
 
 	public static inline function validDirectory(path:String, ?origin:Bool = true):Bool
 		return FileSystem.exists('${origin ? originPath : ''}$path');

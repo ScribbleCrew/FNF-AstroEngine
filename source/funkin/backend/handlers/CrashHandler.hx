@@ -5,9 +5,7 @@ import lime.app.Application;
 import openfl.events.UncaughtErrorEvent;
 import haxe.CallStack;
 import haxe.io.Path;
-import sys.FileSystem;
 import sys.io.File;
-import sys.io.Process;
 
 class CrashHandler
 {
@@ -15,9 +13,9 @@ class CrashHandler
 	{
 		final callStack:Array<StackItem> = CallStack.exceptionStack(true);
 		final dateNow:String = Date.now().toString().replace(" ", "_").replace(":", "'");
+		final path:String = './crash/${Application.current.meta.get('file')}_$dateNow.txt';
 
 		var errMsg:String = "";
-		var path:String ='./crash/${Application.current.meta.get('file')}_$dateNow.txt';
 
 		trace(path);
 
@@ -38,8 +36,7 @@ class CrashHandler
 			+ EngineData.REPOSITORY
 			+ "\n\n---------------------------------------------------------\n> Crash Handler written by: sqirra-rng";
 
-		if(!FileUtil.validDirectory("./crash/"))
-			FileUtil.createDirectory("./crash/");
+		if (!FileUtil.validDirectory("./crash/")) FileUtil.createDirectory("./crash/");
 
 		File.saveContent(path, errMsg + "\n");
 
@@ -47,9 +44,7 @@ class CrashHandler
 		Sys.println("Crash dump saved in " + Path.normalize(path));
 
 		Application.current.window.alert(errMsg, "Error!");
-		#if DISCORD_ALLOWED
-		DiscordClient.shutdown();
-		#end
+		#if DISCORD_ALLOWED DiscordClient.shutdown(); #end
 		Sys.exit(1);
 	}
 }

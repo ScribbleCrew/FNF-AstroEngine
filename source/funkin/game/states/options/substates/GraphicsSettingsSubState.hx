@@ -8,25 +8,27 @@ import funkin.backend.utils.ClientPrefs;
 
 class GraphicsSettingsSubState extends BaseOptionsMenu
 {
+	var boyfriend:Character;
+
 	public function new()
 	{
 		title = 'Graphics';
 		rpcTitle = 'Graphics Settings Menu'; // for Discord Rich Presence
 
-		var boyfriend = new Character(840, 170, 'bf', true);
+		boyfriend = new Character(840, 170, 'bf', true);
 		boyfriend.setGraphicSize(Std.int(boyfriend.width * 0.75));
 		boyfriend.updateHitbox();
 		boyfriend.dance();
 		boyfriend.animation.finishCallback = function(name:String) boyfriend.dance();
 		boyfriend.visible = false;
 
-		var option:Option = new Option('Low Quality', 'If checked, disables some background details,\ndecreases loading times and improves performance.',
+		final lowQualityOption:Option = new Option('Low Quality', 'If checked, disables some background details,\ndecreases loading times and improves performance.',
 			'lowQuality', BOOL);
-		addOption(option);
+		addOption(lowQualityOption);
 
-		var option:Option = new Option('Anti-Aliasing', 'If unchecked, disables anti-aliasing, increases performance\nat the cost of sharper visuals.',
+		final antialiasingOption:Option = new Option('Anti-Aliasing', 'If unchecked, disables anti-aliasing, increases performance\nat the cost of sharper visuals.',
 			'antialiasing', BOOL);
-		option.onChange = () ->
+			antialiasingOption.onChange = () ->
 		{
 			for (sprite in members)
 			{
@@ -36,38 +38,36 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 					sprite.antialiasing = ClientPrefs.data.antialiasing;
 			}
 		};
-		option.onMove = (selected:Bool) -> boyfriend.visible = selected;
-		addOption(option);
+		antialiasingOption.onMove = (selected:Bool) -> boyfriend.visible = selected;
+		addOption(antialiasingOption);
 
 		#if (WINDOW_CUSTOMIZATION && windows)
-		var option:Option = new Option('Dark Mode', 'Enabled Dark Mode Support.', 'darkmodeEnabled', BOOL);
-		option.onChange = () -> WindowUtil.darkmode = ClientPrefs.data.darkmodeEnabled;
-		addOption(option);
+		var darkmodeOption:Option = new Option('Dark Mode', 'Enabled Dark Mode Support.', 'darkmodeEnabled', BOOL);
+		darkmodeOption.onChange = () -> WindowUtil.darkmode = ClientPrefs.data.darkmodeEnabled;
+		addOption(darkmodeOption);
 		#end
 
 		#if SHADERS_ALLOWED
-		var option:Option = new Option('Shaders', // Name
+		var ShadersOption:Option = new Option('Shaders', // Name
 			'If unchecked, disables shaders.\nIt\'s used for some visual effects, and also CPU intensive for weaker PCs.', // Description
 			'shaders', // Save data variable name
 			BOOL); // Default value
-		addOption(option);
+		addOption(ShadersOption);
 		#end
-
-		var option:Option = new Option('GPU Caching', // Name
+		
+		final gpuCachingOption:Option = new Option('GPU Caching', // Name
 			"If checked, allows the GPU to be used for caching textures, decreasing RAM usage.\nDon't turn this on if you have a shitty Graphics Card.", // Description
 			'cacheOnGPU', BOOL);
-		addOption(option);
+		addOption(gpuCachingOption);
 
 		#if !html5 // Apparently other framerates isn't correctly supported on Browser? Probably it has some V-Sync shit enabled by default, idk
-		var option:Option = new Option('Framerate', "Pretty self explanatory, isn't it?", 'framerate', INT);
-		addOption(option);
-
-		final refreshRate:Int = FlxG.stage.application.window.displayMode.refreshRate;
-		option.minValue = 60;
-		option.maxValue = 240;
-		option.defaultValue = Std.int(FlxMath.bound(refreshRate, option.minValue, option.maxValue));
-		option.displayFormat = '%v FPS';
-		option.onChange = () ->
+		final framerateOption:Option = new Option('Framerate', "Pretty self explanatory, isn't it?", 'framerate', INT);
+		addOption(framerateOption);
+		framerateOption.minValue = 60;
+		framerateOption.maxValue = 240;
+		framerateOption.defaultValue = Std.int(FlxMath.bound(FlxG.stage.application.window.displayMode.refreshRate, framerateOption.minValue, framerateOption.maxValue));
+		framerateOption.displayFormat = '%v FPS';
+		framerateOption.onChange = () ->
 		{
 			if (ClientPrefs.data.framerate > FlxG.drawFramerate)
 			{
@@ -86,8 +86,8 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		insert(999, boyfriend);
 	}
 
-	override function changeSelection(change:Int = 0, ?snd:Bool = true)
-	{
-		super.changeSelection(change, snd);
+	override function destroy() : Void {
+		boyfriend = FlxDestroyUtil.destroy(boyfriend);
+		super.destroy();
 	}
 }

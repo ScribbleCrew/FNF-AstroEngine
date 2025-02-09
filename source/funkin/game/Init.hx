@@ -5,14 +5,15 @@ import funkin.backend.utils.Paths;
 import funkin.backend.initialization.*;
 
 /**
- * Credits:
- * MAJigsaw77 - Og author of line 23.
+ * very simple initialization state (WARNING: MUST BE LOADED BEFORE ANYTHING ELSE!!!)
+ * i just like having a separate file for initializing stuff, instead of throwing it all 
+ * into Main.hx.
+ *
+ * @author YourFriendOrbl
  */
 class Init extends flixel.FlxState
 {
-	#if WATERMARK
-	public static var watermark:Watermark; 
-	#end
+	#if WATERMARK public static var watermark:Watermark; #end
 
 	override public function create():Void
 	{
@@ -22,8 +23,12 @@ class Init extends flixel.FlxState
 
 		FlxG.save.bind('funkin', funkin.backend.CoolUtil.getSavePath());
 
-		ClientPrefs.loadDefaultKeys();  
-		#if (android || ios) Sys.setCwd(#if android Path.addTrailingSlash(Context.getExternalFilesDir()) #elseif ios lime.system.System.applicationStorageDirectory #end); #end
+		ClientPrefs.loadDefaultKeys();
+		
+		#if mobile 
+		// Credits to MAJigsaw77 for this awesome piece of code. >:]c
+		Sys.setCwd(#if android Path.addTrailingSlash(Context.getExternalFilesDir()) #elseif ios lime.system.System.applicationStorageDirectory #end); 
+		#end
 
 		#if LUA_ALLOWED Mods.pushGlobalMods(); #end
 
@@ -36,7 +41,7 @@ class Init extends flixel.FlxState
 		funkin.backend.utils.ClientPrefs.init();
 		this.init();
 
-		this.initFileThread();
+		funkin.backend.initialization.TemporaryFolder.main();
 
 		#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(CallbackHandler.call)); #end
 		#if CRASH_HANDLER openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR,
@@ -58,9 +63,10 @@ class Init extends flixel.FlxState
 		#if HSCRIPT_ALLOWED
 		function laFunc(x, ?pos:haxe.PosInfos)
 		{
-			var newPos:HScriptInfos = cast pos;
+			final newPos:HScriptInfos = cast pos;
 			if (newPos.showLine == null)
 				newPos.showLine = true;
+
 			var msgInfo:String = (newPos.funcName != null ? '(${newPos.funcName}) - ' : '') + '${newPos.fileName}:';
 			#if LUA_ALLOWED
 			if (newPos.isLua == true)
@@ -123,51 +129,14 @@ class Init extends flixel.FlxState
 		Main.fpsVar.alpha = ClientPrefs.data.fpsCounterAlpha;
 		#end
 		FlxG.switchState(new TitleState());
-	}
-
-	#if THREADING_ALLOWED
-	static var mutex:Mutex = new Mutex();
-	#end
-	static var threadedInitialization:Int = 0;
-
-	private function initFileThread():Void
-	{
-		final daInitFiles:Array<Dynamic> = [funkin.backend.initialization.TemporaryFolder];
-
-		for (file in daInitFiles)
-		{
-			#if THREADING_ALLOWED
-			Thread.create(() -> {
-				mutex.acquire();
-			#end
-				try
-				{
-					final daFile:Dynamic = cast file;
-					if (daFile.main != null)
-						daFile.main();
-					if (daFile.__init__ != null)
-						daFile.__init__();
-				}
-				catch (e:Dynamic)
-				{
-					trace('ERROR! : $e');
-				}
-				#if THREADING_ALLOWED
-				mutex.release();
-				#end
-				threadedInitialization++;
-			#if THREADING_ALLOWED
-			});
-			#end
-		}
+		Logs.prefix = '';
 	}
 
 	private function init():Void
 	{
 		trace(OsAPI.osInfo + ' ' + OsAPI.osVersion);
 
-		FlxG.fixedTimestep = #if html5 FlxG.mouse.visible = #end
-		false;
+		FlxG.fixedTimestep = #if html5 FlxG.mouse.visible = #end false;
 		FlxG.keys.preventDefaultKeys = [TAB];
 		FlxG.game.focusLostFramerate = 30;
 
@@ -200,41 +169,4 @@ class Init extends flixel.FlxState
 		});
 	}
 	#end
-}
-
-class Volume
-{
-	public static var muteKeys:Array<FlxKey> = [FlxKey.ZERO];
-	public static var volumeDownKeys:Array<FlxKey> = [FlxKey.NUMPADMINUS, FlxKey.MINUS];
-	public static var volumeUpKeys:Array<FlxKey> = [FlxKey.NUMPADPLUS, FlxKey.PLUS];
-}
-
-class Logs // Modded trace func
-{
-	public static function init():Void
-	{
-		haxe.Log.trace = __customTrace;
-		trace('Finished Setting up custom trace.');
-	}
-
-	@:noCompletion private static function __customTrace(v:Dynamic, ?infos:haxe.PosInfos):Void
-	{
-		var extra:String = "";
-		if (infos != null && infos.customParams != null)
-			for (param in infos.customParams)
-				extra += ", " + param;
-
-		final logThing:String = '${Constants.LOGS_PREFIX}: ${v + (extra == "" ? '' : extra)} : ${infos.fileName + ":" + infos.lineNumber}';
-
-		#if js
-		if (js.Syntax.typeof(untyped console) != "undefined" && (untyped console).log != null)
-			(untyped console).log(logThing);
-		#elseif lua
-		untyped __define_feature__("use._hx_print", _hx_print(logThing));
-		#elseif sys
-		Sys.println(logThing);
-		#else
-		throw new haxe.exceptions.NotImplementedException();
-		#end
-	}
 }

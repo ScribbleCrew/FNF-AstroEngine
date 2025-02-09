@@ -3,15 +3,13 @@ package funkin.game;
 import flixel.FlxG;
 import flixel.FlxGame;
 import openfl.Lib;
-import openfl.display.Sprite;
-import openfl.events.Event;
 import openfl.display.StageScaleMode;
 import funkin.game.FPS;
 
 #if desktop
-import funkin.backend.initialization.ALSoftConfig; // Just to make sure DCE doesn't remove this, since it's not directly referenced anywhere else.
+// Just to make sure DCE doesn't remove this, since it's not directly referenced anywhere else.
+import funkin.backend.initialization.ALSoftConfig;
 #end
-
 
 /**
  * No need to change anything here unless you know what your doin' :3c
@@ -39,11 +37,11 @@ import funkin.backend.initialization.ALSoftConfig; // Just to make sure DCE does
 extern "C" HRESULT WINAPI SetCurrentProcessExplicitAppUserModelID(PCWSTR AppID);
 ')
 #end
-class Main extends Sprite
+class Main extends openfl.display.Sprite
 {
-	private static var _game:FlxGame;
-
 	public static var fpsVar:FPS;
+
+	private static var _game:FlxGame;
 
 	public static function main():Void
 		Lib.current.addChild(new Main());
@@ -52,30 +50,13 @@ class Main extends Sprite
 	{
 		super();
 		
-		stage != null ? init() : addEventListener(Event.ADDED_TO_STAGE, init);
-	}
-
-	private function init(?evnt:Event):Void
-	{
-		if (hasEventListener(Event.ADDED_TO_STAGE)) removeEventListener(Event.ADDED_TO_STAGE, init);
-		setupGame();
-	}
-
-	private function setupGame():Void
-	{
-		final stageWidth:Int = Lib.current.stage.stageWidth;
-		final stageHeight:Int = Lib.current.stage.stageHeight;
-
-		if (Config.zoom == -1.0)
-		{
-			final ratioX:Float = stageWidth / Config.gameSize.width;
-			final ratioY:Float = stageHeight / Config.gameSize.height;
-			
-			Config.zoom = Math.min(ratioX, ratioY);
-			Config.gameSize.width = Math.ceil(stageWidth / Config.zoom);
-			Config.gameSize.height = Math.ceil(stageHeight / Config.zoom);
-		}
-
+		#if windows
+		// DPI Scaling fix for windows 
+		// this shouldn't be needed for other systems
+		// Credit to YoshiCrafter29 for finding this function
+		untyped __cpp__("SetProcessDPIAware();");
+		#end
+	
 		_game = new FlxGame(Config.gameSize.width, Config.gameSize.height, Init, #if (flixel < "5.0.0") Config.zoom, #end Config.framerate, Config.framerate,
 			Config.skipSplash, Config.startFullscreen);
 		#if (FUNKIN_SOUNDTRAY || BASE_GAME_FILES)
@@ -85,12 +66,14 @@ class Main extends Sprite
 		addChild(_game);
 
 		#if !mobile
-		// FPS Stuff
 		fpsVar = setupFPS();
 
-		// idk, lol...
 		Lib.current.stage.align = "tl";
 		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
+		#end
+
+		#if linux
+		Lib.current.stage.window.setIcon(Image.fromFile("icon.png"));
 		#end
 	}
 
@@ -103,7 +86,6 @@ class Main extends Sprite
 		fpsVar.bgOffset.y += 5;
 		addChild(fpsVar.bgSprite);
 		addChild(fpsVar);
-
 		return fpsVar;
 	}
 	#end

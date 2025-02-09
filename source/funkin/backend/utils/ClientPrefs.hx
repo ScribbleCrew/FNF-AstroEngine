@@ -1,11 +1,11 @@
 package funkin.backend.utils;
 
+import funkin.backend.initialization.Volume;
 import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.FlxG;
 import flixel.util.FlxSave;
 import flixel.input.keyboard.FlxKey;
 import funkin.backend.utils.Controls;
-import funkin.game.Init.Volume;
 
 @:structInit class SaveVariables
 {
@@ -24,7 +24,7 @@ import funkin.game.Init.Volume;
 	#if SHADERS_ALLOWED
 	public var shaders:Bool = true;
 	#end
-	public var cacheOnGPU:Bool = #if !switch false #else true #end;
+	public var cacheOnGPU:Bool = #if !switch false #else true #end;// GPU Caching made by Raltyro
 	public var framerate:Int = 60;
 	public var cursing:Bool = true;
 	public var violence:Bool = true;
