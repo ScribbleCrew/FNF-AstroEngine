@@ -1,5 +1,4 @@
-package funkin.backend.initialization;
-
+package funkin.backend.system.initialization;
 /**
 * Uhh, simple script, probs going to add globalscript. -orbl
 * Basically, it creates a .temp folder that doesn't contain anything at the moment but will in the future.

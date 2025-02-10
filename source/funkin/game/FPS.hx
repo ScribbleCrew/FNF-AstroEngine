@@ -8,7 +8,7 @@ import openfl.display.Sprite;
  * Highly modified for Astro Engine.
  */
 @:access(openfl.display.DisplayObject)
-class FPS extends openfl.text.TextField
+@:keep class FPS extends openfl.text.TextField
 {
 	/**
 	 * Because reading any data from DisplayObject is insanely expensive in hxcpp, keep track of whether we need to update it or not.
@@ -21,7 +21,8 @@ class FPS extends openfl.text.TextField
 	public var currentFPS(default, null):Int;
 
 	/**
-	 * Amount of times fps updated?
+	 * I genuinely have no idea what this does, all i know is that 
+	 * it's used to calculate the framerate.
 	 */
 	private var times:Array<Float>;
 
@@ -31,7 +32,8 @@ class FPS extends openfl.text.TextField
 	 */
 	@:isVar
 	public var memoryMegas(get, never):Float;
-	@:noCompletion private inline function get_memoryMegas():Float
+
+	@:dox(hide) @:noCompletion private inline function get_memoryMegas():Float
 		return cpp.vm.Gc.memInfo64(cpp.vm.Gc.MEM_INFO_USAGE);
 
 	/**
@@ -51,13 +53,16 @@ class FPS extends openfl.text.TextField
 		return text += '${text != '' ? '\n' : ''}$str';
 
 	/**
-	 * Reset's everything lol...
+	 * Clear's the whole framerate field (NOTICE: allowed to be used in HScript).
 	 */
 	public inline function clear():String
 		return text = '';
 
+	/**
+	 * Changes `updateFPS` function to the default value.
+	 */
 	public inline function reset():Void->Void
-		return updateFPS = defaultFramerateUpdate;
+		return updateFPS = _default;
 
 	public function new(x:Float = 10, y:Float = 10, color:Int = 0x000000)
 	{
@@ -74,7 +79,7 @@ class FPS extends openfl.text.TextField
 		 */
 		times = [];
 		currentFPS = 0;
-		updateFPS = defaultFramerateUpdate;
+		updateFPS = _default;
 
 		/**
 		 * Setting up the textfield.
@@ -95,61 +100,104 @@ class FPS extends openfl.text.TextField
 		bgSprite.graphics.endFill();
 		bgSprite.alpha = bgAlpha;
 
+		/**
+		 * Syncs with `showFPS` @ `ClientPrefs.data`
+		 */
 		visible = active = bgSprite.visible = ClientPrefs.data.showFPS;
+
+		/**
+		 * Resets the fps field to its default value.
+		 */
+		FlxG.signals.preStateSwitch.add(reset); // extra check.
 	}
 
 	/**
-	 * prevents the overlay from updating every frame, why would you need to anyways. - @crowplexus
+	 * Prevents the overlay from updating every frame, why would you need to anyways. - @crowplexus
 	 */
 	var deltaTimeout:Float = 0.0;
+
+	/**
+	 * Updates the fps field.
+	 */
 	public var updateFPS:Void->Void;
+
 	private override function __enterFrame(deltaTime:Float):Void
 	{
+		/**
+		 * Times push thingy???
+		 */
 		final now:Float = haxe.Timer.stamp() * 1000;
 		times.push(now);
 		while (times[0] < now - 1000)
 			times.shift();
 
+		/**
+		 * Crowplexus delta timeout.
+		 */
 		if (deltaTimeout < 50)
 		{
 			deltaTimeout += deltaTime;
 			return;
 		}
 
+		/**
+		 * Update `currentFPS` with recalculated fps.
+		 */
 		currentFPS = times.length < FlxG.updateFramerate ? times.length : FlxG.updateFramerate;
 		updateFPS();
 		deltaTimeout = 0.0;
 
+		/**
+		 * Set the `bgSprite`'s scale.
+		 */
 		bgSprite.scaleX = this.width + bgOffset.x * 2 - 10;
 		bgSprite.scaleY = this.height + bgOffset.y * 2 + 3;
-	//	bgSprite.x = this.x - bgOffset.x;
-	//	bgSprite.y = this.y - bgOffset.y;
+		// bgSprite.x = this.x - bgOffset.x;
+		// bgSprite.y = this.y - bgOffset.y;
 	}
 
 	/**
-	 * Framerate update function.
+	 * Default framerate update function
 	 */
-	private dynamic function defaultFramerateUpdate():Void
+	private dynamic function _default():Void
 	{
+		/**
+		 * Clear, ofc
+		 */
 		clear();
+
+		/**
+		 * My stupid stuff...
+		 */
 		addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.goober ? "owo's per second" : #end 'FPS'}: $currentFPS');
 		addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.goober ? "proot mem usage" : #end 'Memory'}: ${flixel.util.FlxStringUtil.formatBytes(memoryMegas)}');
 		#if GIT_ALLOWED addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.goober ? "orbl pick one pls 🙏" : #end "Commit"}: ${GitMacro.commitNumber} [${GitMacro.commitHash}] ${GitMacro.branch}'); #end
-		
+
+		/**
+		 * Low FPS Check.
+		 */
 		(currentFPS < FlxG.drawFramerate * 0.5) ? textColor = 0xFFFF0000 : textColor = 0xFFFFFFFF;
 	}
 
 	/**
 	 * Framerate background alpha float.
 	 */
-	private static inline final bgAlpha:Float = (1 / 3);
-	@:noCompletion override function set_alpha(val:Float):Float
+	@:noCompletion private static inline final bgAlpha:Float = (1 / 3);
+
+	/**
+	 * Modified `set_alpha` to take the `bgSprite`'s alpha in account
+	 * and change it accordingly.
+	 */
+	@:dox(hide) @:noCompletion override function set_alpha(value:Float):Float
 	{
-		if (val < bgAlpha)
-			bgSprite.alpha = val;
-		return super.alpha = val;
+		if (value < bgAlpha)
+			bgSprite.alpha = value;
+		return super.alpha = value;
 	}
 
-	@:noCompletion override function set_visible(val:Bool):Bool
-		return bgSprite.visible = super.visible = val;
+	/**
+	 * Modified `set_visible` function to change the visibility of `bgSprite`.
+	 */
+	@:dox(hide) @:noCompletion override function set_visible(value:Bool):Bool
+		return bgSprite.visible = super.visible = value;
 }

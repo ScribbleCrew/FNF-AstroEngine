@@ -2,7 +2,7 @@ package funkin.game;
 
 import flixel.input.keyboard.FlxKey;
 import funkin.backend.utils.Paths;
-import funkin.backend.initialization.*;
+import funkin.backend.system.initialization.*;
 
 /**
  * very simple initialization state (WARNING: MUST BE LOADED BEFORE ANYTHING ELSE!!!)
@@ -39,7 +39,7 @@ class Init extends flixel.FlxState
 		funkin.backend.utils.ClientPrefs.init();
 		this.init();
 
-		funkin.backend.initialization.TemporaryFolder.main();
+		funkin.backend.system.initialization.TemporaryFolder.main();
 
 		#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(CallbackHandler.call)); #end
 		#if CRASH_HANDLER openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR, CrashHandler.main); #end
@@ -47,6 +47,7 @@ class Init extends flixel.FlxState
 		#if DISCORD_ALLOWED DiscordClient.prepare(); #end
 		#if SHADERS_ALLOWED ShaderCoordsFix.fix(); #end
 		#if windows AudioSwitchFix.init(); #end
+		#if HSCRIPT_ALLOWED IrisConfig.init(); #end
 
 		funkin.game.objects.Alphabet.AlphaCharacter.loadAlphabetData();
 
@@ -55,49 +56,6 @@ class Init extends flixel.FlxState
 		#if WATERMARK
 		watermark = new Watermark();
 		openfl.Lib.current.addChild(watermark);
-		#end
-
-		#if HSCRIPT_ALLOWED
-		function laFunc(x, ?pos:haxe.PosInfos)
-		{
-			final newPos:HScriptInfos = cast pos;
-			if (newPos.showLine == null)
-				newPos.showLine = true;
-
-			var msgInfo:String = (newPos.funcName != null ? '(${newPos.funcName}) - ' : '') + '${newPos.fileName}:';
-			#if LUA_ALLOWED
-			if (newPos.isLua == true)
-			{
-				msgInfo += 'HScript:';
-				newPos.showLine = false;
-			}
-			#end
-			if (newPos.showLine == true)
-			{
-				msgInfo += '${newPos.lineNumber}:';
-			}
-			msgInfo += ' $x';
-			return msgInfo;
-		}
-
-		Iris.warn = function(x, ?pos:haxe.PosInfos)
-		{
-			Iris.logLevel(WARN, x, pos);
-			if (PlayState.instance != null)
-				PlayState.instance.addTextToDebug('WARNING: ${laFunc(x, pos)}', FlxColor.YELLOW);
-		}
-		Iris.error = function(x, ?pos:haxe.PosInfos)
-		{
-			Iris.logLevel(ERROR, x, pos);
-			if (PlayState.instance != null)
-				PlayState.instance.addTextToDebug('ERROR: ${laFunc(x, pos)}', FlxColor.RED);
-		}
-		Iris.fatal = function(x, ?pos:haxe.PosInfos)
-		{
-			Iris.logLevel(FATAL, x, pos);
-			if (PlayState.instance != null)
-				PlayState.instance.addTextToDebug('FATAL: ${laFunc(x, pos)}', 0xFFBB0000);
-		}
 		#end
 
 		#if VIDEOS_ALLOWED

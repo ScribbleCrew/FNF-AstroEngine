@@ -1,4 +1,4 @@
-package funkin.backend.ui;
+package funkin.backend.system.ui;
 
 import flixel.util.FlxDestroyUtil;
 import flixel.math.FlxPoint;

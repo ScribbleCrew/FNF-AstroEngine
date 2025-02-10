@@ -1,6 +1,6 @@
 package funkin.backend.utils;
 
-import funkin.backend.initialization.Volume;
+import funkin.backend.system.initialization.Volume;
 import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.FlxG;
 import flixel.util.FlxSave;

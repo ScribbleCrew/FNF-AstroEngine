@@ -1,5 +1,6 @@
 package funkin.game.states;
 
+import funkin.backend.system.initialization.Logs;
 #if flixel
 import flixel.util.*;
 import flixel.input.keyboard.FlxKey;
@@ -1838,7 +1839,8 @@ class PlayState extends MusicBeatState
 				oldNote = swagNote;
 			}
 		}
-		trace('["${SONG.song.toUpperCase()}" CHART INFO]: Ghost Notes Cleared: $ghostNotesCaught');
+		Logs.prefixedTrace('${SONG.song} // Ghost Notes Cleared: $ghostNotesCaught', 'Chart Info');
+
 		for (event in songData.events) //Event Notes
 			for (i in 0...event[1].length)
 				makeEvent(event, i);

@@ -1,7 +1,7 @@
 package funkin.game.states;
 
 // Haxe
-import funkin.backend.initialization.Logs;
+import funkin.backend.system.initialization.Logs;
 import flixel.system.FlxAssets;
 import haxe.macro.Expr.Constant;
 import openfl.media.Sound;

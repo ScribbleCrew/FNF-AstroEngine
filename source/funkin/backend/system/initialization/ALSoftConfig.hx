@@ -1,4 +1,4 @@
-package funkin.backend.initialization;
+package funkin.backend.system.initialization;
 
 #if desktop
 import haxe.io.Path;

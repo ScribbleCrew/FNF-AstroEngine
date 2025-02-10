@@ -1,5 +1,6 @@
-package funkin.backend.initialization;
+package funkin.backend.system.initialization;
 
+import funkin.backend.utils.native.Terminal.TColor;
 
 /**
  * Modified trace because it just makes sense.
@@ -15,6 +16,21 @@ class Logs
 	@:dox(hide) @:noCompletion private static function set_prefix(value:String):String {
 		if (value == '' || value == null) return prefix = Constants.DEFAULT_LOGS_PREFIX;
 		return prefix = value;
+	}
+
+	public static function print(v:Dynamic, ?color:TColor, ?infos:PosInfos)// sorry but, you don't need PosInfo lmao
+		{
+			if (color != null) Terminal.instance.fg(color);
+			trace(v);
+			if (color != null) Terminal.instance.resetFg();
+		}
+
+
+	public static function prefixedTrace(x:Dynamic, customPrefix:String, ?color:TColor, ?infos:PosInfos) {
+		var _old:String = prefix;
+		prefix = customPrefix;
+		print(x,color);
+		prefix = _old;
 	}
 
 	/**

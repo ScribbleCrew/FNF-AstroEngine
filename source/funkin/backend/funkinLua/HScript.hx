@@ -144,7 +144,7 @@ class HScript extends Iris
 		set('FlxSprite', flixel.FlxSprite);
 		set('FlxText', flixel.text.FlxText);
 		set('FlxCamera', flixel.FlxCamera);
-		set('PsychCamera', CustomCamera);
+		set('PsychCamera', CustomCamera);//more psych support.
 		set('CustomCamera', CustomCamera);
 		set('AstroCamera', CustomCamera);
 		set('FlxTimer', flixel.util.FlxTimer);
@@ -163,14 +163,10 @@ class HScript extends Iris
 		set('Alphabet', Alphabet);
 		set('Note', Note);
 		set('CustomSubstate', CustomSubstate);
-		#if (!flash && sys)
-		set('FlxRuntimeShader', flixel.addons.display.FlxRuntimeShader);
-		#end
+		#if (!flash && sys) set('FlxRuntimeShader', flixel.addons.display.FlxRuntimeShader); #end
 		set('ShaderFilter', openfl.filters.ShaderFilter);
 		set('StringTools', StringTools);
-		#if flxanimate
-		set('FlxAnimate', FlxAnimate);
-		#end
+		#if flxanimate set('FlxAnimate', FlxAnimate); #end
 
 		// Functions & Variables
 		set('setVar', function(name:String, value:Dynamic) {

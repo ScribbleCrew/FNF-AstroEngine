@@ -1,5 +1,4 @@
-package funkin.backend.initialization;
-
+package funkin.backend.system.initialization;
 #if WATERMARK
 import openfl.text.TextFormat;
 

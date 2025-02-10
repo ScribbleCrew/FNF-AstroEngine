@@ -29,7 +29,7 @@ abstract class MusicBeatState extends FlxState
 		return Controls.instance;
 
 	public var variables:Map<String, Dynamic> = new Map<String, Dynamic>();
-	public static function getVariables()
+	public static function getVariables():Map<String, Dynamic>
 		return getState().variables;
 
 	override function create():Void
@@ -196,9 +196,7 @@ abstract class MusicBeatState extends FlxState
 	}
 
 	public static function getState():MusicBeatState
-	{
 		return cast(FlxG.state, MusicBeatState);
-	}
 
 	public function stepHit():Void
 	{

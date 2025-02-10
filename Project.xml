@@ -80,6 +80,9 @@
 	<!-- Checks if "git" is allowed -->
 	<define name="GIT_ALLOWED" if="debug"/>
 
+	<!-- Enable global script -->
+	<define name="GLOBAL_SCRIPT" if="debug"/>
+
 	<!-- Enables funkin sound tray -->
 	<define name="FUNKIN_SOUNDTRAY" if="debug"/>
 

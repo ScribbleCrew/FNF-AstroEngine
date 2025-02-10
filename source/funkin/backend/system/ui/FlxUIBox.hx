@@ -1,4 +1,4 @@
-package funkin.backend.ui;
+package funkin.backend.system.ui;
 typedef UIStyleData = {
 	var bgColor:FlxColor;
 	var textColor:FlxColor;

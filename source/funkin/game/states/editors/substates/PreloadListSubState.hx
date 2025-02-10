@@ -1,7 +1,7 @@
 package funkin.game.states.editors.substates;
-import funkin.backend.ui.FlxUIRadioGroup.FlxUiRadioItem;
+import funkin.backend.system.ui.FlxUIRadioGroup.FlxUiRadioItem;
 import funkin.backend.data.StageData.LoadFilters;
-import funkin.backend.ui.FlxUIEventHandler.FlxUIEvent;
+import funkin.backend.system.ui.FlxUIEventHandler.FlxUIEvent;
 import haxe.io.Path;
 import flixel.util.FlxDestroyUtil;
 import flash.net.FileFilter;

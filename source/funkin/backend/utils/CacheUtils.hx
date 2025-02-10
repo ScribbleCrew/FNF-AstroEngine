@@ -1,5 +1,6 @@
 package funkin.backend.utils;
 
+
 enum CacheType
 {
 	COUNTDOWN;
@@ -28,7 +29,7 @@ class CacheUtils
 	public static function cacheArgs(list:Array<CacheType>) {
 		for (i in list)
 			cache(i, false);
-		trace('Successfully Cached: ${list}');
+		Logs.prefixedTrace('Successfully Cached: $list', 'Cache Utils', BLUE);
 	}
 
 	public static function cacheCountdown()

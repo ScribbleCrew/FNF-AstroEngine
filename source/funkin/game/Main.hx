@@ -4,7 +4,7 @@ package funkin.game;
 /**
  * Just to make sure DCE doesn't remove this, since it's not directly referenced anywhere else.
  */
-import funkin.backend.initialization.ALSoftConfig;
+import funkin.backend.system.initialization.ALSoftConfig;
 #end
 
 import flixel.FlxG;
@@ -63,7 +63,10 @@ class Main extends openfl.display.Sprite
 		 * -----------------------------------------
 		 * Credit to YoshiCrafter29 for finding this function
 		 */
-		untyped __cpp__("SetProcessDPIAware();");
+		untyped __cpp__("
+		SetProcessDPIAware(); // dpi fix
+		DisableProcessWindowsGhosting()
+		");
 		#end
 
 		_game = new FlxGame(Config.gameSize.width, Config.gameSize.height, Init, #if (flixel < "5.0.0") Config.zoom, #end Config.framerate, Config.framerate,
@@ -100,7 +103,6 @@ class Main extends openfl.display.Sprite
 
 	// Audio Fix
 	@:dox(hide) public static var audioDisconnected(default, set):Bool = false;
-
 	@:dox(hide) @:noCompletion private static function set_audioDisconnected(value:Bool):Bool // oops
 	{
 		audioDisconnected = value;

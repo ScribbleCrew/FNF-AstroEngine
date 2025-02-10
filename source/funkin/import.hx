@@ -43,7 +43,7 @@ import funkin.backend.base.*;
 import funkin.backend.audio.*;
 import funkin.backend.utils.native.*;
 import funkin.backend.base.BaseStage.Countdown;
-import funkin.backend.ui.*;
+import funkin.backend.system.ui.*;
 import funkin.backend.handlers.*;
 import funkin.backend.objects.*;
 import funkin.backend.objects.editers.*;
@@ -52,6 +52,7 @@ import funkin.backend.animation.*;
 import funkin.backend.Song.SwagSong;
 import funkin.backend.Song.SwagSection;
 import funkin.backend.data.StageData.StageFile;
+import funkin.backend.system.initialization.Logs;
 
 // Haxe
 import haxe.extern.*;

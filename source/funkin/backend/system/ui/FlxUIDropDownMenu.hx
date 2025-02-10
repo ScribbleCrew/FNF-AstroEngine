@@ -1,6 +1,6 @@
-package funkin.backend.ui;
+package funkin.backend.system.ui;
 
-import funkin.backend.ui.FlxUIBox.UIStyleData;
+import funkin.backend.system.ui.FlxUIBox.UIStyleData;
 
 class FlxUIDropDownMenu extends FlxUIInputText
 {

@@ -6,11 +6,6 @@ import funkin.backend.utils.Controls;
 
 abstract class MusicBeatSubstate extends FlxSubState
 {
-	public function new()
-	{
-		super();
-	}
-
 	private var curSection:Int = 0;
 	private var stepsToDo:Int = 0;
 
@@ -22,12 +17,12 @@ abstract class MusicBeatSubstate extends FlxSubState
 
 	private var curDecStep:Float = 0;
 	private var curDecBeat:Float = 0;
-	private var controls(get, never):Controls;
 
-	inline function get_controls():Controls
+	private var controls(get, never):Controls;
+	@:noCompletion private inline function get_controls():Controls
 		return Controls.instance;
 
-	override function update(elapsed:Float)
+	override function update(elapsed:Float):Void
 	{
 		// everyStep();
 		if (!persistentUpdate) MusicBeatState.timePassedOnState += elapsed;
@@ -42,12 +37,7 @@ abstract class MusicBeatSubstate extends FlxSubState
 				stepHit();
 
 			if (PlayState.SONG != null)
-			{
-				if (oldStep < curStep)
-					updateSection();
-				else
-					rollbackSection();
-			}
+				(oldStep < curStep) ? updateSection() : rollbackSection();
 		}
 
 		super.update(elapsed);
@@ -121,7 +111,7 @@ abstract class MusicBeatSubstate extends FlxSubState
 		// yep, you guessed it, nothing again, dumbass
 	}
 
-	function getBeatsOnSection()
+	function getBeatsOnSection():Null<Float>
 	{
 		var val:Null<Float> = 4;
 		if (PlayState.SONG != null && PlayState.SONG.notes[curSection] != null)

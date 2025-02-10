@@ -1,5 +1,4 @@
-package funkin.backend.initialization;
-
+package funkin.backend.system.initialization;
 // shader coords fix
 @:keep class ShaderCoordsFix
 {
