@@ -87,7 +87,7 @@ import funkin.backend.utils.Controls;
 	public var showRatingStats:Bool = true;
 	
 	#if WINDOW_CUSTOMIZATION public var darkmodeEnabled:Bool = false; #end
-	#if ASTRO_WATERMARKS public var gayFurryStuff:Bool = false; #end
+	#if ASTRO_WATERMARKS public var goober:Bool = false; #end
 
 	public var stats:Map<String, Dynamic> = ['Max Misses' => 0, 'Max Score' => 0];
 

@@ -2,26 +2,28 @@ package funkin.backend.initialization;
 
 
 /**
- * Modded trace because it just makes sense.
- * Also has a customizable prefix, example: [SYSTEM]: <blah blah blah>
+ * Modified trace because it just makes sense.
+ * Also has a customizable prefix, for example: [System]: <blah blah blah>
  */
-class Logs // Modded trace func
+class Logs
 {
     /**
      * Custom prefix, mainly used on the loading screen, but can be used anywhere.
      * If left blank it reverts to its default value, which is `Constants.DEFAULT_LOGS_PREFIX`.
      */
 	public static var prefix(default, set):String = Constants.DEFAULT_LOGS_PREFIX;
-	@:dox(hide) @:noCompletion private static function set_prefix(yeah:String):String {
-		if (yeah == '' || yeah == null) return prefix = Constants.DEFAULT_LOGS_PREFIX;
-		return prefix = yeah;
+	@:dox(hide) @:noCompletion private static function set_prefix(value:String):String {
+		if (value == '' || value == null) return prefix = Constants.DEFAULT_LOGS_PREFIX;
+		return prefix = value;
 	}
 
-
+	/**
+	 * Mainly used for setting up everything.
+	 */
 	public static function init():Void
 	{
 		haxe.Log.trace = __customTrace;
-        Logs.prefix = 'INIT';
+        Logs.prefix = 'Initialization';
 		trace('Finished Setting up custom trace.');
 	}
 

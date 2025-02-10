@@ -414,7 +414,7 @@ class StoryMenuState extends MusicBeatState
 		#end
 	}
 
-	var lerpScore:Int = (ClientPrefs.data.gayFurryStuff ? 69696969 : 49324858);
+	var lerpScore:Int = (ClientPrefs.data.goober ? 69696969 : 49324858);
 	var intendedScore:Int = 0;
 
 	function changeWeek(change:Int = 0):Void

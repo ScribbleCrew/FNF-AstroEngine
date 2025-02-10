@@ -105,7 +105,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		addOption(option);
 
 		#if ASTRO_WATERMARKS
-		var option:Option = new Option('Weird Stuff', 'erm, owo?', 'gayFurryStuff', BOOL);
+		var option:Option = new Option('goob', null, 'goober', BOOL);
 		addOption(option);
 		#end
 

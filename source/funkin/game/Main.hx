@@ -1,7 +1,9 @@
 package funkin.game;
 
 #if desktop
-// Just to make sure DCE doesn't remove this, since it's not directly referenced anywhere else.
+/**
+ * Just to make sure DCE doesn't remove this, since it's not directly referenced anywhere else.
+ */
 import funkin.backend.initialization.ALSoftConfig;
 #end
 

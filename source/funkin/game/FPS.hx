@@ -5,9 +5,7 @@ import openfl.display.Sprite;
 /**
  * The FPS class provides an easy-to-use monitor to display
  * the current frame rate of an OpenFL project.
- *
- * NOTICE:
- * Slightly modified for Astro Engine.
+ * Highly modified for Astro Engine.
  */
 @:access(openfl.display.DisplayObject)
 class FPS extends openfl.text.TextField
@@ -28,7 +26,8 @@ class FPS extends openfl.text.TextField
 	private var times:Array<Float>;
 
 	/**
-	 *	The current memory usage (WARNING: this is NOT your total program memory usage, rather it shows the garbage collector memory)
+	 * The current memory usage (WARNING: this is NOT your total program memory usage, 
+	 * rather it shows the garbage collector memory)
 	 */
 	@:isVar
 	public var memoryMegas(get, never):Float;
@@ -36,12 +35,12 @@ class FPS extends openfl.text.TextField
 		return cpp.vm.Gc.memInfo64(cpp.vm.Gc.MEM_INFO_USAGE);
 
 	/**
-	 * The background sprite.
+	 * The translucent background.
 	 */
 	public var bgSprite:Sprite;
 
 	/**
-	 * The background offset.
+	 * Background offset.
 	 */
 	public var bgOffset:FlxPoint = FlxPoint.get();
 
@@ -57,14 +56,29 @@ class FPS extends openfl.text.TextField
 	public inline function clear():String
 		return text = '';
 
+	public inline function reset():Void->Void
+		return updateFPS = defaultFramerateUpdate;
+
 	public function new(x:Float = 10, y:Float = 10, color:Int = 0x000000)
 	{
 		super();
 
+		/**
+		 * Setting the given positions.
+		 */
 		this.x = x;
 		this.y = y;
 
+		/**
+		 * Default stuff
+		 */
+		times = [];
 		currentFPS = 0;
+		updateFPS = defaultFramerateUpdate;
+
+		/**
+		 * Setting up the textfield.
+		 */
 		selectable = false;
 		mouseEnabled = false;
 		defaultTextFormat = new openfl.text.TextFormat("_sans", 14, color, false);
@@ -72,16 +86,16 @@ class FPS extends openfl.text.TextField
 		multiline = true;
 		text = "FPS: ";
 
+		/**
+		 * Creating the background sprite.
+		 */
 		bgSprite = new Sprite();
 		bgSprite.graphics.beginFill(0xFF000000);
 		bgSprite.graphics.drawRect(0, 0, 1, 1);
 		bgSprite.graphics.endFill();
 		bgSprite.alpha = bgAlpha;
+
 		visible = active = bgSprite.visible = ClientPrefs.data.showFPS;
-
-		times = [];
-
-		updateFPS = defaultFramerateUpdate;
 	}
 
 	/**
@@ -108,20 +122,19 @@ class FPS extends openfl.text.TextField
 
 		bgSprite.scaleX = this.width + bgOffset.x * 2 - 10;
 		bgSprite.scaleY = this.height + bgOffset.y * 2 + 3;
-		bgSprite.x = this.x - bgOffset.x;
-		bgSprite.y = this.y - bgOffset.y;
+	//	bgSprite.x = this.x - bgOffset.x;
+	//	bgSprite.y = this.y - bgOffset.y;
 	}
 
 	/**
 	 * Framerate update function.
-	 * can be used in hscript.
 	 */
-	public dynamic function defaultFramerateUpdate():Void
+	private dynamic function defaultFramerateUpdate():Void
 	{
 		clear();
-		addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "owo's per second" : #end 'FPS'}: $currentFPS');
-		addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "proot mem usage" : #end 'Memory'}: ${flixel.util.FlxStringUtil.formatBytes(memoryMegas)}');
-		#if GIT_ALLOWED addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.gayFurryStuff ? "orbl pick one pls 🙏" : #end "Commit"}: ${GitMacro.commitNumber} [${GitMacro.commitHash}] ${GitMacro.branch}'); #end
+		addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.goober ? "owo's per second" : #end 'FPS'}: $currentFPS');
+		addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.goober ? "proot mem usage" : #end 'Memory'}: ${flixel.util.FlxStringUtil.formatBytes(memoryMegas)}');
+		#if GIT_ALLOWED addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.goober ? "orbl pick one pls 🙏" : #end "Commit"}: ${GitMacro.commitNumber} [${GitMacro.commitHash}] ${GitMacro.branch}'); #end
 		
 		(currentFPS < FlxG.drawFramerate * 0.5) ? textColor = 0xFFFF0000 : textColor = 0xFFFFFFFF;
 	}

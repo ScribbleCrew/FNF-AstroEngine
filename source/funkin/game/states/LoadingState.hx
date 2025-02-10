@@ -33,7 +33,6 @@ class LoadingState extends MusicBeatState
 
 	function new(target:FlxState, stopMusic:Bool)
 	{
-		Logs.prefix = 'Precache Log';
 		this.target = target;
 		this.stopMusic = stopMusic;
 		
@@ -198,6 +197,8 @@ class LoadingState extends MusicBeatState
 		initialThreadCompleted = false;
 		var threadsCompleted:Int = 0;
 		var threadsMax:Int = 2;
+		Logs.prefix = 'Loading';
+		
 		function completedThread()
 		{
 			threadsCompleted++;

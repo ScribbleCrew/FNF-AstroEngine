@@ -1,18 +1,22 @@
+// too lazy to doc. :3
+
 import funkin.game.Main;
 import openfl.Lib;
 
-var either:Bool = false;
+var isShowing:Bool = false;
 var timePassed:Float = 0;
+
 function goodNoteHit(note)
 {
-	either = !either;
-	if (either)
-	{
-		Main.fpsVar.updateFPS = function()
-		{
-			timePassed += Lib.getTimer() / 1000;
+	isShowing = !isShowing;
 
+	if (isShowing)
+	{
+		Main.fpsVar.updateFPS = () ->
+		{
 			var dots:String = '';
+
+			timePassed += Lib.getTimer() / 1000;
 			switch (Math.floor(timePassed % 1 * 3))
 			{
 				case 0:
@@ -25,12 +29,10 @@ function goodNoteHit(note)
 
 			Main.fpsVar.clear();
 			Main.fpsVar.addLine('true' + dots);
-			Main.fpsVar.addLine('Loading deez ballz'+dots);
-			Main.fpsVar.addLine('meow :3c //' +dots);
+			Main.fpsVar.addLine('Loading deez ballz' + dots);
+			Main.fpsVar.addLine('meow :3c //' + dots);
 		};
 	}
 	else
-	{
-		Main.fpsVar.updateFPS = Main.fpsVar.defaultFramerateUpdate; // default framerate lol
-	}
+		Main.fpsVar.reset(); // default framerate lol
 }
