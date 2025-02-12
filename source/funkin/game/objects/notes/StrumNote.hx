@@ -9,16 +9,17 @@ import funkin.backend.utils.ClientPrefs;
 
 class StrumNote extends FlxSprite
 {
+	private var player:Int;
+
 	public var rgbShader:RGBShaderReference;
 	public var resetAnim:Float = 0;
 	private var noteData:Int = 0;
-	public var direction:Float = 90;//plan on doing scroll directions soon -bb
-	public var downScroll:Bool = false;//plan on doing scroll directions soon -bb
+	public var direction:Float = 90;
+	public var downScroll:Bool = false;
 	public var sustainReduce:Bool = true;
-	private var player:Int;
 	
 	public var texture(default, set):String = null;
-	private function set_texture(value:String):String {
+	@:dox(hide) @:noCompletion inline private function set_texture(value:String):String {
 		if(texture != value) {
 			texture = value;
 			reloadNote();
@@ -35,7 +36,7 @@ class StrumNote extends FlxSprite
 		if(PlayState.SONG != null && PlayState.SONG.disableNoteRGB) useRGBShader = false;
 		
 		var arr:Array<FlxColor> = ClientPrefs.data.arrowRGB[leData];
-		if(PlayState.isPixelStage) arr = ClientPrefs.data.arrowRGBPixel[leData]; 
+		if(PlayState.isPixelStage) arr = ClientPrefs.data.arrowRGBPixel[leData];
 		
 		if(leData <= arr.length)
 		{
@@ -50,6 +51,7 @@ class StrumNote extends FlxSprite
 		noteData = leData;
 		this.player = player;
 		this.noteData = leData;
+		this.ID = noteData;
 		super(x, y);
 
 		var skin:String = null;
@@ -61,6 +63,7 @@ class StrumNote extends FlxSprite
 
 		texture = skin; //Load texture and anims
 		scrollFactor.set();
+		playAnim('static');
 	}
 
 	public function reloadNote()
@@ -141,12 +144,11 @@ class StrumNote extends FlxSprite
 		}
 	}
 
-	public function postAddedToGroup() {
-		playAnim('static');
+	public function playerPosition()
+	{
 		x += Note.swagWidth * noteData;
 		x += 50;
 		x += ((FlxG.width / 2) * player);
-		ID = noteData;
 	}
 
 	override function update(elapsed:Float) {
@@ -170,4 +172,3 @@ class StrumNote extends FlxSprite
 		if(useRGBShader) rgbShader.enabled = (animation.curAnim != null && animation.curAnim.name != 'static');
 	}
 }
-

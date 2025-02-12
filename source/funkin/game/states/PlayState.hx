@@ -666,10 +666,17 @@ class PlayState extends MusicBeatState
 	 */
 	public var scoreUpdate:Void->Void = null;
 
+	private static var _lastLoadedModDirectory:String = '';
+	public static var nextReloadAll:Bool = false;
+
 	override public function create()
 	{
-		// trace('Playback Rate: ' + playbackRate);
+
+		_lastLoadedModDirectory = Mods.currentModDirectory;
 		Paths.clearStoredMemory();
+		if(nextReloadAll) Paths.clearUnusedMemory();
+		nextReloadAll = false;
+
 		FlxG.mouse.visible = false;
 
 		startCallback = startCountdown;
@@ -1018,52 +1025,38 @@ class PlayState extends MusicBeatState
 		startCallback();
 		RecalculateRating();
 
+		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
+		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
+
 		/**
 		 * Precaching stuff...
 		 * PRECACHING MISS SOUNDS BECAUSE I THINK THEY CAN LAG PEOPLE AND FUCK THEM UP IDK HOW HAXE WORKS
 		 */
 		if (ClientPrefs.data.hitsoundVolume > 0)
-			precacheList.set('hitsound', 'sound');
-		precacheList.set('missnote1', 'sound');
-		precacheList.set('missnote2', 'sound');
-		precacheList.set('missnote3', 'sound');
+			Paths.sound('hitsound');
+		if (!ClientPrefs.data.ghostTapping)
+			for (i in 1...4)
+				Paths.sound('missnote$i');
+		Paths.image('alphabet');
+
 		if (PauseSubState.songName != null)
-			precacheList.set(PauseSubState.songName, 'music');
-		else if (ClientPrefs.data.pauseMusic != 'None')
-			precacheList.set(Paths.formatToSongPath(ClientPrefs.data.pauseMusic), 'music');
-		precacheList.set('alphabet', 'image');
+			Paths.music(PauseSubState.songName);
+		else if (Paths.formatToSongPath(ClientPrefs.data.pauseMusic) != 'none')
+			Paths.music(Paths.formatToSongPath(ClientPrefs.data.pauseMusic));
 
-		#if DISCORD_ALLOWED DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character); #end
+		resetRPC();
+
+		//#if DISCORD_ALLOWED DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character); #end
 		#if desktop WindowUtil.title = ('%{GAME_TITLE} - $detailsText'); #end
-
-		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
-		FlxG.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyRelease);
 
 		stageAccess(function(stage:BaseStage) stage.createPost());
 		callOnScripts('onCreatePost', []);
 
 		super.create();
-
-		CacheUtils.cacheArgs([COUNTDOWN,POPUPSCORE]);
-
-		for (key => type in precacheList)
-		{
-			// trace('Key $key is type $type');
-			switch (type)
-			{
-				case 'image':
-					Paths.image(key);
-				case 'sound':
-					Paths.sound(key);
-				case 'music':
-					Paths.music(key);
-			}
-		}
-
 		Paths.clearUnusedMemory();
 
-		if (eventNotes.length < 1)
-			checkEventNote();
+		CacheUtils.cacheArgs([COUNTDOWN,POPUPSCORE]);
+		if (eventNotes.length < 1) checkEventNote();
 	}
 
 	#if SHADERS_ALLOWED
@@ -1660,7 +1653,10 @@ class PlayState extends MusicBeatState
 		setOnScripts('songLength', songLength);
 		callOnScripts('onSongStart', []);
 
-		#if DISCORD_ALLOWED DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character, true, songLength); #end
+		
+		#if DISCORD_ALLOWED
+		if(autoUpdateRPC) DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character, true, songLength);
+		#end
 		#if desktop WindowUtil.title = ('%{GAME_TITLE} - $detailsText - ${SONG.song} (${storyDifficultyText})'); #end
 	}
 
@@ -1966,66 +1962,50 @@ class PlayState extends MusicBeatState
 			}
 
 			strumLineNotes.add(babyArrow);
-			babyArrow.postAddedToGroup();
+			babyArrow.playerPosition();
 		}
 	}
 
-	@:dox(hide) override function openSubState(SubState:flixel.FlxSubState)
+	@:dox(hide) override function openSubState(SubState:flixel.FlxSubState) : Void
 	{
 		stageAccess(function(stage:BaseStage) stage.openSubState(SubState));
+
 		if (paused)
-		{
-			if (FlxG.sound.music != null)
 			{
-				FlxG.sound.music.pause();
-				vocals.pause();
-				opponentVocals.pause();
+				if (FlxG.sound.music != null)
+				{
+					FlxG.sound.music.pause();
+					vocals.pause();
+					opponentVocals.pause();
+				}
+				FlxTimer.globalManager.forEach((tmr:FlxTimer) -> if(!tmr.finished) tmr.active = false);
+				FlxTween.globalManager.forEach((twn:FlxTween) -> if(!twn.finished) twn.active = false);
+				#if VIDEOS_ALLOWED if(videoCutscene != null) videoCutscene.pause(); #end
 			}
-			FlxTimer.globalManager.forEach(function(tmr:FlxTimer) if (!tmr.finished)
-				tmr.active = false);
-			FlxTween.globalManager.forEach(function(twn:FlxTween) if (!twn.finished)
-				twn.active = false);
-		}
 
 		super.openSubState(SubState);
 	}
 
 	public var canResync:Bool = true;
-
 	@:dox(hide) override function closeSubState()
 	{
 		stageAccess(function(stage:BaseStage) stage.closeSubState());
-		
+
 		if (paused)
 		{
 			if (FlxG.sound.music != null && !startingSong && canResync)
-			{
 				resyncVocals();
-			}
-			FlxTimer.globalManager.forEach(function(tmr:FlxTimer) if (!tmr.finished)
-				tmr.active = true);
-			FlxTween.globalManager.forEach(function(twn:FlxTween) if (!twn.finished)
-				twn.active = true);
+
+			FlxTimer.globalManager.forEach((tmr:FlxTimer) -> if(!tmr.finished) tmr.active = true);
+			FlxTween.globalManager.forEach((twn:FlxTween) -> if(!twn.finished) twn.active = true);
+			#if VIDEOS_ALLOWED
+			if (videoCutscene != null)
+				videoCutscene.resume();
+			#end
 
 			paused = false;
-			callOnScripts('onResume', []);
-
-			#if DISCORD_ALLOWED
-			if (startTimer != null && startTimer.finished)
-			{
-				DiscordClient.changePresence(detailsText, SONG.song
-					+ " ("
-					+ storyDifficultyText
-					+ ")", baseUI.iconP2.character, true,
-					songLength
-					- Conductor.songPosition
-					- ClientPrefs.data.noteOffset);
-			}
-			else
-			{
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
-			}
-			#end
+			callOnScripts('onResume');
+			resetRPC(startTimer != null && startTimer.finished);
 			#if desktop WindowUtil.title = '%{GAME_TITLE} - $detailsText - ${SONG.song} (${storyDifficultyText})'; #end
 		}
 
@@ -2034,25 +2014,20 @@ class PlayState extends MusicBeatState
 
 	override public function onFocus():Void
 	{
-		#if desktop
-		if (health > 0 && !paused)
+		if (!paused)
 		{
-			#if DISCORD_ALLOWED
-			if (Conductor.songPosition > 0.0)
-				DiscordClient.changePresence(detailsText, SONG.song
-					+ " ("
-					+ storyDifficultyText
-					+ ")", baseUI.iconP2.character, true,
-					songLength
-					- Conductor.songPosition
-					- ClientPrefs.data.noteOffset)
-			else
-				DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
+			if (health > 0)
+			{
+				resetRPC(Conductor.songPosition > 0.0) ;
+				#if desktop 
+				WindowUtil.title = '%{GAME_TITLE} - ${SONG.song} (${storyDifficultyText.toUpperCase()})'; 
+				#end
+			};
+			#if VIDEOS_ALLOWED
+			if (videoCutscene != null)
+				videoCutscene.resume();
 			#end
-
-			#if desktop WindowUtil.title = '%{GAME_TITLE} - ${SONG.song} (${storyDifficultyText.toUpperCase()})'; #end
 		}
-		#end
 
 		super.onFocus();
 	}
@@ -2060,14 +2035,36 @@ class PlayState extends MusicBeatState
 	override public function onFocusLost():Void
 	{
 		#if desktop
-		if (health > 0 && !paused)
+		if (!paused)
 		{
+			#if DISCORD_ALLOWED
+			if (health > 0 && autoUpdateRPC) DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
+			#end
+
+			#if VIDEOS_ALLOWED
+			if (videoCutscene != null) videoCutscene.pause();
+			#end
+
 			#if DISCORD_ALLOWED DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character); #end
 			#if desktop WindowUtil.title = ('%{GAME_TITLE} - Paused - ${SONG.song}'); #end
 		}
 		#end
 
 		super.onFocusLost();
+	}
+
+	// Updating Discord Rich Presence.
+	public var autoUpdateRPC:Bool = true; //performance setting for custom RPC things
+	function resetRPC(?showTime:Bool = false)
+	{
+		#if DISCORD_ALLOWED
+		if(!autoUpdateRPC) return;
+
+		if (showTime)
+			DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character, true, songLength - Conductor.songPosition - ClientPrefs.data.noteOffset);
+		else
+			DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
+		#end
 	}
 
 	function resyncVocals():Void

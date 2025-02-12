@@ -94,7 +94,7 @@ class PauseSubState extends MusicBeatSubstate
 		bg.scrollFactor.set();
 		add(bg);
 
-		var levelInfo:FlxText = new FlxText(20, 15, 0, PlayState.SONG.song.capitalize(), 32);
+		var levelInfo:FlxText = new FlxText(20, 15, 0, PlayState.SONG.song.replace('-', ' ').capitalize(), 32);
 		levelInfo.scrollFactor.set();
 		levelInfo.setFormat(Constants.DEFAULT_FONT, 32);
 		levelInfo.updateHitbox();
@@ -191,6 +191,14 @@ class PauseSubState extends MusicBeatSubstate
 			return;
 		}
 
+		if (FlxG.keys.justPressed.F5)
+		{
+			FlxTransitionableState.skipNextTransIn = true;
+			FlxTransitionableState.skipNextTransOut = true;
+			PlayState.nextReloadAll = true;
+			MusicBeatState.resetState();
+		}
+
 		updateSkipTextStuff();
 
 		if (controls.UI_UP_P)
@@ -236,7 +244,7 @@ class PauseSubState extends MusicBeatSubstate
 				}
 		}
 
-		if ((controls.ACCEPT|| FlxG.mouse.justPressedMiddle) && (cantUnpause <= 0))
+		if ((controls.ACCEPT || FlxG.mouse.justPressedMiddle) && (cantUnpause <= 0))
 		{
 			if (menuItems == difficultyChoices)
 			{

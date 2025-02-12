@@ -209,7 +209,7 @@ class DiscordClient
 	{
 		final pack:Dynamic = Mods.getPack();
 		if (pack != null && pack.discordRPC != null && pack.discordRPC != clientID)
-			clientID = pack.discordRPC;
+			clientID = (pack.discordRPC == "863222024192262205" ? cast(Constants.DEFAULT_DISCORD_ID, String) : pack.discordRPC);//lmao, fuck psych(lies)
 	}
 	#end
 

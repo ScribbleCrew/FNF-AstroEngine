@@ -2,7 +2,7 @@ package funkin.game.objects.shaders;
 
 import flixel.system.FlxAssets.FlxShader;
 
-class OverlayShader extends FlxShader
+class OverlayShader extends ShaderBackend
 {
 	@:glFragmentSource('')
 	
@@ -10,4 +10,6 @@ class OverlayShader extends FlxShader
 	{
 		super();
 	}
+
+	override function update(elapsed:Float) {}
 }

@@ -16,6 +16,7 @@ import funkin.backend.utils.Controls;
 	public var opponentStrums:Bool = true;
 	public var showFPS:Bool = true;
 	public var flashing:Bool = true;
+	public var autoPause:Bool = true;
 	public var noteSplashes:Bool = true;
 	public var opnoteSplashes:Bool = true;
 	public var lowQuality:Bool = false;

@@ -79,27 +79,27 @@ class FreeplayState extends MusicBeatState
 		//Paths.clearUnusedMemory();
 		
 		persistentUpdate = true;
-		PlayState.isStoryMode = FlxG.mouse.visible = false;
+		PlayState.isStoryMode = false;
 		WeekData.reloadWeekFiles(false);
 
-		#if desktop
-		#if DISCORD_ALLOWED DiscordClient.changePresence("Browsing the menus", null); #end
-		WindowUtil.title = ('%{GAME_TITLE} - Freeplay');
+		#if DISCORD_ALLOWED
+		// Updating Discord Rich Presence
+		DiscordClient.changePresence("In the Menus", null);
 		#end
 
 		if(WeekData.weeksList.length < 1)
-			{
-				FlxTransitionableState.skipNextTransIn = true;
-				persistentUpdate = false;
-				MusicBeatState.switchState(new ErrorState("NO WEEKS ADDED FOR FREEPLAY\n\nPress ACCEPT to go to the Week Editor Menu.\nPress BACK to return to Main Menu.",
-					function() MusicBeatState.switchState(new WeekEditorState()),
-					function() MusicBeatState.switchState(new MainMenuState())));
-				return;
-			}
+		{
+			FlxTransitionableState.skipNextTransIn = true;
+			persistentUpdate = false;
+			MusicBeatState.switchState(new ErrorState("NO WEEKS ADDED FOR FREEPLAY\n\nPress ACCEPT to go to the Week Editor Menu.\nPress BACK to return to Main Menu.",
+				function() MusicBeatState.switchState(new WeekEditorState()),
+				function() MusicBeatState.switchState(new MainMenuState())));
+			return;
+		}
 
 		for (i in 0...WeekData.weeksList.length)
 		{
-			if(Week.isWeekLocked(WeekData.weeksList[i])) continue;
+			if(weekIsLocked(WeekData.weeksList[i])) continue;
 
 			var leWeek:WeekData = WeekData.weeksLoaded.get(WeekData.weeksList[i]);
 			var leSongs:Array<String> = [];
@@ -161,7 +161,7 @@ class FreeplayState extends MusicBeatState
 		WeekData.setDirectoryFromWeek();
 
 		scoreText = new FlxText(FlxG.width * 0.7, 5, 0, "", 32);
-		scoreText.setFormat(Constants.DEFAULT_FONT, 32, FlxColor.WHITE, RIGHT);
+		scoreText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
 
 		scoreBG = new FlxSprite(scoreText.x - 6, 0).makeGraphic(1, 66, 0xFF000000);
 		scoreBG.alpha = 0.6;
@@ -180,7 +180,7 @@ class FreeplayState extends MusicBeatState
 		add(missingTextBG);
 		
 		missingText = new FlxText(50, 0, FlxG.width - 100, '', 24);
-		missingText.setFormat(Constants.DEFAULT_FONT, 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		missingText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		missingText.scrollFactor.set();
 		missingText.visible = false;
 		add(missingText);
@@ -200,7 +200,7 @@ class FreeplayState extends MusicBeatState
 		bottomString = leText;
 		var size:Int = 16;
 		bottomText = new FlxText(bottomBG.x, bottomBG.y + 4, FlxG.width, leText, size);
-		bottomText.setFormat(Constants.DEFAULT_FONT, size, FlxColor.WHITE, CENTER);
+		bottomText.setFormat(Paths.font("vcr.ttf"), size, FlxColor.WHITE, CENTER);
 		bottomText.scrollFactor.set();
 		add(bottomText);
 		
@@ -224,12 +224,10 @@ class FreeplayState extends MusicBeatState
 		songs.push(new SongMetadata(songName, weekNum, songCharacter, color));
 	}
 
-	public static function destroyFreeplayVocals() {
-		if(vocals != null) vocals.stop();
-		vocals = FlxDestroyUtil.destroy(vocals);
-
-		if(opponentVocals != null) opponentVocals.stop();
-		opponentVocals = FlxDestroyUtil.destroy(opponentVocals);
+	function weekIsLocked(name:String):Bool
+	{
+		var leWeek:WeekData = WeekData.weeksLoaded.get(name);
+		return (!leWeek.startUnlocked && leWeek.weekBefore.length > 0 && (!Week.weekCompleted.exists(leWeek.weekBefore) || !Week.weekCompleted.get(leWeek.weekBefore)));
 	}
 
 	var instPlaying:Int = -1;
@@ -244,7 +242,7 @@ class FreeplayState extends MusicBeatState
 			return;
 
 		if (FlxG.sound.music.volume < 0.7)
-			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
+			FlxG.sound.music.volume += 0.5 * elapsed;
 
 		lerpScore = Math.floor(FlxMath.lerp(intendedScore, lerpScore, Math.exp(-elapsed * 24)));
 		lerpRating = FlxMath.lerp(intendedRating, lerpRating, Math.exp(-elapsed * 12));
@@ -266,7 +264,7 @@ class FreeplayState extends MusicBeatState
 
 		if (!player.playingMusic)
 		{
-			scoreText.text = 'PERSONAL BEST: $lerpScore (${ratingSplit.join('.')}%)';
+			scoreText.text = 'PERSONAL BEST: ${lerpScore} (${ratingSplit.join('.')}%)';
 			positionHighscore();
 			
 			if(songs.length > 1)
@@ -334,10 +332,7 @@ class FreeplayState extends MusicBeatState
 
 				player.playingMusic = false;
 				player.switchPlayMusic();
-				#if DISCORD_ALLOWED
-				DiscordClient.changePresence("Browsing the menus", null);
-				#end
-				WindowUtil.title = ('%{GAME_TITLE} - Freeplay');
+
 				FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
 				FlxTween.tween(FlxG.sound.music, {volume: 1}, 1);
 			}
@@ -422,10 +417,6 @@ class FreeplayState extends MusicBeatState
 				player.playingMusic = true;
 				player.curTime = 0;
 				player.switchPlayMusic();
-				#if DISCORD_ALLOWED
-				DiscordClient.changePresence("Music Player", null);
-				#end
-				WindowUtil.title = '%{GAME_TITLE} - Freeplay - Music Player';
 				player.pauseOrResume(true);
 			}
 			else if (instPlaying == curSelected && player.playingMusic)
@@ -433,7 +424,7 @@ class FreeplayState extends MusicBeatState
 				player.pauseOrResume(!player.playing);
 			}
 		}
-		else if ((controls.ACCEPT|| FlxG.mouse.justPressedMiddle) && !player.playingMusic)
+		else if (controls.ACCEPT && !player.playingMusic)
 		{
 			persistentUpdate = false;
 			var songLowercase:String = Paths.formatToSongPath(songs[curSelected].songName);
@@ -466,6 +457,12 @@ class FreeplayState extends MusicBeatState
 				return;
 			}
 
+			@:privateAccess
+			if(PlayState._lastLoadedModDirectory != Mods.currentModDirectory)
+			{
+				trace('CHANGED MOD DIRECTORY, RELOADING STUFF');
+				Paths.freeGraphicsFromMemory();
+			}
 			LoadingState.prepareToSong();
 			LoadingState.loadAndSwitchState(new PlayState());
 			#if !SHOW_LOADING_SCREEN FlxG.sound.music.stop(); #end
@@ -487,21 +484,28 @@ class FreeplayState extends MusicBeatState
 		super.update(elapsed);
 	}
 	
-	
 	function getVocalFromCharacter(char:String)
 	{
 		try
 		{
 			var path:String = Paths.getPath('characters/$char.json', TEXT);
 			#if MODS_ALLOWED
-			var character:Dynamic = tjson.TJSON.parse(File.getContent(path));
+			var character:Dynamic = Json.parse(File.getContent(path));
 			#else
-			var character:Dynamic = tjson.TJSON.parse(Assets.getText(path));
+			var character:Dynamic = Json.parse(Assets.getText(path));
 			#end
 			return character.vocals_file;
 		}
 		catch (e:Dynamic) {}
 		return null;
+	}
+
+	public static function destroyFreeplayVocals() {
+		if(vocals != null) vocals.stop();
+		vocals = FlxDestroyUtil.destroy(vocals);
+
+		if(opponentVocals != null) opponentVocals.stop();
+		opponentVocals = FlxDestroyUtil.destroy(opponentVocals);
 	}
 
 	function changeDiff(change:Int = 0)
@@ -618,7 +622,7 @@ class FreeplayState extends MusicBeatState
 	{
 		super.destroy();
 
-		//// FlxG.autoPause = ClientPrefs.data.autoPause;
+		FlxG.autoPause = ClientPrefs.data.autoPause;
 		if (!FlxG.sound.music.playing && !stopMusicPlay)
 			FlxG.sound.playMusic(Paths.music('freakyMenu'));
 	}	

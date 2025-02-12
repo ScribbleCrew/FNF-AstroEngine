@@ -10,7 +10,7 @@ class HealthIcon extends FlxSprite
 
 	@:isVar
 	public var character(get,never):String;
-	@:noCompletion private inline function get_character():String
+	@:dox(hide) @:noCompletion private inline function get_character():String
 		return _character;
 	
 	public var sprTracker:FlxSprite;
