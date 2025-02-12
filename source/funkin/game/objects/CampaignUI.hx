@@ -15,7 +15,7 @@ class CampaignUI extends FlxSprite
 	public var isSelected:Bool = false;
 
 	private var _defaultSize:FlxPoint = new FlxPoint();
-	private var events:Map<String, Dynamic> = new Map<String, Dynamic>();
+	private var events:Map<String, Null<CampaignUI->Void>> = new Map<String, Null<CampaignUI->Void>>();
 
 	public function new(?X:Float = 0, ?Y:Float = 0, TYPE:DaArrowType = LEFT):Void
 	{
