@@ -79,7 +79,7 @@ class FreeplayState extends MusicBeatState
 		//Paths.clearUnusedMemory();
 		
 		persistentUpdate = true;
-		PlayState.isStoryMode = false;
+		PlayState.isStoryMode = FlxG.mouse.visible = false;
 		WeekData.reloadWeekFiles(false);
 
 		#if DISCORD_ALLOWED

@@ -3,9 +3,9 @@ package funkin.game.objects;
 // i'll doc later -orbl
 private enum abstract DaArrowType(String) to String from String
 {
-	final LEFT = "left";
-	final RIGHT = "right";
-	final LOCK = "lock";
+	final LEFT:String = "left";
+	final RIGHT:String = "right";
+	final LOCK:String = "lock";
 }
 
 // i hate my life
@@ -28,8 +28,8 @@ class CampaignUI extends FlxSprite
 			animation.addByPrefix('press', 'arrow push $TYPE');
 		}
 		else
-			animation.addByPrefix('lock', TYPE);
-		animation.play(animation.getByName('idle') != null ? 'idle' : 'lock');
+			animation.addByPrefix('idle', TYPE);
+		animation.play('idle');
 
 		antialiasing = ClientPrefs.data.antialiasing;
 
@@ -39,18 +39,19 @@ class CampaignUI extends FlxSprite
 	}
 
 	/**
-	 * Bindable event	
+	 * Bind a event to a specific map value.
 	 */
 	public function bind(tag:String, func:CampaignUI->Void):Void // enum maybe??
 		events.set(tag, func);
 
+	/**
+	 * Mainly used to GET functions from the map `events`...
+	 */
 	private function get(tag:String):Null<CampaignUI->Void>
 	{
-		var GET_REQUEST = events.get(tag);
-		if (GET_REQUEST != null)
-			return GET_REQUEST;
-		else
-			return (void) -> {}; // fail safe, kinda...
+		final GET_REQUEST:CampaignUI->Void = events.get(tag);
+		if (GET_REQUEST != null) return GET_REQUEST;
+		return (void) -> {}; // fail safe, kinda...
 	}
 
 	override function update(elapsed:Float):Void
@@ -60,17 +61,13 @@ class CampaignUI extends FlxSprite
 		if (!shouldReact)
 			return;
 
-		if (FlxG.mouse.overlaps(this, camera))
+		if ((isSelected = FlxG.mouse.overlaps(this, camera)) && FlxG.mouse.justPressed)
 		{
-			if (FlxG.mouse.justPressed)
-				get("clicked")(this);
-			isSelected = true;
-			FlxTween.tween(this.scale, {x: _defaultSize.x + .05, y: _defaultSize.y + .05}, .1, {ease: FlxEase.circOut});
-		}
-		else
-		{
-			isSelected = false;
-			FlxTween.tween(this.scale, {x: _defaultSize.x, y: _defaultSize.y}, .1, {ease: FlxEase.circOut});
+			FlxTween.tween(this, {"scale.x": this.scale.x * 0.85, "scale.y": this.scale.y * 0.85}, 0.2, {type: BACKWARD, ease: FlxEase.cubeOut});
+			//if(animation.getByName('press') != null) animation.play('press');
+			get("clicked")(this);
+
+			new FlxTimer().start(.5, (_) -> {scale.set(_defaultSize.x, _defaultSize.y); animation.play('idle');});
 		}
 	}
 }

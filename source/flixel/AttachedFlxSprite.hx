@@ -1,7 +1,6 @@
 package flixel;
 
 import funkin.backend.utils.Paths;
-import flixel.FlxSprite;
 
 class AttachedFlxSprite extends FlxSprite
 {

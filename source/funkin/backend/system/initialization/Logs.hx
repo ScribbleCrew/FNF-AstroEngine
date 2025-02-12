@@ -23,7 +23,6 @@ class Logs // needs rework ...
 
 	public static function print(v:Dynamic, ?color:TColor, ?infos:PosInfos) // sorry but, you don't need PosInfo lmao
 	{
-		trace(infos.className);
 		if (color != null)
 			Terminal.instance.fg(color);
 		trace(v, infos);
@@ -57,7 +56,7 @@ class Logs // needs rework ...
 		// 	for (param in infos.customParams)
 		// 		extra += ", " + param;
 
-		final logThing:String = '[${prefix}]: ${v + (extra == "" ? '' : extra)} : ${infos.fileName + ":" + infos.lineNumber}';
+		final logThing:String = '[${prefix}]: ${v + (extra == "" ? '' : extra)} : source/${infos.className.replace('.','/') + ":" + infos.lineNumber}';
 		#if js
 		if (js.Syntax.typeof(untyped console) != "undefined" && (untyped console).log != null)
 			(untyped console).log(logThing);
