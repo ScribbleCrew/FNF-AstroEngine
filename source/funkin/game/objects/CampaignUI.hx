@@ -50,7 +50,8 @@ class CampaignUI extends FlxSprite
 	private function get(tag:String):Null<CampaignUI->Void>
 	{
 		final GET_REQUEST:CampaignUI->Void = events.get(tag);
-		if (GET_REQUEST != null) return GET_REQUEST;
+		if (GET_REQUEST != null)
+			return GET_REQUEST;
 		return (void) -> {}; // fail safe, kinda...
 	}
 
@@ -64,10 +65,15 @@ class CampaignUI extends FlxSprite
 		if ((isSelected = FlxG.mouse.overlaps(this, camera)) && FlxG.mouse.justPressed)
 		{
 			FlxTween.tween(this, {"scale.x": this.scale.x * 0.85, "scale.y": this.scale.y * 0.85}, 0.2, {type: BACKWARD, ease: FlxEase.cubeOut});
-			//if(animation.getByName('press') != null) animation.play('press');
+			// if(animation.getByName('press') != null) animation.play('press');
 			get("clicked")(this);
 
-			new FlxTimer().start(.5, (_) -> {scale.set(_defaultSize.x, _defaultSize.y); animation.play('idle');});
+			new FlxTimer().start(.5, (_) ->
+			{
+				scale.set(_defaultSize.x, _defaultSize.y);
+				if (animation.curAnim.name != 'idle')
+					animation.play('idle');
+			});
 		}
 	}
 }

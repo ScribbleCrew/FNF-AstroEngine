@@ -21,10 +21,10 @@ import llua.*;
 import llua.Lua;
 #end
 
-enum ButtonType
+private enum abstract RPC_BUTTON_TYPE(String) to String from String
 {
-	FIRST;
-	SECOND;
+	final FIRST:String = "first";
+	final SECOND:String = "second";
 }
 
 class DiscordClient
@@ -187,7 +187,7 @@ class DiscordClient
 		Discord.UpdatePresence(cpp.RawConstPointer.addressOf(presence));
 	}
 
-	public dynamic static function setButton(data:{label:String, url:String}, type:ButtonType):Void
+	public dynamic static function setButton(data:{label:String, url:String}, type:RPC_BUTTON_TYPE):Void
 	{
 		switch (type)
 		{
