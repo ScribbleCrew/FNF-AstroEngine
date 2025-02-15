@@ -1,20 +1,21 @@
 package funkin.game;
 
 /**
- * The FPS class provides an easy-to-use monitor to display
- * the current frame rate of an OpenFL project.
- * Highly modified for Astro Engine.
+ * Custom FPS class which provides a customizable, displays the
+ * fps, memory, and git information.
  */
-@:access(openfl.display.DisplayObject)//todo: when reset func called revert to default pos.
+@:access(openfl.display.DisplayObject) 
 @:keep class FPS extends openfl.text.TextField
 {
 	/**
-	 * Because reading any data from DisplayObject is insanely expensive in hxcpp, keep track of whether we need to update it or not.
+	 * Because reading any data from DisplayObject is insanely expensive in hxcpp, 
+	 * keep track of whether we need to update it or not.
 	 */
 	public var active:Bool;
 
 	/**
-	 *	The current frame rate (expressed using frames-per-second)
+	 * The current frame rate 
+	 * (expressed using frames-per-second).
 	 */
 	public var currentFPS(default, null):Int;
 
@@ -50,28 +51,34 @@ package funkin.game;
 		return text += '${text != '' ? '\n' : ''}$str';
 
 	/**
-	 * Clear's the whole framerate field (NOTICE: allowed to be used in HScript).
+	 * Clear's the whole framerate field 
+	 * (NOTICE: allowed to be used in HScript).
 	 */
 	public inline function clear():String
 		return text = '';
 
 	/**
-	 * Changes `updateFPS` function to the default value.
+	 * Changes `updateFPS` function to the default value
+	 * (NOTICE: also changes the position).
 	 */
-	public inline function reset():Void->Void
+	public inline function reset(changePos:Bool = true):Void->Void
+	{
+		if(changePos) setPosition(10,3);
 		return updateFPS = _default;
+	}
 
 	/**
-	* Basic set position function, does it even work?
-	*/
+	 * Basic set position function, 
+	 * does it even work?
+	 */
 	public inline function setPosition(?X:Null<Float>, ?Y:Null<Float>):Float
 		return { this.x = X; this.y = Y; } 
 
-	public function new(x:Float = 10, y:Float = 10, color:Int = 0x000000)
+	public function new(x:Float = 10, y:Float = 3, color:Int = 0x000000)
 	{
 		/**
-		* u dumb?
-		*/
+		 * u dumb?
+		 */
 		super();
 
 		/**
@@ -113,11 +120,12 @@ package funkin.game;
 		/**
 		 * Resets the fps field to its default value.
 		 */
-		FlxG.signals.preStateSwitch.add(reset); // extra check.
+		FlxG.signals.preStateSwitch.add(()->reset()); // extra check.
 	}
 
 	/**
-	 * Prevents the overlay from updating every frame, why would you need to anyways. - @crowplexus
+	 * Prevents the overlay from updating every frame, 
+	 * why would you need to anyways. - @crowplexus
 	 */
 	var deltaTimeout:Float = 0.0;
 
@@ -140,6 +148,7 @@ package funkin.game;
 			times.shift();
 
 		/**
+		 * Stops `updateFPS` from being ran every frame.
 		 * Crowplexus delta timeout.
 		 */
 		if (deltaTimeout < 50)
@@ -191,8 +200,8 @@ package funkin.game;
 	@:noCompletion private static inline final _bgAlpha:Float = (1 / 3);
 
 	/**
-	 * Modified `set_alpha` to take the `bgSprite`'s alpha in account
-	 * and change it accordingly.
+	 * Modified `set_alpha` to take the `bgSprite`'s alpha 
+	 * in account and change it accordingly.
 	 */
 	@:dox(hide) @:noCompletion override function set_alpha(value:Float):Float
 	{
@@ -202,7 +211,8 @@ package funkin.game;
 	}
 
 	/**
-	 * Modified `set_visible` function to change the visibility of `bgSprite`.
+	 * Modified `set_visible` function to change the 
+	 * visibility of `bgSprite`.
 	 */
 	@:dox(hide) @:noCompletion override function set_visible(value:Bool):Bool
 		return bgSprite.visible = super.visible = value;

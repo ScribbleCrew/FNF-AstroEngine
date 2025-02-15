@@ -1,5 +1,5 @@
 package funkin.game.states;
-
+#if CHECK_FOR_UPDATES
 import funkin.backend.data.EngineData;
 import funkin.backend.CoolUtil;
 
@@ -58,3 +58,4 @@ class OutdatedState extends MusicBeatState
 		super.update(elapsed);
 	}
 }
+#end

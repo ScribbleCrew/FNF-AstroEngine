@@ -20,19 +20,26 @@ private typedef TitleData =
 @:access(flixel.animation.FlxAnimationController)
 class TitleState extends MusicBeatState
 {
+	/**
+	* Has title state been initialized.
+	*/
 	public static var initialized:Bool = false;
 
-	final titleTextColors:Array<{color:FlxColor, alpha:Float}> = [{color: 0xFF33FFFF, alpha: 1}, {color: 0xFF3333CC, alpha: .64}];
-
-	var curWacky:Array<String> = [];
-
-	var wackyImage:FlxSprite;
-
-	var mustUpdate:Bool = false;
-
-	var titleJSON:TitleData;
-
+	#if CHECK_FOR_UPDATES
+	/**
+	 * The update version (the newer version of this engine).
+	 */
 	public static var updateVersion:String = '';
+
+	/**
+	 * If the users game needs to be updated or not.
+	 */
+	var mustUpdate:Bool = false;
+	#end
+
+	final titleTextColors:Array<{color:FlxColor, alpha:Float}> = [{color: 0xFF33FFFF, alpha: 1}, {color: 0xFF3333CC, alpha: .64}];
+	var curWacky:Array<String> = [];
+	var titleJSON:TitleData;
 
 	override public function create():Void
 	{
@@ -46,9 +53,8 @@ class TitleState extends MusicBeatState
 		FlxG.mouse.visible = false;
 		#end
 
-		curWacky = FlxG.random.getObject(getIntroText());
+		curWacky = FlxG.random.getObject(introTextList);
 
-		// DEBUG BULLSHIT
 		#if CHECK_FOR_UPDATES
 		if (ClientPrefs.data.checkForUpdates && !closedState)
 		{
@@ -60,7 +66,6 @@ class TitleState extends MusicBeatState
 				updateVersion = data.split('\n')[0].trim();
 
 				final curVersion:String = EngineData.VERSION.trim();
-				trace('version online: ' + updateVersion + ', your version: ' + curVersion);
 				Logs.prefixedTrace('version online: $updateVersion your version: $curVersion', 'Update Sync', CYAN);
 				if (updateVersion != curVersion)
 				{
@@ -183,21 +188,15 @@ class TitleState extends MusicBeatState
 			initialized = true;
 	}
 
-	function getIntroText():Array<Array<String>>
+	var introTextList(get, never):Array<Array<String>>;
+	@:dox(hide) @:noCompletion private function get_introTextList():Array<Array<String>>
 	{
-		#if MODS_ALLOWED
-		var firstArray:Array<String> = Mods.mergeAllTextsNamed('data/introText.txt');
-		#else
-		var fullText:String = Assets.getText(Paths.txt('introText'));
-		var firstArray:Array<String> = fullText.split('\n');
-		#end
-
-		var swagGoodArray:Array<Array<String>> = [];
-
-		for (i in firstArray)
-			swagGoodArray.push(i.split('--'));
-
-		return swagGoodArray;
+		final firstArray:Array<String> = #if MODS_ALLOWED 
+		Mods.mergeAllTextsNamed('data/introText.txt') 
+		#else 
+		Assets.getText(Paths.txt('introText')).split('\n') 
+		#end;
+		return [for (i in firstArray) i.split('--')];
 	}
 
 	var transitioning:Bool = false;
@@ -219,10 +218,8 @@ class TitleState extends MusicBeatState
 
 		#if mobile
 		for (touch in FlxG.touches.list)
-		{
 			if (touch.justPressed)
 				pressedEnter = true;
-		}
 		#end
 
 		final gamepad:FlxGamepad = FlxG.gamepads.lastActive;
@@ -273,9 +270,10 @@ class TitleState extends MusicBeatState
 
 				new FlxTimer().start(1, function(tmr:FlxTimer)
 				{
+					#if CHECK_FOR_UPDATES
 					if (mustUpdate)
 						MusicBeatState.switchState(new funkin.game.states.OutdatedState());
-					else
+					else #end
 						MusicBeatState.switchState(new funkin.game.states.MainMenuState());
 
 					closedState = true;
@@ -297,10 +295,12 @@ class TitleState extends MusicBeatState
 		super.update(elapsed);
 	}
 
-	private var sickBeats:Int = 0; // Basically curBeat but won't be skipped if you hold the tab or resize the screen
 
+	/**
+	* Basically curBeat but won't be skipped if you hold the tab or resize the screen	
+	*/
+	private var sickBeats:Int = 0;
 	public static var closedState:Bool = false;
-
 	override function beatHit()
 	{
 		super.beatHit();
@@ -327,10 +327,9 @@ class TitleState extends MusicBeatState
 					FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
 					FlxG.sound.music.fadeIn(4, 0, 0.7);
 				case 2:
-					introGroup.create(['Psych Engine by'], 40);
+					introGroup.create(['Astro Engine by'], 40);
 				case 4:
-					introGroup.make('Shadow Mario', 40);
-					introGroup.make('Riveren', 40);
+					introGroup.make('YourFriendOrbl', 40);
 				case 5:
 					introGroup.delete();
 				case 6:
@@ -360,7 +359,6 @@ class TitleState extends MusicBeatState
 	}
 
 	var skippedIntro:Bool = false;
-
 	function skipIntro():Void
 	{
 		if (!skippedIntro)
