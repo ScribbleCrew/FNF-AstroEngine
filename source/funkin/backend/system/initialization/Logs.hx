@@ -1,16 +1,14 @@
 package funkin.backend.system.initialization;
 
+// i hate my life
 #if MODIFIED_LOGS
 import funkin.backend.utils.native.Terminal.TColor;
 
 /**
- * ---------------------------
- * - Modified trace because it just makes sense.
- * Also has a customizable prefix, for example: [System]: <blah blah blah>
- * ---------------------------
- * - Very shit code, soooooo, yeah...
- * ---------------------------
- * - Colors:
+ * Modified trace because it just makes sense.
+ * Also has a customizable prefix, for example: [System]: \<blah blah blah\>
+ *
+ * #### Colors:
  * ```haxe
  * enum TColor
  * {
@@ -33,30 +31,40 @@ import funkin.backend.utils.native.Terminal.TColor;
  * }
  * ```
 */
-@:keep class Logs // needs rework ...
+@:keep class Logs // needs rework ... - ???/???/??? | IT'S BEEN REWORKED :) - 02/15/25
 {
 	/**
 	 * `haxe`'s default trace function, stored as a variable for later use.
 	 * blah blah blah.
-	*/
+	 * why is this even here????
+	 */
 	public static var defaultTrace:(v:Dynamic, ?infos:Null<PosInfos>) -> Void;
+
+	#if THREADING_ALLOWED
+	/**
+	 * Mutex (used for threading)
+	 * gotta love threading <3.
+	 * fr.
+	 */
+	@:dox(hide) @:noCompletion private static var mutex:Mutex = new Mutex();
+	#end
 
 	/**
 	 * Custom prefix, mainly used on the loading screen, but can be used anywhere.
-	 * If left blank it reverts to its default value, which is `Constants.DEFAULT_LOGS_PREFIX`.
-	*/
+	 * If left blank it reverts to its default value, 
+	 * which is `Constants.DEFAULT_LOGS_PREFIX`.
+	 */
 	public static var prefix(default, set):String = Constants.DEFAULT_LOGS_PREFIX;
-	@:dox(hide) @:noCompletion private static function set_prefix(value:String):String
-	{
-		if (value == '' || value == null) return prefix = Constants.DEFAULT_LOGS_PREFIX;
-		return prefix = value;
-	}
+	@:dox(hide) @:noCompletion private dynamic static function set_prefix(value:String):String
+		return prefix = ((value == '' || value == null) ? Constants.DEFAULT_LOGS_PREFIX : value);
 
 	/**
-	 * Custom trace & print functions which allow traces with color.
+	 * Custom trace function which allow traces with color, has a child function 
+	 * `print` which is basically the same function.
+	 * I'm in love with this functions, its very cute ;3
 	 */
-	@:dox(hide) public static function trace(v:Dynamic, ?color:TColor, ?infos:PosInfos)return print(v,color,infos);
-	public static function print(v:Dynamic, ?color:TColor, ?infos:PosInfos):Void
+	public static function trace(v:Dynamic, ?color:TColor, ?infos:PosInfos):Void return print(v,color,infos);
+	@:dox(hide) public static function print(v:Dynamic, ?color:TColor, ?infos:PosInfos):Void
 	{
 		if (color != null) Terminal.instance.fg(color);
 		__customTrace(v, infos); // oops :3
@@ -65,17 +73,21 @@ import funkin.backend.utils.native.Terminal.TColor;
 
 	/**
 	 * Trace with color + prefix support.
+	 * (NOTICE: uses threading, only if `THREADING_ALLOWED` is allowed).
 	 */
 	public static function prefixedTrace(x:Dynamic, customPrefix:String, ?color:TColor, ?infos:PosInfos):Void
 	{
-		final _old:String = prefix;
+		#if THREADING_ALLOWED mutex.acquire();#end//it looks ugly, ik...
+		final oldPrefix:String = prefix;
 		prefix = customPrefix;
 		print(x, color, infos);
-		prefix = _old;
+		prefix = oldPrefix;
+		#if THREADING_ALLOWED mutex.release();#end
 	}
 
 	/**
-	 * Mainly used for setting up everything.
+	 * My stupid initialization function which sets `haxe.Log.trace` to my custom trace 
+	 * function `__customTrace`(private).
 	 */
 	public static function init():Void
 	{
@@ -86,6 +98,7 @@ import funkin.backend.utils.native.Terminal.TColor;
 
 	/**
 	 * Formats the output and returns a better one lol.
+	 * uses `haxe.PosInfos` to get file info (pretty obvious).
 	 */
 	static function formatOutput(v:Dynamic, ?infos:haxe.PosInfos):String
 	{
@@ -96,12 +109,14 @@ import funkin.backend.utils.native.Terminal.TColor;
 	}
 
 	/**
-	 * Da lovely custom trace func.
-	 * ---------
-	 * SUPPORT:
-	 *    Javascript
-	 *    Lua
-	 *    Windows, Linux, Macos
+	 * Custom trace function, very cool, comes without color
+	 * support, but it has prefix support by using the `prefix` variable.
+	 * #### Supported Platforms:
+	 *    - Javascript **(not tested)**
+	 *    - Lua **(not tested)**
+	 *    - Windows
+	 *    - Linux **(not tested)**
+	 *    - Macos **(not tested)**
 	 */
 	@:dox(hide) @:noCompletion static dynamic function __customTrace(v:Dynamic, ?infos:haxe.PosInfos):Void
 	{

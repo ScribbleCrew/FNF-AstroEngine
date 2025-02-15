@@ -19,7 +19,7 @@ package funkin.backend.system.initialization;
 	@:access(openfl.display.Sprite)
 	@:dox(hide) @:noCompletion private static function _clearCache(sprite:openfl.display.Sprite):Void
 	{
-		untyped Logs.print('color test 123', MAGENTA);
+		untyped Logs.trace('color test 123', MAGENTA);
 		sprite.__cacheBitmap = null;
 		sprite.__cacheBitmapData = null;
 	}

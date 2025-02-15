@@ -43,7 +43,7 @@ class Main extends openfl.display.Sprite
 {
 	/**	
 	* Framerate variable.
-	* used for my new sexy fps thingy.
+	* used for my new sexy fps code.
 	*/
 	public static var fpsVar:FPS;
 

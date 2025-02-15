@@ -58,10 +58,8 @@ class StoryMenuState extends MusicBeatState
 		PlayState.isStoryMode = true;
 		WeekData.reloadWeekFiles(true);
 
-		#if DISCORD_ALLOWED
-		// Updating Discord Rich Presence
-		DiscordClient.changePresence("In the Menus", null);
-		#end
+		#if DISCORD_ALLOWED DiscordClient.changePresence("In the Menus", null);#end 
+		FlxG.mouse.visible = ClientPrefs.data.mouseEvents;
 
 		if (WeekData.weeksList.length < 1)
 		{

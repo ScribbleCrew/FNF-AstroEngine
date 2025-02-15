@@ -5,7 +5,7 @@ package funkin.game;
  * the current frame rate of an OpenFL project.
  * Highly modified for Astro Engine.
  */
-@:access(openfl.display.DisplayObject)
+@:access(openfl.display.DisplayObject)//todo: when reset func called revert to default pos.
 @:keep class FPS extends openfl.text.TextField
 {
 	/**

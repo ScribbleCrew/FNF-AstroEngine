@@ -1,28 +1,17 @@
 package funkin.game.states;
 
-// Haxe
 import lime.app.Future;
 import sys.thread.FixedThreadPool;
 import funkin.backend.system.initialization.Logs;
-import flixel.system.FlxAssets;
-import haxe.macro.Expr.Constant;
-import openfl.media.Sound;
 import haxe.io.Path;
 
-//Openfl
 import openfl.display.BitmapData;
-import openfl.utils.AssetType;
+import openfl.media.Sound;
 
-//Lime
 import lime.utils.Assets;
 
-//Flixel
 import flixel.FlxState;
 import flixel.addons.transition.FlxTransitionableState;
-
-//uhh
-import funkin.backend.data.StageData.StageFile;
-import funkin.backend.Song.SwagSong;
 
 #if cpp
 @:headerCode('
@@ -61,7 +50,7 @@ class LoadingState extends MusicBeatState
 	var curPercent:Float = 0;
 	var canChangeState:Bool = true;
 
-	#if PSYCH_WATERMARKS
+	#if ASTRO_WATERMARKS
 	var logo:FlxSprite;
 	var pessy:FlxSprite;
 	var loadingText:FlxText;
@@ -95,19 +84,19 @@ class LoadingState extends MusicBeatState
 			#end
 		}
 
-		#if PSYCH_WATERMARKS // PSYCH LOADING SCREEN
+		#if ASTRO_WATERMARKS // PSYCH LOADING SCREEN
 		var bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.setGraphicSize(Std.int(FlxG.width));
 		bg.color = 0xFFD16FFF;
 		bg.updateHitbox();
 		add(bg);
 	
-		loadingText = new FlxText(520, 600, 400, Language.getPhrase('now_loading', 'Now Loading', ['...']), 32);
+		loadingText = new FlxText(520, 600, 400, 'Now Loading...', 32);
 		loadingText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, LEFT, OUTLINE_FAST, FlxColor.BLACK);
 		loadingText.borderSize = 2;
 		add(loadingText);
 	
-		logo = new FlxSprite(0, 0).loadGraphic(Paths.image('loading_screen/icon'));
+		logo = new FlxSprite(0, 0).loadGraphic(Paths.image('astro'));
 		logo.scale.set(0.75, 0.75);
 		logo.updateHitbox();
 		logo.antialiasing = ClientPrefs.data.antialiasing;
@@ -172,7 +161,7 @@ class LoadingState extends MusicBeatState
 			bar.updateHitbox();
 		}
 
-		#if PSYCH_WATERMARKS // PSYCH LOADING SCREEN
+		#if ASTRO_WATERMARKS
 		timePassed += elapsed;
 		shakeFl += elapsed * 3000;
 		var dots:String = '';
@@ -185,61 +174,7 @@ class LoadingState extends MusicBeatState
 			case 2:
 				dots = '...';
 		}
-		loadingText.text = Language.getPhrase('now_loading', 'Now Loading{1}', [dots]);
-
-		if(!spawnedPessy)
-		{
-			if(!transitioning && controls.ACCEPT)
-			{
-				shakeMult = 1;
-				FlxG.sound.play(Paths.sound('cancelMenu'));
-				pressedTimes++;
-			}
-			shakeMult = Math.max(0, shakeMult - elapsed * 5);
-			logo.offset.x = Math.sin(shakeFl * Math.PI / 180) * shakeMult * 100;
-
-			if(pressedTimes >= 5)
-			{
-				FlxG.camera.fade(0xAAFFFFFF, 0.5, true);
-				logo.visible = false;
-				spawnedPessy = true;
-				canChangeState = false;
-				FlxG.sound.play(Paths.sound('secret'));
-
-				pessy = new FlxSprite(700, 140);
-				pessy.frames = Paths.getSparrowAtlas('loading_screen/pessy');
-				pessy.animation.addByPrefix('run', 'run', 24, true);
-				pessy.animation.addByPrefix('spin', 'spin', 24, true);
-				pessy.antialiasing = ClientPrefs.data.antialiasing;
-				pessy.flipX = (logo.offset.x > 0);
-				pessy.x = FlxG.width + 200;
-				pessy.velocity.x = -1100;
-
-				new FlxTimer().start(0.01, function(tmr:FlxTimer) {
-					if(pessy.flipX)
-					{
-						pessy.x = -pessy.width - 200;
-						pessy.velocity.x *= -1;
-					}
-		
-					pessy.animation.play('run', true);
-					#if ACHIEVEMENTS_ALLOWED Achievements.unlock('pessy_easter_egg'); #end
-					
-					insert(members.indexOf(loadingText), pessy);
-					new FlxTimer().start(5, function(tmr:FlxTimer) canChangeState = true);
-				});
-			}
-		}
-		else if(!isSpinning && (pessy.flipX && pessy.x > FlxG.width) || (!pessy.flipX && pessy.x < -pessy.width))
-		{
-			isSpinning = true;
-			pessy.animation.play('spin', true);
-			pessy.flipX = false;
-			pessy.x = 500;
-			pessy.y = FlxG.height + 500;
-			pessy.velocity.x = 0;
-			FlxTween.tween(pessy, {y: 10}, 0.65, {ease: FlxEase.quadOut});
-		}
+		loadingText.text = 'Now Loading$dots';
 		#end
 	}
 	
@@ -421,7 +356,7 @@ class LoadingState extends MusicBeatState
 			if (song.stage == null || song.stage.length < 1)
 				song.stage = StageData.vanillaSongStage(folder);
 
-			var stageData:StageFile = StageData.getStageFile(song.stage);
+			var stageData:funkin.backend.data.StageData.StageFile = StageData.getStageFile(song.stage);
 			if (stageData != null)
 			{
 				var imgs:Array<String> = [];
@@ -521,7 +456,7 @@ class LoadingState extends MusicBeatState
 				arr.remove(null);
 	}
 
-	static function clearInvalidFrom(arr:Array<String>, prefix:String, ext:String, type:AssetType, ?parentFolder:String = null)
+	static function clearInvalidFrom(arr:Array<String>, prefix:String, ext:String, type:openfl.utils.AssetType, ?parentFolder:String = null)
 	{
 		for (folder in arr.copy())
 		{
@@ -617,12 +552,8 @@ class LoadingState extends MusicBeatState
 	{
 		try
 		{
-			var path:String = Paths.getPath('characters/$char.json', TEXT);
-			#if MODS_ALLOWED
-			var character:Dynamic = Json.parse(File.getContent(path));
-			#else
-			var character:Dynamic = Json.parse(Assets.getText(path));
-			#end
+			final path:String = Paths.getPath('characters/$char.json', TEXT);
+			final character:Dynamic = Json.parse(#if MODS_ALLOWED File.getContent(path) #else Assets.getText(path)#end);
 
 			var isAnimateAtlas:Bool = false;
 			var img:String = character.image;
@@ -637,9 +568,7 @@ class LoadingState extends MusicBeatState
 			{
 				var split:Array<String> = img.split(',');
 				for (file in split)
-				{
 					imagesToPrepare.push(file.trim());
-				}
 			}
 			#if flxanimate
 			else
@@ -690,7 +619,7 @@ class LoadingState extends MusicBeatState
 			{
 				trace('SOUND NOT FOUND: $key, PATH: $path');
 				FlxG.log.error('SOUND NOT FOUND: $key, PATH: $path');
-				return FlxAssets.getSound('flixel/sounds/beep');
+				return flixel.system.FlxAssets.getSound('flixel/sounds/beep');
 			}
 		}
 		mutex.acquire();
@@ -725,27 +654,24 @@ class LoadingState extends MusicBeatState
 					mutex.release();
 					return bitmap;
 				}
-				else trace('no such image $key exists');
+				else Logs.prefixedTrace('no such image $key exists','Notice', YELLOW);
 			}
 
 			return Paths.currentTrackedAssets.get(requestKey).bitmap;
 		}
 		catch(e:haxe.Exception)
-		{
-			trace('ERROR! fail on preloading image $key');
-		}
+			Logs.prefixedTrace('fail on preloading image $key','ERROR', RED);
 
 		return null;
 	}
 	
 	#if cpp
-	@:functionCode('
-		return std::thread::hardware_concurrency();
-    	')
-	@:noCompletion
-    	public static function getCPUThreadsCount():Int
-    	{
-        	return -1;
-    	}
-    	#end
+	/**
+	* Gets the cpu's thread count.	
+	*/
+	public static var cpuThreads(get,never):Int;//gwa gwa gwa
+	@:functionCode('return std::thread::hardware_concurrency();')
+	@:dox(hide) @:noCompletion private inline static function get_cpuThreads():Int
+        return -1;
+    #end
 }

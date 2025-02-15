@@ -53,15 +53,13 @@ import funkin.backend.animation.*;
 import funkin.backend.Song.SwagSong;
 import funkin.backend.Song.SwagSection;
 import funkin.backend.data.StageData.StageFile;
-import funkin.backend.system.initialization.Logs;
+#if MODIFIED_LOGS import funkin.backend.system.initialization.Logs; #end
 
 // Haxe
 import haxe.extern.*;
 
 //Discord API
-#if DISCORD_ALLOWED
-import funkin.backend.client.Discord;
-#end
+#if DISCORD_ALLOWED import funkin.backend.client.Discord; #end
 
 // Lua
 import funkin.backend.system.scripts.*;
