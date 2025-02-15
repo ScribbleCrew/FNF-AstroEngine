@@ -1,13 +1,11 @@
-package funkin.backend.funkinLua;
+package funkin.backend.system.scripts;
 
-import funkin.backend.funkinLua.luaStuff.ModchartText;
 import flixel.FlxCamera;
 #if LUA_ALLOWED
 import llua.Lua;
 #end
 import flixel.tweens.FlxEase;
 import flixel.util.FlxTimer;
-import funkin.backend.funkinLua.luaStuff.ModchartSprite;
 import flixel.FlxSprite;
 import flixel.text.FlxText;
 import funkin.game.states.PlayState;

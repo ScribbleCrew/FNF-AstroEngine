@@ -1,10 +1,10 @@
-package funkin.backend.funkinLua;
+package funkin.backend.system.scripts;
 
 import funkin.game.states.substates.CustomSubstate;
 import flixel.FlxBasic;
 
 #if LUA_ALLOWED
-import funkin.backend.funkinLua.FunkinLua;
+import funkin.backend.system.scripts.FunkinLua;
 #end
 
 #if HSCRIPT_ALLOWED

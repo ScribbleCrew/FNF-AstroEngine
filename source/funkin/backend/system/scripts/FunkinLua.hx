@@ -1,7 +1,6 @@
-package funkin.backend.funkinLua;
+package funkin.backend.system.scripts;
 
-import funkin.backend.funkinLua.luaStuff.ModchartText;
-import funkin.backend.funkinLua.luaStuff.ModchartSprite;
+import funkin.backend.system.scripts.luaStuff.*;
 import funkin.game.states.LoadingState;
 import openfl.display.BitmapData;
 #if LUA_ALLOWED
@@ -59,11 +58,11 @@ import funkin.backend.system.MusicBeatState;
 #if (desktop && DISCORD_ALLOWED)
 import funkin.backend.client.Discord;
 #end
-import funkin.backend.funkinLua.functions.*;
-import funkin.backend.funkinLua.LuaUtils;
-import funkin.backend.funkinLua.LuaUtils.LuaTweenOptions;
+import funkin.backend.system.scripts.functions.*;
+import funkin.backend.system.scripts.LuaUtils;
+import funkin.backend.system.scripts.LuaUtils.LuaTweenOptions;
 #if HSCRIPT_ALLOWED
-import funkin.backend.funkinLua.HScript;
+import funkin.backend.system.scripts.HScript;
 #end
 #if HSCRIPT_ALLOWED
 import crowplexus.iris.Iris;
@@ -196,14 +195,13 @@ class FunkinLua
 			}
 
 			// Default character data
-			@:privateAccess {
-				set('defaultBoyfriendX', game.defaultCharacterPositions.get("BF").x);
-				set('defaultBoyfriendY', game.defaultCharacterPositions.get("BF").y);
-				set('defaultOpponentX', game.defaultCharacterPositions.get("DAD").x);
-				set('defaultOpponentY', game.defaultCharacterPositions.get("DAD").y);
-				set('defaultGirlfriendX', game.defaultCharacterPositions.get("GF").x);
-				set('defaultGirlfriendY', game.defaultCharacterPositions.get("GF").y);
-			}
+			set('defaultBoyfriendX', game.defaultCharacterPositions.get("BF").x);
+			set('defaultBoyfriendY', game.defaultCharacterPositions.get("BF").y);
+			set('defaultOpponentX', game.defaultCharacterPositions.get("DAD").x);
+			set('defaultOpponentY', game.defaultCharacterPositions.get("DAD").y);
+			set('defaultGirlfriendX', game.defaultCharacterPositions.get("GF").x);
+			set('defaultGirlfriendY', game.defaultCharacterPositions.get("GF").y);
+
 
 			set('boyfriendName', PlayState.SONG.player1);
 			set('dadName', PlayState.SONG.player2);

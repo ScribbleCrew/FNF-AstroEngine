@@ -1,4 +1,4 @@
-package funkin.backend.funkinLua.luaStuff;
+package funkin.backend.system.scripts.luaStuff;
 
 import flixel.util.FlxColor;
 

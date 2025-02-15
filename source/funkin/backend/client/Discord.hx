@@ -1,25 +1,7 @@
 package funkin.backend.client;
 
 #if DISCORD_ALLOWED
-
-#if WATERMARK
-import funkin.game.Init;
-#end
-
-import funkin.game.Config;
-
-import funkin.backend.data.EngineData;
-import funkin.backend.utils.ClientPrefs;
-
-import lime.app.Application;
-
-import hxdiscord_rpc.Discord;
-import hxdiscord_rpc.Types;
-
-#if LUA_ALLOWED
-import llua.*;
-import llua.Lua;
-#end
+#if WATERMARK import funkin.game.Init; #end
 
 private enum abstract RPC_BUTTON_TYPE(String) to String from String
 {
@@ -27,18 +9,26 @@ private enum abstract RPC_BUTTON_TYPE(String) to String from String
 	final SECOND:String = "second";
 }
 
+@:allow(funkin.backend.system.scripts.FunkinLua)
 class DiscordClient
 {
+	/**
+	 * has `DiscordClient` initialized.
+	 */
 	public static var isInitialized:Bool = false;
 
-	private static final _defaultID:String = Config.discordID;
-	private static var presence:DiscordRichPresence = DiscordRichPresence.create();
-	
+	static final _defaultID:String = Config.discordID;
+	static var presence:DiscordRichPresence = DiscordRichPresence.create();
+
+	/**
+	 * The client's user id.
+	 */
 	@:isVar
 	public static var clientID(default, set):String;
-	@:noCompletion private static inline function set_clientID(newID:String)
+	@:dox(hide) @:noCompletion private static inline function set_clientID(newID:String):String
 	{
-		if (newID == null) return clientID = _defaultID;
+		if (newID == null)
+			return clientID = _defaultID;
 
 		final change:Bool = (clientID != newID);
 		clientID = newID;
@@ -53,17 +43,27 @@ class DiscordClient
 		return newID;
 	}
 
+	/**
+	 * The client's name.
+	 */
 	@:isVar
 	public static var clientName(default, set):String = null;
-	@:noCompletion private static inline function set_clientName(owo:String)
-		return clientName = owo;
+	@:dox(hide) @:noCompletion private static inline function set_clientName(value:String):String
+		return clientName = value;
 
+	/**
+	 * The client's discriminator.
+	 */
 	@:isVar
-	public static var clientDiscrim(default, set):String = null;
-	@:noCompletion private static inline function set_clientDiscrim(owo:String)
-		return clientDiscrim = owo;
+	public static var clientDiscriminator(default, set):String = null;
+	@:dox(hide) @:noCompletion private static inline function set_clientDiscriminator(value:String):String
+		return clientDiscriminator = value;
 
-	public static function check():Void
+	/**
+	 * Check the client id.
+	 * used on init.
+	 */
+	public static function checkClientID():Void
 	{
 		clientID = Config.discordID == '' ? cast(Constants.DEFAULT_DISCORD_ID, String) : _defaultID;
 		if (ClientPrefs.data.discordRPC)
@@ -72,30 +72,29 @@ class DiscordClient
 			shutdown();
 	}
 
+	/**
+	 * Prepare the rpc.
+	 */
 	public static function prepare():Void
 	{
 		if (!isInitialized && ClientPrefs.data.discordRPC)
 			initialize();
-
-		Application.current.window.onClose.add(function()
-		{
-			if (isInitialized)
-				shutdown();
-		});
+		Application.current.window.onClose.add(function() if (isInitialized)
+			shutdown());
 	}
 
-	public dynamic static function shutdown()
+	public dynamic static function shutdown():Void
 	{
 		Discord.Shutdown();
 		isInitialized = false;
 	}
 
-	private static function onReady(request:cpp.RawConstPointer<DiscordUser>):Void
+	static function onReady(request:cpp.RawConstPointer<DiscordUser>):Void
 	{
 		final requestPtr:cpp.Star<DiscordUser> = cpp.ConstPointer.fromRaw(request).ptr;
 
-		clientName = '${cast (requestPtr.username, String)}';
-		clientDiscrim = cast(requestPtr.discriminator, String);
+		clientName = cast(requestPtr.username, String);
+		clientDiscriminator = cast(requestPtr.discriminator, String);
 
 		if (Std.parseInt(cast(requestPtr.discriminator, String)) != 0)
 		{ // Old discriminators
@@ -107,7 +106,7 @@ class DiscordClient
 		{ // New Discord IDs/Discriminator system
 			final user = cast(requestPtr.username, String);
 			#if WATERMARK Init.watermark.text += '\n@$user'; #end
-			trace('Connected to User ($user)');
+			Logs.prefixedTrace('Connected to user ($user)', 'Discord Client', BLUE);
 		}
 
 		#if WATERMARK
@@ -120,11 +119,11 @@ class DiscordClient
 		changePresence();
 	}
 
-	private static function onError(errorCode:Int, message:cpp.ConstCharStar):Void
-		trace('[Discord Client]: Error ($errorCode: ${cast (message, String)})');
+	static function onError(errorCode:Int, message:cpp.ConstCharStar):Void
+		Logs.prefixedTrace('Error ($errorCode: ${cast (message, String)})', "Discord Client", BLUE);
 
-	private static function onDisconnected(errorCode:Int, message:cpp.ConstCharStar):Void
-		trace('[Discord Client]: Disconnected ($errorCode: ${cast (message, String)})');
+	static function onDisconnected(errorCode:Int, message:cpp.ConstCharStar):Void
+		Logs.prefixedTrace('Disconnected ($errorCode: ${cast (message, String)})', "Discord Client", BLUE);
 
 	public static function initialize():Void
 	{
@@ -136,7 +135,7 @@ class DiscordClient
 		Discord.Initialize(clientID, cpp.RawPointer.addressOf(discordHandlers), 1, null);
 
 		if (!isInitialized)
-			trace('[Discord Client]: Initialized');
+			Logs.prefixedTrace('Successfully initialized', "Discord Client", BLUE);
 
 		sys.thread.Thread.create(() ->
 		{
@@ -179,15 +178,15 @@ class DiscordClient
 		updatePresence();
 	}
 
-	public static function updatePresence():Void
+	static function updatePresence():Void
 	{
-		setButton({label: "Github Page", url: "https://github.com/ScribbleCrew"}, FIRST);
-		setButton({label: "X Page", url: "https://x.com/YourFriendOrbl"}, SECOND);
+		changeRPCButton(FIRST, {label: "Github Page", url: "https://github.com/ScribbleCrew"});
+		changeRPCButton(SECOND, {label: "X Page", url: "https://x.com/YourFriendOrbl"});
 
 		Discord.UpdatePresence(cpp.RawConstPointer.addressOf(presence));
 	}
 
-	public dynamic static function setButton(data:{label:String, url:String}, type:RPC_BUTTON_TYPE):Void
+	static dynamic function changeRPCButton(type:RPC_BUTTON_TYPE, data:{label:String, url:String}):Void
 	{
 		switch (type)
 		{
@@ -205,16 +204,16 @@ class DiscordClient
 	}
 
 	#if MODS_ALLOWED
-	public static function loadModRPC()
+	public static function loadModRPC():Void
 	{
 		final pack:Dynamic = Mods.getPack();
 		if (pack != null && pack.discordRPC != null && pack.discordRPC != clientID)
-			clientID = (pack.discordRPC == "863222024192262205" ? cast(Constants.DEFAULT_DISCORD_ID, String) : pack.discordRPC);//lmao, fuck psych(lies)
+			clientID = (pack.discordRPC == "863222024192262205" ? cast(Constants.DEFAULT_DISCORD_ID, String) : pack.discordRPC); // lmao, fuck psych(lies)
 	}
 	#end
 
 	#if LUA_ALLOWED
-	public static function addLuaCallbacks(lua:State)
+	static function addLuaCallbacks(lua:State):Void
 	{
 		Lua_helper.add_callback(lua, "changePresence",
 			function(details:String, state:Null<String>, ?smallImageKey:String, ?hasStartTimestamp:Bool,
@@ -229,5 +228,4 @@ class DiscordClient
 	}
 	#end
 }
-
 #end

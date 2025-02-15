@@ -38,10 +38,7 @@ package funkin.backend.system.initialization;
 			newPos.showLine = false;
 		}
 		#end
-		if (newPos.showLine == true)
-		{
-			msgInfo += '${newPos.lineNumber}:';
-		}
+		if (newPos.showLine == true) msgInfo += '${newPos.lineNumber}:';
 		msgInfo += ' $x';
 		return msgInfo;
 	}

@@ -142,7 +142,7 @@ class LoadingState extends MusicBeatState
 		return (loaded == loadMax && initialThreadCompleted);
 	}
 
-	public static function loadNextDirectory()
+	public static function loadNextDirectory() : Void
 	{
 		var directory:String = 'shared';
 		var weekDir:String = StageData.forceNextDirectory;
@@ -151,7 +151,7 @@ class LoadingState extends MusicBeatState
 		if (weekDir != null && weekDir.length > 0 && weekDir != '') directory = weekDir;
 
 		Paths.currentLevel = directory;
-		trace('Setting asset folder to ' + directory);
+		Logs.prefixedTrace('Setting asset folder to $directory','Loading State', GREEN);
 	}
 
 	static function getNextState(target:FlxState, stopMusic = false, intrusive:Bool = true):FlxState
@@ -197,7 +197,7 @@ class LoadingState extends MusicBeatState
 		initialThreadCompleted = false;
 		var threadsCompleted:Int = 0;
 		var threadsMax:Int = 2;
-		Logs.prefix = 'Loading';
+		Logs.prefix = 'Loading State';
 		
 		function completedThread()
 		{

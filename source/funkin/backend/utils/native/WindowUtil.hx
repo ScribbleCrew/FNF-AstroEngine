@@ -118,7 +118,7 @@ class WindowUtil
 	{
 		if (OsAPI.hasVersion('Windows 10'))
 			refreshWindow();
-		trace('${enable ? 'enabled' : 'disabled'} darkmode');
+//		trace('${enable ? 'enabled' : 'disabled'} darkmode');
 		return darkmode = enable;
 	}
 	#end

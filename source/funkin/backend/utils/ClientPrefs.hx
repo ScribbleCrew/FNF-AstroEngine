@@ -5,7 +5,6 @@ import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.FlxG;
 import flixel.util.FlxSave;
 import flixel.input.keyboard.FlxKey;
-import funkin.backend.utils.Controls;
 
 @:structInit class SaveVariables
 {
@@ -239,18 +238,16 @@ class ClientPrefs
 			FlxG.sound.muted = FlxG.save.data.mute;
 
 		#if DISCORD_ALLOWED
-		DiscordClient.check();
+		DiscordClient.checkClientID();
 		#end
 
-		var save:FlxSave = new FlxSave();
+		final save:FlxSave = new FlxSave();
 		save.bind('controls_v2', CoolUtil.getSavePath());
 		if (save != null && save.data.customControls != null)
 		{
 			var loadedControls:Map<String, Array<FlxKey>> = save.data.customControls;
 			for (control => keys in loadedControls)
-			{
 				keyBinds.set(control, keys);
-			}
 		}
 
 		reloadVolumeKeys();
@@ -258,19 +255,16 @@ class ClientPrefs
 
 	public static function init():Void
 	{
-		var is:Bool =false;
+		var is:Bool = false;
 		try
 		{
 			loadPrefs();
 			saveSettings();
-//			#if windows WindowUtil.darkmode = data.darkmodeEnabled; #end
-//			#if !mobile Main.fpsVar.alpha = data.fpsCounterAlpha; #end
-			//trace("Initialization Successful");
 			is = true;
 		}
-		catch (e)
-		{}
-		trace('ClientPrefs loaded: $is');
+		catch (e) {}
+		//Logs.defaultTrace('e');
+		Logs.prefixedTrace('Loaded ClientPrefs : ${Std.string(is).toUpperCase()}','User Preferences', GREEN);
 		return;
 	}
 

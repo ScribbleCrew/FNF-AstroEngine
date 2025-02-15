@@ -1,6 +1,5 @@
 #if LUA_ALLOWED
-package funkin.backend.funkinLua;
-
+package funkin.backend.system.scripts;
 class CallbackHandler
 {
 	public static inline function call(l:State, fname:String):Int

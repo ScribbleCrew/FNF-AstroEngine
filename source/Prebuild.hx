@@ -29,7 +29,7 @@ import sys.io.File;
 	{
 		// trace('Building!');
 		saveBuildTime();
-		trace(binded);
+		trace('AE Compiler....');
 	}
 
 	static function saveBuildTime():Void

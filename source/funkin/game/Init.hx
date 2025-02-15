@@ -1,6 +1,5 @@
 package funkin.game;
 
-import flixel.input.keyboard.FlxKey;
 import funkin.backend.utils.Paths;
 import funkin.backend.system.initialization.*;
 
@@ -22,10 +21,10 @@ class Init extends flixel.FlxState
 		FlxG.save.bind('funkin', funkin.backend.CoolUtil.getSavePath());
 
 		ClientPrefs.loadDefaultKeys();
-		
-		#if mobile 
+
+		#if mobile
 		// Credits to MAJigsaw77 for this awesome piece of code. >:]c
-		Sys.setCwd(#if android Path.addTrailingSlash(Context.getExternalFilesDir()) #elseif ios lime.system.System.applicationStorageDirectory #end); 
+		Sys.setCwd(#if android Path.addTrailingSlash(Context.getExternalFilesDir()) #elseif ios lime.system.System.applicationStorageDirectory #end);
 		#end
 
 		#if LUA_ALLOWED Mods.pushGlobalMods(); #end
@@ -34,7 +33,7 @@ class Init extends flixel.FlxState
 
 		Controls.instance = new Controls();
 
-		Logs.init();
+		#if MODIFIED_LOGS Logs.init(); #end
 		funkin.backend.Highscore.init();
 		funkin.backend.utils.ClientPrefs.init();
 		this.init();
@@ -42,7 +41,8 @@ class Init extends flixel.FlxState
 		funkin.backend.system.initialization.TemporaryFolder.main();
 
 		#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(CallbackHandler.call)); #end
-		#if CRASH_HANDLER openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR, CrashHandler.main); #end
+		#if CRASH_HANDLER openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR,
+			CrashHandler.main); #end
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
 		#if DISCORD_ALLOWED DiscordClient.prepare(); #end
 		#if SHADERS_ALLOWED ShaderCoordsFix.fix(); #end
@@ -67,12 +67,13 @@ class Init extends flixel.FlxState
 
 		hxvlc.util.Handle.initAsync(#if (hxvlc >= "1.8.0") ['--no-lua'] #end, _ ->
 		{
-			trace(_ ? "LibVLC initialized" : "Error on initializing LibVLC!");
+			Logs.prefixedTrace(_ ? "LibVLC initialized" : "Error on initializing LibVLC!",'hxvlc',YELLOW);
 			clearState();
 		});
 		#else
 		clearState();
 		#end
+
 		// Extra stuff goes here :3
 	}
 
@@ -89,9 +90,8 @@ class Init extends flixel.FlxState
 
 	private function init():Void
 	{
-		trace(OsAPI.osInfo + ' ' + OsAPI.osVersion);
-
-		FlxG.fixedTimestep = #if html5 FlxG.mouse.visible = #end false;
+		FlxG.fixedTimestep = #if html5 FlxG.mouse.visible = #end
+		false;
 		FlxG.keys.preventDefaultKeys = [TAB];
 		FlxG.game.focusLostFramerate = 30;
 

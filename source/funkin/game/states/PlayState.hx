@@ -43,6 +43,7 @@ import openfl.filters.ShaderFilter;
  * "function triggerEvent" - Called when the song hits your event's timestamp, this is probably what you were looking for
 **/
 @:allow(funkin.game.objects.scorebars.DefaultHUD)
+@:allow(funkin.backend.system.scripts.FunkinLua)
 class PlayState extends MusicBeatState
 {
 	/**
@@ -783,6 +784,9 @@ class PlayState extends MusicBeatState
 		else if (stageData.isPixelStage == true) // Backward compatibility
 			stageUI = "pixel";
 
+		/**
+		* Basically sets the default char positions to the stages defaults.
+		*/
 		defaultCharacterPositions.set("BF", FlxPoint.get(stageData.boyfriend[0], stageData.boyfriend[1]));
 		defaultCharacterPositions.set("GF", FlxPoint.get(stageData.girlfriend[0], stageData.girlfriend[1]));
 		defaultCharacterPositions.set("DAD", FlxPoint.get(stageData.opponent[0], stageData.opponent[1]));
@@ -3938,7 +3942,7 @@ class PlayState extends MusicBeatState
 		{
 			newScript = new HScript(null, file);
 			if (newScript.exists('onCreate')) newScript.call('onCreate');
-			trace('initialized hscript interp successfully: $file');
+			Logs.prefixedTrace('successfully initialized HScript interp on "$file"', 'Global Script', GREEN);
 			hscriptArray.push(newScript);
 		}
 		catch(e:IrisError)

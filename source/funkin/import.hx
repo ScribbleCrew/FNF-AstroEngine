@@ -1,6 +1,7 @@
 #if !macro 
 // Game
 import funkin.game.Main;
+import funkin.game.Config;
 
 import funkin.game.objects.characters.*;
 import funkin.game.objects.*;
@@ -63,8 +64,8 @@ import funkin.backend.client.Discord;
 #end
 
 // Lua
-import funkin.backend.funkinLua.*;
-import funkin.backend.funkinLua.luaStuff.*;
+import funkin.backend.system.scripts.*;
+import funkin.backend.system.scripts.luaStuff.*;
 #if LUA_ALLOWED
 import llua.*;
 import llua.Lua;
@@ -107,16 +108,24 @@ import sys.thread.Mutex;
 
 // HSCRIPT
 #if HSCRIPT_ALLOWED
-import funkin.backend.funkinLua.HScript.HScriptInfos;
+import funkin.backend.system.scripts.HScript.HScriptInfos;
 import crowplexus.iris.Iris;
 import crowplexus.iris.IrisConfig;
 import crowplexus.hscript.Expr.Error as IrisError;
 import crowplexus.hscript.Printer;
 #end
 
+// Discord
+#if DISCORD_ALLOWED
+import hxdiscord_rpc.Discord;
+import hxdiscord_rpc.Types;
+#end
 
 // Haxe
 import haxe.*;
+
+// Lime
+import lime.app.Application;
 
 //Openfl
 import openfl.utils.Assets as OpenFlAssets;
