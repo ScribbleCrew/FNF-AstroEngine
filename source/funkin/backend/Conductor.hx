@@ -50,7 +50,7 @@ class Conductor
 	public static function getCrotchetAtTime(time:Float):Float
 		return getBPMFromSeconds(time).stepCrochet * 4;
 
-	public static function getBPMFromSeconds(time:Float)
+	public static function getBPMFromSeconds(time:Float):BPMChangeEvent
 	{
 		var lastChange:BPMChangeEvent = {
 			stepTime: 0,
@@ -65,7 +65,7 @@ class Conductor
 		return lastChange;
 	}
 
-	public static function getBPMFromStep(step:Float)
+	public static function getBPMFromStep(step:Float):BPMChangeEvent
 	{
 		var lastChange:BPMChangeEvent = {
 			stepTime: 0,
@@ -89,25 +89,25 @@ class Conductor
 			+ ((step - lastChange.stepTime) / (lastChange.bpm / 60) / 4) * 1000; // TODO: make less shit and take BPM into account PROPERLY
 	}
 
-	public static function getStep(time:Float)
+	public static function getStep(time:Float):Float
 	{
 		var lastChange = getBPMFromSeconds(time);
 		return lastChange.stepTime + (time - lastChange.songTime) / lastChange.stepCrochet;
 	}
 
-	public static function getStepRounded(time:Float)
+	public static function getStepRounded(time:Float):Float
 	{
 		var lastChange = getBPMFromSeconds(time);
 		return lastChange.stepTime + Math.floor(time - lastChange.songTime) / lastChange.stepCrochet;
 	}
 
-	public static function getBeat(time:Float)
+	public static function getBeat(time:Float):Float
 		return getStep(time) / 4;
 
 	public static function getBeatRounded(time:Float):Int
 		return Math.floor(getStepRounded(time) / 4);
 
-	public static function mapBPMChanges(song:SwagSong)
+	public static function mapBPMChanges(song:SwagSong) : Void
 	{
 		bpmChangeMap = [];
 
@@ -132,10 +132,10 @@ class Conductor
 			totalSteps += deltaSteps;
 			totalPos += ((60 / curBPM) * 1000 / 4) * deltaSteps;
 		}
-		trace('updated BPM map: $bpmChangeMap');
+		Logs.prefixedTrace('Updated BPM map: $bpmChangeMap','Conductor', DARKCYAN);
 	}
 
-	static function getSectionBeats(song:SwagSong, section:Int)
+	static function getSectionBeats(song:SwagSong, section:Int):Null<Float>
 	{
 		var val:Null<Float> = null;
 		if (song.notes[section] != null)
@@ -143,7 +143,7 @@ class Conductor
 		return val != null ? val : 4;
 	}
 
-	inline public static function calcCrochet(bpm:Float)
+	inline public static function calcCrochet(bpm:Float):Float
 		return (60 / bpm) * 1000;
 
 }

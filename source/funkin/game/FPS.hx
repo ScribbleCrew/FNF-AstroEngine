@@ -1,7 +1,5 @@
 package funkin.game;
 
-import openfl.display.Sprite;
-
 /**
  * The FPS class provides an easy-to-use monitor to display
  * the current frame rate of an OpenFL project.
@@ -32,14 +30,13 @@ import openfl.display.Sprite;
 	 */
 	@:isVar
 	public var memoryMegas(get, never):Float;
-
 	@:dox(hide) @:noCompletion private inline function get_memoryMegas():Float
 		return cpp.vm.Gc.memInfo64(cpp.vm.Gc.MEM_INFO_USAGE);
 
 	/**
 	 * The translucent background.
 	 */
-	public var bgSprite:Sprite;
+	public var bgSprite:openfl.display.Sprite;
 
 	/**
 	 * Background offset.
@@ -64,15 +61,23 @@ import openfl.display.Sprite;
 	public inline function reset():Void->Void
 		return updateFPS = _default;
 
+	/**
+	* Basic set position function, does it even work?
+	*/
+	public inline function setPosition(?X:Null<Float>, ?Y:Null<Float>):Float
+		return { this.x = X; this.y = Y; } 
+
 	public function new(x:Float = 10, y:Float = 10, color:Int = 0x000000)
 	{
+		/**
+		* u dumb?
+		*/
 		super();
 
 		/**
 		 * Setting the given positions.
 		 */
-		this.x = x;
-		this.y = y;
+		setPosition(x,y);
 
 		/**
 		 * Default stuff
@@ -94,14 +99,14 @@ import openfl.display.Sprite;
 		/**
 		 * Creating the background sprite.
 		 */
-		bgSprite = new Sprite();
+		bgSprite = new openfl.display.Sprite();
 		bgSprite.graphics.beginFill(0xFF000000);
 		bgSprite.graphics.drawRect(0, 0, 1, 1);
 		bgSprite.graphics.endFill();
-		bgSprite.alpha = bgAlpha;
+		bgSprite.alpha = _bgAlpha;
 
 		/**
-		 * Syncs with `showFPS` @ `ClientPrefs.data`
+		 * Syncs with `showFPS` @ `ClientPrefs.data`.
 		 */
 		visible = active = bgSprite.visible = ClientPrefs.data.showFPS;
 
@@ -121,7 +126,10 @@ import openfl.display.Sprite;
 	 */
 	public var updateFPS:Void->Void;
 
-	private override function __enterFrame(deltaTime:Float):Void
+	/**
+	 * The `__enterFrame` fps update.
+	 */
+	@:dox(hide) @:noCompletion private override function __enterFrame(deltaTime:Float):Void
 	{
 		/**
 		 * Times push thingy???
@@ -152,17 +160,15 @@ import openfl.display.Sprite;
 		 */
 		bgSprite.scaleX = this.width + bgOffset.x * 2 - 10;
 		bgSprite.scaleY = this.height + bgOffset.y * 2 + 3;
-		// bgSprite.x = this.x - bgOffset.x;
-		// bgSprite.y = this.y - bgOffset.y;
 	}
 
 	/**
 	 * Default framerate update function
 	 */
-	private dynamic function _default():Void
+	@:dox(hide) @:noCompletion private dynamic function _default():Void
 	{
 		/**
-		 * Clear, ofc
+		 * Clear, ofc...
 		 */
 		clear();
 
@@ -182,7 +188,7 @@ import openfl.display.Sprite;
 	/**
 	 * Framerate background alpha float.
 	 */
-	@:noCompletion private static inline final bgAlpha:Float = (1 / 3);
+	@:noCompletion private static inline final _bgAlpha:Float = (1 / 3);
 
 	/**
 	 * Modified `set_alpha` to take the `bgSprite`'s alpha in account
@@ -190,7 +196,7 @@ import openfl.display.Sprite;
 	 */
 	@:dox(hide) @:noCompletion override function set_alpha(value:Float):Float
 	{
-		if (value < bgAlpha)
+		if (value < _bgAlpha)
 			bgSprite.alpha = value;
 		return super.alpha = value;
 	}

@@ -1,6 +1,8 @@
 package funkin.game.states;
 
 // Haxe
+import lime.app.Future;
+import sys.thread.FixedThreadPool;
 import funkin.backend.system.initialization.Logs;
 import flixel.system.FlxAssets;
 import haxe.macro.Expr.Constant;
@@ -22,6 +24,12 @@ import flixel.addons.transition.FlxTransitionableState;
 import funkin.backend.data.StageData.StageFile;
 import funkin.backend.Song.SwagSong;
 
+#if cpp
+@:headerCode('
+#include <iostream>
+#include <thread>
+')
+#end
 class LoadingState extends MusicBeatState
 {
 	public static var loaded:Int = 0;
@@ -30,6 +38,7 @@ class LoadingState extends MusicBeatState
 	static var originalBitmapKeys:Map<String, String> = [];
 	static var requestedBitmaps:Map<String, BitmapData> = [];
 	static var mutex:Mutex;
+	static var threadPool:FixedThreadPool = null;
 
 	function new(target:FlxState, stopMusic:Bool)
 	{
@@ -52,7 +61,21 @@ class LoadingState extends MusicBeatState
 	var curPercent:Float = 0;
 	var canChangeState:Bool = true;
 
+	#if PSYCH_WATERMARKS
+	var logo:FlxSprite;
+	var pessy:FlxSprite;
+	var loadingText:FlxText;
+
+	var timePassed:Float;
+	var shakeFl:Float;
+	var shakeMult:Float = 0;
+	
+	var isSpinning:Bool = false;
+	var spawnedPessy:Bool = false;
+	var pressedTimes:Int = 0;
+	#else
 	var funkay:FlxSprite;
+	#end
 
 	override function create()
 	{
@@ -71,6 +94,41 @@ class LoadingState extends MusicBeatState
 			Sys.sleep(0.001);
 			#end
 		}
+
+		#if PSYCH_WATERMARKS // PSYCH LOADING SCREEN
+		var bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+		bg.setGraphicSize(Std.int(FlxG.width));
+		bg.color = 0xFFD16FFF;
+		bg.updateHitbox();
+		add(bg);
+	
+		loadingText = new FlxText(520, 600, 400, Language.getPhrase('now_loading', 'Now Loading', ['...']), 32);
+		loadingText.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, LEFT, OUTLINE_FAST, FlxColor.BLACK);
+		loadingText.borderSize = 2;
+		add(loadingText);
+	
+		logo = new FlxSprite(0, 0).loadGraphic(Paths.image('loading_screen/icon'));
+		logo.scale.set(0.75, 0.75);
+		logo.updateHitbox();
+		logo.antialiasing = ClientPrefs.data.antialiasing;
+		logo.screenCenter();
+		logo.x -= 50;
+		logo.y -= 40;
+		add(logo);
+
+		#else // BASE GAME LOADING SCREEN
+		var bg = new FlxSprite().makeGraphic(1, 1, 0xFFCAFF4D);
+		bg.scale.set(FlxG.width, FlxG.height);
+		bg.updateHitbox();
+		bg.screenCenter();
+		add(bg);
+
+		funkay = new FlxSprite(0, 0).loadGraphic(Paths.image('funkay'));
+		funkay.antialiasing = ClientPrefs.data.antialiasing;
+		funkay.setGraphicSize(0, FlxG.height);
+		funkay.updateHitbox();
+		add(funkay);
+		#end
 
 		var bg:FlxSprite = new FlxSprite(0, 660).makeGraphic(1, 1, FlxColor.BLACK);
 		bg.scale.set(FlxG.width - 300, 25);
@@ -113,20 +171,102 @@ class LoadingState extends MusicBeatState
 			bar.scale.x = barWidth * curPercent;
 			bar.updateHitbox();
 		}
+
+		#if PSYCH_WATERMARKS // PSYCH LOADING SCREEN
+		timePassed += elapsed;
+		shakeFl += elapsed * 3000;
+		var dots:String = '';
+		switch(Math.floor(timePassed % 1 * 3))
+		{
+			case 0:
+				dots = '.';
+			case 1:
+				dots = '..';
+			case 2:
+				dots = '...';
+		}
+		loadingText.text = Language.getPhrase('now_loading', 'Now Loading{1}', [dots]);
+
+		if(!spawnedPessy)
+		{
+			if(!transitioning && controls.ACCEPT)
+			{
+				shakeMult = 1;
+				FlxG.sound.play(Paths.sound('cancelMenu'));
+				pressedTimes++;
+			}
+			shakeMult = Math.max(0, shakeMult - elapsed * 5);
+			logo.offset.x = Math.sin(shakeFl * Math.PI / 180) * shakeMult * 100;
+
+			if(pressedTimes >= 5)
+			{
+				FlxG.camera.fade(0xAAFFFFFF, 0.5, true);
+				logo.visible = false;
+				spawnedPessy = true;
+				canChangeState = false;
+				FlxG.sound.play(Paths.sound('secret'));
+
+				pessy = new FlxSprite(700, 140);
+				pessy.frames = Paths.getSparrowAtlas('loading_screen/pessy');
+				pessy.animation.addByPrefix('run', 'run', 24, true);
+				pessy.animation.addByPrefix('spin', 'spin', 24, true);
+				pessy.antialiasing = ClientPrefs.data.antialiasing;
+				pessy.flipX = (logo.offset.x > 0);
+				pessy.x = FlxG.width + 200;
+				pessy.velocity.x = -1100;
+
+				new FlxTimer().start(0.01, function(tmr:FlxTimer) {
+					if(pessy.flipX)
+					{
+						pessy.x = -pessy.width - 200;
+						pessy.velocity.x *= -1;
+					}
+		
+					pessy.animation.play('run', true);
+					#if ACHIEVEMENTS_ALLOWED Achievements.unlock('pessy_easter_egg'); #end
+					
+					insert(members.indexOf(loadingText), pessy);
+					new FlxTimer().start(5, function(tmr:FlxTimer) canChangeState = true);
+				});
+			}
+		}
+		else if(!isSpinning && (pessy.flipX && pessy.x > FlxG.width) || (!pessy.flipX && pessy.x < -pessy.width))
+		{
+			isSpinning = true;
+			pessy.animation.play('spin', true);
+			pessy.flipX = false;
+			pessy.x = 500;
+			pessy.y = FlxG.height + 500;
+			pessy.velocity.x = 0;
+			FlxTween.tween(pessy, {y: 10}, 0.65, {ease: FlxEase.quadOut});
+		}
+		#end
 	}
 	
 	var finishedLoading:Bool = false;
 	function onLoad()
 	{
+		_loaded();
+
 		if (stopMusic && FlxG.sound.music != null)
 			FlxG.sound.music.stop();
 
 		FlxG.camera.visible = false;
-		FlxTransitionableState.skipNextTransIn = true;
 		MusicBeatState.switchState(target);
-		Logs.prefix ='';
 		transitioning = true;
 		finishedLoading = true;
+	}
+
+	static function _loaded()
+	{
+		loaded = 0;
+		loadMax = 0;
+		initialThreadCompleted = true;
+		isIntrusive = false;
+
+		FlxTransitionableState.skipNextTransIn = true;
+		if (threadPool != null) threadPool.shutdown(); // kill all workers safely
+		threadPool = null;
 		mutex = null;
 	}
 
@@ -134,15 +274,16 @@ class LoadingState extends MusicBeatState
 	{
 		for (key => bitmap in requestedBitmaps)
 		{
-			if (bitmap != null && Paths.cacheBitmap(originalBitmapKeys.get(key), bitmap) != null) trace('finished preloading image $key');
+			if (bitmap != null && Paths.cacheBitmap(originalBitmapKeys.get(key), bitmap) != null) {} //trace('finished preloading image $key');
 			else trace('failed to cache image $key');
 		}
 		requestedBitmaps.clear();
 		originalBitmapKeys.clear();
-		return (loaded == loadMax && initialThreadCompleted);
+		// trace('we checked if loaded');
+		return (loaded >= loadMax && initialThreadCompleted);
 	}
 
-	public static function loadNextDirectory() : Void
+	public static function loadNextDirectory()
 	{
 		var directory:String = 'shared';
 		var weekDir:String = StageData.forceNextDirectory;
@@ -151,25 +292,30 @@ class LoadingState extends MusicBeatState
 		if (weekDir != null && weekDir.length > 0 && weekDir != '') directory = weekDir;
 
 		Paths.currentLevel = directory;
-		Logs.prefixedTrace('Setting asset folder to $directory','Loading State', GREEN);
+		Logs.prefixedTrace('Setting asset folder to $directory','Loading State', DARKCYAN);
 	}
 
+	static var isIntrusive:Bool = false;
 	static function getNextState(target:FlxState, stopMusic = false, intrusive:Bool = true):FlxState
 	{
+		LoadingState.isIntrusive = intrusive;
+		_startPool();
 		loadNextDirectory();
+
 		if(intrusive)
 			return new LoadingState(target, stopMusic);
-
+		
 		if (stopMusic && FlxG.sound.music != null)
 			FlxG.sound.music.stop();
-		
+
 		while(true)
 		{
-			if(!checkLoaded())
+			if(checkLoaded())
 			{
-				Sys.sleep(0.001);
+				_loaded();
+				break;
 			}
-			else break;
+			else Sys.sleep(0.001);
 		}
 		return target;
 	}
@@ -187,8 +333,14 @@ class LoadingState extends MusicBeatState
 
 	static var initialThreadCompleted:Bool = true;
 	static var dontPreloadDefaultVoices:Bool = false;
+	static function _startPool()
+	{
+		threadPool = new FixedThreadPool(#if MULTITHREADED_LOADING #if cpp getCPUThreadsCount() #else 8 #end #else 1 #end);
+	}
+
 	public static function prepareToSong()
 	{
+		_startPool();
 		imagesToPrepare = [];
 		soundsToPrepare = [];
 		musicToPrepare = [];
@@ -196,9 +348,7 @@ class LoadingState extends MusicBeatState
 
 		initialThreadCompleted = false;
 		var threadsCompleted:Int = 0;
-		var threadsMax:Int = 2;
-		Logs.prefix = 'Loading State';
-		
+		var threadsMax:Int = 0;
 		function completedThread()
 		{
 			threadsCompleted++;
@@ -212,7 +362,7 @@ class LoadingState extends MusicBeatState
 
 		var song:SwagSong = PlayState.SONG;
 		var folder:String = Paths.formatToSongPath(Song.loadedSongName);
-		Thread.create(() -> {
+		new Future<Bool>(() -> {
 			// LOAD NOTE IMAGE
 			var noteSkin:String = Note.defaultNoteSkin;
 			if(PlayState.SONG.arrowSkin != null && PlayState.SONG.arrowSkin.length > 1) noteSkin = PlayState.SONG.arrowSkin;
@@ -265,10 +415,9 @@ class LoadingState extends MusicBeatState
 				}
 			}
 			catch(e:Dynamic) {}
-			completedThread();
-		});
-
-		Thread.create(() -> {
+			return true;
+		}, isIntrusive)
+		.then((_) -> new Future<Bool>(() -> {
 			if (song.stage == null || song.stage.length < 1)
 				song.stage = StageData.vanillaSongStage(folder);
 
@@ -333,20 +482,30 @@ class LoadingState extends MusicBeatState
 			if (player2 != player1)
 			{
 				threadsMax++;
-				Thread.create(() -> {
-					preloadCharacter(player2, prefixVocals);
+				threadPool.run(() -> {
+					try { preloadCharacter(player2, prefixVocals); } catch (e:Dynamic) {}
 					completedThread();
 				});
 			}
 			if (!stageData.hide_girlfriend && gfVersion != player2 && gfVersion != player1)
 			{
 				threadsMax++;
-				Thread.create(() -> {
-					preloadCharacter(gfVersion);
+				threadPool.run(() -> {
+					try { preloadCharacter(gfVersion); } catch (e:Dynamic) {}
 					completedThread();
 				});
 			}
-			completedThread();
+
+			if(threadsCompleted == threadsMax)
+			{
+				clearInvalids();
+				startThreads();
+				initialThreadCompleted = true;
+			}
+			return true;
+		}, isIntrusive))
+		.onError((err:Dynamic) -> {
+			trace('ERROR! while preparing song: $err');
 		});
 	}
 
@@ -411,9 +570,15 @@ class LoadingState extends MusicBeatState
 		loaded = 0;
 
 		//then start threads
-		for (sound in soundsToPrepare) initThread(() -> preloadSound('sounds/$sound'), 'sound, PATH: $sound');
-		for (music in musicToPrepare) initThread(() -> preloadSound('music/$music'), 'music, PATH: $music');
-		for (song in songsToPrepare) initThread(() -> preloadSound(song, 'songs', true, false), 'song, PATH: $song');
+		_threadFunc();
+	}
+
+	static function _threadFunc()
+	{
+		_startPool();
+		for (sound in soundsToPrepare) initThread(() -> preloadSound('sounds/$sound'), 'sound $sound');
+		for (music in musicToPrepare) initThread(() -> preloadSound('music/$music'), 'music $music');
+		for (song in songsToPrepare) initThread(() -> preloadSound(song, 'songs', true, false), 'song $song');
 
 		// for images, they get to have their own thread
 		for (image in imagesToPrepare) initThread(() -> preloadGraphic(image), 'image $image');
@@ -421,17 +586,30 @@ class LoadingState extends MusicBeatState
 
 	static function initThread(func:Void->Dynamic, traceData:String)
 	{
-		Thread.create(() -> {
+		// trace('scheduled $func in threadPool');
+		#if debug
+		var threadSchedule = Sys.time();
+		#end
+		threadPool.run(() -> {
+			#if debug
+			var threadStart = Sys.time();
+			trace('$traceData took ${threadStart - threadSchedule}s to start preloading');
+			#end
+
 			try {
-				if (func() != null) trace('Preladed (TYPE: $traceData)');
-				else trace('ERROR! fail on preloading $traceData');
+				if (func() != null) {
+					#if debug
+					var diff = Sys.time() - threadStart;
+					trace('finished preloading $traceData in ${diff}s');
+					#end
+				} else trace('ERROR! fail on preloading $traceData ');
 			}
 			catch(e:Dynamic) {
-				trace('ERROR! fail on preloading $traceData');
+				trace('ERROR! fail on preloading $traceData: $e');
 			}
-			mutex.acquire();
+			// mutex.acquire();
 			loaded++;
-			mutex.release();
+			// mutex.release();
 		});
 	}
 
@@ -527,6 +705,7 @@ class LoadingState extends MusicBeatState
 	{
 		try {
 			var requestKey:String = 'images/$key';
+			#if TRANSLATIONS_ALLOWED requestKey = Language.getFileTranslation(requestKey); #end
 			if(requestKey.lastIndexOf('.') < 0) requestKey += '.png';
 
 			if (!Paths.currentTrackedAssets.exists(requestKey))
@@ -539,6 +718,7 @@ class LoadingState extends MusicBeatState
 					#else
 					var bitmap:BitmapData = OpenFlAssets.getBitmapData(file, false);
 					#end
+
 					mutex.acquire();
 					requestedBitmaps.set(file, bitmap);
 					originalBitmapKeys.set(file, requestKey);
@@ -557,4 +737,15 @@ class LoadingState extends MusicBeatState
 
 		return null;
 	}
+	
+	#if cpp
+	@:functionCode('
+		return std::thread::hardware_concurrency();
+    	')
+	@:noCompletion
+    	public static function getCPUThreadsCount():Int
+    	{
+        	return -1;
+    	}
+    	#end
 }

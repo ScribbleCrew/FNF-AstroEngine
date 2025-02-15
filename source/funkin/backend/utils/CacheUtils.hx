@@ -29,7 +29,7 @@ class CacheUtils
 	public static function cacheArgs(list:Array<CacheType>) {
 		for (i in list)
 			cache(i, false);
-		Logs.prefixedTrace('Successfully Cached: $list', 'Cache Utils', BLUE);
+		Logs.prefixedTrace('Successfully Cached: $list', 'Caching Utils', BLUE);
 	}
 
 	public static function cacheCountdown()

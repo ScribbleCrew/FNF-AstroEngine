@@ -1839,7 +1839,7 @@ class PlayState extends MusicBeatState
 				oldNote = swagNote;
 			}
 		}
-		Logs.prefixedTrace('${SONG.song} // Ghost Notes Cleared: $ghostNotesCaught', 'Chart Info');
+		Logs.prefixedTrace('${SONG.song} // Ghost Notes Cleared: $ghostNotesCaught', 'Charting Info', DARKMAGENTA);
 
 		for (event in songData.events) //Event Notes
 			for (i in 0...event[1].length)
