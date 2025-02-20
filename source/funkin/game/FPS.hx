@@ -57,13 +57,15 @@ package funkin.game;
 	public inline function clear():String
 		return text = '';
 
+	var _position:FlxPoint;
+
 	/**
 	 * Changes `updateFPS` function to the default value
 	 * (NOTICE: also changes the position).
 	 */
 	public inline function reset(changePos:Bool = true):Void->Void
 	{
-		if(changePos) setPosition(10,3);
+		if(changePos) _position == null ? setPosition(_position.x,_position.y) : setPosition(10,3);
 		return updateFPS = _default;
 	}
 
@@ -72,7 +74,7 @@ package funkin.game;
 	 * does it even work?
 	 */
 	public inline function setPosition(?X:Null<Float>, ?Y:Null<Float>):Float
-		return { this.x = X; this.y = Y; } 
+		return { _position = new FlxPoint(X,Y); this.x = X; this.y = Y; } 
 
 	public function new(x:Float = 10, y:Float = 3, color:Int = 0x000000)
 	{
