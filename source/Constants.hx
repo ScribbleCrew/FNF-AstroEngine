@@ -1,5 +1,7 @@
 @:final class Constants
 {
+	public static inline final NOTE_SUSTAIN_SIZE:Int = 44;
+
 	public static inline final DEFAULT_LOGS_PREFIX:String = "System";
 
 	public static inline final MODS_LIST_FILE:String = "modsList.txt";

@@ -55,7 +55,6 @@ import StringTools;
 	import neko.Lib;
 #end
 
-
 enum TColor
 {
 	BLACK;
@@ -74,7 +73,21 @@ enum TColor
 	DARKYELLOW;
 	DARKCYAN;
 	DARKMAGENTA;
+	ORANGE;
+	PINK;
+	LIGHTBLUE;
+	LIGHTGREEN;
+	LIGHTCYAN;
+	LIGHTMAGENTA;
+	BROWN;
+	PURPLE;
+	LIME;
+	TEAL;
+	NAVY;
+	GOLD;
+	SILVER;
 }
+
 
 @:dce
 class Terminal
@@ -146,42 +159,69 @@ class Terminal
 	public function new()
 	{
 		COLORS_FG = [
-			DARKGRAY => 	'\x1B[90m',
-			RED => 			'\x1B[91m',
-			GREEN => 		'\x1B[92m',
-			YELLOW => 		'\x1B[93m',
-			BLUE => 		'\x1B[94m',
-			MAGENTA => 		'\x1B[95m',
-			CYAN => 		'\x1B[96m',
-			WHITE => 		'\x1B[97m',
-			BLACK => 		'\x1B[30m',
-			DARKRED => 		'\x1B[31m',
-			DARKGREEN => 	'\x1B[32m',
-			DARKYELLOW => 	'\x1B[33m',
-			DARKBLUE => 	'\x1B[34m',
-			DARKMAGENTA => 	'\x1B[35m',
-			DARKCYAN => 	'\x1B[36m',
-			GRAY => 		'\x1B[37m'
+			DARKGRAY => '\x1B[90m',
+			RED => '\x1B[91m',
+			GREEN => '\x1B[92m',
+			YELLOW => '\x1B[93m',
+			BLUE => '\x1B[94m',
+			MAGENTA => '\x1B[95m',
+			CYAN => '\x1B[96m',
+			WHITE => '\x1B[97m',
+			BLACK => '\x1B[30m',
+			DARKRED => '\x1B[31m',
+			DARKGREEN => '\x1B[32m',
+			DARKYELLOW => '\x1B[33m',
+			DARKBLUE => '\x1B[34m',
+			DARKMAGENTA => '\x1B[35m',
+			DARKCYAN => '\x1B[36m',
+			GRAY => '\x1B[37m',
+			ORANGE => '\x1B[38;5;214m',
+			PINK => '\x1B[38;5;205m',
+			LIGHTBLUE => '\x1B[38;5;75m',
+			LIGHTGREEN => '\x1B[38;5;120m',
+			LIGHTCYAN => '\x1B[38;5;51m',
+			LIGHTMAGENTA => '\x1B[38;5;13m',
+			BROWN => '\x1B[38;5;94m',
+			PURPLE => '\x1B[38;5;129m',
+			LIME => '\x1B[38;5;118m',
+			TEAL => '\x1B[38;5;30m',
+			NAVY => '\x1B[38;5;19m',
+			GOLD => '\x1B[38;5;220m',
+			SILVER => '\x1B[38;5;250m'
 		];
-
+	
 		COLORS_BG = [
-			DARKGRAY => 	'\x1B[100m',
-			RED =>			'\x1B[101m',
-			GREEN =>		'\x1B[102m',
-			YELLOW =>		'\x1B[103m',
-			BLUE =>			'\x1B[104m',
-			MAGENTA =>		'\x1B[105m',
-			CYAN =>			'\x1B[106m',
-			WHITE => 		'\x1B[107m',
-			BLACK =>		'\x1B[40m',
-			DARKRED => 		'\x1B[41m',
-			DARKGREEN =>	'\x1B[42m',
-			DARKYELLOW => 	'\x1B[43m',
-			DARKBLUE => 	'\x1B[44m',
-			DARKMAGENTA => 	'\x1B[45m',
-			DARKCYAN => 	'\x1B[46m',
-			GRAY => 		'\x1B[47m'
+			DARKGRAY => '\x1B[100m',
+			RED => '\x1B[101m',
+			GREEN => '\x1B[102m',
+			YELLOW => '\x1B[103m',
+			BLUE => '\x1B[104m',
+			MAGENTA => '\x1B[105m',
+			CYAN => '\x1B[106m',
+			WHITE => '\x1B[107m',
+			BLACK => '\x1B[40m',
+			DARKRED => '\x1B[41m',
+			DARKGREEN => '\x1B[42m',
+			DARKYELLOW => '\x1B[43m',
+			DARKBLUE => '\x1B[44m',
+			DARKMAGENTA => '\x1B[45m',
+			DARKCYAN => '\x1B[46m',
+			GRAY => '\x1B[47m',
+			ORANGE => '\x1B[48;5;214m',
+			PINK => '\x1B[48;5;205m',
+			LIGHTBLUE => '\x1B[48;5;75m',
+			LIGHTGREEN => '\x1B[48;5;120m',
+			LIGHTCYAN => '\x1B[48;5;51m',
+			LIGHTMAGENTA => '\x1B[48;5;13m',
+			BROWN => '\x1B[48;5;94m',
+			PURPLE => '\x1B[48;5;129m',
+			LIME => '\x1B[48;5;118m',
+			TEAL => '\x1B[48;5;30m',
+			NAVY => '\x1B[48;5;19m',
+			GOLD => '\x1B[48;5;220m',
+			SILVER => '\x1B[48;5;250m'
 		];
+		
 
 	}//---------------------------------------------------;
 

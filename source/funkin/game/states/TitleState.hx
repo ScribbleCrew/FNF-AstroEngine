@@ -105,7 +105,7 @@ class TitleState extends MusicBeatState
 		final maxS = FlxG.save.data.stats.get('Max Score');
 		final mostM = FlxG.save.data.stats.get('Max Misses');
 		if (mostM != null && maxS != null)
-			Logs.print('Max Score: $maxS - Max Misses: $mostM');
+			Logs.prefixedTrace('Max Score: $maxS - Max Misses: $mostM', 'Info', ORANGE);
 	}
 
 	var introGroup:TitleIntroGroup;

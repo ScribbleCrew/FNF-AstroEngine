@@ -4430,7 +4430,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 			note.rgbShader.enabled = !noRGBCheckBox.checked;
 			if(note.rgbShader.enabled)
 			{
-				var data = CustomNoteTypes.loadNoteTypeData(note.noteType);
+				var data = NoteTypesConfig.loadNoteTypeData(note.noteType);
 				if(data == null || data.length < 1) continue;
 
 				for (line in data)
@@ -4629,7 +4629,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 	override function destroy()
 	{
 		Note.globalRgbShaders = [];
-		CustomNoteTypes.clearNoteTypesData();
+		NoteTypesConfig.clearNoteTypesData();
 
 		for (num => text in MetaNote.noteTypeTexts)
 			text.destroy();

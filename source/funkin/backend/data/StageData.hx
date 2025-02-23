@@ -228,9 +228,10 @@ class StageData
 					addedObjects.set(data.name, spr);
 
 				default:
-					var err = '[Stage .JSON file] Unknown sprite type detected: ${data.type}';
-					trace(err);
-					FlxG.log.error(err);
+					final daPrefix:String = '[Stage .JSON file]';
+					final err = 'Unknown sprite type detected: ${data.type}';
+					Logs.prefixedTrace(err, daPrefix, RED);
+					FlxG.log.error('$daPrefix: $err');
 			}
 		}
 		return addedObjects;

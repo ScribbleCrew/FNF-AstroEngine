@@ -178,12 +178,15 @@ class ClientPrefs
 
 		FlxG.save.flush();
 
-		var save:FlxSave = new FlxSave();
-		save.bind('controls_v2',
-			CoolUtil.getSavePath()); // Placing this in a separate save so that it can be manually deleted without removing your Score and stuff
-		save.data.customControls = keyBinds;
-		save.flush();
-		FlxG.log.add("Settings saved!");
+		try{
+			final save:FlxSave = new FlxSave();
+			save.bind('controls_v2',
+				CoolUtil.getSavePath()); // Placing this in a separate save so that it can be manually deleted without removing your Score and stuff
+			save.data.customControls = keyBinds;
+			save.flush();
+			FlxG.log.notice("Successfully saved settings.");
+		} catch(e:Dynamic)
+			FlxG.log.error("Failed to save settings.");
 	}
 
 	public static function loadPrefs()
@@ -194,25 +197,22 @@ class ClientPrefs
 
 		#if (!html5 && !switch)
 		if (FlxG.save.data.framerate == null)
-		{
-			final refreshRate:Int = FlxG.stage.application.window.displayMode.refreshRate;
-			data.framerate = Std.int(FlxMath.bound(refreshRate, 60, 240));
-		}
+			data.framerate = Std.int(FlxMath.bound(FlxG.stage.application.window.displayMode.refreshRate, 60, 240));
 		#end
 
-		if (data.framerate > FlxG.drawFramerate)
+		/*if (data.framerate > FlxG.drawFramerate) ????
 		{
-			FlxG.updateFramerate = data.framerate;
-			FlxG.drawFramerate = data.framerate;
+			FlxG.updateFramerate = FlxG.drawFramerate = data.framerate;
 		}
 		else
 		{
 			FlxG.drawFramerate = data.framerate;
 			FlxG.updateFramerate = data.framerate;
-		}
+		} */
+
 		if (FlxG.save.data.gameplaySettings != null)
 		{
-			var savedMap:Map<String, Dynamic> = FlxG.save.data.gameplaySettings;
+			final savedMap:Map<String, Dynamic> = FlxG.save.data.gameplaySettings;
 			for (name => value in savedMap)
 				data.gameplaySettings.set(name, value);
 		}

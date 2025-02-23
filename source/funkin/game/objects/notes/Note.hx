@@ -1,18 +1,8 @@
 package funkin.game.objects.notes;
 
-import funkin.backend.animation.AnimationController;
-
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.graphics.frames.FlxAtlasFrames;
-import flixel.math.FlxMath;
-import funkin.game.states.PlayState;
-import flixel.util.FlxColor;
-import flash.display.BitmapData;
 import funkin.backend.Conductor;
+import funkin.game.states.PlayState;
 import funkin.backend.utils.ClientPrefs;
-
-import funkin.game.objects.shaders.ColorSwap;
 
 typedef EventNote = {
 	strumTime:Float,
@@ -21,7 +11,7 @@ typedef EventNote = {
 	value2:String
 }
 
-typedef NoteSplashData = {
+private typedef NoteSplashData = {
 	disabled:Bool,
 	texture:String,
 	useGlobalShader:Bool, //breaks r/g/b but makes it copy default colors for your custom note
@@ -35,7 +25,6 @@ typedef NoteSplashData = {
 
 /**
  * The note object used as a data structure to spawn and manage notes during gameplay.
- * 
  * If you want to make a custom note type, you should search for: "function set_noteType"
 **/
 class Note extends FlxSprite
@@ -95,9 +84,10 @@ class Note extends FlxSprite
 	public var lateHitMult:Float = 1;
 	public var lowPriority:Bool = false;
 
-	public static var SUSTAIN_SIZE:Int = 44;
 	public static var swagWidth:Float = 160 * 0.7;
 	public static var colArray:Array<String> = ['purple', 'blue', 'green', 'red'];
+
+	@:isVar
 	public static var defaultNoteSkin(default, never):String = 'noteSkins/NOTE_assets';
 
 	public var noteSplashData:NoteSplashData = {
@@ -499,13 +489,13 @@ class Note extends FlxSprite
 		}
 	}
 
-	override public function destroy()
+	override public function destroy() : Void
 	{
 		super.destroy();
 		_lastValidChecked = '';
 	}
 
-	public function followStrumNote(myStrum:StrumNote, fakeCrochet:Float, songSpeed:Float = 1)
+	public function followStrumNote(myStrum:StrumNote, fakeCrochet:Float, songSpeed:Float = 1) : Void
 	{
 		var strumX:Float = myStrum.x;
 		var strumY:Float = myStrum.y;
@@ -540,7 +530,7 @@ class Note extends FlxSprite
 		}
 	}
 
-	public function clipToStrumNote(myStrum:StrumNote)
+	public function clipToStrumNote(myStrum:StrumNote) : Void
 	{
 		var center:Float = myStrum.y + offsetY + Note.swagWidth / 2;
 		if((mustPress || !ignoreNote) && (wasGoodHit || (prevNote.wasGoodHit && !canBeHit)))
@@ -567,14 +557,9 @@ class Note extends FlxSprite
 		}
 	}
 
-	@:noCompletion
-	override function set_clipRect(rect:FlxRect):FlxRect
+	@:noCompletion override function set_clipRect(rect:FlxRect):FlxRect
 	{
-		clipRect = rect;
-
-		if (frames != null)
-			frame = frames.frames[animation.frameIndex];
-
-		return rect;
+		if (frames != null) frame = frames.frames[animation.frameIndex];
+		return clipRect = rect;
 	}
 }

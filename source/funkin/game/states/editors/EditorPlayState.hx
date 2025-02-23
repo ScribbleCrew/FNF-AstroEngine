@@ -370,7 +370,7 @@ class EditorPlayState extends MusicBeatSubstate
 					{
 						if(oldNote.isSustainNote)
 						{
-							oldNote.scale.y *= Note.SUSTAIN_SIZE / oldNote.frameHeight;
+							oldNote.scale.y *= Constants.NOTE_SUSTAIN_SIZE / oldNote.frameHeight;
 							oldNote.scale.y /= playbackRate;
 							oldNote.updateHitbox();
 						}

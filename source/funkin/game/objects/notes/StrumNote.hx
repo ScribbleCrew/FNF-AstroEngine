@@ -62,6 +62,7 @@ class StrumNote extends FlxSprite
 		if(Paths.fileExists('images/$customSkin.png', IMAGE)) skin = customSkin;
 
 		texture = skin; //Load texture and anims
+		
 		scrollFactor.set();
 		playAnim('static');
 	}
