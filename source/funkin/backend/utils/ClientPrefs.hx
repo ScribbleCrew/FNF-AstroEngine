@@ -200,15 +200,16 @@ class ClientPrefs
 			data.framerate = Std.int(FlxMath.bound(FlxG.stage.application.window.displayMode.refreshRate, 60, 240));
 		#end
 
-		/*if (data.framerate > FlxG.drawFramerate) ????
+		if (data.framerate > FlxG.drawFramerate)
 		{
-			FlxG.updateFramerate = FlxG.drawFramerate = data.framerate;
+			FlxG.updateFramerate = data.framerate;
+			FlxG.drawFramerate = data.framerate;
 		}
 		else
 		{
 			FlxG.drawFramerate = data.framerate;
 			FlxG.updateFramerate = data.framerate;
-		} */
+		}
 
 		if (FlxG.save.data.gameplaySettings != null)
 		{

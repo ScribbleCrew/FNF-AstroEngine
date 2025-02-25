@@ -7,7 +7,7 @@ import openfl.text.TextFormat;
  * params or enable it in Project.xml, and you'll get a watermark that displays the user's pc username.
  * discord name, and something else I forgot...
  */
-@:keep class Watermark extends openfl.text.TextField
+class Watermark extends openfl.text.TextField
 {
 	@:noCompletion private var format:TextFormat;
 

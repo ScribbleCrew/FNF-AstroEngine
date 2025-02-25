@@ -30,15 +30,16 @@ class Mods
 
 	private static var globalMods:Array<String> = [];
 
-	inline public static function getGlobalMods()
+	inline public static function getGlobalMods():Array<String>
 		return globalMods;
 
-	inline public static function pushGlobalMods() // prob a better way to do this but idc
+	inline public static function pushGlobalMods():Array<String> // prob a better way to do this but idc
 	{
-		globalMods = [];
+		globalMods.resetArray();
+		
 		for(mod in parseList().enabled)
 		{
-			var pack:Dynamic = getPack(mod);
+			final pack:Dynamic = getPack(mod);
 			if(pack != null && pack.runsGlobally) globalMods.push(mod);
 		}
 		return globalMods;

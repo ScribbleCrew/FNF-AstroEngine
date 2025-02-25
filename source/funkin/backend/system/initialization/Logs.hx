@@ -46,7 +46,7 @@ import funkin.backend.utils.native.Terminal.TColor;
 	 * gotta love threading <3.
 	 * fr.
 	 */
-	@:dox(hide) @:noCompletion private static var mutex:Mutex = new Mutex();
+	@:dox(hide) @:noCompletion static var mutex:Mutex = new Mutex();
 	#end
 
 	/**
@@ -55,7 +55,7 @@ import funkin.backend.utils.native.Terminal.TColor;
 	 * which is `Constants.DEFAULT_LOGS_PREFIX`.
 	 */
 	public static var prefix(default, set):String = Constants.DEFAULT_LOGS_PREFIX;
-	@:dox(hide) @:noCompletion private dynamic static function set_prefix(value:String):String
+	@:dox(hide) @:noCompletion static function set_prefix(value:String):String
 		return prefix = ((value == '' || value == null) ? Constants.DEFAULT_LOGS_PREFIX : value);
 
 	/**
@@ -114,7 +114,7 @@ import funkin.backend.utils.native.Terminal.TColor;
 	 * #### Supported Platforms:
 	 *    - Javascript **(not tested)**
 	 *    - Lua **(not tested)**
-	 *    - Windows
+	 *    - Windows **(tested)**
 	 *    - Linux **(not tested)**
 	 *    - Macos **(not tested)**
 	 */

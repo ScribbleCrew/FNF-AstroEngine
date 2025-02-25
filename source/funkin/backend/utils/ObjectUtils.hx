@@ -10,7 +10,6 @@ class ObjectUtils
 	 *
 	 * @return Converted sprite.
 	 */
-
 	public static inline function centerOnObject<T:flixel.FlxObject>(spr:T, target:flixel.FlxObject, axes:flixel.util.FlxAxes = XY):T
 		{
 			if (axes.x)

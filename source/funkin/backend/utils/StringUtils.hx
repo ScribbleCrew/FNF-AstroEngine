@@ -23,4 +23,7 @@ class StringUtils
 		for (i in map.keys())
 			map.set(i, resetVal);
 	}
+	// bruh
+	public static inline function resetArray(x:Array<Dynamic>)
+		return x = [];
 }

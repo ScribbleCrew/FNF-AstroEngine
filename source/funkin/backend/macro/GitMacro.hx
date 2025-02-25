@@ -11,29 +11,26 @@ class GitMacro
 	 * Current git commit number.
 	 */
 	public static var commitNumber(get, never):Int;
-
-	@:noCompletion private static function get_commitNumber()
+	@:dox(hide) static function get_commitNumber()
 		return _commitNumber();
 
 	/**
 	 * Current git commit hash.
 	 */
 	public static var commitHash(get, never):String;
-
-	@:noCompletion private static function get_commitHash()
+	@:dox(hide) static function get_commitHash()
 		return _commitHash();
 
 	/**
 	 * Current git branch.
 	 */
 	public static var branch(get, never):String;
-
-	@:noCompletion private static function get_branch()
+	@:dox(hide) static function get_branch()
 		return _currentBranch();
 
 	//
 
-	@:noCompletion private static macro function _commitNumber()
+	@:dox(hide) @:noCompletion private static macro function _commitNumber()
 	{
 		#if display
 		return macro $v{0};
@@ -46,13 +43,13 @@ class GitMacro
 			return macro $v{Std.parseInt(process.stdout.readLine())};
 		}
 		catch (e)
-		{
+		
 			trace("Error getting current commit number from git: " + e);
-		}
+		
 		return macro $v{0} #end
 	}
 
-	@:noCompletion private static macro function _commitHash()
+	@:dox(hide) @:noCompletion private static macro function _commitHash()
 	{
 		#if display
 		return macro $v{"~"};
@@ -65,13 +62,13 @@ class GitMacro
 			return macro $v{process.stdout.readLine()};
 		}
 		catch (e)
-		{
+		
 			trace("Error getting current commit hash from git: " + e);
-		}
+		
 		return macro $v{"~"} #end
 	}
 
-	@:noCompletion private static macro function _currentBranch()
+	@:dox(hide) @:noCompletion private static macro function _currentBranch()
 	{
 		#if display
 		return macro $v{""};
@@ -84,9 +81,9 @@ class GitMacro
 			return macro $v{process.stdout.readLine()};
 		}
 		catch (e)
-		{
+		
 			trace("Error getting current branch from git: " + e);
-		}
+		
 		return macro $v{""} #end
 	}
 }

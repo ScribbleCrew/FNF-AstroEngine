@@ -19,8 +19,15 @@ import flash.media.Sound;
 @:access(openfl.display.BitmapData)
 class Paths
 {
-	public static var temp:Null<String> = null;
+	#if desktop public static var temp:Null<String> = null; #end
 
+	/**
+	 * The Current Level.	
+	 */
+	static public var currentLevel(default, set):String;
+	static inline function set_currentLevel(lvl:String):String
+		return currentLevel = lvl.toLowerCase();
+	
 	public static function excludeAsset(key:String)
 	{
 		if (!dumpExclusions.contains(key))
@@ -141,11 +148,6 @@ class Paths
 			graphic.bitmap.__texture.dispose();
 		FlxG.bitmap.remove(graphic);
 	}
-
-	static public var currentLevel(default, set):String;
-
-	@:noCompletion private static inline function set_currentLevel(name:String)
-		return currentLevel = name.toLowerCase();
 
 	public static function getPath(file:String, ?type:AssetType = TEXT, ?parentfolder:String, ?modsAllowed:Bool = true):String
 	{

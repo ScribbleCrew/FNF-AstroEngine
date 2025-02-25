@@ -7,15 +7,13 @@ import funkin.game.objects.shaders.RainShader;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.display.FlxTiledSprite;
 
-import states.stages.objects.*;
-
 class PhillyBlazin extends BaseStage
 {
 	#if SHADERS_ALLOWED
 	var rainShader:RainShader;
-	#end
 	var rainTimeScale:Float = 1;
-
+	#end
+	
 	var scrollingSky:FlxTiledSprite;
 	var skyAdditive:BGSprite;
 	var lightning:BGSprite;
@@ -244,21 +242,18 @@ class PhillyBlazin extends BaseStage
 	var darnellFight:DarnellBlazinHandler = new DarnellBlazinHandler();
 	override function goodNoteHit(note:Note)
 	{
-		//trace('hit note! ${note.noteType}');
-		rainTimeScale += 0.7;
+		#if SHADERS_ALLOWED rainTimeScale += 0.7;#end
 		picoFight.noteHit(note);
 		darnellFight.noteHit(note);
 	}
 	override function noteMiss(note:Note)
 	{
-		//trace('missed note!');
 		picoFight.noteMiss(note);
 		darnellFight.noteMiss(note);
 	}
 
 	override function noteMissPress(direction:Int)
 	{
-		//trace('misinput!');
 		picoFight.noteMissPress(direction);
 		darnellFight.noteMissPress(direction);
 	}

@@ -3,6 +3,15 @@ package funkin.game;
 import funkin.backend.utils.Paths;
 import funkin.backend.system.initialization.*;
 
+// __init__ imports
+#if desktop
+import funkin.backend.system.initialization.TemporaryFolder;
+/**
+ * Just to make sure DCE doesn't remove this, since it's not directly referenced anywhere else.
+ */
+import funkin.backend.system.initialization.ALSoftConfig;
+#end
+
 /**
  * very simple initialization state (WARNING: MUST BE LOADED BEFORE ANYTHING ELSE!!!)
  * i just like having a separate file for initializing stuff, instead of throwing it all 
@@ -38,14 +47,12 @@ class Init extends flixel.FlxState
 		funkin.backend.utils.ClientPrefs.init();
 		this.init();
 
-		funkin.backend.system.initialization.TemporaryFolder.main();
-
+		#if desktop funkin.backend.system.initialization.TemporaryFolder.init(); #end
 		#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(CallbackHandler.call)); #end
-		#if CRASH_HANDLER openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR,
-			CrashHandler.main); #end
+		#if CRASH_HANDLER CrashLogger.init(); #end
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
 		#if DISCORD_ALLOWED DiscordClient.prepare(); #end
-		#if SHADERS_ALLOWED ShaderCoordsFix.fix(); #end
+		#if SHADERS_ALLOWED ShaderCoordsFix.init(); #end
 		#if windows AudioSwitchFix.init(); #end
 		#if HSCRIPT_ALLOWED IrisConfig.init(); #end
 

@@ -10,7 +10,10 @@ import funkin.game.states.*;
 import funkin.game.editors.*;
 import funkin.game.transitions.*;
 import funkin.game.objects.notes.*;
+// stage stuff
 import funkin.game.objects.stages.objects.*;
+import funkin.game.objects.stages.objects.weekend1.*;
+
 import funkin.game.objects.options.*;
 import funkin.game.transitions.*;
 import funkin.game.objects.characters.*;

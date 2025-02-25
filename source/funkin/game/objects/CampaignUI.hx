@@ -14,8 +14,9 @@ class CampaignUI extends FlxSprite
 	public var shouldReact:Bool = false;
 	public var isSelected:Bool = false;
 
-	private var _defaultSize:FlxPoint = new FlxPoint();
-	private var events:Map<String, Null<CampaignUI->Void>> = new Map<String, Null<CampaignUI->Void>>();
+	var events:Map<String, Null<CampaignUI->Void>> = new Map<String, Null<CampaignUI->Void>>();
+
+	@:dox(hide) var _defaultSize:FlxPoint = new FlxPoint();
 
 	public function new(?X:Float = 0, ?Y:Float = 0, TYPE:DaArrowType = LEFT):Void
 	{
@@ -33,7 +34,7 @@ class CampaignUI extends FlxSprite
 
 		antialiasing = ClientPrefs.data.antialiasing;
 
-		_defaultSize.set(this.scale.x, this.scale.y); // aww
+		_defaultSize = new FlxPoint(this.scale.x, this.scale.y); // aww
 
 		shouldReact = true;
 	}
@@ -42,20 +43,35 @@ class CampaignUI extends FlxSprite
 	 * Bind a event to a specific map value.
 	 */
 	public function bind(tag:String, func:CampaignUI->Void):Void // enum maybe??
-		events.set(tag, func);
+		return events.set(tag, func);
 
 	/**
 	 * Mainly used to GET functions from the map `events`...
 	 */
-	private function get(tag:String):Null<CampaignUI->Void>
+	public function get(tag:String):Null<CampaignUI->Void>
 	{
 		final GET_REQUEST:CampaignUI->Void = events.get(tag);
 		if (GET_REQUEST != null)
 			return GET_REQUEST;
+		FlxG.log.error('Wasn\'t able to grab event : $tag, returning empty function instead');
 		return (void) -> {}; // fail safe, kinda...
 	}
 
-	override function update(elapsed:Float):Void
+	function hover() : Void
+	{
+		FlxTween.tween(this, {"scale.x": this.scale.x * 0.85, "scale.y": this.scale.y * 0.85}, 0.2, {type: BACKWARD, ease: FlxEase.cubeOut});
+		// if(animation.getByName('press') != null) animation.play('press');
+		get("clicked")(this);
+
+		new FlxTimer().start(.5, (_) ->
+		{
+			scale.set(_defaultSize.x, _defaultSize.y);
+			if (animation.curAnim.name != 'idle')
+				animation.play('idle');
+		});
+	}
+
+	@:dox(hide) override function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
 
@@ -63,17 +79,6 @@ class CampaignUI extends FlxSprite
 			return;
 
 		if ((isSelected = FlxG.mouse.overlaps(this, camera)) && FlxG.mouse.justPressed)
-		{
-			FlxTween.tween(this, {"scale.x": this.scale.x * 0.85, "scale.y": this.scale.y * 0.85}, 0.2, {type: BACKWARD, ease: FlxEase.cubeOut});
-			// if(animation.getByName('press') != null) animation.play('press');
-			get("clicked")(this);
-
-			new FlxTimer().start(.5, (_) ->
-			{
-				scale.set(_defaultSize.x, _defaultSize.y);
-				if (animation.curAnim.name != 'idle')
-					animation.play('idle');
-			});
-		}
+			hover();
 	}
 }

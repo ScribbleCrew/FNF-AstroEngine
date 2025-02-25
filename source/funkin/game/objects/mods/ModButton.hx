@@ -10,9 +10,9 @@ class ModButton extends FlxSpriteGroup
 	public var textOff:Alphabet;
 	public var icon:FlxSprite;
 	public var onClick:Void->Void = null;
+	
 	public var enabled(default, set):Bool = true;
-
-	@:noCompletion private function set_enabled(newValue:Bool)
+	@:dox(hide) function set_enabled(newValue:Bool):Bool
 	{
 		enabled = newValue;
 		setButtonVisibility(false);

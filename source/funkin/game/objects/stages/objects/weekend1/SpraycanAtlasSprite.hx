@@ -1,4 +1,4 @@
-package funkin.game.objects.stages.objects;
+package funkin.game.objects.stages.objects.weekend1;
 
 enum SpraycanState
 {

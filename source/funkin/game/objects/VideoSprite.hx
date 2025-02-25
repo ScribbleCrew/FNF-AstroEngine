@@ -1,13 +1,11 @@
 package funkin.game.objects;
-
+#if VIDEOS_ALLOWED
 import flixel.addons.display.FlxPieDial;
 
 #if hxvlc
 import hxvlc.flixel.FlxVideoSprite;
 #end
-
 class VideoSprite extends FlxSpriteGroup {
-	#if VIDEOS_ALLOWED
 	public var finishCallback:Void->Void = null;
 	public var onSkip:Void->Void = null;
 
@@ -52,7 +50,7 @@ class VideoSprite extends FlxSpriteGroup {
 			videoSprite.bitmap.onEndReached.add(function() {
 				if(alreadyDestroyed) return;
 	
-				trace('Video destroyed');
+				Logs.defaultTrace('Video destroyed');
 				if(cover != null)
 				{
 					remove(cover);
@@ -169,5 +167,6 @@ class VideoSprite extends FlxSpriteGroup {
 
 	public function resume() videoSprite?.resume();
 	public function pause() videoSprite?.pause();
-	#end
 }
+
+#end

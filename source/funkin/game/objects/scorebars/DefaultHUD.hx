@@ -4,7 +4,7 @@ package funkin.game.objects.scorebars;
 class DefaultHUD extends FlxBasic
 {
 	private var game(get,null):PlayState;
-	@:dox(hide) @:noCompletion private inline function get_game():PlayState
+	@:dox(hide) inline function get_game():PlayState
 		return PlayState.instance;
 
 	// Bars

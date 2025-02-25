@@ -1,6 +1,6 @@
 package funkin.backend.system.initialization;
 #if HSCRIPT_ALLOWED
-@:keep class IrisConfig
+class IrisConfig
 {
 	public static function init() : Void
 	{

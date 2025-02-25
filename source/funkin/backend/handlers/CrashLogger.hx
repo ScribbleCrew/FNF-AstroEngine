@@ -7,9 +7,14 @@ import haxe.CallStack;
 import haxe.io.Path;
 import sys.io.File;
 
-class CrashHandler
+@:nullSafety @:keep class CrashLogger
 {
-	public static function main(e:UncaughtErrorEvent):Void
+	public static function init():Void
+	{
+		openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR, errorLogger);
+	}
+
+	@:dox(hide) static function errorLogger(e:UncaughtErrorEvent):Void// yeahhh, i'll doc later
 	{
 		final callStack:Array<StackItem> = CallStack.exceptionStack(true);
 		final dateNow:String = Date.now().toString().replace(" ", "_").replace(":", "'");
@@ -36,7 +41,8 @@ class CrashHandler
 			+ EngineData.REPOSITORY
 			+ "\n\n---------------------------------------------------------\n> Crash Handler written by: sqirra-rng";
 
-		if (!FileUtil.validDirectory("./crash/")) FileUtil.createDirectory("./crash/");
+		if (!FileUtil.validDirectory("./crash/"))
+			FileUtil.createDirectory("./crash/");
 
 		File.saveContent(path, errMsg + "\n");
 

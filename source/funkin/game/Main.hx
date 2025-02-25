@@ -1,12 +1,5 @@
 package funkin.game;
 
-#if desktop
-/**
- * Just to make sure DCE doesn't remove this, since it's not directly referenced anywhere else.
- */
-import funkin.backend.system.initialization.ALSoftConfig;
-#end
-
 import flixel.FlxG;
 import flixel.FlxGame;
 import openfl.Lib;

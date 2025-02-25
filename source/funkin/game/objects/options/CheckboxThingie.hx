@@ -9,8 +9,7 @@ class CheckboxThingie extends FlxRGBSprite
 	public var offsetY:Float = 0;
 
 	public var daValue(default, set):Bool;
-
-	@:noCompletion private inline function set_daValue(check:Bool):Bool
+	@:dox(hide) inline function set_daValue(check:Bool):Bool
 	{
 		if (check)
 		{
@@ -25,6 +24,7 @@ class CheckboxThingie extends FlxRGBSprite
 			animation.play("unchecking", true);
 			offset.set(25, 28);
 		}
+
 		return check;
 	}
 

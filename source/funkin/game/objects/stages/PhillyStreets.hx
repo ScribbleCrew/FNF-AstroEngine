@@ -7,8 +7,6 @@ import funkin.game.objects.shaders.RainShader;
 #end
 import flixel.addons.display.FlxTiledSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
-import states.stages.objects.*;
-
 
 enum NeneState
 {
