@@ -60,6 +60,12 @@ class Main extends openfl.display.Sprite
 		SetProcessDPIAware(); // dpi fix
 		DisableProcessWindowsGhosting()
 		");
+		var display = lime.system.System.getDisplay(0);
+		if (display != null) {
+			var dpiScale:Float = display.dpi / 96;
+			Application.current.window.width = Std.int(_game.width * dpiScale);
+			Application.current.window.height = Std.int(_game.height * dpiScale);
+		}
 		#end
 
 		_game = new FlxGame(Config.gameSize.width, Config.gameSize.height, Init, #if (flixel < "5.0.0") Config.zoom, #end Config.framerate, Config.framerate,
