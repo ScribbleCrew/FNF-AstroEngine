@@ -4,13 +4,13 @@ import flixel.graphics.FlxGraphic;
 
 class HealthIcon extends FlxSprite
 {
-	@:noCompletion private var _isPlayer:Bool = false;
-	@:noCompletion private var _iconOffsets:Array<Float> = [0, 0];
-	@:noCompletion private var _character:String = '';
+	@:noCompletion var _isPlayer:Bool = false;
+	@:noCompletion var _iconOffsets:Array<Float> = [0, 0];
+	@:noCompletion var _character:String = '';
 
 	@:isVar
 	public var character(get,never):String;
-	@:dox(hide) @:noCompletion private inline function get_character():String
+	@:dox(hide) @:noCompletion inline function get_character():String
 		return _character;
 	
 	public var sprTracker:FlxSprite;

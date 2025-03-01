@@ -4,8 +4,8 @@ package funkin.game;
  * Custom FPS class which provides a customizable, displays the
  * fps, memory, and git information.
  */
-@:access(openfl.display.DisplayObject) 
-@:keep class FPS extends openfl.text.TextField
+@:access(openfl.display.DisplayObject)
+class FPS extends openfl.text.TextField
 {
 	/**
 	 * Because reading any data from DisplayObject is insanely expensive in hxcpp, 
@@ -14,7 +14,7 @@ package funkin.game;
 	public var active:Bool;
 
 	/**
-	 * The current frame rate 
+	 * The current framerate 
 	 * (expressed using frames-per-second).
 	 */
 	public var currentFPS(default, null):Int;
@@ -23,15 +23,15 @@ package funkin.game;
 	 * I genuinely have no idea what this does, all i know is that 
 	 * it's used to calculate the framerate.
 	 */
-	private var times:Array<Float>;
+	private var _times:Array<Float>;
 
 	/**
 	 * The current memory usage (WARNING: this is NOT your total program memory usage, 
 	 * rather it shows the garbage collector memory)
 	 */
 	@:isVar
-	public var memoryMegas(get, never):Float;
-	@:dox(hide) @:noCompletion private inline function get_memoryMegas():Float
+	public var memoryMegabytes(get, never):Float;
+	@:dox(hide) inline function get_memoryMegabytes():Float
 		return cpp.vm.Gc.memInfo64(cpp.vm.Gc.MEM_INFO_USAGE);
 
 	/**
@@ -57,7 +57,10 @@ package funkin.game;
 	public inline function clear():String
 		return text = '';
 
-	var _position:FlxPoint;
+	/**
+	 * `_position`
+	 */
+	@:dox(hide) var _position:FlxPoint;
 
 	/**
 	 * Changes `updateFPS` function to the default value
@@ -65,7 +68,8 @@ package funkin.game;
 	 */
 	public inline function reset(changePos:Bool = true):Void->Void
 	{
-		if(changePos) _position == null ? setPosition(_position.x,_position.y) : setPosition(10,3);
+		if (changePos)
+			_position != null ? setPosition(_position.x, _position.y) : setPosition(10, 3);
 		return updateFPS = _default;
 	}
 
@@ -73,25 +77,34 @@ package funkin.game;
 	 * Basic set position function, 
 	 * does it even work?
 	 */
-	public inline function setPosition(?X:Null<Float>, ?Y:Null<Float>):Float
-		return { _position = new FlxPoint(X,Y); this.x = X; this.y = Y; } 
+	public inline function setPosition(x = 0.0, y = 0.0):Void
+	{
+		_position = new FlxPoint(x, y);
+		this.x = x;
+		this.y = y;
+	}
+
+	/**
+	* Checks low frames.	
+	*/
+	public inline function lowFramesCheck():Bool return (currentFPS < FlxG.drawFramerate * 0.5);
 
 	public function new(x:Float = 10, y:Float = 3, color:Int = 0x000000)
 	{
 		/**
-		 * u dumb?
+		 * oof
 		 */
 		super();
 
 		/**
 		 * Setting the given positions.
 		 */
-		setPosition(x,y);
+		setPosition(x, y);
 
 		/**
 		 * Default stuff
 		 */
-		times = [];
+		_times = [];
 		currentFPS = 0;
 		updateFPS = _default;
 
@@ -122,7 +135,7 @@ package funkin.game;
 		/**
 		 * Resets the fps field to its default value.
 		 */
-		FlxG.signals.preStateSwitch.add(()->reset()); // extra check.
+		FlxG.signals.preStateSwitch.add(() -> reset()); // extra check.
 	}
 
 	/**
@@ -132,7 +145,7 @@ package funkin.game;
 	var deltaTimeout:Float = 0.0;
 
 	/**
-	 * Updates the fps field.
+	 * Updates the FPS field.
 	 */
 	public var updateFPS:Void->Void;
 
@@ -142,12 +155,12 @@ package funkin.game;
 	@:dox(hide) @:noCompletion private override function __enterFrame(deltaTime:Float):Void
 	{
 		/**
-		 * Times push thingy???
+		 * _times push thingy???
 		 */
 		final now:Float = haxe.Timer.stamp() * 1000;
-		times.push(now);
-		while (times[0] < now - 1000)
-			times.shift();
+		_times.push(now);
+		while (_times[0] < now - 1000)
+			_times.shift();
 
 		/**
 		 * Stops `updateFPS` from being ran every frame.
@@ -162,7 +175,7 @@ package funkin.game;
 		/**
 		 * Update `currentFPS` with recalculated fps.
 		 */
-		currentFPS = times.length < FlxG.updateFramerate ? times.length : FlxG.updateFramerate;
+		currentFPS = _times.length < FlxG.updateFramerate ? _times.length : FlxG.updateFramerate;
 		updateFPS();
 		deltaTimeout = 0.0;
 
@@ -184,22 +197,30 @@ package funkin.game;
 		clear();
 
 		/**
-		 * My stupid stuff...
+		 * FPS Text Field
 		 */
 		addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.goober ? "owo's per second" : #end 'FPS'}: $currentFPS');
-		addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.goober ? "proot mem usage" : #end 'Memory'}: ${flixel.util.FlxStringUtil.formatBytes(memoryMegas)}');
+		
+		/**
+		 * Memory Text Field
+		 */
+		addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.goober ? "proot mem usage" : #end 'Memory'}: ${flixel.util.FlxStringUtil.formatBytes(memoryMegabytes)}');
+		
+		/**
+		 * Commit Data (Git)
+		 */
 		#if GIT_ALLOWED addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.goober ? "orbl pick one pls 🙏" : #end "Commit"}: ${GitMacro.commitNumber} [${GitMacro.commitHash}] ${GitMacro.branch}'); #end
 
 		/**
 		 * Low FPS Check.
 		 */
-		(currentFPS < FlxG.drawFramerate * 0.5) ? textColor = 0xFFFF0000 : textColor = 0xFFFFFFFF;
+		lowFramesCheck() ? textColor = 0xFFFF0000 : textColor = 0xFFFFFFFF;
 	}
 
 	/**
 	 * Framerate background alpha float.
 	 */
-	@:noCompletion private static inline final _bgAlpha:Float = (1 / 3);
+	@:dox(hide) inline static final _bgAlpha:Float = (1 / 3);
 
 	/**
 	 * Modified `set_alpha` to take the `bgSprite`'s alpha 
@@ -218,4 +239,17 @@ package funkin.game;
 	 */
 	@:dox(hide) @:noCompletion override function set_visible(value:Bool):Bool
 		return bgSprite.visible = super.visible = value;
+
+
+	/**
+	 * Smol `create()` function to reduce lines of da code
+	 */
+	public static function make():FPS
+	{
+		final fpsVar:FPS = new FPS(10, 3, 0xFFFFFF);
+		fpsVar.visible = false;
+		fpsVar.bgOffset.x += 25;
+		fpsVar.bgOffset.y += 5;
+		return fpsVar;
+	}
 }

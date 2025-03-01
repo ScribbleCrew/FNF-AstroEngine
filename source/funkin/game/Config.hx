@@ -1,7 +1,9 @@
 package funkin.game;
 
-@:publicFields//uhh
-@:final class Config {
+import haxe.ds.StringMap;
+
+@:publicFields 
+final class Config {
     static var gameSize:{width:Int,height:Int} = { width : 1280, height : 720 }; // WINDOW width & height.
 	static var zoom:Float = -1.0; // Game Zoom.
 	static final framerate:Int = 144; // Framerate.

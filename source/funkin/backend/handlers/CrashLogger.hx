@@ -12,7 +12,17 @@ import sys.io.File;
 	public static function init():Void
 	{
 		openfl.Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(openfl.events.UncaughtErrorEvent.UNCAUGHT_ERROR, errorLogger);
+		#if cpp
+		untyped __global__.__hxcpp_set_critical_error_handler(onError);
+		#elseif hl
+		hl.Api.setErrorHandler(onError);
+		#end
 	}
+
+	#if (cpp || hl)
+	@:dox(hide) inline static function onError(message:Dynamic):Void
+		throw '\n\rCritical Error!\n\r${Std.string(message)}\n';
+	#end
 
 	@:dox(hide) static function errorLogger(e:UncaughtErrorEvent):Void// yeahhh, i'll doc later
 	{
