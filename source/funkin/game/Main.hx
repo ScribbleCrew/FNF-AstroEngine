@@ -60,6 +60,7 @@ class Main extends flixel.FlxGame
 	public static function main():Void
 	{
 		FlxSprite.defaultAntialiasing = true;
+		funkin.backend.system.initialization.CoolEvents.init();
 
 		Type.createInstance(Main, []); // wanna see if dis works.
 	}
@@ -105,8 +106,6 @@ class Main extends flixel.FlxGame
 		#end
 
 		#if linux Lib.current.stage.window.setIcon(lime.graphics.Image.fromFile("icon.png")); #end
-
-		funkin.backend.system.initialization.CoolEvents.init();
 	}
 
 	// Audio Fix
