@@ -78,7 +78,7 @@
 	<define name="MODIFIED_LOGS" />
 
 	<!-- Enables the dpi fix thingy (NOTICE: windows based systems only) -->
-	<define name="ALLOW_DPI_FIX" />
+	<define name="ALLOW_DPI_FIX" if="windows"/>
 
 	<!-- Enables a terminal log prompt on debug builds -->
 	<define name="DEBUG_SERVER_ALLOWED" if="debug desktop"/>
