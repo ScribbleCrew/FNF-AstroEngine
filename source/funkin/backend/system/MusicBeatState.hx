@@ -76,7 +76,10 @@ abstract class MusicBeatState extends FlxState
 
 		if (_shaderGroup != null)
 			for (shader in _shaderGroup) 
-				try{shader.update(elapsed);}catch(err)Logs.trace('err', RED);
+				try{
+					shader.update(elapsed);
+				}catch(err:Dynamic)
+					Logs.trace(err, RED);
 
 		if (oldStep != curStep)
 		{
