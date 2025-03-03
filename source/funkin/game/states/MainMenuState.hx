@@ -28,13 +28,13 @@ import funkin.backend.system.MusicBeatState;
 import flixel.input.mouse.FlxMouseEvent;
 import funkin.game.states.*;
 
-typedef MenuVersionStructure =
+private typedef MenuVersionStructure =
 {
 	var name:Null<String>;
 	@:optional var offset:FlxPoint;
 }
 
-typedef MenuItemsStructure =
+private typedef MenuItemsStructure =
 {
 	var name:Null<String>;
 	@:optional var state:EitherTwo<flixel.FlxSubState, flixel.FlxState>;

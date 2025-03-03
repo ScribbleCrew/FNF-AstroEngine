@@ -27,15 +27,6 @@
 	<!-- Shows the loading screen. -->
 	<define name="SHOW_LOADING_SCREEN" />
 
-	<!-- 
-		Enables watermarks for unreleased mods. 
-		Uses Md5 hashing system to hash the players system username.(soo u can unhash iguess it just looks cool 😎)
-		Also checks for a discord client and shows that name too!!!
-		and userid LOL!!!!!!!!!!!
-		helps find out who leak!!!!!!!!!!!!!!
-		md5 cannot be reversed so just hash there name and if the hash is the same u got them >:)
-		Used for beta testers lol!
-	-->
 	<!-- <define name="WATERMARK" /> -->
 
 	<!-- Enables astro engine watermarks. -->
@@ -58,6 +49,8 @@
 
 	<!-- Enables Hscript Iris Debug Stuff -->
 	<define name="IRIS_DEBUG"/>
+
+	<define name="MULTITHREADED_LOADING"/>
 
 	<!-- Enables HScript Support -->
 	<define name="HSCRIPT_ALLOWED" if="desktop" />
@@ -97,6 +90,8 @@
 
 	<!-- Crash handler -->
 	<define name="CRASH_HANDLER" if="desktop release" />
+
+	<!-- <define name="SKIP_SPLASH_SCREEN" /> -->
 
 	<!-- DONT ENABLE THIS -->
 	<define name="CHECK_FOR_UPDATES" if="desktop officialBuild"/>

@@ -52,16 +52,8 @@ class LoadingState extends MusicBeatState
 
 	#if ASTRO_WATERMARKS
 	var logo:FlxSprite;
-	var pessy:FlxSprite;
 	var loadingText:FlxText;
-
 	var timePassed:Float;
-	var shakeFl:Float;
-	var shakeMult:Float = 0;
-	
-	var isSpinning:Bool = false;
-	var spawnedPessy:Bool = false;
-	var pressedTimes:Int = 0;
 	#else
 	var funkay:FlxSprite;
 	#end
@@ -163,7 +155,6 @@ class LoadingState extends MusicBeatState
 
 		#if ASTRO_WATERMARKS
 		timePassed += elapsed;
-		shakeFl += elapsed * 3000;
 		var dots:String = '';
 		switch(Math.floor(timePassed % 1 * 3))
 		{
@@ -270,7 +261,7 @@ class LoadingState extends MusicBeatState
 	static var dontPreloadDefaultVoices:Bool = false;
 	static function _startPool()
 	{
-		threadPool = new FixedThreadPool(#if MULTITHREADED_LOADING #if cpp getCPUThreadsCount() #else 8 #end #else 1 #end);
+		threadPool = new FixedThreadPool(#if MULTITHREADED_LOADING #if cpp cpuThreads #else 8 #end #else 1 #end);
 	}
 
 	public static function prepareToSong()
@@ -634,7 +625,6 @@ class LoadingState extends MusicBeatState
 	{
 		try {
 			var requestKey:String = 'images/$key';
-			#if TRANSLATIONS_ALLOWED requestKey = Language.getFileTranslation(requestKey); #end
 			if(requestKey.lastIndexOf('.') < 0) requestKey += '.png';
 
 			if (!Paths.currentTrackedAssets.exists(requestKey))
@@ -664,14 +654,15 @@ class LoadingState extends MusicBeatState
 
 		return null;
 	}
-	
 	#if cpp
 	/**
-	* Gets the cpu's thread count.	
-	*/
-	public static var cpuThreads(get,never):Int;//gwa gwa gwa
-	@:functionCode('return std::thread::hardware_concurrency();')
-	@:dox(hide) @:noCompletion private inline static function get_cpuThreads():Int
-        return -1;
-    #end
+	 * Gets the CPU's thread count.
+	 */
+	@:isVar
+	public static var cpuThreads(get, never):Int;
+	@:dox(hide) inline static function get_cpuThreads():Int
+		return untyped __cpp__("std::thread::hardware_concurrency()");
+	// @:functionCode('return std::thread::hardware_concurrency();')
+	#end
+	
 }

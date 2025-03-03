@@ -7,31 +7,8 @@ import funkin.backend.utils.native.Terminal.TColor;
 /**
  * Modified trace because it just makes sense.
  * Also has a customizable prefix, for example: [System]: \<blah blah blah\>
- *
- * #### Colors:
- * ```haxe
- * enum TColor
- * {
-	BLACK;
-	WHITE;
-	GRAY;
-	RED;
-	GREEN;
-	BLUE;
-	YELLOW;
-	CYAN;
-	MAGENTA;
-	DARKGRAY;
-	DARKRED;
-	DARKGREEN;
-	DARKBLUE;
-	DARKYELLOW;
-	DARKCYAN;
-	DARKMAGENTA;
- * }
- * ```
-*/
-@:keep class Logs // needs rework ... - ???/???/??? | IT'S BEEN REWORKED :) - 02/15/25
+ */
+@:dce class Logs // needs rework ... - ???/???/??? | IT'S BEEN REWORKED :) - 02/15/25
 {
 	/**
 	 * `haxe`'s default trace function, stored as a variable for later use.
@@ -63,12 +40,14 @@ import funkin.backend.utils.native.Terminal.TColor;
 	 * `print` which is basically the same function.
 	 * I'm in love with this functions, its very cute ;3
 	 */
-	public static function trace(v:Dynamic, ?color:TColor, ?infos:PosInfos):Void return print(v,color,infos);
-	@:dox(hide) public static function print(v:Dynamic, ?color:TColor, ?infos:PosInfos):Void
+	public static function trace(v:Dynamic, ?color:TColor, ?infos:PosInfos):Void return print(v, color, infos);
+	@:dox(hide) @:noCompletion public static function print(v:Dynamic, ?color:TColor, ?infos:PosInfos):Void
 	{
-		if (color != null) Terminal.instance.fg(color);
+		if (color != null)
+			Terminal.instance.fg(color);
 		__customTrace(v, infos); // oops :3
-		if (color != null) Terminal.instance.resetFg();
+		if (color != null)
+			Terminal.instance.resetFg();
 	}
 
 	/**
@@ -77,19 +56,20 @@ import funkin.backend.utils.native.Terminal.TColor;
 	 */
 	public static function prefixedTrace(x:Dynamic, customPrefix:String, ?color:TColor, ?infos:PosInfos):Void
 	{
-		#if THREADING_ALLOWED mutex.acquire();#end//it looks ugly, ik...
+		#if THREADING_ALLOWED mutex.acquire(); #end // it looks ugly, ik...
 		final oldPrefix:String = prefix;
 		prefix = customPrefix;
 		print(x, color, infos);
 		prefix = oldPrefix;
-		#if THREADING_ALLOWED mutex.release();#end
+		#if THREADING_ALLOWED mutex.release(); #end
 	}
 
 	/**
 	 * My stupid initialization function which sets `haxe.Log.trace` to my custom trace 
 	 * function `__customTrace`(private).
 	 */
-	public static function init():Void
+	@:allow(funkin.game.Init)
+	@:noCompletion static function init():Void
 	{
 		defaultTrace = haxe.Log.trace;
 		haxe.Log.trace = __customTrace;
@@ -100,7 +80,7 @@ import funkin.backend.utils.native.Terminal.TColor;
 	 * Formats the output and returns a better one lol.
 	 * uses `haxe.PosInfos` to get file info (pretty obvious).
 	 */
-	static function formatOutput(v:Dynamic, ?infos:haxe.PosInfos):String
+	@:noCompletion static inline function _formatOutput(v:Dynamic, ?infos:haxe.PosInfos):String
 	{
 		if (infos != null && infos.customParams != null)
 			for (param in infos.customParams)
@@ -120,7 +100,7 @@ import funkin.backend.utils.native.Terminal.TColor;
 	 */
 	@:dox(hide) @:noCompletion static dynamic function __customTrace(v:Dynamic, ?infos:haxe.PosInfos):Void
 	{
-		v = formatOutput(v, infos);
+		v = _formatOutput(v, infos);
 		#if js
 		if (js.Syntax.typeof(untyped console) != "undefined" && (untyped console).log != null)
 			(untyped console).log(v);

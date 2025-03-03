@@ -9,9 +9,10 @@ import funkin.backend.utils.Controls;
 import flixel.FlxCamera;
 import flixel.FlxBasic;
 
+@:access(funkin.backend.ShaderBackend.update)
 abstract class MusicBeatState extends FlxState
 {
-	private var shaderGroup:Array<ShaderBackend>;
+	private var _shaderGroup:Array<ShaderBackend>;
 	
 	private var customCameraLoaded:Bool = false;
 
@@ -35,7 +36,7 @@ abstract class MusicBeatState extends FlxState
 	override function create():Void
 	{
 		var skip:Bool = FlxTransitionableState.skipNextTransOut;
-		shaderGroup = null;
+		_shaderGroup = null;
 		super.create();
 
 		if (!customCameraLoaded)
@@ -73,14 +74,9 @@ abstract class MusicBeatState extends FlxState
 		updateCurStep();
 		updateBeat();
 
-		if (shaderGroup != null)
-		{
-			for (i in shaderGroup)
-			{
-				@:privateAccess
-				i.update(elapsed);
-			}
-		}
+		if (_shaderGroup != null)
+			for (shader in _shaderGroup) 
+				try{shader.update(elapsed);}catch(err)Logs.trace('err', RED);
 
 		if (oldStep != curStep)
 		{

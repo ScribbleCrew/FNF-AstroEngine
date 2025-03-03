@@ -78,17 +78,19 @@ class Main extends flixel.FlxGame
 
 		untyped __cpp__("DisableProcessWindowsGhosting();");
 
-		final display = lime.system.System.getDisplay(0);//TODO: get the display that teh game is currently running in
+		final display:lime.system.Display = lime.system.System.getDisplay(Lib.application.window.display.id);
 		if (display != null)
 		{
 			final dpiScale:Float = display.dpi / 96;
-			appScreen.width = Std.int(Config.gameSize.width * dpiScale);
-			appScreen.height = Std.int(Config.gameSize.height * dpiScale);
+			Application.current.window.width = Std.int(Config.gameSize.width * dpiScale);
+			Application.current.window.height = Std.int(Config.gameSize.height * dpiScale);
+			
+			Application.current.window.x = Std.int((Application.current.window.display.bounds.width - Application.current.window.width) / 2);
+			Application.current.window.y = Std.int((Application.current.window.display.bounds.height - Application.current.window.height) / 2);
 		}
 		#end
 
-		super(Config.gameSize.width, Config.gameSize.height, Init, #if (flixel < "5.0.0") Config.zoom, #end Config.framerate, Config.framerate,
-			Config.skipSplash, Config.startFullscreen);
+		super(Config.gameSize.width, Config.gameSize.height, Init, #if (flixel < "5.0.0") Config.zoom, #end Config.framerate, Config.framerate, #if SKIP_SPLASH_SCREEN true #else Config.skipSplash #end, Config.startFullscreen);
 
 		#if (FLX_SOUND_TRAY && (FUNKIN_SOUNDTRAY || BASE_GAME_FILES)) // yeah...
 		_customSoundTray = funkin.backend.system.ui.FunkinSoundTray;

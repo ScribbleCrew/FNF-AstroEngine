@@ -13,6 +13,7 @@ import lime.ui.*;
 import flixel.FlxBasic;
 
 //Currently only supports OPEN and SAVE, might change that in the future, who knows
+@:access(funkin.backend.objects.editers.FileReferenceCustom)
 class FileDialogHandler extends FlxBasic
 {
 	var _fileRef:FileReferenceCustom;
@@ -87,7 +88,6 @@ class FileDialogHandler extends FlxBasic
 	public var completed:Bool = true;
 	function onSaveComplete(_)
 	{
-		@:privateAccess
 		this.path = _fileRef._trackSavedPath;
 		this.completed = true;
 		trace('Saved file to: $path');
@@ -99,7 +99,6 @@ class FileDialogHandler extends FlxBasic
 
 	function onLoadComplete(_)
 	{
-		@:privateAccess
 		this.path = _fileRef.__path;
 		this.data = File.getContent(this.path);
 		this.completed = true;
@@ -113,7 +112,6 @@ class FileDialogHandler extends FlxBasic
 
 	function onLoadDirectoryComplete(_)
 	{
-		@:privateAccess
 		this.path = _fileRef.__path;
 		this.completed = true;
 		trace('Loaded directory: $path');
@@ -169,75 +167,5 @@ class FileDialogHandler extends FlxBasic
 		path = null;
 		completed = true;
 		super.destroy();
-	}
-}
-
-//Only way I could find to keep the path after saving a file
-class FileReferenceCustom extends FileReference
-{
-	@:allow(backend.FileDialogHandler)
-	var _trackSavedPath:String;
-	override function saveFileDialog_onSelect(path:String):Void
-	{
-		_trackSavedPath = path;
-		super.saveFileDialog_onSelect(path);
-	}
-	
-	public function browseEx(browseType:FileDialogType = OPEN, ?defaultName:String, ?title:String = null, ?typeFilter:Array<FileFilter> = null):Bool
-	{
-		__data = null;
-		__path = null;
-
-		#if desktop
-		var filter = null;
-
-		if (typeFilter != null)
-		{
-			var filters = [];
-
-			for (type in typeFilter)
-			{
-				filters.push(StringTools.replace(StringTools.replace(type.extension, "*.", ""), ";", ","));
-			}
-
-			filter = filters.join(";");
-		}
-
-		var openFileDialog = new FileDialog();
-		openFileDialog.onCancel.add(openFileDialog_onCancel);
-		openFileDialog.onSelect.add(openFileDialog_onSelect);
-		openFileDialog.browse(browseType, filter, defaultName, title);
-		return true;
-		#elseif (js && html5)
-		var filter = null;
-		if (typeFilter != null)
-		{
-			var filters = [];
-			for (type in typeFilter)
-			{
-				filters.push(StringTools.replace(StringTools.replace(type.extension, "*.", "."), ";", ","));
-			}
-			filter = filters.join(",");
-		}
-		if (filter != null)
-		{
-			__inputControl.setAttribute("accept", filter);
-		}
-		__inputControl.onchange = function()
-		{
-			var file = __inputControl.files[0];
-			modificationDate = Date.fromTime(file.lastModified);
-			creationDate = modificationDate;
-			size = file.size;
-			type = "." + Path.extension(file.name);
-			name = Path.withoutDirectory(file.name);
-			__path = file.name;
-			dispatchEvent(new Event(Event.SELECT));
-		}
-		__inputControl.click();
-		return true;
-		#end
-
-		return false;
 	}
 }

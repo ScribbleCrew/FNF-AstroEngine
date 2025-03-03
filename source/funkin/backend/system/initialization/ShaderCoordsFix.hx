@@ -49,9 +49,9 @@ import flixel.FlxG;
 	 *
 	 * @param sprite The sprite whose cache should be cleared.
 	 */
-	@:access(openfl.display.Sprite)
 	@:dox(hide)
 	@:noCompletion 
+	@:access(openfl.display.Sprite)
 	static function _clearSpriteBitmapCache(sprite:openfl.display.Sprite):Void
 	{
 		try

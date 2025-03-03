@@ -1,124 +1,244 @@
 package funkin.backend.utils;
 
-import flixel.system.FlxAssets;
-import haxe.xml.Access;
-import openfl.system.System;
 import flixel.FlxG;
+import flixel.system.FlxAssets;
+import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxAtlasFrames;
+
+import openfl.system.System;
 import openfl.utils.AssetType;
+import openfl.display.BitmapData;
 import openfl.utils.Assets as OpenFlAssets;
+
+import haxe.xml.Access;
+import flash.media.Sound;
 import lime.utils.Assets;
+
 #if sys
 import sys.io.File;
 import sys.FileSystem;
 #end
-import flixel.graphics.FlxGraphic;
-import openfl.display.BitmapData;
-import flash.media.Sound;
 
+/**
+ * Paths cuz very cool
+ */
+@:access(flash.media.Sound)
 @:access(openfl.display.BitmapData)
+@:access(flixel.system.frontEnds.BitmapFrontEnd._cache)
 class Paths
 {
-	#if desktop public static var temp:Null<String> = null; #end
+	/**
+	* TEMP file path, mainly used for store temp data for modpacks
+	*/
+	#if MODS_ALLOWED public static var temporaryPath:Null<String> = null;#end
 
 	/**
-	 * The Current Level.	
+	 * An array for all locally tracks assets.
 	 */
-	static public var currentLevel(default, set):String;
-	static inline function set_currentLevel(lvl:String):String
-		return currentLevel = lvl.toLowerCase();
-	
-	public static function excludeAsset(key:String)
-	{
-		if (!dumpExclusions.contains(key))
-			dumpExclusions.push(key);
-	}
+	public static var localTrackedAssets:Array<String> = [];
 
-	public static var dumpExclusions:Array<String> = [
+	/**
+	 * Files that are excluded from being dumped.
+	 */
+	public static var exclusions:Array<String> = [
+		/**
+		 * Funkin Music.
+		 * freakyMenu.(ogg/mp3).
+		 */
 		'assets/music/freakyMenu.${Constants.SOUND_EXT}',
+
+		/**
+		 * Pause Menu Music.
+		 * breakfast.(ogg/mp3).
+		 */
 		'assets/shared/music/breakfast.${Constants.SOUND_EXT}',
+
+		/**
+		 * Pause Menu Music.
+		 * tea-time.(ogg/mp3).
+		 */
 		'assets/shared/music/tea-time.${Constants.SOUND_EXT}',
 	];
 
-	// haya I love you for the base cache dump I took to the max
-	public static function clearUnusedMemory()
+	/**
+	 * The current library level. Mainly used to
+	 * point data shit to the correct lib (or whatever).
+	 */
+	@:isVar public static var currentLevel(default, set):String;
+	@:dox(hide) static inline function set_currentLevel(level:String):String
+		return currentLevel = level.toLowerCase();
+
+	/**
+	 * The current library level. Mainly used to
+	 * point data shit to the correct lib (or whatever).
+	 */
+	public inline static function excludeAsset(key:String):Void
+		return if (!exclusions.contains(key)) exclusions.push(key);
+
+	/**
+	 * If the asset is inisde of `exclusions` to be excluded from being dumped.
+	 */
+	public inline static function includeAsset(key:String):Void
+		return if (exclusions.contains(key)) exclusions.remove(key);
+
+	/**
+	 * Clears all tracked unused memory.
+	 * haya I love you for the base cache dump I took to the max.
+	 */
+	public static function clearUnusedMemory():Void
 	{
-		// clear non local assets in the tracked assets list
+		/**
+		 * clear non local assets in the tracked assets list
+		 */
 		for (key in currentTrackedAssets.keys())
 		{
-			// if it is not currently contained within the used local assets
-			if (!localTrackedAssets.contains(key) && !dumpExclusions.contains(key))
+			/**
+			 * if it is not currently contained within the used local assets
+			 */
+			if (!localTrackedAssets.contains(key) && !exclusions.contains(key))
 			{
-				destroyGraphic(currentTrackedAssets.get(key)); // get rid of the graphic
-				currentTrackedAssets.remove(key); // and remove the key from local cache map
+				/**
+				 * get rid of the graphic
+				 */
+				destroyGraphic(currentTrackedAssets.get(key));
+
+				/**
+				 * and remove the key from local cache map
+				 */
+				currentTrackedAssets.remove(key);
 			}
 		}
 
-		// run the garbage collector for good measure lmfao
+		/**
+		 * run the garbage collector for good measure lmfao
+		 */
 		System.gc();
 	}
 
-	public static function freeGraphicsFromMemory()
+	/**
+	 * Clears all tracked unused memory.
+	 * haya I love you for the base cache dump I took to the max
+	 */
+	public static function freeGraphicsFromMemory():Void
+	{
+		/**
+		 * run the garbage collector for good measure lmfao
+		 */
+		var protectedGraphics:Array<FlxGraphic> = [];
+
+		/**
+		 * Checks if the sprite has a graphic.
+		 */
+		function checkForGraphics(spr:Dynamic):Void
 		{
-			var protectedGfx:Array<FlxGraphic> = [];
-			function checkForGraphics(spr:Dynamic)
+			/**
+			* Checks if it's a FlxGroup (TODO: add normal array support).
+			*/
+			try
 			{
-				try
+				/**
+				 * Gets the members of a group.
+				 */
+				final group:Array<Dynamic> = Reflect.getProperty(spr, 'members'); // is reflect rlly needed?
+
+				if (group != null)
 				{
-					var grp:Array<Dynamic> = Reflect.getProperty(spr, 'members');
-					if(grp != null)
-					{
-						//trace('is actually a group');
-						for (member in grp)
-						{
-							checkForGraphics(member);
-						}
-						return;
-					}
+					/**
+					 * Checks every member with `checkForGraphics`.
+					 */
+					for (member in group) checkForGraphics(member);
+
+					/**
+					* Returns if a group.	
+					*/
+					return;
 				}
-	
-				//trace('check...');
-				try
-				{
-					var gfx:FlxGraphic = Reflect.getProperty(spr, 'graphic');
-					if(gfx != null)
-					{
-						protectedGfx.push(gfx);
-						//trace('gfx added to the list successfully!');
-					}
-				}
-				//catch(haxe.Exception) {}
-			}
-	
-			for (member in FlxG.state.members)
+			} catch (error:Dynamic) {}
+
+			/**
+			 * Checks if it's a sprite with var `graphic`.
+			 */
+			try
+			{
+				/**
+				 * Gets the `graphic` variable from the sprite in question.
+				 */
+				final spriteGraphic:FlxGraphic = Reflect.getProperty(spr, 'graphic');
+
+				/**
+				 * If the graphic doesn't equal null then push to `protectedGraphics` group.
+				 */
+				if (spriteGraphic != null)
+					protectedGraphics.push(spriteGraphic);
+			} catch (error:Dynamic) {}
+		}
+
+		/**
+		 * Checks if all members inside `FlxG.state` has a graphic.
+		 */
+		for (member in FlxG.state.members)
+		{
+			/**
+			 * Checks with the obj has a graphic.
+			 */
+			checkForGraphics(member);
+		}
+
+		/**
+		 * Checks if all members inside `FlxG.state.subState` has a graphic.
+		 */
+		if (FlxG.state.subState != null)
+		{
+			/**
+			 * For loop for all members inside `FlxG.state.subState.members`
+			 */
+			for (member in FlxG.state.subState.members)
+			{
+				/**
+				 * Checks with the obj has a graphic.
+				 */
 				checkForGraphics(member);
-	
-			if(FlxG.state.subState != null)
-				for (member in FlxG.state.subState.members)
-					checkForGraphics(member);
-	
-			for (key in currentTrackedAssets.keys())
+			}
+		}
+
+		/**
+		 * Destroys all graphics inside of `currentTrackedAssets.keys()`.
+		 */
+		for (key in currentTrackedAssets.keys())
+		{
+			/**
+			 * if it is not currently contained within the used local assets
+			 */
+			if (!exclusions.contains(key))
 			{
-				// if it is not currently contained within the used local assets
-				if (!dumpExclusions.contains(key))
+				/**
+				 * Gather the asset in question.
+				 */
+				final graphic:FlxGraphic = currentTrackedAssets.get(key);
+
+				/**
+				 * Checks if `protectedGraphics` contains the graphic.
+				 */
+				if (!protectedGraphics.contains(graphic))
 				{
-					var graphic:FlxGraphic = currentTrackedAssets.get(key);
-					if(!protectedGfx.contains(graphic))
-					{
-						destroyGraphic(graphic); // get rid of the graphic
-						currentTrackedAssets.remove(key); // and remove the key from local cache map
-						//trace('deleted $key');
-					}
+					/**
+					 * Get rid of the graphic.
+					 */
+					destroyGraphic(graphic); // get rid of the graphic
+
+					/**
+					 * Removes the asset key from the local cache list.
+					 */
+					currentTrackedAssets.remove(key);
 				}
 			}
 		}
+	}
 	
-
-	// define the locally tracked assets
-	public static var localTrackedAssets:Array<String> = [];
-
-	@:access(flixel.system.frontEnds.BitmapFrontEnd._cache)
-	public static function clearStoredMemory()
+	/**
+	 * run the garbage collector for good measure lmfao
+	 */
+	public static function clearStoredMemory():Void
 	{
 		// clear anything not in the tracked assets list
 		for (key in FlxG.bitmap._cache.keys())
@@ -130,7 +250,7 @@ class Paths
 		// clear all sounds that are cached
 		for (key => asset in currentTrackedSounds)
 		{
-			if (!localTrackedAssets.contains(key) && !dumpExclusions.contains(key) && asset != null)
+			if (!localTrackedAssets.contains(key) && !exclusions.contains(key) && asset != null)
 			{
 				Assets.cache.clear(key);
 				currentTrackedSounds.remove(key);
@@ -141,12 +261,15 @@ class Paths
 		#if !html5 openfl.Assets.cache.clear("songs"); #end
 	}
 
-	inline static function destroyGraphic(graphic:FlxGraphic)
+	/**
+	 * Clears all tracked unused memory.
+	 */
+	inline static function destroyGraphic(graphic:FlxGraphic):Void
 	{
 		// free some gpu memory
 		if (graphic != null && graphic.bitmap != null && graphic.bitmap.__texture != null)
 			graphic.bitmap.__texture.dispose();
-		FlxG.bitmap.remove(graphic);
+		return FlxG.bitmap.remove(graphic);
 	}
 
 	public static function getPath(file:String, ?type:AssetType = TEXT, ?parentfolder:String, ?modsAllowed:Bool = true):String
@@ -232,16 +355,13 @@ class Paths
 		return getPath('$key.lua', TEXT, library);
 	}
 
-	static public function video(key:String)
+	static public function video(videoKey:String)
 	{
 		#if MODS_ALLOWED
-		var file:String = modsVideo(key);
-		if (FileSystem.exists(file))
-		{
-			return file;
-		}
+		final videoPath:String = modsVideo(videoKey);
+		if (FileSystem.exists(videoPath)) return videoPath;
 		#end
-		return 'assets/videos/$key.${Constants.VIDEO_EXT}';
+		return 'assets/videos/$videoKey.${Constants.VIDEO_EXT}';
 	}
 
 	inline static public function soundRandom(key:String, min:Int, max:Int, ?modsAllowed:Bool = true)
@@ -469,20 +589,41 @@ class Paths
 	}
 
 	#if MODS_ALLOWED
-	inline static public function mods(key:String = '')
-		return 'mods/' + key;
+	/**
+	 * Returns either a file inside the mods folder or if
+	 * the arg is left empty returns the path.
+	 *
+	 * @param key the name of the file.
+	 */
+	inline static public function mods(key:String = ''):String
+		return 'mods/$key';
+	
 
-	inline static public function modsFont(key:String)
-		return modFolders('fonts/' + key);
+	/**
+	 * Grabs a the specified font from the mod folder.	
+	 *
+	 * @param key the name of the file.
+	 */
+	inline static public function modsFont(key:String = ''):String
+		return modFolders('fonts/$key');
 
-	inline static public function modsDataXML(key:String)
-		return modFolders('data/' + key + '.xml');
+	/**
+	 * Grabs a the specified xml from the data folder inside mods.	
+	 *
+	 * @param key The name of the xml file.
+	 */
+	inline static public function modsDataXML(key:String):String
+		return modFolders('data/${key.contains('.xml') ? key : '$key.xml'}');//gwa do for all
 
-	inline static public function modsJson(key:String)
-		return modFolders('data/' + key + '.json');
+	/**
+	 * Returns a json file from the mods folder.
+	 * @param key The name of the json file.
+	 */
+	inline static public function modsJson(key:String):String
+		return modFolders('data/${key.contains('.json') ? key : '$key.json'}');
 
-	inline static public function modsVideo(key:String)
-		return modFolders('videos/' + key + '.' + Constants.VIDEO_EXT);
+	inline static public function modsVideo(key:String):String
+		return modFolders('videos/$key.${Constants.VIDEO_EXT}');
 
 	inline static public function modsSounds(path:String, key:String)
 		return modFolders(path + '/' + key + '.' + Constants.SOUND_EXT);
@@ -503,19 +644,17 @@ class Paths
 	{
 		if (Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0)
 		{
-			var fileToCheck:String = mods(Mods.currentModDirectory + '/' + key);
-			if (FileSystem.exists(fileToCheck))
-			{
-				return fileToCheck;
-			}
+			final fileToCheck:String = mods(Mods.currentModDirectory + '/' + key);
+			if (FileSystem.exists(fileToCheck)) return fileToCheck;
 		}
 
 		for (mod in Mods.getGlobalMods())
 		{
-			var fileToCheck:String = mods(mod + '/' + key);
+			final fileToCheck:String = mods(mod + '/' + key);
 			if (FileSystem.exists(fileToCheck))
 				return fileToCheck;
 		}
+
 		return 'mods/' + key;
 	}
 	#end
@@ -523,9 +662,9 @@ class Paths
 	#if FLXANIMATE_ALLOWED
 	public static function loadAnimateAtlas(spr:FlxAnimate, folderOrImg:Dynamic, spriteJson:Dynamic = null, animationJson:Dynamic = null)
 	{
-		var changedAnimJson = false;
-		var changedAtlasJson = false;
-		var changedImage = false;
+		var changedAnimJson:Bool = false;
+		var changedAtlasJson:Bool = false;
+		var changedImage:Bool = false;
 
 		if (spriteJson != null)
 		{
@@ -542,19 +681,16 @@ class Paths
 		// is folder or image path
 		if (Std.isOfType(folderOrImg, String))
 		{
-			var originalPath:String = folderOrImg;
+			final originalPath:String = folderOrImg;
 			for (i in 0...10)
 			{
-				var st:String = '$i';
-				if (i == 0)
-					st = '';
+				final st:String = i == 0 ? '' : '$i';
 
 				if (!changedAtlasJson)
 				{
 					spriteJson = getTextFromFile('images/$originalPath/spritemap$st.json');
 					if (spriteJson != null)
 					{
-						// trace('found Sprite Json');
 						changedImage = true;
 						changedAtlasJson = true;
 						folderOrImg = image('$originalPath/spritemap$st');
@@ -563,7 +699,6 @@ class Paths
 				}
 				else if (fileExists('images/$originalPath/spritemap$st.png', IMAGE))
 				{
-					// trace('found Sprite PNG');
 					changedImage = true;
 					folderOrImg = image('$originalPath/spritemap$st');
 					break;
@@ -572,18 +707,17 @@ class Paths
 
 			if (!changedImage)
 			{
-				// trace('Changing folderOrImg to FlxGraphic');
 				changedImage = true;
 				folderOrImg = image(originalPath);
 			}
 
 			if (!changedAnimJson)
 			{
-				// trace('found Animation Json');
 				changedAnimJson = true;
 				animationJson = getTextFromFile('images/$originalPath/Animation.json');
 			}
 		}
+
 		spr.loadAtlasEx(folderOrImg, spriteJson, animationJson);
 	}
 	#end
