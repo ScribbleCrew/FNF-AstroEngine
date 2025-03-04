@@ -12,6 +12,14 @@ import openfl.utils.Assets;
 
 class CoolUtil
 {
+	public static function checkStats(dataStore:String = 'Max Score', otheridk:Dynamic) // simple but effective
+		{
+			if (ClientPrefs.data.stats.get(dataStore) < otheridk)
+				ClientPrefs.data.stats.set(dataStore, otheridk);
+	
+			ClientPrefs.saveSettings();
+		}
+		
 	inline public static function quantize(f:Float, snap:Float)
 	{
 		// changed so this actually works lol

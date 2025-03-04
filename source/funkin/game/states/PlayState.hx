@@ -41,7 +41,7 @@ import openfl.filters.ShaderFilter;
  * "function eventPushedUnique" - Called one time per event, use it for precaching events that uses different assets based on its values
  * "function eventEarlyTrigger" - Used for making your event start a few MILLISECONDS earlier
  * "function triggerEvent" - Called when the song hits your event's timestamp, this is probably what you were looking for
-**/
+ */
 @:allow(funkin.game.objects.scorebars.DefaultHUD)
 @:allow(funkin.backend.system.scripts.FunkinLua)
 class PlayState extends MusicBeatState
@@ -2916,8 +2916,8 @@ class PlayState extends MusicBeatState
 			Highscore.saveScore(SONG.song, songScore, storyDifficulty, percent);
 
 			// Stats
-			StatsUtils.checkStats('Max Score', songScore);
-			StatsUtils.checkStats('Max Misses', songMisses);
+			CoolUtil.checkStats('Max Score', songScore);
+			CoolUtil.checkStats('Max Misses', songMisses);
 			#end
 
 			playbackRate = 1;
