@@ -2,6 +2,11 @@ package funkin.backend.utils;
 
 class ObjectUtils
 {
+	public static function addBehindObject(x:FlxBasic, y:FlxBasic):FlxBasic
+		return FlxG.state.insert(FlxG.state.members.indexOf(y), x);
+	public static  function addAheadObject(x:FlxBasic, y:FlxBasic):FlxBasic
+		return FlxG.state.insert(FlxG.state.members.indexOf(y) + 1, x);
+
 	/**
 	 * Center object on another sprite.
 	 *

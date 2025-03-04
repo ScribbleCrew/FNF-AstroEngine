@@ -6,65 +6,108 @@ import funkin.backend.Conductor;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.FlxState;
 import funkin.backend.utils.Controls;
-import flixel.FlxCamera;
-import flixel.FlxBasic;
 
 @:access(funkin.backend.ShaderBackend.update)
 abstract class MusicBeatState extends FlxState
 {
-	private var _shaderGroup:Array<ShaderBackend>;
-	
-	private var customCameraLoaded:Bool = false;
+	/**
+	 * Group which contains all shader instances which
+	 * extend from `ShaderBackend`.
+	 */
+	var _shaderGroup:Array<ShaderBackend> = null;
 
-	private var curSection:Int = 0;
-	private var stepsToDo:Int = 0;
+	/**
+	 * Is the camera loaded.
+	 */
+	var _cameraLoaded:Bool = false;
 
-	private var curStep:Int = 0;
-	private var curBeat:Int = 0;
+	/**
+	 * The current section, expressed as an int.	
+	 */
+	var curSection:Int = 0;
 
-	private var curDecStep:Float = 0;
-	private var curDecBeat:Float = 0;
+	/**
+	 * The todo steps.
+	 */
+	var stepsToDo:Int = 0;
 
+	/**
+	 * The current step, expressed as an int.	
+	 */
+	var curStep:Int = 0;
+
+	/**
+	 * The current dec(?) step, expressed as an int.	
+	 */
+	var curDecStep:Float = 0;
+
+	/**
+	 * The current beat, expressed as an int.	
+	 */
+	var curBeat:Int = 0;
+
+	/**
+	 * The current dec(?) beat, expressed as an int.	
+	 */
+	var curDecBeat:Float = 0;
+
+	/**
+	 * The controls instance.
+	 * @returns Controls Instance
+	 */
 	public var controls(get, never):Controls;
-	@:dox(hide) @:noCompletion private inline function get_controls():Controls
+	@:dox(hide) inline function get_controls():Controls
 		return Controls.instance;
 
+	/**
+	 * The controls instance.
+	 * @returns Controls instance.
+	 */
 	public var variables:Map<String, Dynamic> = new Map<String, Dynamic>();
-	public static function getVariables():Map<String, Dynamic>
+
+	/**
+	 * Returns the variables from the current state.
+	 * @returns MusicBeatState variables.
+	 */
+	public inline static function getVariables():Map<String, Dynamic>
 		return getState().variables;
 
 	override function create():Void
 	{
-		var skip:Bool = FlxTransitionableState.skipNextTransOut;
+		final skipNextTransOut:Bool = FlxTransitionableState.skipNextTransOut;
 		_shaderGroup = null;
+
 		super.create();
 
-		if (!customCameraLoaded)
-			setupCustomCamera();
+		if (!_cameraLoaded)
+			setupCamera();
 
-		if (!skip)
+		if (!skipNextTransOut)
 			openSubState(new FunkinFadeTransition(0.5, true));
 
 		FlxTransitionableState.skipNextTransOut = false;
 		timePassedOnState = 0;
 	}
 
-	public function setupCustomCamera():CustomCamera
+	/**
+	 * Sets up the custom camera.
+	 * @returns The Custom Camera
+	 */
+	public function setupCamera():CustomCamera
 	{
 		final camera = new CustomCamera();
 		FlxG.cameras.reset(camera);
 		FlxG.cameras.setDefaultDrawTarget(camera, true);
-		customCameraLoaded = true;
+		_cameraLoaded = true;
 		return camera;
 	}
 
-	public function addBehindObject(obj:FlxBasic, obj2:FlxBasic):FlxBasic
-		return insert(members.indexOf(obj2), obj);
-
-	public function addAheadObject(obj:FlxBasic, obj2:FlxBasic):FlxBasic
-		return insert(members.indexOf(obj2) + 1, obj);
-
+	/**
+	 * Sets up the custom camera.
+	 * @returns The Custom Camera
+	 */
 	public static var timePassedOnState:Float = 0;
+
 	override function update(elapsed:Float):Void
 	{
 		// everyStep();
@@ -75,10 +118,12 @@ abstract class MusicBeatState extends FlxState
 		updateBeat();
 
 		if (_shaderGroup != null)
-			for (shader in _shaderGroup) 
-				try{
+			for (shader in _shaderGroup)
+				try
+				{
 					shader.update(elapsed);
-				}catch(err:Dynamic)
+				}
+				catch (err:Dynamic)
 					Logs.trace(err, RED);
 
 		if (oldStep != curStep)
@@ -87,51 +132,48 @@ abstract class MusicBeatState extends FlxState
 				stepHit();
 
 			if (PlayState.SONG != null)
-			{
 				if (oldStep < curStep)
 					updateSection();
 				else
 					rollbackSection();
-			}
 		}
 
 		if (FlxG.save.data != null)
 			FlxG.save.data.fullscreen = FlxG.fullscreen;
 
-		stageAccess((stage:BaseStage) ->stage.update(elapsed));
+		stageAccess((stage:BaseStage) -> stage.update(elapsed));
 
 		super.update(elapsed);
 	}
 
-	private function updateSection():Void
+	function updateSection():Void
 	{
 		if (stepsToDo < 1)
-			stepsToDo = Math.round(getBeatsOnSection() * 4);
+			stepsToDo = Math.round(beatsOnSection * 4);
 		while (curStep >= stepsToDo)
 		{
 			curSection++;
-			var beats:Float = getBeatsOnSection();
+			var beats:Float = beatsOnSection;
 			stepsToDo += Math.round(beats * 4);
 			sectionHit();
 		}
 	}
 
-	private function rollbackSection():Void
+	function rollbackSection():Void
 	{
 		if (curStep < 0)
 			return;
 
-		var lastSection:Int = curSection;
+		final lastSection:Int = curSection;
 		curSection = 0;
 		stepsToDo = 0;
 		for (i in 0...PlayState.SONG.notes.length)
 		{
 			if (PlayState.SONG.notes[i] != null)
 			{
-				stepsToDo += Math.round(getBeatsOnSection() * 4);
+				stepsToDo += Math.round(beatsOnSection * 4);
 				if (stepsToDo > curStep)
 					break;
-
 				curSection++;
 			}
 		}
@@ -194,7 +236,7 @@ abstract class MusicBeatState extends FlxState
 			FunkinFadeTransition.finishCallback = function() FlxG.switchState(nextState);
 	}
 
-	public static function getState():MusicBeatState
+	public inline static function getState():MusicBeatState
 		return cast(FlxG.state, MusicBeatState);
 
 	public function stepHit():Void
@@ -225,7 +267,6 @@ abstract class MusicBeatState extends FlxState
 
 	public function sectionHit():Void
 	{
-		// trace('Section: ' + curSection + ', Beat: ' + curBeat + ', Step: ' + curStep);
 		stageAccess(function(stage:BaseStage)
 		{
 			stage.curSection = curSection;
@@ -240,7 +281,12 @@ abstract class MusicBeatState extends FlxState
 				func(stage);
 	}
 
-	function getBeatsOnSection():Float
+	/**
+	 * All beats on a section.
+	 */
+	var beatsOnSection(get, null):Float;
+
+	@:dox(hide) @:noCompletion function get_beatsOnSection():Float
 	{
 		var val:Null<Float> = 4;
 		if (PlayState.SONG != null && PlayState.SONG.notes[curSection] != null)

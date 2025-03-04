@@ -59,7 +59,7 @@ class StageEditorState extends MusicBeatState implements FlxUIEventHandler.FlxUI
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
 
-		camGame = setupCustomCamera();
+		camGame = setupCamera();
 		camHUD = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
 		FlxG.cameras.add(camHUD, false);

@@ -36,8 +36,14 @@ extern "C" HRESULT WINAPI SetCurrentProcessExplicitAppUserModelID(PCWSTR AppID);
 ')
 #end
 @:access(flixel.FlxGame._customSoundTray)
+@:access(funkin.backend.audio.AudioSwitchFix.onStateSwitch)
 class Main extends flixel.FlxGame
 {
+	/**	
+	 * Main instance.
+	 */
+	public static var instance(default, null):Main;
+
 	/**	
 	 * Framerate variable.
 	 * used to handle my new sexy fps code.
@@ -46,8 +52,6 @@ class Main extends flixel.FlxGame
 	public static var fpsVar(get, null):FPS;
 	@:dox(hide) inline static function get_fpsVar():FPS
 		return #if !mobile fpsVar #else null #end;
-
-	public static var instance(default, null):Main;
 
 	/**
 	 * The Application screen, all this just really
@@ -59,28 +63,52 @@ class Main extends flixel.FlxGame
 
 	public static function main():Void
 	{
+		/** 
+		 * Set the FlxSprite's default antialiasing to true.
+		 */
 		FlxSprite.defaultAntialiasing = true;
+
+		/** 
+		 * Init the cool events.
+		 */
 		funkin.backend.system.initialization.CoolEvents.init();
 
-		Type.createInstance(Main, []); // wanna see if dis works.
+		/** 
+		 * Make a `Main` instance
+		 * i wanna see if dis works.
+		 */
+		Type.createInstance(Main, []);
 	}
 
 	public function new():Void
 	{
-		instance = this;
+		@:bypassAccessor instance = this;
 
 		#if ALLOW_DPI_FIX
 		/** 
 		 * DPI Scaling fix for windows, this shouldn't be needed for other systems
 		 * Credit to YoshiCrafter29 for finding this function
 		 */
-		untyped __cpp__("SetProcessDPIAware();"); // dpi fix, kinda...
+		untyped __cpp__("SetProcessDPIAware()");
 
-		untyped __cpp__("DisableProcessWindowsGhosting();");
+		/** 
+		 * Allows you to move the window if the process if not responsive.
+		 */
+		untyped __cpp__("DisableProcessWindowsGhosting()");
 
+		/** 
+		 * Gets the display.
+		 */
 		final display:lime.system.Display = lime.system.System.getDisplay(Lib.application.window.display.id);
+
+		/** 
+		 * Make sure the display doesn't equal null.
+		 */
 		if (display != null)
 		{
+			/** 
+			 * The api scale of the display.
+			 */
 			final dpiScale:Float = display.dpi / 96;
 			Application.current.window.width = Std.int(Config.gameSize.width * dpiScale);
 			Application.current.window.height = Std.int(Config.gameSize.height * dpiScale);
@@ -115,7 +143,7 @@ class Main extends flixel.FlxGame
 	@:dox(hide) inline static function set_audioDisconnected(value:Bool):Bool // oops
 	{
 		audioDisconnected = value;
-		@:privateAccess AudioSwitchFix.onStateSwitch(FlxG.state);
+		AudioSwitchFix.onStateSwitch(FlxG.state);
 		return value;
 	}
 }

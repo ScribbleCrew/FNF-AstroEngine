@@ -234,7 +234,7 @@ class PhillyBlazin extends BaseStage
 		FlxTween.color(abot, LIGHTNING_FADE_DURATION, 0xFF606060, 0xFF888888);
 
 		// Sound
-		FlxG.sound.play(Paths.soundRandom('lightning/Lightning', 1, 3));
+		FlxG.sound.play(Paths.randomSound('lightning/Lightning', 1, 3));
 	}
 
 	// Note functions

@@ -240,7 +240,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		opponentVocals.autoDestroy = false;
 		opponentVocals.looped = true;
 
-		setupCustomCamera();
+		setupCamera();
 		camUI = new FlxCamera();
 		camUI.bgColor.alpha = 0;
 		FlxG.cameras.add(camUI, false);

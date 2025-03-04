@@ -47,7 +47,7 @@ class Spooky extends BaseStage {
 
 	function lightningStrikeShit():Void
 	{
-		FlxG.sound.play(Paths.soundRandom('thunder_', 1, 2));
+		FlxG.sound.play(Paths.randomSound('thunder_', 1, 2));
 		if(!ClientPrefs.data.lowQuality) halloweenBG.animation.play('halloweem bg lightning strike');
 
 		lightningStrikeBeat = curBeat;
@@ -90,7 +90,7 @@ class Spooky extends BaseStage {
 		FlxG.camera.focusOn(new FlxPoint(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100));
 
 		// character anims
-		FlxG.sound.play(Paths.soundRandom('thunder_', 1, 2));
+		FlxG.sound.play(Paths.randomSound('thunder_', 1, 2));
 		if(gf != null) gf.playAnim('scared', true);
 		boyfriend.playAnim('scared', true);
 
