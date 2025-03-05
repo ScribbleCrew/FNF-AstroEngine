@@ -30,8 +30,8 @@ class CustomSubstate extends MusicBeatSubstate
 			}
 		}
 		PlayState.instance.openSubState(new CustomSubstate(name));
-		PlayState.instance.setOnHScript('customSubstate', instance);
-		PlayState.instance.setOnHScript('customSubstateName', name);
+		GlobalScript.instance.setOnHScript('customSubstate', instance);
+		GlobalScript.instance.setOnHScript('customSubstateName', name);
 	}
 
 	public static function closeCustomSubstate():Bool
@@ -69,9 +69,9 @@ class CustomSubstate extends MusicBeatSubstate
 	{
 		instance = this;
 
-		PlayState.instance.callOnScripts('onCustomSubstateCreate', [name]);
+		GlobalScript.instance.callOnScripts('onCustomSubstateCreate', [name]);
 		super.create();
-		PlayState.instance.callOnScripts('onCustomSubstateCreatePost', [name]);
+		GlobalScript.instance.callOnScripts('onCustomSubstateCreatePost', [name]);
 	}
 
 	public function new(name:String):Void
@@ -83,18 +83,18 @@ class CustomSubstate extends MusicBeatSubstate
 
 	override function update(elapsed:Float):Void
 	{
-		PlayState.instance.callOnScripts('onCustomSubstateUpdate', [name, elapsed]);
+		GlobalScript.instance.callOnScripts('onCustomSubstateUpdate', [name, elapsed]);
 		super.update(elapsed);
-		PlayState.instance.callOnScripts('onCustomSubstateUpdatePost', [name, elapsed]);
+		GlobalScript.instance.callOnScripts('onCustomSubstateUpdatePost', [name, elapsed]);
 	}
 
 	override function destroy():Void
 	{
-		PlayState.instance.callOnScripts('onCustomSubstateDestroy', [name]);
+		GlobalScript.instance.callOnScripts('onCustomSubstateDestroy', [name]);
 		name = 'unnamed';
 
-		PlayState.instance.setOnHScript('customSubstate', null);
-		PlayState.instance.setOnHScript('customSubstateName', name);
+		GlobalScript.instance.setOnHScript('customSubstate', null);
+		GlobalScript.instance.setOnHScript('customSubstateName', name);
 		super.destroy();
 	}
 }

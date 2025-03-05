@@ -97,7 +97,7 @@ class FunkinLua
 		this.scriptName = scriptName.trim();
 		var game:PlayState = PlayState.instance;
 		if (game != null)
-			game.luaArray.push(this);
+			GlobalScript.instance.luaArray.push(this);
 
 		var myFolder:Array<String> = this.scriptName.split('/');
 		#if MODS_ALLOWED
@@ -245,10 +245,9 @@ class FunkinLua
 		//
 		Lua_helper.add_callback(lua, "getRunningScripts", function()
 		{
-			var runningScripts:Array<String> = [];
-			for (script in game.luaArray)
+			final runningScripts:Array<String> = [];
+			for (script in GlobalScript.instance.luaArray)
 				runningScripts.push(script.scriptName);
-
 			return runningScripts;
 		});
 
@@ -258,7 +257,7 @@ class FunkinLua
 				exclusions = [];
 			if (ignoreSelf && !exclusions.contains(scriptName))
 				exclusions.push(scriptName);
-			game.setOnScripts(varName, arg, exclusions);
+			GlobalScript.instance.setOnScripts(varName, arg, exclusions);
 		});
 		addLocalCallback("setOnHScript", function(varName:String, arg:Dynamic, ?ignoreSelf:Bool = false, ?exclusions:Array<String> = null)
 		{
@@ -266,7 +265,7 @@ class FunkinLua
 				exclusions = [];
 			if (ignoreSelf && !exclusions.contains(scriptName))
 				exclusions.push(scriptName);
-			game.setOnHScript(varName, arg, exclusions);
+			GlobalScript.instance.setOnHScript(varName, arg, exclusions);
 		});
 		addLocalCallback("setOnLuas", function(varName:String, arg:Dynamic, ?ignoreSelf:Bool = false, ?exclusions:Array<String> = null)
 		{
@@ -274,7 +273,7 @@ class FunkinLua
 				exclusions = [];
 			if (ignoreSelf && !exclusions.contains(scriptName))
 				exclusions.push(scriptName);
-			game.setOnLuas(varName, arg, exclusions);
+			GlobalScript.instance.setOnLuas(varName, arg, exclusions);
 		});
 
 		addLocalCallback("callOnScripts",
@@ -285,7 +284,7 @@ class FunkinLua
 					excludeScripts = [];
 				if (ignoreSelf && !excludeScripts.contains(scriptName))
 					excludeScripts.push(scriptName);
-				game.callOnScripts(funcName, args, ignoreStops, excludeScripts, excludeValues);
+				GlobalScript.instance.callOnScripts(funcName, args, ignoreStops, excludeScripts, excludeValues);
 				return true;
 			});
 		addLocalCallback("callOnLuas",
@@ -296,7 +295,7 @@ class FunkinLua
 					excludeScripts = [];
 				if (ignoreSelf && !excludeScripts.contains(scriptName))
 					excludeScripts.push(scriptName);
-				game.callOnLuas(funcName, args, ignoreStops, excludeScripts, excludeValues);
+				GlobalScript.instance.callOnLuas(funcName, args, ignoreStops, excludeScripts, excludeValues);
 				return true;
 			});
 		addLocalCallback("callOnHScript",
@@ -307,7 +306,7 @@ class FunkinLua
 					excludeScripts = [];
 				if (ignoreSelf && !excludeScripts.contains(scriptName))
 					excludeScripts.push(scriptName);
-				game.callOnHScript(funcName, args, ignoreStops, excludeScripts, excludeValues);
+				GlobalScript.instance.callOnHScript(funcName, args, ignoreStops, excludeScripts, excludeValues);
 				return true;
 			});
 
@@ -320,7 +319,7 @@ class FunkinLua
 
 			var foundScript:String = findScript(luaFile);
 			if (foundScript != null)
-				for (luaInstance in game.luaArray)
+				for (luaInstance in GlobalScript.instance.luaArray)
 					if (luaInstance.scriptName == foundScript)
 					{
 						luaInstance.call(funcName, args);
@@ -332,7 +331,7 @@ class FunkinLua
 		{ // returns the global from a script
 			var foundScript:String = findScript(luaFile);
 			if (foundScript != null)
-				for (luaInstance in game.luaArray)
+				for (luaInstance in GlobalScript.instance.luaArray)
 					if (luaInstance.scriptName == foundScript)
 					{
 						Lua.getglobal(luaInstance.lua, global);
@@ -352,77 +351,21 @@ class FunkinLua
 						return;
 					}
 		});
+		
 		Lua_helper.add_callback(lua, "setGlobalFromScript", function(luaFile:String, global:String, val:Dynamic)
 		{ // returns the global from a script
-			var foundScript:String = findScript(luaFile);
+			final foundScript:String = findScript(luaFile);
 			if (foundScript != null)
-				for (luaInstance in game.luaArray)
+				for (luaInstance in GlobalScript.instance.luaArray)
 					if (luaInstance.scriptName == foundScript)
 						luaInstance.set(global, val);
 		});
-		/*Lua_helper.add_callback(lua, "getGlobals", function(luaFile:String) { // returns a copy of the specified file's globals
-			var foundScript:String = findScript(luaFile);
-			if(foundScript != null)
-			{
-				for (luaInstance in game.luaArray)
-				{
-					if(luaInstance.scriptName == foundScript)
-					{
-						Lua.newtable(lua);
-						var tableIdx = Lua.gettop(lua);
-
-						Lua.pushvalue(luaInstance.lua, Lua.LUA_GLOBALSINDEX);
-						while(Lua.next(luaInstance.lua, -2) != 0) {
-							// key = -2
-							// value = -1
-
-							var pop:Int = 0;
-
-							// Manual conversion
-							// first we convert the key
-							if(Lua.isnumber(luaInstance.lua,-2)){
-								Lua.pushnumber(lua, Lua.tonumber(luaInstance.lua, -2));
-								pop++;
-							}else if(Lua.isstring(luaInstance.lua,-2)){
-								Lua.pushstring(lua, Lua.tostring(luaInstance.lua, -2));
-								pop++;
-							}else if(Lua.isboolean(luaInstance.lua,-2)){
-								Lua.pushboolean(lua, Lua.toboolean(luaInstance.lua, -2));
-								pop++;
-							}
-							// TODO: table
-
-
-							// then the value
-							if(Lua.isnumber(luaInstance.lua,-1)){
-								Lua.pushnumber(lua, Lua.tonumber(luaInstance.lua, -1));
-								pop++;
-							}else if(Lua.isstring(luaInstance.lua,-1)){
-								Lua.pushstring(lua, Lua.tostring(luaInstance.lua, -1));
-								pop++;
-							}else if(Lua.isboolean(luaInstance.lua,-1)){
-								Lua.pushboolean(lua, Lua.toboolean(luaInstance.lua, -1));
-								pop++;
-							}
-							// TODO: table
-
-							if(pop==2)Lua.rawset(lua, tableIdx); // then set it
-							Lua.pop(luaInstance.lua, 1); // for the loop
-						}
-						Lua.pop(luaInstance.lua,1); // end the loop entirely
-						Lua.pushvalue(lua, tableIdx); // push the table onto the stack so it gets returned
-
-						return;
-					}
-
-				}
-			}
-		});*/
+	
 		Lua_helper.add_callback(lua, "isRunning", function(luaFile:String)
 		{
 			var foundScript:String = findScript(luaFile);
 			if (foundScript != null)
-				for (luaInstance in game.luaArray)
+				for (luaInstance in GlobalScript.instance.luaArray)
 					if (luaInstance.scriptName == foundScript)
 						return true;
 			return false;
@@ -444,7 +387,7 @@ class FunkinLua
 			if (foundScript != null)
 			{
 				if (!ignoreAlreadyRunning)
-					for (luaInstance in game.luaArray)
+					for (luaInstance in GlobalScript.instance.luaArray)
 						if (luaInstance.scriptName == foundScript)
 						{
 							luaTrace('addLuaScript: The script "' + foundScript + '" is already running!');
@@ -463,14 +406,14 @@ class FunkinLua
 			if (foundScript != null)
 			{
 				if (!ignoreAlreadyRunning)
-					for (script in game.hscriptArray)
+					for (script in GlobalScript.instance.hscriptArray)
 						if (script.origin == foundScript)
 						{
 							luaTrace('addHScript: The script "' + foundScript + '" is already running!');
 							return;
 						}
 
-				PlayState.instance.initHScript(foundScript);
+						GlobalScript.instance.initHScript(foundScript);
 				return;
 			}
 			luaTrace("addHScript: Script doesn't exist!", false, false, FlxColor.RED);
@@ -484,7 +427,7 @@ class FunkinLua
 			if (foundScript != null)
 			{
 				if (!ignoreAlreadyRunning)
-					for (luaInstance in game.luaArray)
+					for (luaInstance in GlobalScript.instance.luaArray)
 						if (luaInstance.scriptName == foundScript)
 						{
 							luaInstance.stop();
@@ -502,7 +445,7 @@ class FunkinLua
 			if (foundScript != null)
 			{
 				if (!ignoreAlreadyRunning)
-					for (script in game.hscriptArray)
+					for (script in GlobalScript.instance.hscriptArray)
 						if (script.origin == foundScript)
 						{
 							trace('Closing script ' + (script.origin != null ? script.origin : luaFile));
@@ -628,19 +571,19 @@ class FunkinLua
 							onUpdate: function(twn:FlxTween)
 							{
 								if (myOptions.onUpdate != null)
-									game.callOnLuas(myOptions.onUpdate, [tag, vars]);
+									GlobalScript.instance.callOnLuas(myOptions.onUpdate, [tag, vars]);
 							},
 							onStart: function(twn:FlxTween)
 							{
 								if (myOptions.onStart != null)
-									game.callOnLuas(myOptions.onStart, [tag, vars]);
+									GlobalScript.instance.callOnLuas(myOptions.onStart, [tag, vars]);
 							},
 							onComplete: function(twn:FlxTween)
 							{
 								if (twn.type == FlxTweenType.ONESHOT || twn.type == FlxTweenType.BACKWARD)
 									variables.remove(tag);
 								if (myOptions.onComplete != null)
-									game.callOnLuas(myOptions.onComplete, [tag, vars]);
+									GlobalScript.instance.callOnLuas(myOptions.onComplete, [tag, vars]);
 							}
 						}));
 					}
@@ -698,7 +641,7 @@ class FunkinLua
 						{
 							variables.remove(tag);
 							if (game != null)
-								game.callOnLuas('onTweenCompleted', [originalTag, vars]);
+								GlobalScript.instance.callOnLuas('onTweenCompleted', [originalTag, vars]);
 						}
 					}));
 				}
@@ -780,7 +723,7 @@ class FunkinLua
 			{
 				if (tmr.finished)
 					variables.remove(tag);
-				game.callOnLuas('onTimerCompleted', [originalTag, tmr.loops, tmr.loopsLeft]);
+				GlobalScript.instance.callOnLuas('onTimerCompleted', [originalTag, tmr.loops, tmr.loopsLeft]);
 				// trace('Timer Completed: ' + tag);
 			}, loops));
 		});
@@ -1572,7 +1515,7 @@ class FunkinLua
 					if (!loop)
 						variables.remove(tag);
 					if (game != null)
-						game.callOnLuas('onSoundFinished', [originalTag]);
+						GlobalScript.instance.callOnLuas('onSoundFinished', [originalTag]);
 				}));
 				return;
 			}
@@ -1961,8 +1904,8 @@ class FunkinLua
 					onComplete: function(twn:FlxTween)
 					{
 						variables.remove(tag);
-						if (PlayState.instance != null)
-							PlayState.instance.callOnLuas('onTweenCompleted', [originalTag, vars]);
+						if (GlobalScript.instance != null)
+							GlobalScript.instance.callOnLuas('onTweenCompleted', [originalTag, vars]);
 					}
 				}));
 			}
@@ -1994,8 +1937,8 @@ class FunkinLua
 				onComplete: function(twn:FlxTween)
 				{
 					variables.remove(tag);
-					if (PlayState.instance != null)
-						PlayState.instance.callOnLuas('onTweenCompleted', [originalTag]);
+					if (GlobalScript.instance != null)
+						GlobalScript.instance.callOnLuas('onTweenCompleted', [originalTag]);
 				}
 			}));
 		}
