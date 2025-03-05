@@ -2,13 +2,13 @@ package funkin.backend.system.scripts;
 
 class GlobalScript
 {
-	public static var instance:GlobalScript = null;
+	public static var instance(default,null):GlobalScript = null;
 
 	public static function init():Void
 	{
 		try
 		{
-			instance = Type.createInstance(GlobalScript, []);
+			instance = new GlobalScript(); 
 			Logs.prefixedTrace('Successfully initialized', 'GlobalScript', GREEN);
 		}
 		catch (error:Dynamic)

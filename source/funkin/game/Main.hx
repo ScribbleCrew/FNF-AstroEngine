@@ -77,7 +77,8 @@ class Main extends flixel.FlxGame
 		 * Make a `Main` instance
 		 * i wanna see if dis works.
 		 */
-		Type.createInstance(Main, []);
+		new Main();
+		//Type.createInstance(Main, []);
 	}
 
 	public function new():Void
