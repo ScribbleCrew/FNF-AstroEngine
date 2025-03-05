@@ -47,7 +47,6 @@ class Init extends flixel.FlxState
 		funkin.backend.utils.ClientPrefs.init();
 		this.init();
 
-		GlobalScript.init();
 		#if desktop funkin.backend.system.initialization.TemporaryFolder.init(); #end
 		#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(CallbackHandler.call)); #end
 		#if CRASH_HANDLER CrashLogger.init(); #end
@@ -56,6 +55,7 @@ class Init extends flixel.FlxState
 		#if SHADERS_ALLOWED ShaderCoordsFix.init(); #end
 		#if windows AudioSwitchFix.init(); #end
 		#if HSCRIPT_ALLOWED IrisConfig.init(); #end
+		GlobalScript.init();
 
 		funkin.game.objects.Alphabet.AlphaCharacter.loadAlphabetData();
 

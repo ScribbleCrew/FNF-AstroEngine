@@ -435,7 +435,7 @@ class FreeplayState extends MusicBeatState
 				Song.loadFromJson(poop, songLowercase);
 				PlayState.isStoryMode = false;
 				PlayState.storyDifficulty = curDifficulty;
-				Logs.prefixedTrace('CURRENT WEEK: ${WeekData.getWeekFileName()}','Freeplay', GREEN);
+				Logs.prefixedTrace('Current Week: ${WeekData.getWeekFileName()}', 'Freeplay', GREEN);
 			}
 			catch(e:haxe.Exception)
 			{

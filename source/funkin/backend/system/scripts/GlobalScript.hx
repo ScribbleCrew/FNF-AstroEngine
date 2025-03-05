@@ -4,11 +4,18 @@ class GlobalScript
 {
 	public static var instance:GlobalScript = null;
 
-    public static function init() : Void {
-        instance = Type.createInstance(GlobalScript, []);
-    }
+	public static function init():Void
+	{
+		try
+		{
+			instance = Type.createInstance(GlobalScript, []);
+			Logs.prefixedTrace('Successfully initialized', 'GlobalScript', GREEN);
+		}
+		catch (error:Dynamic)
+			Logs.prefixedTrace('Failed to initialized : $error', 'GlobalScript', RED);
+	}
 
-    #if HSCRIPT_ALLOWED
+	#if HSCRIPT_ALLOWED
 	/**
 	 * An `array` full of all init'd hscript files.
 	 */
@@ -20,15 +27,15 @@ class GlobalScript
 	private var instancesExclude:Array<String> = [];
 	#end
 
-    #if LUA_ALLOWED
+	#if LUA_ALLOWED
 	/**
 	 * An array of all running lua scripts?
 	 * i need to check :3c -orbl
 	 */
 	public var luaArray:Array<FunkinLua> = [];
-    #end
+	#end
 
-    #if LUA_ALLOWED
+	#if LUA_ALLOWED
 	public function startLuasNamed(luaFile:String)
 	{
 		for (script in GlobalScript.instance.luaArray)
@@ -68,7 +75,7 @@ class GlobalScript
 	#if HSCRIPT_ALLOWED
 	public function startHScriptsNamed(scriptFile:String)
 	{
-        var scriptToLoad:String;
+		var scriptToLoad:String;
 		#if MODS_ALLOWED
 		scriptToLoad = Paths.modFolders(scriptFile);
 		if (!FileSystem.exists(scriptToLoad))

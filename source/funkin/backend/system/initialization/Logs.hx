@@ -54,13 +54,13 @@ import funkin.backend.utils.native.Terminal.TColor;
 	 * Trace with color + prefix support.
 	 * (NOTICE: uses threading, only if `THREADING_ALLOWED` is allowed).
 	 */
-	public static function prefixedTrace(x:Dynamic, customPrefix:String, ?color:TColor, ?infos:PosInfos):Void
+	public static function prefixedTrace(x:Dynamic, ?customPrefix:String, ?color:TColor, ?infos:PosInfos):Void
 	{
 		#if THREADING_ALLOWED mutex.acquire(); #end // it looks ugly, ik...
-		final oldPrefix:String = prefix;
-		prefix = customPrefix;
+		final prevPrefix:String = prefix;
+		prefix = customPrefix ??="invalid prefix";
 		print(x, color, infos);
-		prefix = oldPrefix;
+		prefix = prevPrefix;
 		#if THREADING_ALLOWED mutex.release(); #end
 	}
 
