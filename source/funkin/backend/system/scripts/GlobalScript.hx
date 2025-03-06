@@ -8,7 +8,7 @@ class GlobalScript
 	{
 		try
 		{
-			instance = new GlobalScript(); 
+			instance = Type.createEmptyInstance(GlobalScript);// i aint making a constructor
 			Logs.prefixedTrace('Successfully initialized', 'GlobalScript', GREEN);
 		}
 		catch (error:Dynamic)
