@@ -288,7 +288,7 @@ class HScript extends Iris
 		#if LUA_ALLOWED
 		set('createGlobalCallback', function(name:String, func:Dynamic)
 		{
-			for (script in GlobalScript.instance.luaArray)
+			for (script in GlobalScript.instance.luaInstances)
 				if(script != null && script.lua != null && !script.closed)
 					Lua_helper.add_callback(script.lua, name, func);
 
@@ -330,11 +330,11 @@ class HScript extends Iris
 		set('customSubstate', CustomSubstate.instance);
 		set('customSubstateName', CustomSubstate.name);
 
-		set('Function_Stop', LuaUtils.Function_Stop);
-		set('Function_Continue', LuaUtils.Function_Continue);
-		set('Function_StopLua', LuaUtils.Function_StopLua); //doesnt do much cuz HScript has a lower priority than Lua
-		set('Function_StopHScript', LuaUtils.Function_StopHScript);
-		set('Function_StopAll', LuaUtils.Function_StopAll);
+		set('Function_Stop', GlobalScript.functions.Function_Stop);
+		set('Function_Continue', GlobalScript.functions.Function_Continue);
+		set('Function_StopLua', GlobalScript.functions.Function_StopLua); //doesnt do much cuz HScript has a lower priority than Lua
+		set('Function_StopHScript', GlobalScript.functions.Function_StopHScript);
+		set('Function_StopAll', GlobalScript.functions.Function_StopAll);
 	}
 
 	#if LUA_ALLOWED

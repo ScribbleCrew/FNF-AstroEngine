@@ -29,12 +29,6 @@ typedef LuaTweenOptions = {
 
 class LuaUtils
 {
-	public static final Function_Stop:Dynamic = "##ASTROLUA_FUNCTIONSTOP";
-	public static final Function_Continue:Dynamic = "##ASTROLUA_FUNCTIONCONTINUE";
-	public static final Function_StopLua:Dynamic = "##ASTROLUA_FUNCTIONSTOPLUA";
-	public static final Function_StopHScript:Dynamic = "##ASTROLUA_FUNCTIONSTOPHSCRIPT";
-	public static final Function_StopAll:Dynamic = "##ASTROLUA_FUNCTIONSTOPALL";
-
 	public static function getLuaTween(options:Dynamic)
 	{
 		return {

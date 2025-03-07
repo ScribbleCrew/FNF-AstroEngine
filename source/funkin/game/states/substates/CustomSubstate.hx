@@ -30,8 +30,11 @@ class CustomSubstate extends MusicBeatSubstate
 			}
 		}
 		PlayState.instance.openSubState(new CustomSubstate(name));
+		
+		#if HSCRIPT_ALLOWED
 		GlobalScript.instance.setOnHScript('customSubstate', instance);
 		GlobalScript.instance.setOnHScript('customSubstateName', name);
+		#end
 	}
 
 	public static function closeCustomSubstate():Bool
@@ -93,8 +96,11 @@ class CustomSubstate extends MusicBeatSubstate
 		GlobalScript.instance.callOnScripts('onCustomSubstateDestroy', [name]);
 		name = 'unnamed';
 
+		#if HSCRIPT_ALLOWED
 		GlobalScript.instance.setOnHScript('customSubstate', null);
 		GlobalScript.instance.setOnHScript('customSubstateName', name);
+		#end
+		
 		super.destroy();
 	}
 }

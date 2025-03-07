@@ -211,31 +211,35 @@ class PlayState extends MusicBeatState
 	 * @return `platebackRate`
 	 */
 	public var playbackRate(default, set):Float = 1;
-	@:dox(hide) @:noCompletion private function set_playbackRate(value:Float):Float
-	{
-		#if FLX_PITCH
-		if(generatedMusic)
+	@:dox(hide) @:noCompletion function set_playbackRate(value:Float):Float
 		{
-			vocals.pitch = value;
-			opponentVocals.pitch = value;
-			FlxG.sound.music.pitch = value;
-
-			var ratio:Float = playbackRate / value; //funny word huh
-			if(ratio != 1)
+			#if FLX_PITCH
+			if(generatedMusic)
 			{
-				for (note in notes.members) note.resizeByRatio(ratio);
-				for (note in unspawnNotes) note.resizeByRatio(ratio);
+				vocals.pitch = value;
+				opponentVocals.pitch = value;
+				FlxG.sound.music.pitch = value;
+	
+				var ratio:Float = playbackRate / value; //funny word huh
+				if(ratio != 1)
+				{
+					for (note in notes.members) note.resizeByRatio(ratio);
+					for (note in unspawnNotes) note.resizeByRatio(ratio);
+				}
 			}
+			playbackRate = value;
+			FlxG.animationTimeScale = value;
+			Conductor.offset = Reflect.hasField(PlayState.SONG, 'offset') ? (PlayState.SONG.offset / value) : 0;
+			Conductor.safeZoneOffset = (ClientPrefs.data.safeFrames / 60) * 1000 * value;
+			#if VIDEOS_ALLOWED
+			if(videoCutscene != null && videoCutscene.videoSprite != null) videoCutscene.videoSprite.bitmap.rate = value;
+			#end
+			GlobalScript.instance.setOnScripts('playbackRate', playbackRate);
+			#else
+			playbackRate = 1.0; // ensuring -Crow
+			#end
+			return playbackRate;
 		}
-		playbackRate = value;
-		FlxG.animationTimeScale = value;
-		Conductor.safeZoneOffset = (ClientPrefs.data.safeFrames / 60) * 1000 * value;
-		GlobalScript.instance.setOnScripts('playbackRate', playbackRate);
-		#else
-		playbackRate = 1.0; // ensuring -Crow
-		#end
-		return playbackRate;
-	}
 
 	/**
 	 * The default base ui.
@@ -829,24 +833,7 @@ class PlayState extends MusicBeatState
 		luaDebugGroup.cameras = [camOther];
 		add(luaDebugGroup);
 		#end
-
-		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
-		// "SCRIPTS FOLDER" SCRIPTS
-		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'scripts/'))
-			for (file in FileSystem.readDirectory(folder))
-			{
-				#if LUA_ALLOWED
-				if (file.toLowerCase().endsWith('.lua'))
-					new FunkinLua(folder + file);
-				#end
-
-				#if HSCRIPT_ALLOWED
-				if (file.toLowerCase().endsWith('.hx'))
-					GlobalScript.instance.initHScript(folder + file);
-				#end
-			}
-		#end
-
+		
 		if (!stageData.hide_girlfriend)
 		{
 			if (SONG.gfVersion == null || SONG.gfVersion.length < 1)
@@ -1004,7 +991,7 @@ class PlayState extends MusicBeatState
 
 				#if HSCRIPT_ALLOWED
 				if (file.toLowerCase().endsWith('.hx'))
-					GlobalScript.instance.initHScript(folder + file);
+					GlobalScript.instance.initHScriptHook(folder + file);
 				#end
 			}
 		#end
@@ -1203,7 +1190,7 @@ class PlayState extends MusicBeatState
 
 		if (doPush)
 		{
-			for (script in GlobalScript.instance.luaArray)
+			for (script in GlobalScript.instance.luaInstances)
 			{
 				if (script.scriptName == luaFile)
 				{
@@ -1241,7 +1228,7 @@ class PlayState extends MusicBeatState
 				doPush = false;
 
 			if (doPush)
-				GlobalScript.instance.initHScript(scriptFile);
+				GlobalScript.instance.initHScriptHook(scriptFile);
 		}
 		#end
 	}
@@ -1392,7 +1379,7 @@ class PlayState extends MusicBeatState
 		seenCutscene = true;
 		inCutscene = false;
 		var ret:Dynamic = GlobalScript.instance.callOnScripts('onStartCountdown', null, true);
-		if (ret != LuaUtils.Function_Stop)
+		if (ret != GlobalScript.functions.Function_Stop)
 		{
 			if (skipCountdown || startOnTime > 0)
 				skipArrowStartTween = true;
@@ -1891,7 +1878,7 @@ class PlayState extends MusicBeatState
 	function eventNoteEarlyTrigger(event:EventNote):Float
 	{
 		var returnedValue:Null<Float> = GlobalScript.instance.callOnScripts('eventEarlyTrigger', [event.event, event.value1, event.value2, event.strumTime], [], [0]);
-		if (returnedValue != null && returnedValue != 0 && returnedValue != LuaUtils.Function_Continue)
+		if (returnedValue != null && returnedValue != 0 && returnedValue != GlobalScript.functions.Function_Continue)
 		{
 			return returnedValue;
 		}
@@ -2115,7 +2102,7 @@ class PlayState extends MusicBeatState
 		if (controls.PAUSE && startedCountdown && canPause)
 		{
 			final onPauseScrips:Dynamic = GlobalScript.instance.callOnScripts('onPause', [], false);
-			if (onPauseScrips != LuaUtils.Function_Stop)
+			if (onPauseScrips != GlobalScript.functions.Function_Stop)
 				openPauseMenu();
 		}
 
@@ -2374,7 +2361,7 @@ class PlayState extends MusicBeatState
 		if (((skipHealthCheck && instakillOnMiss) || health <= 0) && !practiceMode && !isDead && gameOverTimer == null)
 		{
 			var ret:Dynamic = GlobalScript.instance.callOnScripts('onGameOver', [], false);
-			if (ret != LuaUtils.Function_Stop)
+			if (ret != GlobalScript.functions.Function_Stop)
 			{
 				FlxG.animationTimeScale = 1;
 				boyfriend.stunned = true;
@@ -2890,7 +2877,7 @@ class PlayState extends MusicBeatState
 		#end
 
 		var ret:Dynamic = GlobalScript.instance.callOnScripts('onEndSong', [], false);
-		if (ret != LuaUtils.Function_Stop && !transitioning)
+		if (ret != GlobalScript.functions.Function_Stop && !transitioning)
 		{
 			#if !switch
 			var percent:Float = ratingPercent;
@@ -3187,7 +3174,7 @@ class PlayState extends MusicBeatState
 			return;
 
 		var ret:Dynamic = GlobalScript.instance.callOnScripts('onKeyPressPre', [key]);
-		if (ret == LuaUtils.Function_Stop)
+		if (ret == GlobalScript.functions.Function_Stop)
 			return;
 
 		// more accurate hit time for the ratings?
@@ -3274,7 +3261,7 @@ class PlayState extends MusicBeatState
 			return;
 
 		var ret:Dynamic = GlobalScript.instance.callOnScripts('onKeyReleasePre', [key]);
-		if (ret == LuaUtils.Function_Stop)
+		if (ret == GlobalScript.functions.Function_Stop)
 			return;
 
 		var spr:StrumNote = playerStrums.members[key];
@@ -3723,17 +3710,17 @@ class PlayState extends MusicBeatState
 			}
 	
 			#if LUA_ALLOWED
-			for (lua in GlobalScript.instance.luaArray)
+			for (lua in GlobalScript.instance.luaInstances)
 			{
 				lua.call('onDestroy', []);
 				lua.stop();
 			}
-			GlobalScript.instance.luaArray = null;
+			GlobalScript.instance.luaInstances = [];//null;
 			FunkinLua.customFunctions.clear();
 			#end
 	
 			#if HSCRIPT_ALLOWED
-			for (script in GlobalScript.instance.hscriptArray)
+			for (script in GlobalScript.instance.hscriptInstances)
 				if(script != null)
 				{
 					var ny:Dynamic = script.get('onDestroy');
@@ -3741,7 +3728,7 @@ class PlayState extends MusicBeatState
 					script.destroy();
 				}
 	
-				GlobalScript.instance.hscriptArray = null;
+				GlobalScript.instance.hscriptInstances = [];
 			#end
 			stageAccess(function(stage:BaseStage) stage.destroy());
 	
@@ -3889,7 +3876,7 @@ class PlayState extends MusicBeatState
 		GlobalScript.instance.setOnScripts('hits', songHits);
 
 		var ret:Dynamic = GlobalScript.instance.callOnScripts('onRecalculateRating', [], false);
-		if (ret != LuaUtils.Function_Stop)
+		if (ret != GlobalScript.functions.Function_Stop)
 		{
 			if (totalPlayed < 1) // Prevent divide by 0
 				ratingName = '?';

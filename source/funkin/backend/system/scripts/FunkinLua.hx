@@ -97,7 +97,7 @@ class FunkinLua
 		this.scriptName = scriptName.trim();
 		var game:PlayState = PlayState.instance;
 		if (game != null)
-			GlobalScript.instance.luaArray.push(this);
+			GlobalScript.instance.luaInstances.push(this);
 
 		var myFolder:Array<String> = this.scriptName.split('/');
 		#if MODS_ALLOWED
@@ -107,11 +107,11 @@ class FunkinLua
 		#end
 
 		// Lua shit
-		set('Function_StopLua', LuaUtils.Function_StopLua);
-		set('Function_StopHScript', LuaUtils.Function_StopHScript);
-		set('Function_StopAll', LuaUtils.Function_StopAll);
-		set('Function_Stop', LuaUtils.Function_Stop);
-		set('Function_Continue', LuaUtils.Function_Continue);
+		set('Function_StopLua', GlobalScript.functions.Function_StopLua);
+		set('Function_StopHScript', GlobalScript.functions.Function_StopHScript);
+		set('Function_StopAll', GlobalScript.functions.Function_StopAll);
+		set('Function_Stop', GlobalScript.functions.Function_Stop);
+		set('Function_Continue', GlobalScript.functions.Function_Continue);
 		set('luaDebugMode', false);
 		set('luaDeprecatedWarnings', true);
 		set('version', EngineData.VERSION.trim());
@@ -202,7 +202,6 @@ class FunkinLua
 			set('defaultGirlfriendX', game.defaultCharacterPositions.get("GF").x);
 			set('defaultGirlfriendY', game.defaultCharacterPositions.get("GF").y);
 
-
 			set('boyfriendName', PlayState.SONG.player1);
 			set('dadName', PlayState.SONG.player2);
 			set('gfName', PlayState.SONG.gfVersion);
@@ -246,11 +245,12 @@ class FunkinLua
 		Lua_helper.add_callback(lua, "getRunningScripts", function()
 		{
 			final runningScripts:Array<String> = [];
-			for (script in GlobalScript.instance.luaArray)
+			for (script in GlobalScript.instance.luaInstances)
 				runningScripts.push(script.scriptName);
 			return runningScripts;
 		});
 
+		#if (LUA_ALLOWED && HSCRIPT_ALLOWED)
 		addLocalCallback("setOnScripts", function(varName:String, arg:Dynamic, ?ignoreSelf:Bool = false, ?exclusions:Array<String> = null)
 		{
 			if (exclusions == null)
@@ -259,6 +259,9 @@ class FunkinLua
 				exclusions.push(scriptName);
 			GlobalScript.instance.setOnScripts(varName, arg, exclusions);
 		});
+		#end
+		
+		#if HSCRIPT_ALLOWED
 		addLocalCallback("setOnHScript", function(varName:String, arg:Dynamic, ?ignoreSelf:Bool = false, ?exclusions:Array<String> = null)
 		{
 			if (exclusions == null)
@@ -267,6 +270,9 @@ class FunkinLua
 				exclusions.push(scriptName);
 			GlobalScript.instance.setOnHScript(varName, arg, exclusions);
 		});
+		#end
+
+		#if LUA_ALLOWED
 		addLocalCallback("setOnLuas", function(varName:String, arg:Dynamic, ?ignoreSelf:Bool = false, ?exclusions:Array<String> = null)
 		{
 			if (exclusions == null)
@@ -275,7 +281,9 @@ class FunkinLua
 				exclusions.push(scriptName);
 			GlobalScript.instance.setOnLuas(varName, arg, exclusions);
 		});
+		#end
 
+		#if (LUA_ALLOWED && HSCRIPT_ALLOWED)
 		addLocalCallback("callOnScripts",
 			function(funcName:String, ?args:Array<Dynamic> = null, ?ignoreStops = false, ?ignoreSelf:Bool = true, ?excludeScripts:Array<String> = null,
 					?excludeValues:Array<Dynamic> = null)
@@ -287,6 +295,8 @@ class FunkinLua
 				GlobalScript.instance.callOnScripts(funcName, args, ignoreStops, excludeScripts, excludeValues);
 				return true;
 			});
+		#end
+		#if LUA_ALLOWED
 		addLocalCallback("callOnLuas",
 			function(funcName:String, ?args:Array<Dynamic> = null, ?ignoreStops = false, ?ignoreSelf:Bool = true, ?excludeScripts:Array<String> = null,
 					?excludeValues:Array<Dynamic> = null)
@@ -298,6 +308,9 @@ class FunkinLua
 				GlobalScript.instance.callOnLuas(funcName, args, ignoreStops, excludeScripts, excludeValues);
 				return true;
 			});
+		#end
+
+		#if HSCRIPT_ALLOWED
 		addLocalCallback("callOnHScript",
 			function(funcName:String, ?args:Array<Dynamic> = null, ?ignoreStops = false, ?ignoreSelf:Bool = true, ?excludeScripts:Array<String> = null,
 					?excludeValues:Array<Dynamic> = null)
@@ -309,6 +322,7 @@ class FunkinLua
 				GlobalScript.instance.callOnHScript(funcName, args, ignoreStops, excludeScripts, excludeValues);
 				return true;
 			});
+		#end
 
 		Lua_helper.add_callback(lua, "callScript", function(luaFile:String, funcName:String, ?args:Array<Dynamic> = null)
 		{
@@ -319,7 +333,7 @@ class FunkinLua
 
 			var foundScript:String = findScript(luaFile);
 			if (foundScript != null)
-				for (luaInstance in GlobalScript.instance.luaArray)
+				for (luaInstance in GlobalScript.instance.luaInstances)
 					if (luaInstance.scriptName == foundScript)
 					{
 						luaInstance.call(funcName, args);
@@ -331,7 +345,7 @@ class FunkinLua
 		{ // returns the global from a script
 			var foundScript:String = findScript(luaFile);
 			if (foundScript != null)
-				for (luaInstance in GlobalScript.instance.luaArray)
+				for (luaInstance in GlobalScript.instance.luaInstances)
 					if (luaInstance.scriptName == foundScript)
 					{
 						Lua.getglobal(luaInstance.lua, global);
@@ -351,21 +365,21 @@ class FunkinLua
 						return;
 					}
 		});
-		
+
 		Lua_helper.add_callback(lua, "setGlobalFromScript", function(luaFile:String, global:String, val:Dynamic)
 		{ // returns the global from a script
 			final foundScript:String = findScript(luaFile);
 			if (foundScript != null)
-				for (luaInstance in GlobalScript.instance.luaArray)
+				for (luaInstance in GlobalScript.instance.luaInstances)
 					if (luaInstance.scriptName == foundScript)
 						luaInstance.set(global, val);
 		});
-	
+
 		Lua_helper.add_callback(lua, "isRunning", function(luaFile:String)
 		{
 			var foundScript:String = findScript(luaFile);
 			if (foundScript != null)
-				for (luaInstance in GlobalScript.instance.luaArray)
+				for (luaInstance in GlobalScript.instance.luaInstances)
 					if (luaInstance.scriptName == foundScript)
 						return true;
 			return false;
@@ -387,7 +401,7 @@ class FunkinLua
 			if (foundScript != null)
 			{
 				if (!ignoreAlreadyRunning)
-					for (luaInstance in GlobalScript.instance.luaArray)
+					for (luaInstance in GlobalScript.instance.luaInstances)
 						if (luaInstance.scriptName == foundScript)
 						{
 							luaTrace('addLuaScript: The script "' + foundScript + '" is already running!');
@@ -406,14 +420,14 @@ class FunkinLua
 			if (foundScript != null)
 			{
 				if (!ignoreAlreadyRunning)
-					for (script in GlobalScript.instance.hscriptArray)
+					for (script in GlobalScript.instance.hscriptInstances)
 						if (script.origin == foundScript)
 						{
 							luaTrace('addHScript: The script "' + foundScript + '" is already running!');
 							return;
 						}
 
-						GlobalScript.instance.initHScript(foundScript);
+				GlobalScript.instance.initHScriptHook(foundScript);
 				return;
 			}
 			luaTrace("addHScript: Script doesn't exist!", false, false, FlxColor.RED);
@@ -427,7 +441,7 @@ class FunkinLua
 			if (foundScript != null)
 			{
 				if (!ignoreAlreadyRunning)
-					for (luaInstance in GlobalScript.instance.luaArray)
+					for (luaInstance in GlobalScript.instance.luaInstances)
 						if (luaInstance.scriptName == foundScript)
 						{
 							luaInstance.stop();
@@ -445,7 +459,7 @@ class FunkinLua
 			if (foundScript != null)
 			{
 				if (!ignoreAlreadyRunning)
-					for (script in GlobalScript.instance.hscriptArray)
+					for (script in GlobalScript.instance.hscriptInstances)
 						if (script.origin == foundScript)
 						{
 							trace('Closing script ' + (script.origin != null ? script.origin : luaFile));
@@ -901,8 +915,9 @@ class FunkinLua
 					game.boyfriendGroup.y = value;
 			}
 		});
-		Lua_helper.add_callback(lua, "cameraSetTarget", function(target:String) {
-			switch(target.trim().toLowerCase())
+		Lua_helper.add_callback(lua, "cameraSetTarget", function(target:String)
+		{
+			switch (target.trim().toLowerCase())
 			{
 				case 'gf', 'girlfriend':
 					game.moveCameraToGirlfriend();
@@ -1740,7 +1755,8 @@ class FunkinLua
 		#end
 		//
 
-		Lua_helper.add_callback(lua, "debugPrint", function(text:Dynamic = '', color:String = 'WHITE') PlayState.instance.addTextToDebug(text, CoolUtil.colorFromString(color)));
+		Lua_helper.add_callback(lua, "debugPrint",
+			function(text:Dynamic = '', color:String = 'WHITE') PlayState.instance.addTextToDebug(text, CoolUtil.colorFromString(color)));
 
 		Lua_helper.add_callback(lua, "print", function(text:Dynamic = '') trace(text));
 
@@ -1756,8 +1772,8 @@ class FunkinLua
 		#if HSCRIPT_ALLOWED HScript.implement(this); #end
 		#if flxanimate FlxAnimateFunctions.implement(this); #end
 		#if SHADERS_ALLOWED ShaderFunctions.implement(this); #end
-		#if FLX_SAVE SaveFunctions.implement(this);#end
-		
+		#if FLX_SAVE SaveFunctions.implement(this); #end
+
 		ReflectionFunctions.implement(this);
 		TextFunctions.implement(this);
 		ExtraFunctions.implement(this);
@@ -1813,14 +1829,14 @@ class FunkinLua
 	public function call(func:String, args:Array<Dynamic>):Dynamic
 	{
 		if (closed)
-			return LuaUtils.Function_Continue;
+			return GlobalScript.functions.Function_Continue;
 
 		lastCalledFunction = func;
 		lastCalledScript = this;
 		try
 		{
 			if (lua == null)
-				return LuaUtils.Function_Continue;
+				return GlobalScript.functions.Function_Continue;
 
 			Lua.getglobal(lua, func);
 			var type:Int = Lua.type(lua, -1);
@@ -1831,7 +1847,7 @@ class FunkinLua
 					luaTrace("ERROR (" + func + "): attempt to call a " + LuaUtils.typeToString(type) + " value", false, false, FlxColor.RED);
 
 				Lua.pop(lua, 1);
-				return LuaUtils.Function_Continue;
+				return GlobalScript.functions.Function_Continue;
 			}
 
 			for (arg in args)
@@ -1843,13 +1859,13 @@ class FunkinLua
 			{
 				var error:String = getErrorMessage(status);
 				luaTrace("ERROR (" + func + "): " + error, false, false, FlxColor.RED);
-				return LuaUtils.Function_Continue;
+				return GlobalScript.functions.Function_Continue;
 			}
 
 			// If successful, pass and then return the result.
 			var result:Dynamic = cast Convert.fromLua(lua, -1);
 			if (result == null)
-				result = LuaUtils.Function_Continue;
+				result = GlobalScript.functions.Function_Continue;
 
 			Lua.pop(lua, 1);
 			if (closed)
@@ -1860,7 +1876,7 @@ class FunkinLua
 		{
 			trace(e);
 		}
-		return LuaUtils.Function_Continue;
+		return GlobalScript.functions.Function_Continue;
 	}
 
 	public function set(variable:String, data:Dynamic)

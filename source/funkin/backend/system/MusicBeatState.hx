@@ -56,6 +56,7 @@ abstract class MusicBeatState extends FlxState
 	 * @returns Controls Instance
 	 */
 	public var controls(get, never):Controls;
+
 	@:dox(hide) inline function get_controls():Controls
 		return Controls.instance;
 
@@ -79,6 +80,8 @@ abstract class MusicBeatState extends FlxState
 
 		super.create();
 
+		setupClassScript();
+
 		if (!_cameraLoaded)
 			setupCamera();
 
@@ -87,6 +90,17 @@ abstract class MusicBeatState extends FlxState
 
 		FlxTransitionableState.skipNextTransOut = false;
 		timePassedOnState = 0;
+	}
+	var hscriptInstance:HScript = null;
+	function setupClassScript():Void
+	{
+		final className = Type.getClassName(Type.getClass(this));
+		final classScript:String = Paths.modFolders('source/${className.substring(className.lastIndexOf('.') + 1)}.hx');
+		if (FileSystem.exists(classScript))
+		{
+			hscriptInstance = new HScript(null, classScript);
+			GlobalScript.instance.callIndividualHaxe(hscriptInstance, 'onCreate');
+		}
 	}
 
 	/**
@@ -142,8 +156,10 @@ abstract class MusicBeatState extends FlxState
 			FlxG.save.data.fullscreen = FlxG.fullscreen;
 
 		stageAccess((stage:BaseStage) -> stage.update(elapsed));
-
+		GlobalScript.instance.callIndividualHaxe(hscriptInstance, 'onUpdate',[elapsed]);//gwa
 		super.update(elapsed);
+		GlobalScript.instance.callIndividualHaxe(hscriptInstance, 'onUpdatePost',[elapsed]);
+
 	}
 
 	function updateSection():Void
