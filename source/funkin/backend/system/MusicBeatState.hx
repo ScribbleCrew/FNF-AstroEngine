@@ -1,11 +1,7 @@
 package funkin.backend.system;
 
-import flixel.FlxG;
-import funkin.game.states.PlayState;
 import funkin.backend.Conductor;
 import flixel.addons.transition.FlxTransitionableState;
-import flixel.FlxState;
-import funkin.backend.utils.Controls;
 
 @:access(funkin.backend.ShaderBackend.update)
 abstract class MusicBeatState extends FlxState
