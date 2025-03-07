@@ -706,7 +706,7 @@ class Paths
 	inline static public function modsImagesJson(key:String)
 		return modFolders('images/' + key + '.json');
 
-	static public function modFolders(key:String)
+	static public function modFolders(key:String = '')
 	{
 		if (Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0)
 		{

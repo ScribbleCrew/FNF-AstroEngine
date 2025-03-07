@@ -20,6 +20,15 @@ class FunkinFadeTransition extends MusicBeatSubstate
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 	}
 
+	// Custom made Trans in
+	public static function startTransition(nextState:FlxState = null)
+		{
+			if (nextState == null) nextState = FlxG.state;
+			
+			FlxG.state.openSubState(new FunkinFadeTransition(0.6, false));
+			nextState == FlxG.state ? FunkinFadeTransition.finishCallback = ()-> FlxG.resetState() : FunkinFadeTransition.finishCallback = ()-> FlxG.switchState(nextState);
+		}
+
 	override function create() : Void
 	{
 		final width:Int = Std.int(FlxG.width / Math.max(camera.zoom, 0.001));

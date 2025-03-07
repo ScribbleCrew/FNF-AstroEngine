@@ -118,6 +118,8 @@ class FunkinLua
 		set('modFolder', this.modFolder);
 
 		// Song/Week shit
+		if(PlayState.instance != null)
+	{
 		set('curBpm', Conductor.bpm);
 		set('bpm', PlayState.SONG.bpm);
 		set('scrollSpeed', PlayState.SONG.speed);
@@ -141,6 +143,7 @@ class FunkinLua
 		set('week', WeekData.weeksList[PlayState.storyWeek]);
 		set('seenCutscene', PlayState.seenCutscene);
 		set('hasVocals', PlayState.SONG.needsVoices);
+	}
 
 		// Camera poo
 		set('cameraX', 0);
@@ -1758,7 +1761,7 @@ class FunkinLua
 		Lua_helper.add_callback(lua, "debugPrint",
 			function(text:Dynamic = '', color:String = 'WHITE') PlayState.instance.addTextToDebug(text, CoolUtil.colorFromString(color)));
 
-		Lua_helper.add_callback(lua, "print", function(text:Dynamic = '') trace(text));
+		Lua_helper.add_callback(lua, "print", function(text:Dynamic = '') Logs.prefixedTrace(text,'Funkin Lua', ORANGE));
 
 		addLocalCallback("close", function()
 		{
@@ -1816,7 +1819,7 @@ class FunkinLua
 			trace(e);
 			return;
 		}
-		trace('lua file loaded succesfully:' + scriptName);
+		Logs.prefixedTrace('lua file loaded succesfully:' + scriptName, 'Global Script', GREEN);
 
 		call('onCreate', []);
 	}

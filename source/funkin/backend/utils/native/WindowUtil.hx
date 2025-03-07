@@ -136,8 +136,8 @@ class WindowUtil
 	#end
 	public static function refreshWindow():Void
 	{
-		Application.current.window.width += 1;
-		Application.current.window.width -= 1;
+		Application.current.window.width++;
+		Application.current.window.width--;
 		/**
 			Application.current.window.borderless = true;
 			Application.current.window.borderless = false;

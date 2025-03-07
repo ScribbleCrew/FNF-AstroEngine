@@ -48,8 +48,8 @@ class GlobalScript
 		catch (error:Dynamic)
 			Logs.prefixedTrace('Failed to initialized : $error', 'GlobalScript', RED);
 
-		trace("GlobalScript.instance: " + (GlobalScript.instance != null ? "Exists" : "NULL"));
-		trace("hscriptInstances: " + (GlobalScript.instance?.hscriptInstances != null ? "Exists" : "NULL"));
+		Logs.defaultTrace("GlobalScript.instance: " + (GlobalScript.instance != null ? "Exists" : "NULL"));
+		Logs.defaultTrace("hscriptInstances: " + (GlobalScript.instance?.hscriptInstances != null ? "Exists" : "NULL"));
 	}
 
 	#if HSCRIPT_ALLOWED
@@ -240,11 +240,46 @@ class GlobalScript
 		}
 		return false;
 	}
-	public function callIndividualHaxe(instance:HScript, e:String, ?args:Null<Array<Dynamic>>) {
-		if(instance==null)return;
-		if (instance.exists(e))
-			instance.call(e,args);
+
+	/**
+	 * Execute class scripts inside of mods/source.
+	 */
+	public function executeClassScripts():Void
+	{
+		#if (HSCRIPT_ALLOWED || LUA_ALLOWED)
+		// Class name & file name stuff.
+		final currentClassName:String = Type.getClassName(Type.getClass(FlxG.state));
+		final fileName:String = currentClassName.substring(currentClassName.lastIndexOf('.') + 1);
+		
+		// for loop for everything.
+		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'source/'))
+		{
+			// get all files inside da directory.
+			for (file in FileSystem.readDirectory(folder))
+			{
+				// checks
+				if (!file.endsWith('.lua') && !file.endsWith('.hx'))
+					continue;
+				if (file.substr(0, file.lastIndexOf('.')) != fileName)
+					continue;
+
+				final scriptName:String = file.toLowerCase();
+
+				// Creating the script instance things.
+				#if LUA_ALLOWED
+				if (scriptName.endsWith('.lua'))
+					new FunkinLua(folder + file);
+				#end
+
+				#if HSCRIPT_ALLOWED
+				if (scriptName.endsWith('.hx'))
+					GlobalScript.instance.initHScriptHook(folder + file);
+				#end
+			}
+		}
+		#end
 	}
+
 	public function initHScriptHook(filePath:String):GlobalStatus
 	{
 		var hscriptInstance:HScript = null;
@@ -351,7 +386,9 @@ class GlobalScript
 	#end
 
 	// ignore
-	public function new():Void {}
+	public function new():Void
+	{
+	}
 }
 
 @:publicFields class ScriptFunctions
@@ -364,7 +401,8 @@ class GlobalScript
 	#if LUA_ALLOWED final Function_StopLua:Dynamic = "##ASTRO_GLOBALSCRIPT_FUNCTIONSTOP_LUA"; #end
 	#if HSCRIPT_ALLOWED final Function_StopHScript:Dynamic = "##ASTRO_GLOBALSCRIPT_FUNCTIONSTOP_HSCRIPT"; #end
 	#end
-
 	// ignore
-	public function new():Void {}
+	public function new():Void
+	{
+	}
 }

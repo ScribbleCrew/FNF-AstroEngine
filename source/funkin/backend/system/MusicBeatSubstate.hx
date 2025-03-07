@@ -24,8 +24,9 @@ abstract class MusicBeatSubstate extends FlxSubState
 
 	override function update(elapsed:Float):Void
 	{
-		// everyStep();
-		if (!persistentUpdate) MusicBeatState.timePassedOnState += elapsed;
+		// keeps elapsed while in a substate.
+		if (!persistentUpdate) MusicBeatState._elapsed += elapsed;
+
 		var oldStep:Int = curStep;
 
 		updateCurStep();

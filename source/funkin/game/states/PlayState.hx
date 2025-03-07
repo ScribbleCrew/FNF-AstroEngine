@@ -3701,7 +3701,7 @@ class PlayState extends MusicBeatState
 		grpNoteSplashes.add(splash);
 	}
 
-	@:dox(hide) override function destroy()
+	@:dox(hide) override function destroy() : Void
 	{
 		if (CustomSubstate.instance != null)
 			{
@@ -3709,27 +3709,27 @@ class PlayState extends MusicBeatState
 				resetSubState();
 			}
 	
-			#if LUA_ALLOWED
-			for (lua in GlobalScript.instance.luaInstances)
-			{
-				lua.call('onDestroy', []);
-				lua.stop();
-			}
-			GlobalScript.instance.luaInstances = [];//null;
-			FunkinLua.customFunctions.clear();
-			#end
+			// #if LUA_ALLOWED
+			// for (lua in GlobalScript.instance.luaInstances)
+			// {
+			// 	lua.call('onDestroy', []);
+			// 	lua.stop();
+			// }
+			// GlobalScript.instance.luaInstances = [];//null;
+			// FunkinLua.customFunctions.clear();
+			// #end
 	
-			#if HSCRIPT_ALLOWED
-			for (script in GlobalScript.instance.hscriptInstances)
-				if(script != null)
-				{
-					var ny:Dynamic = script.get('onDestroy');
-					if(ny != null && Reflect.isFunction(ny)) ny();
-					script.destroy();
-				}
+			// #if HSCRIPT_ALLOWED
+			// for (script in GlobalScript.instance.hscriptInstances)
+			// 	if(script != null)
+			// 	{
+			// 		var ny:Dynamic = script.get('onDestroy');
+			// 		if(ny != null && Reflect.isFunction(ny)) ny();
+			// 		script.destroy();
+			// 	}
 	
-				GlobalScript.instance.hscriptInstances = [];
-			#end
+			// 	GlobalScript.instance.hscriptInstances = [];
+			// #end
 			stageAccess(function(stage:BaseStage) stage.destroy());
 	
 		FlxG.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyPress);
@@ -3795,8 +3795,8 @@ class PlayState extends MusicBeatState
 
 		_lastBeatHit = curBeat;
 
-		GlobalScript.instance.setOnScripts('curBeat', curBeat); // DAWGG?????
-		GlobalScript.instance.callOnScripts('onBeatHit', []);
+		// GlobalScript.instance.setOnScripts('curBeat', curBeat); // DAWGG?????
+		// GlobalScript.instance.callOnScripts('onBeatHit', []);
 	}
 
 	public function characterBopper(beat:Int):Void
@@ -3842,8 +3842,8 @@ class PlayState extends MusicBeatState
 			GlobalScript.instance.setOnScripts('gfSection', SONG.notes[curSection].gfSection);
 		}
 
-		GlobalScript.instance.setOnScripts('curSection', curSection);
-		GlobalScript.instance.callOnScripts('onSectionHit', []);
+		// GlobalScript.instance.setOnScripts('curSection', curSection);
+		// GlobalScript.instance.callOnScripts('onSectionHit', []);
 	}
 
 	function StrumPlayAnim(isDad:Bool, id:Int, time:Float)
