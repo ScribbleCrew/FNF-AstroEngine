@@ -1,5 +1,6 @@
 package funkin.backend.system;
 
+import haxe.rtti.Meta;
 import funkin.backend.Conductor;
 import flixel.addons.transition.FlxTransitionableState;
 
@@ -93,11 +94,12 @@ abstract class MusicBeatState extends FlxState
 		_elapsed = 0;
 
 		// global script stuff.
+		// gets the metadata of the current class.
+		// not MusicBeatState, it's whatever is extending from it, since this is an abstract class.
 		GlobalScript.instance.executeClassScripts();
 		super.create();
-		GlobalScript.instance.callOnScripts('onCreatePost', []);
+		GlobalScript.instance.callOnScripts('onCreatePost', []);//gwa gwa lua
 
-		// camera
 		if (!_isCameraLoaded)
 			setupCamera();
 
@@ -308,10 +310,8 @@ abstract class MusicBeatState extends FlxState
 		// Step Hit
 		if (oldStep != curStep)
 		{
-			if (curStep > 0)
-				stepHit();
-			if (PlayState.SONG != null)
-				oldStep < curStep ? updateSection() : rollbackSection();
+			if (curStep > 0) stepHit();
+			if (PlayState.SONG != null) oldStep < curStep ? updateSection() : rollbackSection();
 		}
 
 		// Softmoddin'
@@ -322,31 +322,9 @@ abstract class MusicBeatState extends FlxState
 	}
 	
 	@:dox(hide) override function destroy():Void
-		{
-			// Softmoddin'
-			#if LUA_ALLOWED
-			for (luaScript in GlobalScript.instance.luaInstances)
-			{
-				luaScript.call('onDestroy', []);
-				luaScript.stop();
-			}
-			GlobalScript.instance.luaInstances = [];
-			FunkinLua.customFunctions.clear();
-			#end
-			
-			#if HSCRIPT_ALLOWED
-			for (haxeScript in GlobalScript.instance.hscriptInstances)
-			{
-				if (haxeScript != null)
-				{
-					final onDestory:Dynamic = haxeScript.get('onDestroy');
-					if (onDestory != null && Reflect.isFunction(onDestory)) onDestory();
-					haxeScript.destroy();
-				}
-			}
-			GlobalScript.instance.hscriptInstances = [];
-			#end
-	
-			super.destroy();
-		}
+	{
+		// Softmoddin'
+		GlobalScript.instance.destroy();
+		super.destroy();
+	}
 }

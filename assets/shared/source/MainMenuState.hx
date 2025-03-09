@@ -1,5 +1,3 @@
-import flixel.FlxSprite;
-
 function onCreate():Void {
     trace('CREATED STATE');
 

@@ -358,7 +358,7 @@ class StoryMenuState extends MusicBeatState
 			});
 
 			#if (MODS_ALLOWED && DISCORD_ALLOWED)
-			DiscordClient.loadModRPC();
+			DiscordClient.loadModdedRPC();
 			#end
 		}
 		else

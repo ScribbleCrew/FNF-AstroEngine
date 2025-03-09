@@ -19,6 +19,7 @@ import flixel.addons.transition.FlxTransitionableState;
 #include <thread>
 ')
 #end
+
 class LoadingState extends MusicBeatState
 {
 	public static var loaded:Int = 0;

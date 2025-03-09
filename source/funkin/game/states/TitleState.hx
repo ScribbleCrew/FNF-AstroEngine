@@ -206,6 +206,9 @@ class TitleState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{
+		final mult:Float = FlxMath.lerp(1, FlxG.camera.zoom, CoolUtil.boundTo(1 - (elapsed * 9 * 1), 0, 1));
+		FlxG.camera.zoom = mult;
+
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
 

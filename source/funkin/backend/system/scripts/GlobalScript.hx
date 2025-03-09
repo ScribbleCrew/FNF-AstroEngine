@@ -1,5 +1,9 @@
 package funkin.backend.system.scripts;
 
+import haxe.macro.Type.ClassType;
+import haxe.macro.Type.Ref;
+import haxe.macro.Context;
+
 /**
  * The return status for scripts.	
  */
@@ -42,14 +46,13 @@ class GlobalScript
 		{
 			instance = new GlobalScript(); // i aint making a constructor
 			functions = new ScriptFunctions(); // lazy mf
-
+			#if LUA_ALLOWED extensions.set('lua', [".lua", ".funkinlua"]);#end
+			#if HSCRIPT_ALLOWED extensions.set('haxe', [".hx", ".hxs"]); /* funi extensions */ #end
+		
 			Logs.prefixedTrace('Successfully initialized', 'GlobalScript', GREEN);
 		}
 		catch (error:Dynamic)
 			Logs.prefixedTrace('Failed to initialized : $error', 'GlobalScript', RED);
-
-		Logs.defaultTrace("GlobalScript.instance: " + (GlobalScript.instance != null ? "Exists" : "NULL"));
-		Logs.defaultTrace("hscriptInstances: " + (GlobalScript.instance?.hscriptInstances != null ? "Exists" : "NULL"));
 	}
 
 	#if HSCRIPT_ALLOWED
@@ -72,7 +75,38 @@ class GlobalScript
 	public var luaInstances:Array<FunkinLua> = [];
 	#end
 
+	/**
+	 * Extension map, contains all file extensions for allowed scripts.	
+	 */
+	static final extensions:Map<String, Array<String>> = new Map<String, Array<String>>();
+
+	/**
+	* Checks if the script's file extension	is inside of the extensions map.
+	*/
+	static function checkScriptExtensions(file:String, ?type:String):Bool
+	{
+		// Extension check loop
+		for (typeKey in extensions.keys())
+		{
+			// If 'type' is provided, check only that specific type
+			if (type != null && type != typeKey) continue;
+
+			// Check extensions for the current type
+			for (ext in extensions.get(typeKey))
+			{
+				// Check if the file ends with the extension
+				if (file.endsWith(ext)) return true;
+			}
+		}
+
+		// If the extension isn't found
+		return false;
+	}
+
 	#if (LUA_ALLOWED && HSCRIPT_ALLOWED)
+	/**
+	 * Set vars on scripts.	
+	 */
 	public function setOnScripts(variable:String, arg:Dynamic, exclusions:Array<String> = null)
 	{
 		if (exclusions == null)
@@ -80,23 +114,65 @@ class GlobalScript
 		#if LUA_ALLOWED setOnLuas(variable, arg, exclusions); #end
 		#if HSCRIPT_ALLOWED setOnHScript(variable, arg, exclusions); #end
 	}
+	
+	/**
+	 * Execute class scripts inside of mods/source.
+	 * Used inside The BeatStates.
+	 */
+	public function executeClassScripts(?metaTable:Array<String>):Void
+	{
+		// Get the current state's class name.
+		final currentClass:Class<Dynamic> = Type.getClass(FlxG.state);
+		final currentClassName:String = Type.getClassName(currentClass);
 
+		// Convert to lowercase for consistency
+		final _fileName:String = currentClassName.substring(currentClassName.lastIndexOf('.') + 1).toLowerCase(); 
+		
+		// Loop through all mod folders containing scripts.
+		for (folderName in Mods.directoriesWithFile(Paths.getSharedPath(), 'source/'))
+		{
+			// Get all files inside the directory
+			for (_fileName in FileSystem.readDirectory(folderName))
+			{
+				// Skip files without valid extensions
+				if (!checkScriptExtensions(_fileName)) continue;
+
+				// Combines the folder path with the file name.
+				final convertedScriptPath:String = folderName + _fileName;
+
+				// Remove extension and convert to lowercase
+				final convertedScriptName:String = _fileName.substr(0, _fileName.lastIndexOf('.')).toLowerCase();
+
+				// Ensure the Global Script (global.hx, or anything that starts with global) runs no matter
+				// the state, and scripts that are for specific states run when matching the state name.
+				if (convertedScriptName != _fileName && !convertedScriptName.contains("global")) continue;
+
+				// Execute Lua/HScript scripts if flag concurrent flag is enabled.
+				#if LUA_ALLOWED if (checkScriptExtensions(_fileName, "lua")) new FunkinLua(convertedScriptPath); #end
+				#if HSCRIPT_ALLOWED if (checkScriptExtensions(_fileName, "haxe")) GlobalScript.instance.initHScriptHook(convertedScriptPath); #end
+			}
+		}
+	}
+		
+	/**
+	 * Call on scripts (HScript, Lua)
+	 */
 	public function callOnScripts(functionName:String, args:Array<Dynamic> = null, ignoreStops = false, exclusions:Array<String> = null,
 			excludeValues:Array<Dynamic> = null):Dynamic
 	{
-		if (args == null)
-			args = [];
-		if (exclusions == null)
-			exclusions = [];
-		if (excludeValues == null)
-			excludeValues = [GlobalScript.functions.Function_Continue];
+		// Null checks.
+		args ??= [];
+		exclusions ??= [];
+		excludeValues ??= [GlobalScript.functions.Function_Continue];
 
-		var result:Dynamic = #if LUA_ALLOWED callOnLuas(functionName, args, ignoreStops, exclusions, excludeValues) #else null #end;
+		// calling.
+		var scriptCall:Dynamic = #if LUA_ALLOWED callOnLuas(functionName, args, ignoreStops, exclusions, excludeValues) #else null #end;
 		#if HSCRIPT_ALLOWED
-		if (result == null || excludeValues.contains(result))
-			result = callOnHScript(functionName, args, ignoreStops, exclusions, excludeValues);
+		if (scriptCall == null || excludeValues.contains(scriptCall))
+			scriptCall = callOnHScript(functionName, args, ignoreStops, exclusions, excludeValues);
 		#end
-		return result;
+
+		return scriptCall;
 	}
 	#end
 
@@ -198,28 +274,8 @@ class GlobalScript
 	}
 	#end
 
-	#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
-	// "SCRIPTS FOLDER" SCRIPTS
-	public function folderLoop(name:String = 'scripts/')
-	{
-		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), name))
-			for (file in FileSystem.readDirectory(folder))
-			{
-				#if LUA_ALLOWED
-				if (file.toLowerCase().endsWith('.lua'))
-					new FunkinLua(folder + file);
-				#end
-
-				#if HSCRIPT_ALLOWED
-				if (file.toLowerCase().endsWith('.hx') || file.toLowerCase().endsWith('.hxs'))
-					GlobalScript.instance.initHScriptHook(folder + file);
-				#end
-			}
-	}
-	#end
-
 	#if HSCRIPT_ALLOWED
-	public function startHScriptsNamed(scriptFile:String)
+	public function startHScriptsNamed(scriptFile:String):GlobalStatus
 	{
 		var scriptToLoad:String;
 		#if MODS_ALLOWED
@@ -231,53 +287,10 @@ class GlobalScript
 		#end
 
 		if (FileSystem.exists(scriptToLoad))
-		{
-			if (Iris.instances.exists(scriptToLoad))
-				return false;
+			if (!Iris.instances.exists(scriptToLoad))
+				return initHScriptHook(scriptToLoad);
 
-			initHScriptHook(scriptToLoad);
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Execute class scripts inside of mods/source.
-	 */
-	public function executeClassScripts():Void
-	{
-		#if (HSCRIPT_ALLOWED || LUA_ALLOWED)
-		// Class name & file name stuff.
-		final currentClassName:String = Type.getClassName(Type.getClass(FlxG.state));
-		final fileName:String = currentClassName.substring(currentClassName.lastIndexOf('.') + 1);
-		
-		// for loop for everything.
-		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'source/'))
-		{
-			// get all files inside da directory.
-			for (file in FileSystem.readDirectory(folder))
-			{
-				// checks
-				if (!file.endsWith('.lua') && !file.endsWith('.hx'))
-					continue;
-				if (file.substr(0, file.lastIndexOf('.')) != fileName)
-					continue;
-
-				final scriptName:String = file.toLowerCase();
-
-				// Creating the script instance things.
-				#if LUA_ALLOWED
-				if (scriptName.endsWith('.lua'))
-					new FunkinLua(folder + file);
-				#end
-
-				#if HSCRIPT_ALLOWED
-				if (scriptName.endsWith('.hx'))
-					GlobalScript.instance.initHScriptHook(folder + file);
-				#end
-			}
-		}
-		#end
+		return GlobalStatus.UNKNOWN;
 	}
 
 	public function initHScriptHook(filePath:String):GlobalStatus
@@ -286,18 +299,18 @@ class GlobalScript
 
 		try
 		{
-			Logs.prefixedTrace('successfully initialized HScript interp on "$filePath"', 'Global Script', GREEN);
-
+		
 			hscriptInstance = new HScript(null, filePath);
-			if (hscriptInstance.exists('onCreate'))
-				hscriptInstance.call('onCreate');
+			if (hscriptInstance.exists('onCreate')) hscriptInstance.call('onCreate');
 			hscriptInstances.push(hscriptInstance);
+
+			Logs.prefixedTrace('successfully initialized HScript interp on "$filePath"', 'Global Script', GREEN);
 
 			return GlobalStatus.SUCCESS;
 		}
 		catch (error:IrisError)
 		{
-			final filePosInfos:HScriptInfos = cast {fileName: filePath, showLine: false};
+			final filePosInfos:HScriptInfos = cast {_fileName: filePath, showLine: false};
 			Iris.error(Printer.errorToString(error, false), filePosInfos);
 
 			hscriptInstance = cast(Iris.instances.get(filePath), HScript);
@@ -385,23 +398,47 @@ class GlobalScript
 	}
 	#end
 
-	// ignore
-	public function new():Void
+	public function destroy():Void
 	{
+		#if LUA_ALLOWED
+		for (luaScript in GlobalScript.instance.luaInstances)
+		{
+			luaScript.call('onDestroy', []);
+			luaScript.stop();
+		}
+		GlobalScript.instance.luaInstances = [];
+		FunkinLua.customFunctions.clear();
+		#end
+
+		#if HSCRIPT_ALLOWED
+		for (haxeScript in GlobalScript.instance.hscriptInstances)
+		{
+			if (haxeScript != null)
+			{
+				final onDestory:Dynamic = haxeScript.get('onDestroy');
+				if (onDestory != null && Reflect.isFunction(onDestory)) onDestory();
+				haxeScript.destroy();
+			}
+		}
+		GlobalScript.instance.hscriptInstances = [];
+		#end
 	}
+
+	public function new():Void {}
 }
+
+typedef ScriptFunction = Dynamic; // it looks cool, im sowwy :(
 
 @:publicFields class ScriptFunctions
 {
 	#if (HSCRIPT_ALLOWED || LUA_ALLOWED)
-	final Function_Stop:Dynamic = "##ASTRO_GLOBALSCRIPT_FUNCTION_STOP";
-	final Function_Continue:Dynamic = "##ASTRO_GLOBALSCRIPT_FUNCTION_CONTINUE";
-	final Function_StopAll:Dynamic = "##ASTRO_GLOBALSCRIPT_FUNCTION_STOPALL";
+	final Function_Stop:ScriptFunction = "##ASTRO_GLOBALSCRIPT_FUNCTION_STOP";
+	final Function_Continue:ScriptFunction = "##ASTRO_GLOBALSCRIPT_FUNCTION_CONTINUE";
+	final Function_StopAll:ScriptFunction = "##ASTRO_GLOBALSCRIPT_FUNCTION_STOPALL";
 
-	#if LUA_ALLOWED final Function_StopLua:Dynamic = "##ASTRO_GLOBALSCRIPT_FUNCTIONSTOP_LUA"; #end
-	#if HSCRIPT_ALLOWED final Function_StopHScript:Dynamic = "##ASTRO_GLOBALSCRIPT_FUNCTIONSTOP_HSCRIPT"; #end
+	#if LUA_ALLOWED final Function_StopLua:ScriptFunction = "##ASTRO_GLOBALSCRIPT_FUNCTIONSTOP_LUA"; #end
+	#if HSCRIPT_ALLOWED final Function_StopHScript:ScriptFunction = "##ASTRO_GLOBALSCRIPT_FUNCTIONSTOP_HSCRIPT"; #end
 	#end
-	// ignore
 	public function new():Void
 	{
 	}

@@ -356,7 +356,8 @@ class MainMenuState extends MusicBeatState
 		if (menuButtons[curSelected].link != null)
 			CoolUtil.browserLoad(menuButtons[curSelected].link);
 		else
-		{
+		{	
+			if(selectedSomethin)return;
 			selectedSomethin = true;
 			FlxG.sound.play(Paths.sound('confirmMenu'));
 
@@ -376,15 +377,18 @@ class MainMenuState extends MusicBeatState
 				{
 					FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker)
 					{
-						final daChoice:EitherTwo<FlxState, FlxSubState> = menuButtons[curSelected].state;
+						final chosenState:EitherTwo<FlxState, FlxSubState> = menuButtons[curSelected].state;
+						
+						if (Std.is(chosenState, FlxState))
+							(menuButtons[curSelected].preloaded ?? false) ? MusicBeatState.switchState(chosenState) :  LoadingState.loadAndSwitchState(chosenState);
+						else if(Std.is(chosenState, FlxSubState))
+							openSubState(chosenState);
+						else {
+							selectedSomethin = false;
+							return;
+						}
 
-						if (daChoice is FlxState)
-							(menuButtons[curSelected].preloaded ?? false) ? MusicBeatState.switchState(daChoice) :  LoadingState.loadAndSwitchState(daChoice);
-						else
-							openSubState(daChoice);
-
-						if(menuButtons[curSelected].onChange != null)
-							menuButtons[curSelected].onChange();
+						if(menuButtons[curSelected].onChange != null) menuButtons[curSelected].onChange();
 					});
 				}
 			});

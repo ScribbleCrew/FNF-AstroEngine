@@ -239,7 +239,8 @@ class ClientPrefs
 			FlxG.sound.muted = FlxG.save.data.mute;
 
 		#if DISCORD_ALLOWED
-		DiscordClient.checkClientID();
+		@:privateAccess
+		DiscordClient._checkClientID();
 		#end
 
 		final save:FlxSave = new FlxSave();

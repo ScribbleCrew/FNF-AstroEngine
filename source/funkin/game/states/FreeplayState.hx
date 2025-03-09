@@ -469,7 +469,7 @@ class FreeplayState extends MusicBeatState
 
 			destroyFreeplayVocals();
 			#if (MODS_ALLOWED && DISCORD_ALLOWED)
-			DiscordClient.loadModRPC();
+			DiscordClient.loadModdedRPC();
 			#end
 		}
 		else if(controls.RESET && !player.playingMusic)

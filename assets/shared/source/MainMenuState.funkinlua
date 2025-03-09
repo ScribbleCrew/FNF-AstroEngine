@@ -1,0 +1,11 @@
+function onCreate()
+    print('[.funkinlua] Created');
+end
+
+function onBeatHit()
+    print('[.funkinlua] Beat Hit!')
+end
+
+function onDestroy()
+    print('[.funkinlua] Destroyed')
+end

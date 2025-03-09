@@ -4,60 +4,71 @@ import flixel.FlxSubState;
 import funkin.backend.Conductor;
 import funkin.backend.utils.Controls;
 
+@:access(funkin.backend.system.MusicBeatState)
 abstract class MusicBeatSubstate extends FlxSubState
 {
-	private var curSection:Int = 0;
-	private var stepsToDo:Int = 0;
+	/**
+	 * The current section, expressed as an int.	
+	 */
+	var curSection:Int = 0;
 
-	private var lastBeat:Float = 0;
-	private var lastStep:Float = 0;
+	/**
+	 * The todo steps.
+	 */
+	var stepsToDo:Int = 0;
 
-	private var curStep:Int = 0;
-	private var curBeat:Int = 0;
+	/**
+	 * The last beat.
+	 */
+	var lastBeat:Int = 0;
 
-	private var curDecStep:Float = 0;
-	private var curDecBeat:Float = 0;
+	/**
+	 * The last step number.
+	 */
+	var lastStep:Int = 0;
 
-	private var controls(get, never):Controls;
-	@:noCompletion private inline function get_controls():Controls
+	/**
+	 * The current step, expressed as an int.	
+	 */
+	var curStep:Int = 0;
+
+	/**
+	 * The current dec(?) step, expressed as an int.	
+	 */
+	var curDecStep:Float = 0;
+
+	/**
+	 * The current beat, expressed as an int.	
+	 */
+	var curBeat:Int = 0;
+
+	/**
+	 * The current dec(?) beat, expressed as an int.	
+	 */
+	var curDecBeat:Float = 0;
+
+	/**
+	 * The controls instance.
+	 * @returns Controls Instance
+	 */
+	public var controls(get, never):Controls;
+	@:dox(hide) inline function get_controls():Controls
 		return Controls.instance;
-
-	override function update(elapsed:Float):Void
-	{
-		// keeps elapsed while in a substate.
-		if (!persistentUpdate) MusicBeatState._elapsed += elapsed;
-
-		var oldStep:Int = curStep;
-
-		updateCurStep();
-		updateBeat();
-
-		if (oldStep != curStep)
-		{
-			if (curStep > 0)
-				stepHit();
-
-			if (PlayState.SONG != null)
-				(oldStep < curStep) ? updateSection() : rollbackSection();
-		}
-
-		super.update(elapsed);
-	}
-
-	private function updateSection():Void
+ 
+	function updateSection():Void
 	{
 		if (stepsToDo < 1)
-			stepsToDo = Math.round(getBeatsOnSection() * 4);
+			stepsToDo = Math.round(cast(FlxG.state, MusicBeatState).beatsOnSection * 4);
 		while (curStep >= stepsToDo)
 		{
 			curSection++;
-			var beats:Float = getBeatsOnSection();
+			var beats:Float = cast(FlxG.state, MusicBeatState).beatsOnSection;
 			stepsToDo += Math.round(beats * 4);
 			sectionHit();
 		}
 	}
 
-	private function rollbackSection():Void
+	function rollbackSection():Void
 	{
 		if (curStep < 0)
 			return;
@@ -69,7 +80,7 @@ abstract class MusicBeatSubstate extends FlxSubState
 		{
 			if (PlayState.SONG.notes[i] != null)
 			{
-				stepsToDo += Math.round(getBeatsOnSection() * 4);
+				stepsToDo += Math.round(cast(FlxG.state, MusicBeatState).beatsOnSection * 4);
 				if (stepsToDo > curStep)
 					break;
 
@@ -81,13 +92,13 @@ abstract class MusicBeatSubstate extends FlxSubState
 			sectionHit();
 	}
 
-	private function updateBeat():Void
+	function updateBeat():Void
 	{
 		curBeat = Math.floor(curStep / 4);
 		curDecBeat = curDecStep / 4;
 	}
 
-	private function updateCurStep():Void
+	function updateCurStep():Void
 	{
 		var lastChange = Conductor.getBPMFromSeconds(Conductor.songPosition);
 
@@ -96,27 +107,38 @@ abstract class MusicBeatSubstate extends FlxSubState
 		curStep = lastChange.stepTime + Math.floor(shit);
 	}
 
+	/**
+	 *	The Stephit.
+	 */
 	public function stepHit():Void
-	{
-		if (curStep % 4 == 0)
-			beatHit();
-	}
+		if (curStep % 4 == 0) beatHit();
 
-	public function beatHit():Void
-	{
-		// do literally nothing dumbass
-	}
+	/**
+	 *	The Beathit.
+	 */
+	public function beatHit():Void {}
 
-	public function sectionHit():Void
-	{
-		// yep, you guessed it, nothing again, dumbass
-	}
+	/**
+	 *	The section hit.
+	 */
+	public function sectionHit():Void {}
 
-	function getBeatsOnSection():Null<Float>
-	{
-		var val:Null<Float> = 4;
-		if (PlayState.SONG != null && PlayState.SONG.notes[curSection] != null)
-			val = PlayState.SONG.notes[curSection].sectionBeats;
-		return val == null ? 4 : val;
-	}
+	@:dox(hide) override function update(elapsed:Float):Void
+		{
+			// keeps elapsed while in a substate.
+			if (!persistentUpdate) MusicBeatState._elapsed += elapsed;
+	
+			final oldStep:Int = curStep;
+	
+			updateCurStep();
+			updateBeat();
+	
+			if (oldStep != curStep)
+			{
+				if (curStep > 0) stepHit();
+				if (PlayState.SONG != null) (oldStep < curStep) ? updateSection() : rollbackSection();
+			}
+	
+			super.update(elapsed);
+		}
 }

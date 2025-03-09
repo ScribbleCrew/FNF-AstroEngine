@@ -3,7 +3,7 @@ package funkin.backend.client;
 #if DISCORD_ALLOWED
 #if WATERMARK import funkin.game.Init; #end
 
-private enum abstract RPC_BUTTON_TYPE(String) to String from String
+enum abstract RPC_BUTTON_TYPE(String) from String to String
 {
 	final FIRST:String = "first";
 	final SECOND:String = "second";
@@ -17,7 +17,11 @@ class DiscordClient
 	 */
 	public static var isInitialized:Bool = false;
 
-	static final _defaultID:String = Config.discordID;
+	@:dox(hide) static var _defaultID(default, never):String = Config.discordID;
+
+	/**
+	* An instance of `DiscordRichPresence`.
+	*/
 	static var presence:DiscordRichPresence = DiscordRichPresence.create();
 
 	/**
@@ -25,15 +29,14 @@ class DiscordClient
 	 */
 	@:isVar
 	public static var clientID(default, set):String;
-	@:dox(hide) @:noCompletion private static inline function set_clientID(newID:String):String
+	@:dox(hide) static inline function set_clientID(newID:String):String
 	{
-		if (newID == null)
-			return clientID = _defaultID;
+		if (newID == null) return clientID = _defaultID;
 
-		final change:Bool = (clientID != newID);
+		final compareClientIds:Bool = (clientID != newID);
 		clientID = newID;
 
-		if (change && isInitialized)
+		if (compareClientIds && isInitialized)
 		{
 			shutdown();
 			initialize();
@@ -48,7 +51,7 @@ class DiscordClient
 	 */
 	@:isVar
 	public static var clientName(default, set):String = null;
-	@:dox(hide) @:noCompletion private static inline function set_clientName(value:String):String
+	@:dox(hide) static inline function set_clientName(value:String):String
 		return clientName = value;
 
 	/**
@@ -56,20 +59,17 @@ class DiscordClient
 	 */
 	@:isVar
 	public static var clientDiscriminator(default, set):String = null;
-	@:dox(hide) @:noCompletion private static inline function set_clientDiscriminator(value:String):String
+	@:dox(hide) static inline function set_clientDiscriminator(value:String):String
 		return clientDiscriminator = value;
 
 	/**
 	 * Check the client id.
 	 * used on init.
 	 */
-	public static function checkClientID():Void
+	static inline function _checkClientID():Void
 	{
 		clientID = Config.discordID == '' ? cast(Constants.DEFAULT_DISCORD_ID, String) : _defaultID;
-		if (ClientPrefs.data.discordRPC)
-			initialize();
-		else if (isInitialized)
-			shutdown();
+		if (ClientPrefs.data.discordRPC) initialize(); else if (isInitialized) shutdown();
 	}
 
 	/**
@@ -77,10 +77,8 @@ class DiscordClient
 	 */
 	public static function prepare():Void
 	{
-		if (!isInitialized && ClientPrefs.data.discordRPC)
-			initialize();
-		Application.current.window.onClose.add(function() if (isInitialized)
-			shutdown());
+		if (!isInitialized && ClientPrefs.data.discordRPC) initialize();
+		Application.current.window.onClose.add(function() if (isInitialized) shutdown());
 	}
 
 	public dynamic static function shutdown():Void
@@ -188,23 +186,20 @@ class DiscordClient
 
 	static dynamic function changeRPCButton(type:RPC_BUTTON_TYPE, data:{label:String, url:String}):Void
 	{
+		if(Reflect.getProperty(presence, 'button${type}Label') == null)
 		switch (type)
 		{
 			case FIRST:
-				if (presence.button1Label == null)
-					presence.button1Label = cast(data.label, String);
-				if (presence.button1Url == null)
-					presence.button1Url = cast(data.url, String);
+				presence.button1Label??=cast(data.label, String);
+				presence.button1Url ??= cast(data.url, String);
 			case SECOND:
-				if (presence.button2Label == null)
-					presence.button2Label = cast(data.label, String);
-				if (presence.button2Url == null)
-					presence.button2Url = cast(data.url, String);
+				presence.button2Label ??= cast(data.label, String);
+				presence.button2Url ??= cast(data.url, String);
 		}
 	}
 
 	#if MODS_ALLOWED
-	public static function loadModRPC():Void
+	public static function loadModdedRPC():Void
 	{
 		final pack:Dynamic = Mods.getPack();
 		if (pack != null && pack.discordRPC != null && pack.discordRPC != clientID)
@@ -215,16 +210,12 @@ class DiscordClient
 	#if LUA_ALLOWED
 	static function addLuaCallbacks(lua:State):Void
 	{
-		Lua_helper.add_callback(lua, "changePresence",
-			function(details:String, state:Null<String>, ?smallImageKey:String, ?hasStartTimestamp:Bool,
-					?endTimestamp:Float) changePresence(details, state, smallImageKey, hasStartTimestamp, endTimestamp));
+		Lua_helper.add_callback(lua, "changePresence", 
+			(details:String, state:Null<String>, ?smallImageKey:String, ?hasStartTimestamp:Bool, ?endTimestamp:Float) ->
+				changePresence(details, state, smallImageKey, hasStartTimestamp, endTimestamp)
+		);
 
-		Lua_helper.add_callback(lua, "changeClientID", function(?newID:String = null)
-		{
-			if (newID == null)
-				newID = _defaultID;
-			clientID = newID;
-		});
+		Lua_helper.add_callback(lua, "changeClientID", (?newID:String = null) -> clientID = newID ??= _defaultID);
 	}
 	#end
 }

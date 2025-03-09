@@ -1,30 +1,33 @@
 package funkin.backend.objects;
 
 /**
- * This modified FlxCamera handles followLerp based on elapsed values, 
+ * This modified FlxCamera handles `followLerp` based on elapsed values, 
  * whiles also stopping the camera from snapping at higher framerates.
  */
 class CustomCamera extends FlxCamera
 {
-	@:noCompletion private inline override function set_followLerp(value:Float)
+	@:dox(hide) override inline function set_followLerp(value:Float)
 		return followLerp = value;
 
-	override public function update(elapsed:Float):Void
+	@:dox(hide) override public function update(elapsed:Float):Void
 	{
-		if (target != null)
-			updateFollowDelta(elapsed);
+		// delta
+		if (target != null) _updateFollowDelta(elapsed);
 
+		// update stuff
 		updateScroll();
 		updateFlash(elapsed);
 		updateFade(elapsed);
 
+		// fix filters
 		flashSprite.filters = filtersEnabled ? filters : null;
 
+		// fix flash sprite pos & update the shake.
 		updateFlashSpritePosition();
 		updateShake(elapsed);
 	}
 
-	public function updateFollowDelta(?elapsed:Float = 0):Void
+	@:dox(hide) public function _updateFollowDelta(?elapsed:Float = 0):Void
 	{
 		if (deadzone == null)
 		{
@@ -84,7 +87,7 @@ class CustomCamera extends FlxCamera
 			}
 		}
 
-		var mult:Float = 1 - Math.exp(-elapsed * followLerp / (1 / 60));
+		final mult:Float = 1 - Math.exp(-elapsed * followLerp / (1 / 60));
 		scroll.x += (_scrollTarget.x - scroll.x) * mult;
 		scroll.y += (_scrollTarget.y - scroll.y) * mult;
 	}
