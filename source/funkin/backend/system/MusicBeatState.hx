@@ -285,6 +285,17 @@ abstract class MusicBeatState extends FlxState
 		GlobalScript.instance.callOnScripts('onSectionHit', []);
 	}
 
+	@:dox(hide) function _updateShaders(elapsed:Float):Void {
+		if (_shaderGroup != null)
+			for (shader in _shaderGroup)
+				try
+				{
+					shader.update(elapsed);
+				}
+				catch (err:Dynamic)
+					Logs.trace(err, RED);
+	}
+
 	@:dox(hide) override function update(elapsed:Float):Void
 	{
 		_elapsed += elapsed;
@@ -298,14 +309,7 @@ abstract class MusicBeatState extends FlxState
 		updateBeat();
 
 		// Shaders
-		if (_shaderGroup != null)
-			for (shader in _shaderGroup)
-				try
-				{
-					shader.update(elapsed);
-				}
-				catch (err:Dynamic)
-					Logs.trace(err, RED);
+		_updateShaders(elapsed);
 
 		// Step Hit
 		if (oldStep != curStep)

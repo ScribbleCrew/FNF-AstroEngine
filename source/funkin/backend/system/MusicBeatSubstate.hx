@@ -1,11 +1,12 @@
 package funkin.backend.system;
 
-import flixel.FlxSubState;
 import funkin.backend.Conductor;
 import funkin.backend.utils.Controls;
 
-@:access(funkin.backend.system.MusicBeatState)
-abstract class MusicBeatSubstate extends FlxSubState
+// only get needed stuff
+@:access(funkin.backend.system.MusicBeatState.beatsOnSection)
+@:access(funkin.backend.system.MusicBeatState._updateShaders)
+abstract class MusicBeatSubstate extends flixel.FlxSubState
 {
 	/**
 	 * The current section, expressed as an int.	
@@ -52,93 +53,125 @@ abstract class MusicBeatSubstate extends FlxSubState
 	 * @returns Controls Instance
 	 */
 	public var controls(get, never):Controls;
+
 	@:dox(hide) inline function get_controls():Controls
 		return Controls.instance;
- 
+
+	/**
+	 *	Updates the selection with all needed beats.
+	 */
 	function updateSection():Void
 	{
+		// Gather todo steps.
 		if (stepsToDo < 1)
-			stepsToDo = Math.round(cast(FlxG.state, MusicBeatState).beatsOnSection * 4);
+			stepsToDo = Math.round(MusicBeatState.getState().beatsOnSection * 4);
+
+		// update da section.
 		while (curStep >= stepsToDo)
 		{
 			curSection++;
-			var beats:Float = cast(FlxG.state, MusicBeatState).beatsOnSection;
-			stepsToDo += Math.round(beats * 4);
+			stepsToDo += Math.round(MusicBeatState.getState().beatsOnSection * 4);
 			sectionHit();
 		}
 	}
 
+	/**
+	 *	Rolls the current selection back.
+	 */
 	function rollbackSection():Void
 	{
 		if (curStep < 0)
 			return;
 
-		var lastSection:Int = curSection;
+		// saving the last section
+		final lastSection:Int = curSection;
 		curSection = 0;
 		stepsToDo = 0;
+
+		// looping thru all notes.
 		for (i in 0...PlayState.SONG.notes.length)
 		{
 			if (PlayState.SONG.notes[i] != null)
 			{
-				stepsToDo += Math.round(cast(FlxG.state, MusicBeatState).beatsOnSection * 4);
+				stepsToDo += Math.round(MusicBeatState.getState().beatsOnSection * 4);
 				if (stepsToDo > curStep)
 					break;
-
 				curSection++;
 			}
 		}
 
+		// section hit, damn.
 		if (curSection > lastSection)
 			sectionHit();
 	}
 
+	/**
+	 *	Updates the beat.
+	 */
 	function updateBeat():Void
 	{
+		// update beat
 		curBeat = Math.floor(curStep / 4);
 		curDecBeat = curDecStep / 4;
 	}
 
+	/**
+	 *	Updates the current step.
+	 */
 	function updateCurStep():Void
 	{
-		var lastChange = Conductor.getBPMFromSeconds(Conductor.songPosition);
+		// saving vars
+		final lastChange:BPMChangeEvent = Conductor.getBPMFromSeconds(Conductor.songPosition);
+		final curStepChange:Float = ((Conductor.songPosition - funkin.backend.utils.ClientPrefs.data.noteOffset) - lastChange.songTime) / lastChange.stepCrochet;
 
-		var shit = ((Conductor.songPosition - ClientPrefs.data.noteOffset) - lastChange.songTime) / lastChange.stepCrochet;
-		curDecStep = lastChange.stepTime + shit;
-		curStep = lastChange.stepTime + Math.floor(shit);
+		// update curstep.
+		curDecStep = lastChange.stepTime + curStepChange;
+		curStep = lastChange.stepTime + Math.floor(curStepChange);
 	}
 
 	/**
-	 *	The Stephit.
+	 *	The step hit.
 	 */
 	public function stepHit():Void
-		if (curStep % 4 == 0) beatHit();
+		if (curStep % 4 == 0)
+			beatHit();
 
 	/**
-	 *	The Beathit.
+	 *	The beat hit.
 	 */
-	public function beatHit():Void {}
+	public function beatHit():Void {/* Beat Hit */}
 
 	/**
 	 *	The section hit.
 	 */
-	public function sectionHit():Void {}
+	public function sectionHit():Void {/* Section Hit */}
 
 	@:dox(hide) override function update(elapsed:Float):Void
+	{
+		if (!persistentUpdate)
 		{
 			// keeps elapsed while in a substate.
-			if (!persistentUpdate) MusicBeatState._elapsed += elapsed;
-	
-			final oldStep:Int = curStep;
-	
-			updateCurStep();
-			updateBeat();
-	
-			if (oldStep != curStep)
-			{
-				if (curStep > 0) stepHit();
-				if (PlayState.SONG != null) (oldStep < curStep) ? updateSection() : rollbackSection();
-			}
-	
-			super.update(elapsed);
+			MusicBeatState._elapsed += elapsed;
+			// update shaders while in an substate.
+			MusicBeatState.getState()._updateShaders(elapsed);
 		}
+
+		final oldStep:Int = curStep;
+
+		updateCurStep();
+		updateBeat();
+
+		if (oldStep != curStep)
+		{
+			if (curStep > 0)
+				stepHit();
+			if (PlayState.SONG != null)
+				(oldStep < curStep)
+			?updateSection
+			() : rollbackSection
+			();
+		}
+
+		super.update(elapsed);
+	}
 }

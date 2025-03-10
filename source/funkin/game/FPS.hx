@@ -246,6 +246,7 @@ class FPS extends openfl.text.TextField
 	 */
 	public static function make():FPS
 	{
+		// it just looks better. OKAY!!! (pls dont bully me...)
 		final fpsVar:FPS = new FPS(10, 3, 0xFFFFFF);
 		fpsVar.visible = false;
 		fpsVar.bgOffset.x += 25;
