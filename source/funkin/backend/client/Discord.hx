@@ -3,7 +3,7 @@ package funkin.backend.client;
 #if DISCORD_ALLOWED
 #if WATERMARK import funkin.game.Init; #end
 
-enum abstract RPC_BUTTON_TYPE(String) from String to String
+private enum abstract RPC_BUTTON_TYPE(String) from String to String
 {
 	final FIRST:String = "first";
 	final SECOND:String = "second";
