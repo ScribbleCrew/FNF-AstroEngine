@@ -1,5 +1,7 @@
 package funkin.game.states;
 
+import haxe.xml.Access;
+import haxe.xml.Fast;
 import flixel.input.gamepad.FlxGamepad;
 import flixel.graphics.frames.FlxFrame;
 import flixel.addons.transition.FlxTransitionableState;
@@ -34,12 +36,12 @@ class TitleState extends MusicBeatState
 	/**
 	 * If the users game needs to be updated or not.
 	 */
-	var mustUpdate:Bool = false;
+	var _mustUpdate:Bool = false;
 	#end
 
 	final titleTextColors:Array<{color:FlxColor, alpha:Float}> = [{color: 0xFF33FFFF, alpha: 1}, {color: 0xFF3333CC, alpha: .64}];
 	var curWacky:Array<String> = [];
-	var titleJSON:TitleData;
+	var titleConfig:TitleData;
 
 	override public function create():Void
 	{
@@ -70,7 +72,7 @@ class TitleState extends MusicBeatState
 				if (updateVersion != curVersion)
 				{
 					Logs.prefixedTrace('Versions aren\'t matching!', 'Update Sync', RED);
-					mustUpdate = true;
+					_mustUpdate = true;
 				}
 			}
 			http.onError = (error) -> trace('error: $error');
@@ -78,7 +80,8 @@ class TitleState extends MusicBeatState
 		}
 		#end
 
-		titleJSON = tjson.TJSON.parse(Paths.getTextFromFile('data/json/titleJson.json'));
+		//titleConfig = tjson.TJSON.parse(Paths.getTextFromFile('data/config/titleConfig.json'));
+		loadXML();
 
 		if (!initialized)
 			persistentUpdate = persistentDraw = true;
@@ -108,6 +111,45 @@ class TitleState extends MusicBeatState
 			Logs.prefixedTrace('Max Score: $maxS - Max Misses: $mostM', 'Info', ORANGE);
 	}
 
+	function loadXML() : Void{
+		try
+			{
+				final xml = new Access(Xml.parse(Paths.getTextFromFile('data/config/titlescreen.xml')).firstElement());
+				if (xml != null)
+				{
+					// title stuff
+					final titleX:Float = xml.has.titlex ? Std.parseFloat(xml.node.titlex.att.value) : -150;
+					final titleY:Float = xml.has.titley ? Std.parseFloat(xml.node.titley.att.value) : -100;
+					
+					// start stuff
+					final startX:Float = xml.has.startx ? Std.parseFloat(xml.node.startx.att.value) :100;
+					final startY:Float = xml.has.starty ? Std.parseFloat(xml.node.starty.att.value) :576;
+
+					// girlfriend stuff
+					final gfPos:FlxPoint = new FlxPoint();
+					gfPos.x = xml.has.gfx ? Std.parseFloat(xml.node.gfx.att.value) :512;
+					gfPos.y = xml.has.gfy ? Std.parseFloat(xml.node.gfy.att.value) :40;
+					
+					final bpm:Int = xml.has.bpm ? Std.parseInt(xml.att.bpm) : 102;
+					final backgroundSprite:String = xml.has.backgroundSprite ? xml.att.backgroundSprite : "";
+					
+					titleConfig = {
+						titlex: titleX,
+						titley: titleY,
+						startx: startX,
+						starty: startY,
+						gfx: gfPos.x,
+						gfy: gfPos.y,
+						backgroundSprite: backgroundSprite,
+						bpm: bpm
+					};
+				}
+			}
+			catch (e:Dynamic)
+				Logs.prefixedTrace(e, 'Credits State', RED);
+
+	}
+
 	var introGroup:TitleIntroGroup;
 	var logoBl:FlxSprite;
 	var gfDance:FlxSprite;
@@ -121,17 +163,17 @@ class TitleState extends MusicBeatState
 			if (FlxG.sound.music == null)
 				FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
 
-		Conductor.bpm = titleJSON.bpm;
+		Conductor.bpm = titleConfig.bpm;
 		persistentUpdate = true;
 
 		var bg:FlxSprite = new FlxSprite();
-		if (titleJSON.backgroundSprite != null && titleJSON.backgroundSprite.length > 0 && titleJSON.backgroundSprite != "none")
-			bg.loadGraphic(Paths.image(titleJSON.backgroundSprite));
+		if (titleConfig.backgroundSprite != null && titleConfig.backgroundSprite.length > 0 && titleConfig.backgroundSprite != "none")
+			bg.loadGraphic(Paths.image(titleConfig.backgroundSprite));
 		else
 			bg.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		add(bg);
 
-		logoBl = new FlxSprite(titleJSON.titlex, titleJSON.titley);
+		logoBl = new FlxSprite(titleConfig.titlex, titleConfig.titley);
 		logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
 		logoBl.antialiasing = ClientPrefs.data.antialiasing;
 		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24, false);
@@ -140,7 +182,7 @@ class TitleState extends MusicBeatState
 
 		swagShader = new ColorSwap();
 
-		gfDance = new FlxSprite(titleJSON.gfx, titleJSON.gfy);
+		gfDance = new FlxSprite(titleConfig.gfx, titleConfig.gfy);
 		gfDance.frames = Paths.getSparrowAtlas('gfDanceTitle');
 		gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
 		gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
@@ -151,7 +193,7 @@ class TitleState extends MusicBeatState
 		add(logoBl);
 		logoBl.shader = swagShader.shader;
 
-		titleText = new FlxSprite((titleJSON.startx + 30), titleJSON.starty);
+		titleText = new FlxSprite((titleConfig.startx + 30), titleConfig.starty);
 		titleText.frames = Paths.getSparrowAtlas('titleEnter');
 		var animFrames:Array<FlxFrame> = [];
 		@:privateAccess {
@@ -274,7 +316,7 @@ class TitleState extends MusicBeatState
 				new FlxTimer().start(1, function(tmr:FlxTimer)
 				{
 					#if CHECK_FOR_UPDATES
-					if (mustUpdate)
+					if (_mustUpdate)
 						MusicBeatState.switchState(new funkin.game.states.OutdatedState());
 					else #end
 						MusicBeatState.switchState(new funkin.game.states.MainMenuState());

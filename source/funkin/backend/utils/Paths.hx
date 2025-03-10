@@ -517,10 +517,11 @@ class Paths
 		#end
 	}
 
-	// isn't protected, you'll need to do that yourself.
-	static public function xmlAccess(path, ?mods:Bool = true):Access
-		return new Access(Xml.parse(!mods ? getTextFromFile(path, !mods) : File.getContent(path)).firstElement());
-
+	/**
+	* Returns a font.
+	*
+	* @param key Name of the font.	
+	*/
 	inline static public function font(key:String):String
 	{
 		#if MODS_ALLOWED
@@ -531,6 +532,14 @@ class Paths
 		return 'assets/fonts/$key';
 	}
 
+	/**
+	* Checks if an file exists.
+	*
+	* @param key The file key.
+	* @param type The asset type.
+	* @param ignoreMods If mods should be ignored (optional).
+	* @param library The file's library (optional).
+	*/
 	inline static public function fileExists(key:String, type:AssetType, ?ignoreMods:Bool = false, ?library:String):Bool
 	{
 		#if MODS_ALLOWED

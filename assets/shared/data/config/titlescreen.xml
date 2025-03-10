@@ -1,0 +1,9 @@
+<!DOCTYPE AE-title-data>
+<titlescreen bpm="102" backgroundSprite="">
+    <titlex value="-150"/>
+    <titley value="-100"/>
+    <startx value="100"/>
+    <starty value="576"/>
+    <gfx value="512"/>
+    <gfy value="40"/>
+</titlescreen>

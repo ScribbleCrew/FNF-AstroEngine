@@ -114,11 +114,11 @@ class WindowUtil
     if (S_OK != DwmSetWindowAttribute(window, 19, &darkMode, sizeof(darkMode)))
         DwmSetWindowAttribute(window, 20, &darkMode, sizeof(darkMode));
     ')
-	@:noCompletion private static function set_darkmode(enable:Bool):Bool
+	@:dox(hide) 
+	@:noCompletion 
+	inline static function set_darkmode(enable:Bool):Bool
 	{
-		if (OsAPI.hasVersion('Windows 10'))
-			refreshWindow();
-//		trace('${enable ? 'enabled' : 'disabled'} darkmode');
+		if (OsAPI.hasVersion('Windows 10')) refreshWindow();
 		return darkmode = enable;
 	}
 	#end
@@ -134,7 +134,7 @@ class WindowUtil
 	UpdateWindow(hwnd);
 	') // idk if this actually works
 	#end
-	public static function refreshWindow():Void
+	public inline static function refreshWindow():Void
 	{
 		Application.current.window.width++;
 		Application.current.window.width--;
@@ -149,15 +149,24 @@ class WindowUtil
 	 */
 	@:isVar
 	public static var title(default, set):String;
-	@:dox(hide) @:noCompletion private inline static function set_title(value:String):String
-		return Application.current.window.title = title = Std.string(value.replace('%{GAME_TITLE}', Application.current.meta.get('name')));
+	@:dox(hide) @:noCompletion inline static function set_title(value:String):String{
+		// map with all replaceable stuff.
+		final replaceMap:Map<String, Dynamic> = [
+			"GAME_TITLE" => Application.current.meta.get('name'),
+			"GAME_VERSION" => Application.current.meta.get('version')
+		];
+		
+		// for loop to apply those custom shitz
+		for(id => fixed in replaceMap) value = value.replace('%{$id}', fixed);
+
+		// set da title n shit.
+		return Application.current.window.title = title = Std.string(value);
+	}
 
 	/**
 	 * Can be used to check if your using a specific version of an OS (or if your using a certain OS).
 	 */
-	#if windows
-	@:functionCode(' if (!curAudioFix) curAudioFix = new AudioFixClient(); ')
-	#end
+	#if windows @:functionCode(' if (!curAudioFix) curAudioFix = new AudioFixClient(); ') #end
 	public static function registerAudio():Void
 		Main.audioDisconnected = false;
 }

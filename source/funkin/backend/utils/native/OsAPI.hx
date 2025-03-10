@@ -1,18 +1,18 @@
 package funkin.backend.utils.native;
 
+import lime.system.System;
+
 class OsAPI
 {
 	@:isVar
 	public static var username(get, null):String;
-	@:noCompletion private inline static function get_username()
+	@:dox(hide) @:noCompletion inline static function get_username():String
 	{
-		final environment = Sys.environment();
-
+		final environment:Map<String, String> = Sys.environment();
 		if (environment.exists("USERNAME"))
 			return environment["USERNAME"];
 		if (environment.exists("USER"))
 			return environment["USER"];
-
 		return '???';
 	}
 
@@ -21,21 +21,21 @@ class OsAPI
 	 */
 	@:isVar
 	public static var osVersion(get, never):String;
-	@:noCompletion private static inline function get_osVersion()
-		return lime.system.System.platformVersion;
+	@:dox(hide) @:noCompletion static inline function get_osVersion()
+		return System.platformVersion;
 
 	/**
 	 * Os Information / Platform Label exmp: 
 	 */
 	@:isVar
 	public static var osInfo(get, never):String;
-	@:noCompletion private static function get_osInfo()
+	@:dox(hide) @:noCompletion static function get_osInfo():String
 	{
-		if (lime.system.System.platformLabel != null
-			&& lime.system.System.platformLabel != ""
-			&& lime.system.System.platformVersion != null
-			&& lime.system.System.platformVersion != "")
-			return lime.system.System.platformLabel.replace(lime.system.System.platformVersion, "").trim();
+		if (System.platformLabel != null
+			&& System.platformLabel != ""
+			&& System.platformVersion != null
+			&& System.platformVersion != "")
+			return System.platformLabel.replace(System.platformVersion, "").trim();
 		else
 			throw 'Unable to grab OS Label';
 
@@ -43,8 +43,9 @@ class OsAPI
 	}
 
 	/**
-	 * Checking is the user has a specific os version, thingy. Sowwy~ i don't wat i was owo thinking :3c
+	 * Checking is the user has a specific os version, thingy. 
+	 * Sowwy~ i don't wat i was owo thinking :3c
 	 */
-	public static function hasVersion(index:String)
+	inline public static function hasVersion(index:String):Bool
 		return osInfo.toLowerCase().indexOf(index.toLowerCase()) != -1;
 }

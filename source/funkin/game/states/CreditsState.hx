@@ -1,5 +1,6 @@
 package funkin.game.states;
 
+import haxe.xml.Access;
 import flixel.util.FlxSpriteUtil;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -30,7 +31,7 @@ private typedef CreditsOptions =
 
 class CreditsState extends MusicBeatState
 {
-	@:dox(hide) @:noCompletion private static inline final _offset:Float = -75;
+	@:dox(hide) @:noCompletion static inline final __offset:Float = -75;
 
 	@:noCompletion var curSelected:Int = -1;
 
@@ -44,9 +45,7 @@ class CreditsState extends MusicBeatState
 	var descText:FlxText;
 	var descBox:AttachedFlxSprite;
 
-	static var mutex:Mutex;
-
-	@:noCompletion private inline function unselectableCheck(num:Int):Bool
+	@:dox(hide) inline function unselectableCheck(num:Int):Bool
 		return creditsStuff[num].name == null || creditsStuff[num].name.length <= 1;
 
 	override function create():Void
@@ -70,13 +69,13 @@ class CreditsState extends MusicBeatState
 		try
 		{
 			final filePath:String = 'data/credits.xml';
-			requireCreditsData(Paths.xmlAccess(filePath, false));
+			requireCreditsData(filePath, false);
 			#if MODS_ALLOWED
 			for (mod in (Mods.parseList().enabled).concat(['']))
 			{
 				final creditsFile:String = Paths.mods(mod + '/$filePath');
 				if (FileSystem.exists(creditsFile))
-					requireCreditsData(Paths.xmlAccess(creditsFile, true));
+					requireCreditsData(creditsFile);
 			}
 			#end
 
@@ -84,7 +83,8 @@ class CreditsState extends MusicBeatState
 		}
 		catch (e:Dynamic)
 		{
-			FlxG.log.error('Problem loading credits');
+			Logs.prefixedTrace('Error loading credits : $e', 'Credits State', RED);
+			FlxG.log.error('Error loading credits : $e');
 			#if (desktop && lime)
 			lime.app.Application.current.window.alert(e, "Error!");
 			#end
@@ -99,7 +99,7 @@ class CreditsState extends MusicBeatState
 		descBox.alpha = 0.6;
 		add(descBox);
 
-		descText = new FlxText(50, FlxG.height + _offset - 25, 1180, "", 32);
+		descText = new FlxText(50, FlxG.height + __offset - 25, 1180, "", 32);
 		descText.setFormat(Constants.DEFAULT_FONT, 32, FlxColor.WHITE, CENTER);
 		descText.scrollFactor.set();
 		descBox.sprTracker = descText;
@@ -127,13 +127,12 @@ class CreditsState extends MusicBeatState
 		return FlxColor.GRAY;
 	}
 
-	private var quitting:Bool = false;
-	@:dox(hide) private var holdTime:Float = 0;
+	 var quitting:Bool = false;
+	@:dox(hide)  var holdTime:Float = 0;
 
-	override function update(elapsed:Float):Void
+	@:dox(hide) override function update(elapsed:Float):Void
 	{
-		if (FlxG.sound.music.volume < 0.7)
-			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
+		if (FlxG.sound.music.volume < 0.7) FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 
 		if (!quitting)
 		{
@@ -156,7 +155,7 @@ class CreditsState extends MusicBeatState
 
 				if (controls.UI_DOWN || controls.UI_UP)
 				{
-					function calcHoldTime():Int
+					function calcHoldTime():Int 
 						return Math.floor((holdTime - 0.5) * 10);
 
 					final checkLastHold:Int = calcHoldTime();
@@ -168,8 +167,7 @@ class CreditsState extends MusicBeatState
 				}
 			}
 
-			if ((controls.ACCEPT || FlxG.mouse.justPressedMiddle)
-				&& (creditsStuff[curSelected].link != null || creditsStuff[curSelected].link.length > 4))
+			if ((controls.ACCEPT || FlxG.mouse.justPressedMiddle) && (creditsStuff[curSelected].link != null || creditsStuff[curSelected].link.length > 4))
 				CoolUtil.browserLoad(creditsStuff[curSelected].link);
 		}
 
@@ -184,10 +182,10 @@ class CreditsState extends MusicBeatState
 		{
 			if (!item.bold)
 			{
-				var lerpVal:Float = CoolUtil.boundTo(elapsed * 12, 0, 1);
+				final lerpVal:Float = CoolUtil.boundTo(elapsed * 12, 0, 1);
 				if (item.targetY == 0)
 				{
-					var lastX:Float = item.x;
+					final lastX:Float = item.x;
 					item.screenCenter(X);
 					item.x = FlxMath.lerp(lastX, item.x - 70, lerpVal);
 				}
@@ -199,7 +197,7 @@ class CreditsState extends MusicBeatState
 		super.update(elapsed);
 	}
 
-	private function generateCredits():Void
+	function generateCredits():Void
 	{
 		for (i in 0...creditsStuff.length)
 		{
@@ -235,8 +233,10 @@ class CreditsState extends MusicBeatState
 		}
 	}
 
-	private function requireCreditsData(access:haxe.xml.Access):Void
+	 function requireCreditsData(path:String, mods:Bool = true):Void
 	{
+		final access = new Access(Xml.parse(mods ? File.getContent(path) : Paths.getTextFromFile(path, true)).firstElement());// i FUCKING HATE THIS SHIT
+
 		try
 		{
 			if (access != null)
@@ -247,11 +247,11 @@ class CreditsState extends MusicBeatState
 					for (credit in category.nodes.credit)
 					{
 						creditsStuff.push({
-							name: try credit.att.name catch (_) "invalid",
-							icon: try credit.att.icon catch (_) "face",
-							description: try (credit.att.description != null ? credit.att.description.replace('\\n', '\n') : "") catch (_) "",
-							link: try credit.att.link catch (_) null,
-							color: try credit.att.color catch (_) null,
+							name: credit.has.name ? credit.att.name : "invalid",
+							icon: credit.has.icon ? credit.att.icon : "face",
+							description: credit.has.description ? (credit.att.description != null ? credit.att.description.replace('\\n', '\n') : "") : "",
+							link: credit.has.link ? credit.att.link : null,
+							color: credit.has.color ? credit.att.color : null,
 						});
 					}
 					creditsStuff.push({category: ""});
@@ -262,7 +262,7 @@ class CreditsState extends MusicBeatState
 			Logs.prefixedTrace(e, 'Credits State', RED);
 	}
 
-	private function changeSelection(change:Int = 0):Void
+	 function changeSelection(change:Int = 0):Void
 	{
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 
@@ -298,7 +298,7 @@ class CreditsState extends MusicBeatState
 		if (descText.text.trim().length > 0)
 		{
 			descText.visible = descBox.visible = true;
-			descText.y = FlxG.height - descText.height + _offset - 60;
+			descText.y = FlxG.height - descText.height + __offset - 60;
 
 			FlxTween.cancelTweensOf(descText);
 			FlxTween.tween(descText, {y: descText.y + 75}, 0.25, {ease: FlxEase.sineOut});
