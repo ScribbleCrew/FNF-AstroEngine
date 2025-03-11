@@ -46,7 +46,7 @@ class VeryFuniState extends MusicBeatState
 			type: FlxTween.PINGPONG,
 			onComplete: (twn) -> daKisser.flipX = !daKisser.flipX
 		});
-		FlxTween.num(Main.framerateCounter.alpha, 0, .6, {ease: FlxEase.expoOut, startDelay: .2}, Main.framerateCounter.set_alpha);
+		FlxTween.num(Main.fpsVar.alpha, 0, .6, {ease: FlxEase.expoOut, startDelay: .2}, Main.fpsVar.set_alpha);
 	}
 
 	override function update(elapsed:Float):Void
@@ -59,7 +59,7 @@ class VeryFuniState extends MusicBeatState
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 			FlxTween.cancelTweensOf(daKisser);
 			FlxG.camera.flash(FlxColorPastel.PASTELPINK);
-			FlxTween.num(Main.framerateCounter.alpha, ClientPrefs.data.fpsCounterAlpha, .5, {ease: FlxEase.expoOut}, Main.framerateCounter.set_alpha);
+			FlxTween.num(Main.fpsVar.alpha, ClientPrefs.data.fpsCounterAlpha, .5, {ease: FlxEase.expoOut}, Main.fpsVar.set_alpha);
 			FlxTween.tween(FlxG.camera, {zoom: 1.8}, 6, {ease: FlxEase.expoOut});
 			new FlxTimer().start(5.55, _ -> FlxG.camera.fade(FlxColor.BLACK, .1, false, () -> MusicBeatState.switchState(_return ?? new MainMenuState())));
 			FlxTween.tween(title, {alpha: 0}, .5, {ease: FlxEase.expoOut});

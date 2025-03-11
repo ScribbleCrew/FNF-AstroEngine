@@ -44,10 +44,11 @@ class Main extends flixel.FlxGame
 	 * Framerate variable.
 	 * used to handle my new sexy fps code.
 	 */
-	@:isVar
-	public static var framerateCounter(get, null):FPS;
-	@:dox(hide) inline static function get_framerateCounter():FPS
-		return #if !mobile framerateCounter #else null #end;
+	 @:isVar
+	 public static var fpsVar(get, null):FPS;
+	 @:dox(hide) inline static function get_fpsVar():FPS
+		 return #if !mobile fpsVar #else null #end;
+ 
 
 	/**
 	 * Application screen, all this just really does is shorten `Lib.current`.	
@@ -138,11 +139,11 @@ class Main extends flixel.FlxGame
 
 		#if !mobile
 		/**
-		* Create and setup the framerateCounter.
+		* Create and setup the fpsVar.
 		*/
-		framerateCounter = FPS.make();
-		applicationScreen.addChild(framerateCounter.bgSprite);
-		applicationScreen.addChild(framerateCounter);
+		fpsVar = FPS.make();
+		applicationScreen.stage.addChild(fpsVar.bgSprite);
+		applicationScreen.stage.addChild(fpsVar);
 
 		/**
 		* Change the stage's align and scale mode.

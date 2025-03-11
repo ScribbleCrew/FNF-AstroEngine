@@ -2981,7 +2981,7 @@ class PlayState extends MusicBeatState
 	}
 
 	public function leaveState() {
-		Main.framerateCounter.reset();
+		Main.fpsVar.reset();
 		if (isStoryMode)
 			MusicBeatState.switchState(new StoryMenuState());
 		else
