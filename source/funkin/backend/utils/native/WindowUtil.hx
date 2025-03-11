@@ -91,7 +91,7 @@ class AudioFixClient : public IMMNotificationClient {
 		EDataFlow flow, ERole role,
 		LPCWSTR pwstrDeviceId)
 	{
-		::funkin::game::Main_obj::audioDisconnected = true;
+		::funkin::game::Main_obj::_audioDisconnected = true;
 		return S_OK;
 	};
 };
@@ -99,6 +99,7 @@ class AudioFixClient : public IMMNotificationClient {
 AudioFixClient *curAudioFix;
 ')
 #end
+@:access(funkin.game.Main._audioDisconnected)
 class WindowUtil
 {
 	/**
@@ -168,5 +169,5 @@ class WindowUtil
 	 */
 	#if windows @:functionCode(' if (!curAudioFix) curAudioFix = new AudioFixClient(); ') #end
 	public static function registerAudio():Void
-		Main.audioDisconnected = false;
+		Main._audioDisconnected = false;
 }

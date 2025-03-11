@@ -380,55 +380,56 @@ class Paths
 	inline public static function getSharedPath(file:String = ''):String
 		return 'assets/shared/$file';
 
-		/**
+	/**
 	 * Get a library path for a file.
 	 */
 	inline static public function file(file:String, type:AssetType = TEXT, ?library:String):String
 		return getPath(file, type, library);
-	
+
 	/**
 	 * Get a library path for a file.
 	 */
 	inline static public function txt(key:String, ?library:String):String
 		return getPath('data/$key.txt', TEXT, library);
-	
-		/**
+
+	/**
 	 * Get a library path for a file.
 	 */
 	inline static public function xml(key:String, ?library:String):String
 		return getPath('data/$key.xml', TEXT, library);
-	
+
 	/**
 	 * Get a library path for a file.
 	 */
 	inline static public function json(key:String, ?library:String):String
 		return getPath('data/$key.json', TEXT, library);
 
-		/**
+	/**
 	 * Get a library path for a file.
 	 */
 	inline static public function shaderFragment(key:String, ?library:String):String
 		return getPath('shaders/$key.frag', TEXT, library);
 
-		/**
+	/**
 	 * Get a library path for a file.
 	 */
 	inline static public function shaderVertex(key:String, ?library:String):String
 		return getPath('shaders/$key.vert', TEXT, library);
 
-		/**
+	/**
 	 * Get a library path for a file.
 	 */
 	inline static public function lua(key:String, ?library:String):String
 		return getPath('$key.lua', TEXT, library);
 
-		/**
+	/**
 	 * Get a video from a key.
 	 */
 	static public function video(videoKey:String):String
 	{
-		#if MODS_ALLOWED final videoPath:String = modsVideo(videoKey);#end
-		return #if MODS_ALLOWED FileSystem.exists(videoPath) ? videoPath : #end'assets/videos/$videoKey.${Constants.VIDEO_EXT}';
+		#if MODS_ALLOWED final videoPath:String = modsVideo(videoKey); #end
+		return #if MODS_ALLOWED FileSystem.exists(videoPath) ? videoPath : #end
+		'assets/videos/$videoKey.${Constants.VIDEO_EXT}';
 	}
 
 	inline static public function randomSound(key:String, min:Int, max:Int, ?modsAllowed:Bool = true):Sound

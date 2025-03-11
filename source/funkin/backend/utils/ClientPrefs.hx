@@ -94,6 +94,7 @@ import flixel.input.keyboard.FlxKey;
 	public var achievementsMap:Map<String, Bool> = new Map<String, Bool>();
 }
 
+@:access(funkin.backend.client.DiscordClient._checkClientID)
 class ClientPrefs
 {
 	public static var data:SaveVariables = {};
@@ -238,10 +239,7 @@ class ClientPrefs
 		if (FlxG.save.data.mute != null)
 			FlxG.sound.muted = FlxG.save.data.mute;
 
-		#if DISCORD_ALLOWED
-		@:privateAccess
-		DiscordClient._checkClientID();
-		#end
+		#if DISCORD_ALLOWED DiscordClient._checkClientID();#end
 
 		final save:FlxSave = new FlxSave();
 		save.bind('controls_v2', CoolUtil.getSavePath());

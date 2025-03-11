@@ -163,7 +163,7 @@ class Song
 
 		_lastPath = Paths.json('songs/$formattedFolder/$formattedSong');
 		if (!FileSystem.exists(_lastPath))
-			_lastPath = Paths.json('$formattedFolder/$formattedSong');
+			_lastPath = Paths.json('$formattedFolder/$formattedSong');// psych support
 
 		#if MODS_ALLOWED
 		if (FileSystem.exists(_lastPath))

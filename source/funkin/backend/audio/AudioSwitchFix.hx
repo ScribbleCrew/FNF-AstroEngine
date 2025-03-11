@@ -5,12 +5,13 @@ import flixel.FlxState;
 import flixel.sound.FlxSound;
 
 @:dox(hide)
+@:access(funkin.game.Main._audioDisconnected)
 class AudioSwitchFix
 {
-	@:noCompletion private static function onStateSwitch(state:FlxState):Void
+	@:noCompletion static function onStateSwitch(state:FlxState):Void
 	{
 		#if windows
-		if (Main.audioDisconnected)
+		if (Main._audioDisconnected)
 		{
 			var allPlayingAudios:Array<
 				{
@@ -39,7 +40,7 @@ class AudioSwitchFix
 				for (sound in allPlayingAudios)
 					sound.sound.play(sound.time);
 
-				Main.audioDisconnected = false;
+				Main._audioDisconnected = false;
 			});
 		}
 		#end

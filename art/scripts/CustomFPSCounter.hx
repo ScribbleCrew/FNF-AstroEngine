@@ -12,7 +12,7 @@ function goodNoteHit(note)
 
 	if (isShowing)
 	{
-		Main.fpsVar.updateFPS = () ->
+		Main.framerateCounter.updateFPS = () ->
 		{
 			var dots:String = '';
 
@@ -27,12 +27,12 @@ function goodNoteHit(note)
 					dots = '...';
 			}
 
-			Main.fpsVar.clear();
-			Main.fpsVar.addLine('true' + dots);
-			Main.fpsVar.addLine('Loading deez ballz' + dots);
-			Main.fpsVar.addLine('meow :3c //' + dots);
+			Main.framerateCounter.clear();
+			Main.framerateCounter.addLine('true' + dots);
+			Main.framerateCounter.addLine('Loading deez ballz' + dots);
+			Main.framerateCounter.addLine('meow :3c //' + dots);
 		};
 	}
 	else
-		Main.fpsVar.reset(); // default framerate lol
+		Main.framerateCounter.reset(); // default framerate lol
 }

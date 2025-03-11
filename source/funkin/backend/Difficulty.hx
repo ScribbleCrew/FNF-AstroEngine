@@ -11,13 +11,13 @@ class Difficulty
 	/**
 	 * The chart that has no postfix and starting difficulty on Freeplay/Story Mode	
 	 */
-	private static var defaultDifficulty(default, never):String = 'Normal';
+	static var defaultDifficulty(default, never):String = 'Normal';
 
 	/**
 	 * The default diff list.
 	 */
 	public static var defaultList(get, never):Array<String>;
-	@:noCompletion inline private static function get_defaultList():Array<String>
+	@:noCompletion inline static function get_defaultList():Array<String>
 		return ['Easy', 'Normal', 'Hard'];
 
 	inline public static function getFilePath(num:Null<Int> = null):String

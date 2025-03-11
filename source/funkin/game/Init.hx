@@ -6,6 +6,7 @@ import funkin.backend.system.initialization.*;
 // __init__ imports
 #if desktop
 import funkin.backend.system.initialization.TemporaryFolder;
+
 /**
  * Just to make sure DCE doesn't remove this, since it's not directly referenced anywhere else.
  */
@@ -89,8 +90,8 @@ class Init extends flixel.FlxState
 	{
 		#if windows WindowUtil.darkmode = ClientPrefs.data.darkmodeEnabled; #end
 		#if !mobile
-		Main.fpsVar.visible = ClientPrefs.data.showFPS;
-		Main.fpsVar.alpha = ClientPrefs.data.fpsCounterAlpha;
+		Main.framerateCounter.visible = ClientPrefs.data.showFPS;
+		Main.framerateCounter.alpha = ClientPrefs.data.fpsCounterAlpha;
 		#end
 		FlxG.switchState(new TitleState());
 		Logs.prefix = '';

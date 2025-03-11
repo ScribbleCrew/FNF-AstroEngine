@@ -15,7 +15,7 @@ class SoundEffect
 	 *	Sound thing idk.
 	 *	It also cannot be changed.
 	 */
-	private static var _sound(default, null):FlxSound = new FlxSound();
+	static var _sound(default, null):FlxSound = new FlxSound();
 
 	/**
 	 *	Echo sound effect
