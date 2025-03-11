@@ -50,6 +50,10 @@
 	<!-- Enables Hscript Iris Debug Stuff -->
 	<define name="IRIS_DEBUG"/>
 
+	<!-- Custom FPS allowed -->
+	<define name="CUSTOM_FPS_ALLOWED"/>
+
+	<!-- Multi-threaded loading -->
 	<define name="MULTITHREADED_LOADING"/>
 
 	<!-- Enables HScript Support -->

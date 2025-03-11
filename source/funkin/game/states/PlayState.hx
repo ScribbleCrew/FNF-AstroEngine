@@ -828,6 +828,23 @@ class PlayState extends MusicBeatState
 		add(dadGroup);
 		add(boyfriendGroup);
 
+		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
+		// "SCRIPTS FOLDER" SCRIPTS
+		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'scripts/'))
+			for (file in FileSystem.readDirectory(folder))
+			{
+				#if LUA_ALLOWED
+				if(file.toLowerCase().endsWith('.lua'))
+					new FunkinLua(folder + file);
+				#end
+
+				#if HSCRIPT_ALLOWED
+				if(file.toLowerCase().endsWith('.hx'))
+					GlobalScript.instance.initHScriptHook(folder + file);
+				#end
+			}
+		#end
+
 		#if LUA_ALLOWED
 		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
 		luaDebugGroup.cameras = [camOther];
@@ -2980,12 +2997,9 @@ class PlayState extends MusicBeatState
 		eventNotes = [];
 	}
 
-	public function leaveState() {
-		Main.fpsVar.reset();
-		if (isStoryMode)
-			MusicBeatState.switchState(new StoryMenuState());
-		else
-			MusicBeatState.switchState(new FreeplayState());
+	public function leaveState():Void {
+		//Main.framerateCounter.reset();
+		MusicBeatState.switchState(isStoryMode ? new StoryMenuState() : new FreeplayState());
 		trace('leaving...');
 	}
 

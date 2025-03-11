@@ -1,8 +1,13 @@
 package funkin.game;
 
 /**
- * Custom FPS class which provides a customizable, displays the
- * fps, memory, and git information.
+ * Custom FPS class which provides a customizable, displays the fps, memory, and git information.
+ * I don't actually what made me rewrite this, but it's soo so cool!
+ *
+ * Takes customizability in account allowing this call to be used in HScript & Lua.
+ *
+ * To modders,
+ * If you want to enable/disable modding, change `CUSTOM_FPS_ALLOWED` @ Project.xml
  */
 @:access(openfl.display.DisplayObject)
 class FPS extends openfl.text.TextField
@@ -14,7 +19,7 @@ class FPS extends openfl.text.TextField
 	public var active:Bool;
 
 	/**
-	 * The current framerate 
+	 * Applications current framerate 
 	 * (expressed using frames-per-second).
 	 */
 	public var currentFPS(default, null):Int;
@@ -23,11 +28,13 @@ class FPS extends openfl.text.TextField
 	 * I genuinely have no idea what this does, all i know is that 
 	 * it's used to calculate the framerate.
 	 */
-	private var _times:Array<Float>;
+	var _times:Array<Float>;
 
 	/**
 	 * The current memory usage (WARNING: this is NOT your total program memory usage, 
 	 * rather it shows the garbage collector memory)
+	 *
+	 * @returns The memory tracked by the garbage collector (expressed as megabytes).
 	 */
 	@:isVar
 	public var memoryMegabytes(get, never):Float;
@@ -42,7 +49,7 @@ class FPS extends openfl.text.TextField
 	/**
 	 * Background offset.
 	 */
-	public var bgOffset:FlxPoint = FlxPoint.get();
+	public var bgOffset:FlxPoint = FlxPoint.get(25,5);
 
 	/**
 	 * Pushes a string to the text variable (FPS Stuff)
@@ -58,9 +65,9 @@ class FPS extends openfl.text.TextField
 		return text = '';
 
 	/**
-	 * `_position`
+	 * The default position of the framerate counter.
 	 */
-	@:dox(hide) var _position:FlxPoint;
+	@:dox(hide) var __defaultPosition(default, null):FlxPoint;
 
 	/**
 	 * Changes `updateFPS` function to the default value
@@ -69,8 +76,20 @@ class FPS extends openfl.text.TextField
 	public inline function reset(changePos:Bool = true):Void->Void
 	{
 		if (changePos)
-			_position != null ? setPosition(_position.x, _position.y) : setPosition(10, 3);
-		return updateFPS = _default;
+		{
+			/** 
+			 * Reset the text position.
+			 */
+			__defaultPosition != null ? setPosition(__defaultPosition.x, __defaultPosition.y) : setPosition(10, 3);
+	
+			/** 
+			* reset `bgSprite` position. 
+			*/
+			bgSprite.scaleX = this.width + 25 * 2 - 10;
+			bgSprite.scaleY = this.height + 5 * 2 + 3;
+		}
+
+		return updateFPS = __defaultOptions;
 	}
 
 	/**
@@ -79,7 +98,7 @@ class FPS extends openfl.text.TextField
 	 */
 	public inline function setPosition(x = 0.0, y = 0.0):Void
 	{
-		_position = new FlxPoint(x, y);
+		__defaultPosition = new FlxPoint(x, y);
 		this.x = x;
 		this.y = y;
 	}
@@ -89,7 +108,7 @@ class FPS extends openfl.text.TextField
 	*/
 	public inline function lowFramesCheck():Bool return (currentFPS < FlxG.drawFramerate * 0.5);
 
-	public function new(x:Float = 10, y:Float = 3, color:Int = 0x000000)
+	public function new(x:Float = 10, y:Float = 3, color:Int = 0x000000, visible:Bool = true)
 	{
 		/**
 		 * oof
@@ -102,11 +121,16 @@ class FPS extends openfl.text.TextField
 		setPosition(x, y);
 
 		/**
+		* Setting the visibility.
+		*/
+		super.visible = visible;
+
+		/**
 		 * Default stuff
 		 */
 		_times = [];
 		currentFPS = 0;
-		updateFPS = _default;
+		updateFPS = __defaultOptions;
 
 		/**
 		 * Setting up the textfield.
@@ -135,8 +159,13 @@ class FPS extends openfl.text.TextField
 		/**
 		 * Resets the fps field to its default value.
 		 */
-		FlxG.signals.preStateSwitch.add(() -> reset()); // extra check.
+		FlxG.signals.preStateSwitch.add(() -> this.resetOnStateChange ? reset() : null); // extra check.
 	}
+
+	/**
+	* Should the fps field reset to it's default value.
+	*/
+	public var resetOnStateChange:Bool = true;
 
 	/**
 	 * Prevents the overlay from updating every frame, 
@@ -147,13 +176,15 @@ class FPS extends openfl.text.TextField
 	/**
 	 * Updates the FPS field.
 	 */
-	public var updateFPS:Void->Void;
+	#if CUSTOM_FPS_ALLOWED public #else private #end var updateFPS:Void->Void;
 
 	/**
 	 * The `__enterFrame` fps update.
 	 */
-	@:dox(hide) @:noCompletion private override function __enterFrame(deltaTime:Float):Void
-	{
+	@:dox(hide) @:noCompletion override function __enterFrame(deltaTime:Float):Void
+	{		
+		final elapsed:Float = deltaTime / 1000;
+
 		/**
 		 * _times push thingy???
 		 */
@@ -189,7 +220,7 @@ class FPS extends openfl.text.TextField
 	/**
 	 * Default framerate update function
 	 */
-	@:dox(hide) @:noCompletion private dynamic function _default():Void
+	@:dox(hide) @:noCompletion dynamic function __defaultOptions():Void
 	{
 		/**
 		 * Clear, ofc...
@@ -220,7 +251,7 @@ class FPS extends openfl.text.TextField
 	/**
 	 * Framerate background alpha float.
 	 */
-	@:dox(hide) inline static final _bgAlpha:Float = (1 / 3);
+	@:dox(hide) @:noCompletion inline static final _bgAlpha:Float = (1 / 3);
 
 	/**
 	 * Modified `set_alpha` to take the `bgSprite`'s alpha 
@@ -228,8 +259,7 @@ class FPS extends openfl.text.TextField
 	 */
 	@:dox(hide) @:noCompletion override function set_alpha(value:Float):Float
 	{
-		if (value < _bgAlpha)
-			bgSprite.alpha = value;
+		if (value < _bgAlpha) bgSprite.alpha = value;
 		return super.alpha = value;
 	}
 
@@ -240,17 +270,10 @@ class FPS extends openfl.text.TextField
 	@:dox(hide) @:noCompletion override function set_visible(value:Bool):Bool
 		return bgSprite.visible = super.visible = value;
 
-
 	/**
 	 * Smol `create()` function to reduce lines of da code
+	 * this looks way better than the other way. OKAY!!! (pls don't bully me...)
 	 */
-	public static function make():FPS
-	{
-		// it just looks better. OKAY!!! (pls dont bully me...)
-		final fpsVar:FPS = new FPS(10, 3, 0xFFFFFF);
-		fpsVar.visible = false;
-		fpsVar.bgOffset.x += 25;
-		fpsVar.bgOffset.y += 5;
-		return fpsVar;
-	}
+	public inline static function make():FPS
+		return new FPS(10, 3, 0xFFFFFF, false);
 }

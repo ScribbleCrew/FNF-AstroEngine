@@ -91,8 +91,8 @@ class VisualsUISubState extends BaseOptionsMenu
 				ClientPrefs.data.showFPS = true;
 			}
 
-			if (funkin.game.Main.fpsVar != null)
-				funkin.game.Main.fpsVar.visible = ClientPrefs.data.showFPS;
+			if (funkin.game.Main.framerateCounter != null)
+				funkin.game.Main.framerateCounter.visible = ClientPrefs.data.showFPS;
 		};
 
 		var option:Option = new Option('Flashing Lights', "Uncheck this if you're sensitive to flashing lights!", 'flashing', BOOL);
@@ -126,7 +126,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.onChange = () ->
 		{
 			@:privateAccess
-			FlxTween.num(Main.fpsVar.alpha,ClientPrefs.data.fpsCounterAlpha,.1,{ease:FlxEase.expoOut},Main.fpsVar.set_alpha);
+			FlxTween.num(Main.framerateCounter.alpha,ClientPrefs.data.fpsCounterAlpha,.1,{ease:FlxEase.expoOut},Main.framerateCounter.set_alpha);
 		};
 		addOption(option);
 		#end
@@ -222,8 +222,8 @@ class VisualsUISubState extends BaseOptionsMenu
 			funkin.backend.utils.ClientPrefs.data.hideHud = true;
 		}
 
-		if (funkin.game.Main.fpsVar != null)
-			funkin.game.Main.fpsVar.visible = funkin.backend.utils.ClientPrefs.data.showFPS;
+		if (funkin.game.Main.framerateCounter != null)
+			funkin.game.Main.framerateCounter.visible = funkin.backend.utils.ClientPrefs.data.showFPS;
 	}
 	#end
 }
