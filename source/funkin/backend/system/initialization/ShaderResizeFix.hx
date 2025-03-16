@@ -7,7 +7,7 @@ import flixel.FlxG;
  * This class serves as a fix to coord issues when using OpenFL shaders.
  * It listens for da game resizing events and clears caches.
  */
-@:keep final class ShaderCoordsFix
+@:keep final class ShaderResizeFix
 {
 	/**
 	 * Init's da coord fix.

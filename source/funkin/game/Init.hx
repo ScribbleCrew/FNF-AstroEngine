@@ -53,7 +53,7 @@ class Init extends flixel.FlxState
 		#if CRASH_HANDLER CrashLogger.init(); #end
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
 		#if DISCORD_ALLOWED DiscordClient.prepare(); #end
-		#if SHADERS_ALLOWED ShaderCoordsFix.init(); #end
+		#if SHADERS_ALLOWED ShaderResizeFix.init(); #end
 		#if windows AudioSwitchFix.init(); #end
 		#if HSCRIPT_ALLOWED IrisConfig.init(); #end
 		GlobalScript.init();
