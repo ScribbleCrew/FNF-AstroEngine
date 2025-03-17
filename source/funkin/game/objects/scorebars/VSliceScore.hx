@@ -6,6 +6,8 @@ class VSliceScore extends BaseScorebar
 
 	override function create() : Void
 	{	
+		super.create();
+		
 		final healthBarPosition:Bar = game.baseUI.healthBar.bg;
 		scoreText = new FlxText(healthBarPosition.x + healthBarPosition.width - 190, healthBarPosition.y + 30, 0, '>;3c', 20);
 		scoreText.scrollFactor.set();
@@ -14,8 +16,6 @@ class VSliceScore extends BaseScorebar
 		scoreText.alpha = 0;
 		scoreText.setFormat(Constants.DEFAULT_FONT, 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(scoreText);
-
-		super.create();
 
 		game.baseUI.timeTxt.visible = game.baseUI.timeBar.visible = false;
 	}

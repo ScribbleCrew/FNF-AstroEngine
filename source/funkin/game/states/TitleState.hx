@@ -18,7 +18,7 @@ private typedef TitleData =
 	backgroundSprite:String,
 	bpm:Int
 }
-
+// needs rewrite
 @:access(flixel.animation.FlxAnimationController)
 class TitleState extends MusicBeatState
 {

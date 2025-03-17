@@ -18,7 +18,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import flixel.graphics.FlxGraphic;
 import funkin.backend.Song;
-
+// needs rewrite
 @:access(funkin.game.objects.CampaignUI)
 class StoryMenuState extends MusicBeatState
 {

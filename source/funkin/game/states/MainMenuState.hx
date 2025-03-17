@@ -43,6 +43,7 @@ private typedef MenuItemsStructure =
 	@:optional var preloaded:Null<Bool>;
 }
 
+// needs rewrite
 class MainMenuState extends MusicBeatState
 {
 	static var curSelected:Int = 0;

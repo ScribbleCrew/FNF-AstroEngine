@@ -1,13 +1,17 @@
 package funkin.game;
 
 /**
- * Custom FPS class which provides a customizable, displays the fps, memory, and git information.
+ * **Custom FPS** class which provides a customizable, displays the fps, memory, and git information.
+ * Takes customizability in account allowing this call to be used in HScript & Lua.
  * I don't actually what made me rewrite this, but it's soo so cool!
  *
- * Takes customizability in account allowing this call to be used in HScript & Lua.
+ * To **Modders**:
+ * If you want to enable/disable soft-modding support, change `CUSTOM_FPS_ALLOWED` @ **Project.xml**.
+ * To change the default fps fields, edit `__defaultOptions`.
  *
- * To modders,
- * If you want to enable/disable modding, change `CUSTOM_FPS_ALLOWED` @ Project.xml
+ * **NOTICE**: If you're using this class outside of this engine make sure to give me credit.
+ *
+ * **Thankies** for reading **>:3** - @YourFriendOrbl
  */
 @:access(openfl.display.DisplayObject)
 class FPS extends openfl.text.TextField
@@ -174,24 +178,26 @@ class FPS extends openfl.text.TextField
 	var deltaTimeout:Float = 0.0;
 
 	/**
-	 * Updates the FPS field.
+	 * Changeable function, used for updating the Framerate Fields.
 	 */
-	#if CUSTOM_FPS_ALLOWED public #else private #end var updateFPS:Void->Void;
+	#if CUSTOM_FPS_ALLOWED public #else @:noCompletion private #end var updateFPS:Void->Void;
 
 	/**
 	 * The `__enterFrame` fps update.
 	 */
 	@:dox(hide) @:noCompletion override function __enterFrame(deltaTime:Float):Void
-	{		
+	{	
+		/**
+		* Currently unused, may be used in the future.
+		*/
 		final elapsed:Float = deltaTime / 1000;
 
 		/**
-		 * _times push thingy???
+		 * Part of the method to determine the FPS.
 		 */
 		final now:Float = haxe.Timer.stamp() * 1000;
 		_times.push(now);
-		while (_times[0] < now - 1000)
-			_times.shift();
+		while (_times[0] < now - 1000) _times.shift();
 
 		/**
 		 * Stops `updateFPS` from being ran every frame.
@@ -214,7 +220,7 @@ class FPS extends openfl.text.TextField
 		 * Set the `bgSprite`'s scale.
 		 */
 		bgSprite.scaleX = this.width + bgOffset.x * 2 - 10;
-		bgSprite.scaleY = this.height + bgOffset.y * 2 + 3;
+		bgSprite.scaleY = this.height + bgOffset.y * 2;
 	}
 
 	/**

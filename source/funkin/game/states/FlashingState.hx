@@ -10,6 +10,7 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxTimer;
 import funkin.backend.utils.ClientPrefs;
 import funkin.backend.system.MusicBeatState;
+// needs rewrite
 class FlashingState extends MusicBeatState
 {
 	public static var leftState:Bool = false;
