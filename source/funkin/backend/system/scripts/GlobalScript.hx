@@ -126,7 +126,7 @@ class GlobalScript
 		final currentClassName:String = Type.getClassName(currentClass);
 
 		// Convert to lowercase for consistency
-		final _fileName:String = currentClassName.substring(currentClassName.lastIndexOf('.') + 1).toLowerCase(); 
+		final _className:String = currentClassName.substring(currentClassName.lastIndexOf('.') + 1).toLowerCase(); 
 		
 		// Loop through all mod folders containing scripts.
 		for (folderName in Mods.directoriesWithFile(Paths.getSharedPath(), 'source/'))
@@ -145,7 +145,7 @@ class GlobalScript
 
 				// Ensure the Global Script (global.hx, or anything that starts with global) runs no matter
 				// the state, and scripts that are for specific states run when matching the state name.
-				if (convertedScriptName != _fileName && !convertedScriptName.contains("global")) continue;
+				if (convertedScriptName != _className && !convertedScriptName.contains("global")) continue;
 
 				// Execute Lua/HScript scripts if flag concurrent flag is enabled.
 				#if LUA_ALLOWED if (checkScriptExtensions(_fileName, "lua")) new FunkinLua(convertedScriptPath); #end
