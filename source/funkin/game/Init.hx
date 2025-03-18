@@ -69,7 +69,7 @@ class Init extends flixel.FlxState
 
 		#if VIDEOS_ALLOWED
 		final loadingText:FlxText = new FlxText();
-		loadingText.setFormat(Paths.font("Minecraft.ttf"), 24, FlxColor.WHITE);
+		loadingText.setFormat(Paths.font("engine/Mojangles.tff",'embed'), 24, FlxColor.WHITE);
 		loadingText.text = "Loading...";
 		loadingText.screenCenter();
 		add(loadingText);

@@ -8,9 +8,7 @@ import flixel.graphics.frames.FlxAtlasFrames;
 import openfl.system.System;
 import openfl.utils.AssetType;
 import openfl.display.BitmapData;
-import openfl.utils.Assets as OpenFlAssets;
 
-import haxe.xml.Access;
 import flash.media.Sound;
 import lime.utils.Assets;
 
@@ -18,6 +16,8 @@ import lime.utils.Assets;
 import sys.io.File;
 import sys.FileSystem;
 #end
+
+typedef OpenFlAssets = openfl.utils.Assets;
 
 /**
  * Paths cuz very cool
@@ -519,12 +519,13 @@ class Paths
 	}
 
 	/**
-	* Returns a font.
+	* Returns an font from the given key.
 	*
 	* @param key Name of the font.	
 	*/
-	inline static public function font(key:String):String
+	inline static public function font(key:String, ?library:String):String
 	{
+		if(library != null) return getFolderPath('fonts/$key', library);
 		#if MODS_ALLOWED
 		final file:String = modsFont(key);
 		if (FileSystem.exists(file))
@@ -544,11 +545,9 @@ class Paths
 	inline static public function fileExists(key:String, type:AssetType, ?ignoreMods:Bool = false, ?library:String):Bool
 	{
 		#if MODS_ALLOWED
-		if (FileSystem.exists(mods(Mods.currentModDirectory + '/' + key)) || FileSystem.exists(mods(key)))
-			return true;
+		if (FileSystem.exists(mods(Mods.currentModDirectory + '/' + key)) || FileSystem.exists(mods(key))) return true;
 		#end
-		if (OpenFlAssets.exists(getPath(key, type)))
-			return true;
+		if (OpenFlAssets.exists(getPath(key, type))) return true;
 		return false;
 	}
 
@@ -569,14 +568,14 @@ class Paths
 		}
 		else
 		{
-			var myJson:Dynamic = getPath('images/$key.json', TEXT, parentFolder, true);
-			if (OpenFlAssets.exists(myJson) #if MODS_ALLOWED || (FileSystem.exists(myJson) && (useMod = true)) #end)
+			final atlasJson:Dynamic = getPath('images/$key.json', TEXT, parentFolder, true);
+			if (OpenFlAssets.exists(atlasJson) #if MODS_ALLOWED || (FileSystem.exists(atlasJson) && (useMod = true)) #end)
 			{
-				#if MODS_ALLOWED
-				return FlxAtlasFrames.fromTexturePackerJson(loadedImage, (useMod ? File.getContent(myJson) : myJson));
-				#else
-				return FlxAtlasFrames.fromTexturePackerJson(loadedImage, myJson);
-				#end
+				return #if MODS_ALLOWED 
+					FlxAtlasFrames.fromTexturePackerJson(loadedImage, (useMod ? File.getContent(atlasJson) : atlasJson)) 
+					#else 
+					FlxAtlasFrames.fromTexturePackerJson(loadedImage, atlasJson) 
+					#end;
 			}
 		}
 		return getPackerAtlas(key, parentFolder);
@@ -632,11 +631,12 @@ class Paths
 
 	inline static public function formatToSongPath(path:String)
 	{
-		var invalidChars = ~/[~&\\;:<>#]/;
-		var hideChars = ~/[.,'"%?!]/;
+		// EReg
+		final invalidChars:EReg = ~/[~&\\;:<>#]/;
+		final hideChars:EReg = ~/[.,'"%?!]/;
 
-		var path = invalidChars.split(path.replace(' ', '-')).join("-");
-		return hideChars.split(path).join("").toLowerCase();
+		final fixedPath:String = invalidChars.split(path.replace(' ', '-')).join("-");
+		return hideChars.split(fixedPath).join("").toLowerCase();
 	}
 
 	public static function returnSound(key:String, ?path:String, ?modsAllowed:Bool = true, ?beepOnNull:Bool = true)

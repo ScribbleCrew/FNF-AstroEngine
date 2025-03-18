@@ -4,33 +4,41 @@ package funkin.game.states.owo;
 @:access(funkin.game.FPS)
 class VeryFuniState extends MusicBeatState
 {
-	// The returning state, i guess.
+	/**
+	 * The returning state (the state you'll return to when leaving).	
+	 */
 	@:noCompletion var _return(default, null):FlxState = null;
 
-	// Shouldn't be static as this is a returning state (going to be used more than once).
-	var leftState:Bool = false;
+	/**
+	 *	Shouldn't be static as this is a returning state (going to be used more than once).
+	 */
+	@:dox(hide) var leftState:Bool = false;
 
 	var background:FlxSprite;
 	var title:FlxText;
 	var daKisser:FlxSprite;
 
-	public function new(?_return:FlxState):Void
-	{
-		super();
-		this._return = _return;
-	}
+	/**
+	 * Window title timer.
+	 */
+	var titleTimer:FlxTimer;
 
-	override function create():Void
+	/**
+	 * Window title options.	
+	 */
+	final titleOptions:Array<String> = [":3", ">:3c",'>;3c', "=3", ";3c", ";3", ':3c'];
+
+	@:dox(hide) override function create():Void
 	{
+		titleTimer = new FlxTimer().start(2.5, (timer) -> WindowUtil.title = titleOptions[FlxG.random.int(0, titleOptions.length - 1)], 0);
+		titleTimer.onComplete(titleTimer);
+
 		super.create();
 
-		background = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE);
-		add(background);
+		add(background = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE));
 
-		title = new FlxText();
-		title.setFormat(Paths.font("Futura-CondensedExtraBold.otf"), 70, FlxColor.BLACK, CENTER);
+		title = new FlxText().setFormat(Paths.font("Futura-CondensedExtraBold.otf", 'embed'), 70, FlxColor.BLACK, CENTER);
 		title.text = "Oooooo you like boys\nur a boykisser".toLowerCase();
-		// title.borderSize = 2;
 		title.y += 25;
 		title.screenCenter(X);
 		title.updateHitbox();
@@ -41,15 +49,22 @@ class VeryFuniState extends MusicBeatState
 		daKisser.updateHitbox();
 		daKisser.y += 25;
 		add(daKisser);
-		FlxTween.tween(daKisser, {x: daKisser.x}, 0.3, {
-			ease: FlxEase.expoOut,
-			type: FlxTween.PINGPONG,
-			onComplete: (twn) -> daKisser.flipX = !daKisser.flipX
-		});
+
+		/**
+		 * Tweens.	
+		 */
+		FlxTween.tween(daKisser, {x: daKisser.x}, 0.3, {ease: FlxEase.expoOut, type: FlxTween.PINGPONG, onComplete: (twn) -> daKisser.flipX = !daKisser.flipX});
 		FlxTween.num(Main.framerateCounter.alpha, 0, .6, {ease: FlxEase.expoOut, startDelay: .2}, Main.framerateCounter.set_alpha);
 	}
 
-	override function update(elapsed:Float):Void
+	@:dox(hide) override function destroy():Void
+	{
+		titleTimer = FlxDestroyUtil.destroy(titleTimer);
+
+		super.destroy();
+	}
+
+	@:dox(hide) override function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
 
@@ -59,15 +74,29 @@ class VeryFuniState extends MusicBeatState
 			FlxG.sound.play(Paths.sound('cancelMenu'));
 			FlxTween.cancelTweensOf(daKisser);
 			FlxG.camera.flash(FlxColorPastel.PASTELPINK);
-			FlxTween.num(Main.framerateCounter.alpha, ClientPrefs.data.fpsCounterAlpha, .5, {ease: FlxEase.expoOut}, Main.framerateCounter.set_alpha);
 			FlxTween.tween(FlxG.camera, {zoom: 1.8}, 6, {ease: FlxEase.expoOut});
 			new FlxTimer().start(5.55, _ -> FlxG.camera.fade(FlxColor.BLACK, .1, false, () -> MusicBeatState.switchState(_return ?? new MainMenuState())));
 			FlxTween.tween(title, {alpha: 0}, .5, {ease: FlxEase.expoOut});
 			FlxTween.tween(background, {alpha: 0}, .75, {
 				ease: FlxEase.expoOut,
-				onComplete: _ -> FlxTween.tween(daKisser, {alpha: 0}, 3.5, {ease: FlxEase.expoOut})
+				onComplete: _ -> FlxTween.tween(daKisser, {alpha: 0}, 3.5, {
+					ease: FlxEase.expoOut,
+					onComplete: _ ->
+					{
+						FlxTween.num(Main.framerateCounter.alpha, ClientPrefs.data.fpsCounterAlpha, .5, {ease: FlxEase.expoOut},
+							Main.framerateCounter.set_alpha);
+						titleTimer.cancel();
+						WindowUtil.title = '%{GAME_TITLE}'; // YEAH!
+					}
+				})
 			});
 		}
+	}
+
+	@:dox(hide) public function new(?_return:FlxState):Void
+	{
+		super();
+		this._return = _return;
 	}
 }
 #end

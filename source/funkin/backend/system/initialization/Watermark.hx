@@ -15,7 +15,7 @@ import openfl.text.TextFormat;
 	{
 		super();
 
-		defaultTextFormat = _format = new TextFormat(Paths.font('OswaldMedium.ttf'), 55, FlxColor.WHITE);
+		defaultTextFormat = _format = new TextFormat(Paths.font('vcr.ttf'), 55, FlxColor.WHITE);
 		_format.align = openfl.text.TextFormatAlign.CENTER;
 		text = OsAPI.username;
 		alpha = .55;
