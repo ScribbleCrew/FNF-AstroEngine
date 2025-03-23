@@ -1,27 +1,33 @@
 package source; // Yeah, I know...
 
+import haxe.Log;
+import sys.io.File;
+import source.Prebuild;
+import sys.io.FileInput;
 /**
  * A script which executes after the game is built.
  */
-@:final class Postbuild
+class Postbuild
 {
-	static inline final BUILD_TIME_FILE:String = '.build_time';
+	static inline final ROUND_TO = 1000.0;
 
 	static function main():Void
 	{
 		final endTime:Float = Sys.time();
 
-		if (sys.FileSystem.exists(BUILD_TIME_FILE))
+		if (sys.FileSystem.exists(Prebuild.BUILD_TIME_FILE))
 		{
-			final _fileInput:sys.io.FileInput = sys.io.File.read(BUILD_TIME_FILE);
-			final startTime:Float = _fileInput.readDouble();
-			_fileInput.close();
+			final file:FileInput = File.read(Prebuild.BUILD_TIME_FILE);
+			final start:Float = file.readDouble();
 
-			sys.FileSystem.deleteFile(BUILD_TIME_FILE);
+			final buildTime:Float = Math.round((endTime - start) * ROUND_TO) / ROUND_TO;
+			Log.trace('Build complete in $buildTime seconds!', null);
 
-			final buildTime:Float = Math.round((endTime - startTime) * 100) / 100;
-
-			trace('Build took: ${buildTime} seconds');
+			// cleanup
+			file.close();
+			sys.FileSystem.deleteFile(Prebuild.BUILD_TIME_FILE);
+		} else {
+			Log.trace('Build complete!', null);
 		}
 	}
 }

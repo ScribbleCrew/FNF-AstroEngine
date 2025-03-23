@@ -1128,7 +1128,7 @@ class PlayState extends MusicBeatState
 		newText.text = text;
 		newText.color = color;
 		newText.disableTime = 6;
-		newText.font = Paths.font('vcr.ttf');
+		newText.font = Constants.DEFAULT_FONT;
 		newText.alpha = 1;
 		newText.setPosition(10, 8 - newText.height);
 

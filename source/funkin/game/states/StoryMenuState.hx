@@ -74,10 +74,10 @@ class StoryMenuState extends MusicBeatState
 			curWeek = 0;
 
 		scoreText = new FlxText(10, 10, 0, 'WEEK SCORE: ${lerpScore}', 36);
-		scoreText.setFormat(Paths.font("vcr.ttf"), 32);
+		scoreText.setFormat(Constants.DEFAULT_FONT, 32);
 
 		txtWeekTitle = new FlxText(FlxG.width * 0.7, 10, 0, "", 32);
-		txtWeekTitle.setFormat(Paths.font("vcr.ttf"), 32, FlxColor.WHITE, RIGHT);
+		txtWeekTitle.setFormat(Constants.DEFAULT_FONT, 32, FlxColor.WHITE, RIGHT);
 		txtWeekTitle.alpha = 0.7;
 
 		var ui_tex = Paths.getSparrowAtlas('campaign_menu_UI_assets');
@@ -168,7 +168,7 @@ class StoryMenuState extends MusicBeatState
 
 		txtTracklist = new FlxText(FlxG.width * 0.05, tracksSprite.y + 60, 0, "", 32);
 		txtTracklist.alignment = CENTER;
-		txtTracklist.font = Paths.font("vcr.ttf");
+		txtTracklist.font = Constants.DEFAULT_FONT;
 		txtTracklist.color = 0xFFe55777;
 		add(txtTracklist);
 		add(scoreText);
@@ -200,8 +200,7 @@ class StoryMenuState extends MusicBeatState
 			super.update(elapsed);
 			return;
 		}
-
-		// scoreText.setFormat(Paths.font("vcr.ttf"), 32);
+		
 		if (intendedScore != lerpScore)
 		{
 			lerpScore = Math.floor(FlxMath.lerp(intendedScore, lerpScore, Math.exp(-elapsed * 30)));

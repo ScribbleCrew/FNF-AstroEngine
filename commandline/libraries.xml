@@ -28,7 +28,8 @@
     <git name="flxanimate" url="https://github.com/ScribbleCrew/flxanimate" />
 
 	<!-- Hxvlc -->
-    <lib name="hxvlc" version="1.9.3" skipDeps="true" />
+    <git name="hxvlc" url="https://github.com/NeeEoo/hxcpp" ref="codename" skipDeps="true"/>
+    <!-- <lib name="hxvlc" version="1.9.3" skipDeps="true" /> -->
     
 	<!-- linc_luajit -->
     <git name="linc_luajit" url="https://github.com/superpowers04/linc_luajit" ref="633fcc051399afed6781dd60cbf30ed8c3fe2c5a" />
