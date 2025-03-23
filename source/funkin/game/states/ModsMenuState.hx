@@ -76,7 +76,7 @@ class ModsMenuState extends MusicBeatState
 		bg.antialiasing = funkin.backend.utils.ClientPrefs.data.antialiasing;
 		add(bg);
 
-		grid = new FlxBackdrop(Paths.image('ui/grids/grid', 'embed'), XY);
+		grid = new FlxBackdrop(Paths.image('ui/grids/grid'), XY);
 		grid.screenCenter();
 		grid.velocity.x = -30;
 		grid.velocity.y = -30;
@@ -232,32 +232,32 @@ class ModsMenuState extends MusicBeatState
 		/**
 			BUTTONS
 		**/
-		final RELOAD_BUTTON = new ModButton(buttonsX - 300, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'), reload, 54, 54);
+		final RELOAD_BUTTON = new ModButton(buttonsX - 300, buttonsY, 80, 80, Paths.image('ui/mods_icons'), reload, 54, 54);
 		RELOAD_BUTTON.icon.animation.add('reloadBtn', [5]);
 		RELOAD_BUTTON.icon.animation.play('reloadBtn', true);
 		add(RELOAD_BUTTON);
 		buttons.push(RELOAD_BUTTON);
 
-		final OPEN_FOLDER_BUTTON = new ModButton(buttonsX - 200, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'),
+		final OPEN_FOLDER_BUTTON = new ModButton(buttonsX - 200, buttonsY, 80, 80, Paths.image('ui/mods_icons'),
 			function() FileUtil.openFolder("mods"), 54, 54); // Move down
 		OPEN_FOLDER_BUTTON.icon.animation.add('icon', [6]);
 		OPEN_FOLDER_BUTTON.icon.animation.play('icon', true);
 		add(OPEN_FOLDER_BUTTON);
 		buttons.push(OPEN_FOLDER_BUTTON);
 		
-		final MOVE_TO_TOP_BUTTON = new ModButton(buttonsX, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'), () -> moveModToPosition(0), 54, 54);
+		final MOVE_TO_TOP_BUTTON = new ModButton(buttonsX, buttonsY, 80, 80, Paths.image('ui/mods_icons'), () -> moveModToPosition(0), 54, 54);
 		MOVE_TO_TOP_BUTTON.icon.animation.add('icon', [0]);
 		MOVE_TO_TOP_BUTTON.icon.animation.play('icon', true);
 		add(MOVE_TO_TOP_BUTTON);
 		buttons.push(MOVE_TO_TOP_BUTTON);
 
-		final MOVE_UP_BUTTON = new ModButton(buttonsX + 100, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'), () -> moveModToPosition(curSelectedMod - 1), 54, 54);
+		final MOVE_UP_BUTTON = new ModButton(buttonsX + 100, buttonsY, 80, 80, Paths.image('ui/mods_icons'), () -> moveModToPosition(curSelectedMod - 1), 54, 54);
 		MOVE_UP_BUTTON.icon.animation.add('icon', [1]);
 		MOVE_UP_BUTTON.icon.animation.play('icon', true);
 		add(MOVE_UP_BUTTON);
 		buttons.push(MOVE_UP_BUTTON);
 
-		final MOVE_DOWN_BUTTON = new ModButton(buttonsX + 200, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'), () -> moveModToPosition(curSelectedMod + 1), 54, 54);
+		final MOVE_DOWN_BUTTON = new ModButton(buttonsX + 200, buttonsY, 80, 80, Paths.image('ui/mods_icons'), () -> moveModToPosition(curSelectedMod + 1), 54, 54);
 		MOVE_DOWN_BUTTON.icon.animation.add('icon', [2]);
 		MOVE_DOWN_BUTTON.icon.animation.play('icon', true);
 		add(MOVE_DOWN_BUTTON);
@@ -269,7 +269,7 @@ class ModsMenuState extends MusicBeatState
 				button.enabled = false;
 		}
 
-		settingsButton = new ModButton(buttonsX + 300, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'), function() // Settings
+		settingsButton = new ModButton(buttonsX + 300, buttonsY, 80, 80, Paths.image('ui/mods_icons'), function() // Settings
 		{
 			var curMod:ModItem = modsGroup.members[curSelectedMod];
 			if (curMod != null && curMod.settings != null && curMod.settings.length > 0)
@@ -283,7 +283,7 @@ class ModsMenuState extends MusicBeatState
 		if (modsGroup.members[curSelectedMod].settings == null || modsGroup.members[curSelectedMod].settings.length < 1)
 			settingsButton.enabled = false;
 
-		final RELOAD_MOD_BUTTON = new ModButton(buttonsX + 400, buttonsY, 80, 80, Paths.image('ui/mods_icons', 'embed'), function() // On/Off
+		final RELOAD_MOD_BUTTON = new ModButton(buttonsX + 400, buttonsY, 80, 80, Paths.image('ui/mods_icons'), function() // On/Off
 		{
 			var curMod:ModItem = modsGroup.members[curSelectedMod];
 			var mod:String = curMod.folder;

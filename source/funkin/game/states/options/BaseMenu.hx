@@ -15,7 +15,7 @@ class BaseMenu extends MusicBeatSubstate
 		bg.screenCenter();
 		add(bg);
 
-		grid = new FlxBackdrop(Paths.image('ui/grids/grid', 'embed'), XY);
+		grid = new FlxBackdrop(Paths.image('ui/grids/grid'), XY);
 		grid.screenCenter();
 		grid.velocity.x = -30;
 		grid.velocity.y = -30;

@@ -29,7 +29,7 @@ class FlxUICheckBox extends FlxSpriteGroup
 
 	public function boxGraphic()
 	{
-		box.loadGraphic(Paths.image('ui/checkbox', 'embed'), true, 16, 16);
+		box.loadGraphic(Paths.image('ui/checkbox'), true, 16, 16);
 		box.animation.add('false', [0]);
 		box.animation.add('true', [1]);
 		box.animation.play('false');

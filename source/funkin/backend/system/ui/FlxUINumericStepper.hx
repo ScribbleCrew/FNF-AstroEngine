@@ -25,13 +25,13 @@ class FlxUINumericStepper extends FlxUIInputText
 		this.step = step;
 		_updateFilter();
 
-		buttonPlus = new FlxSprite(fieldWidth).loadGraphic(Paths.image('ui/stepper_plus', 'embed'), true, 16, 16);
+		buttonPlus = new FlxSprite(fieldWidth).loadGraphic(Paths.image('ui/stepper_plus'), true, 16, 16);
 		buttonPlus.animation.add('normal', [0], false);
 		buttonPlus.animation.add('pressed', [1], false);
 		buttonPlus.animation.play('normal');
 		add(buttonPlus);
 		
-		buttonMinus = new FlxSprite(fieldWidth + buttonPlus.width).loadGraphic(Paths.image('ui/stepper_minus', 'embed'), true, 16, 16);
+		buttonMinus = new FlxSprite(fieldWidth + buttonPlus.width).loadGraphic(Paths.image('ui/stepper_minus'), true, 16, 16);
 		buttonMinus.animation.add('normal', [0], false);
 		buttonMinus.animation.add('pressed', [1], false);
 		buttonMinus.animation.play('normal');
