@@ -131,11 +131,11 @@ class HScript extends Iris
 	}
 
 	var varsToBring(default, set):Any = null;
+	
 	override function preset() {
 		super.preset();
 
 		// Some very commonly used classes
-		
 		set('Type', Type);
 		set('Main', funkin.game.Main);
 		#if sys
@@ -147,7 +147,8 @@ class HScript extends Iris
 		set('FlxMath', flixel.math.FlxMath);
 		set('FlxSprite', flixel.FlxSprite);
 		set('FlxText', flixel.text.FlxText);
-		set('FlxDestroyUtil',flixel.util.FlxDestroyUtil)
+		set('FlxDestroyUtil',flixel.util.FlxDestroyUtil);
+
 		// Cameras
 		set('FlxCamera', flixel.FlxCamera);
 		set('PsychCamera', CustomCamera);//more psych support.
@@ -177,6 +178,7 @@ class HScript extends Iris
 		set('Character', Character);
 		set('Alphabet', Alphabet);
 		set('Note', Note);
+		set('Logs', Logs);
 		set('CustomSubstate', CustomSubstate);
 		#if (!flash && sys) set('FlxRuntimeShader', flixel.addons.display.FlxRuntimeShader); #end
 		set('ShaderFilter', openfl.filters.ShaderFilter);

@@ -119,7 +119,7 @@ class GlobalScript
 	 * Execute class scripts inside of mods/source.
 	 * Used inside The BeatStates.
 	 */
-	public function executeClassScripts(?metaTable:Array<String>):Void
+	public function executeClassScripts():Void
 	{
 		// Get the current state's class name.
 		final currentClass:Class<Dynamic> = Type.getClass(FlxG.state);
@@ -301,7 +301,7 @@ class GlobalScript
 		{
 			hscriptInstance = new HScript(null, filePath);
 			if (hscriptInstance.exists('onCreate')) hscriptInstance.call('onCreate');
-			if(hscriptInstance.exists('create')) hscriptInstance.call('onCreate');
+			if(hscriptInstance.exists('create')) hscriptInstance.call('create');
 			hscriptInstances.push(hscriptInstance);
 
 			Logs.prefixedTrace('successfully initialized HScript interp on "$filePath"', 'Global Script', GREEN);
@@ -416,7 +416,13 @@ class GlobalScript
 			if (haxeScript != null)
 			{
 				final onDestory:Dynamic = haxeScript.get('onDestroy');
-				if (onDestory != null && Reflect.isFunction(onDestory)) onDestory();
+				if (onDestory != null && Reflect.isFunction(onDestory)) 
+					onDestory();
+
+				final destory:Dynamic = haxeScript.get('destroy');
+				if (destory != null && Reflect.isFunction(destory)) 
+					destory();
+
 				haxeScript.destroy();
 			}
 		}

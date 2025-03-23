@@ -1,5 +1,7 @@
 // Shouldn't be static as this is a returning state (going to be used more than once).
 var leftState:Bool = false;
+
+// sprites
 var background:FlxSprite;
 var title:FlxText;
 var daKisser:FlxSprite;
@@ -7,27 +9,27 @@ var daKisser:FlxSprite;
 // window timer
 var titleTimer:FlxTimer;
 
-/**
- * Window title options.	
- */
+// title options
 final titles:Array<String> = [':3', '>:3c', '>;3c', '=3', ';3c', ';3', ':3c'];
 
+// setup the window title changer
 function setupTitleChanger():Void
 {
 	titleTimer = new FlxTimer().start(2.5, (timer) -> WindowUtil.title = titles[FlxG.random.int(0, titles.length - 1)], 0);
 	titleTimer.onComplete(titleTimer);
 }
 
-function onCreate():Void
+function create():Void
 {
+	Logs.trace('gwa gwa gwa');
+
 	setupTitleChanger();
 
 	add(background = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE));
 
-	title = new FlxText().setFormat(Paths.font("Futura-CondensedExtraBold.otf", 'embed'), 70, FlxColor.BLACK, FlxTextAlign.CENTER);
-	title.text = "Oooooo you like boys\nur a boykisser".toLowerCase();
-	title.y += 25;
+	title = new FlxText("Oooooo you like boys\nur a boykisser".toLowerCase()).setFormat(Paths.font("Futura-CondensedExtraBold.otf", 'embed'), 70, 0xFFFFC0CB, FlxTextAlign.CENTER);
 	title.screenCenter(FlxAxes.X);
+	title.y += 25;
 	title.updateHitbox();
 	add(title);
 
@@ -41,12 +43,12 @@ function onCreate():Void
 	FlxTween.num(Main.framerateCounter.alpha, 0, .6, {ease: FlxEase.expoOut, startDelay: .2}, Main.framerateCounter.set_alpha);
 }
 
-function onDestroy():Void
+function destroy():Void
 {
 	titleTimer = FlxDestroyUtil.destroy(titleTimer);
 }
 
-function onUpdate(elapsed:Float):Void
+function update(elapsed:Float):Void
 {
 	if (!leftState && FlxG.keys.justPressed.ANY)
 	{
@@ -57,6 +59,7 @@ function onUpdate(elapsed:Float):Void
 		FlxTween.tween(FlxG.camera, {zoom: 1.8}, 6, {ease: FlxEase.expoOut});
 
 		new FlxTimer().start(5.55, _ -> FlxG.camera.fade(FlxColor.BLACK, .1, false, () -> MusicBeatState.switchState(_return ?? new MainMenuState())));
+		
 		FlxTween.tween(title, {alpha: 0}, .5, {ease: FlxEase.expoOut});
 		FlxTween.tween(background, {alpha: 0}, .75, {
 			ease: FlxEase.expoOut,

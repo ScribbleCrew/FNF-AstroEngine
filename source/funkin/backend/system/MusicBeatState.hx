@@ -89,6 +89,13 @@ abstract class MusicBeatState extends FlxState
 	@:allow(funkin.backend.base.BaseStage)
 	var stages:Array<BaseStage> = [];
 
+	var scriptName:String = null;
+	public function new(?scriptName:String)
+		{
+			super();
+			this.scriptName = scriptName;
+		}
+
 	@:dox(hide) override function create():Void
 	{
 		// init
@@ -102,6 +109,7 @@ abstract class MusicBeatState extends FlxState
 		GlobalScript.instance.executeClassScripts();
 		super.create();
 		GlobalScript.instance.callOnScripts('onCreatePost', []); // gwa gwa lua
+		GlobalScript.instance.callOnScripts('createPost', []);
 
 		if (!_isCameraLoaded)
 			setupCamera();
@@ -111,13 +119,6 @@ abstract class MusicBeatState extends FlxState
 			openSubState(new FunkinFadeTransition(0.5, true));
 		FlxTransitionableState.skipNextTransOut = false;
 	}
-
-	// public function new(?scriptName:String, ?scriptsAllowed:Bool = true)
-	// {
-	// 	super();
-	// 	this.scriptsAllowed = #if ALLOW_SCRIPTED_STATES scriptsAllowed #else false #end;
-	// 	this.scriptName = scriptName;
-	// }
 
 	/**
 	 * Sets up the custom camera.
@@ -286,6 +287,7 @@ abstract class MusicBeatState extends FlxState
 		// softmoddin'
 		GlobalScript.instance.setOnScripts('curBeat', curBeat); // DAWGG?????
 		GlobalScript.instance.callOnScripts('onBeatHit', []);
+		GlobalScript.instance.callOnScripts('beatHit', []);
 	}
 
 	/**
@@ -303,6 +305,7 @@ abstract class MusicBeatState extends FlxState
 		// softmoddin'
 		GlobalScript.instance.setOnScripts('curSection', curSection);
 		GlobalScript.instance.callOnScripts('onSectionHit', []);
+		GlobalScript.instance.callOnScripts('sectionHit', []);
 	}
 
 	@:dox(hide) function _updateShaders(elapsed:Float):Void
@@ -345,8 +348,10 @@ abstract class MusicBeatState extends FlxState
 		// Softmoddin'
 		stageAccess((stage:BaseStage) -> stage.update(elapsed));
 		GlobalScript.instance.callOnScripts('onUpdate', [elapsed]); // gwa
+		GlobalScript.instance.callOnScripts('update', [elapsed]); // gwa
 		super.update(elapsed);
 		GlobalScript.instance.callOnScripts('onUpdatePost', [elapsed]);
+		GlobalScript.instance.callOnScripts('updatePost', [elapsed]);
 	}
 
 	@:dox(hide) override function destroy():Void
