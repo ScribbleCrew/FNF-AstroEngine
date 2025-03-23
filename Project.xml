@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
+
+	<!-- To Modders: Change the `packageName` to something like `com.astro.fnf.<MOD_NAME>` or `com.<CUSTOM_NAME>.<MOD_NAME>`  -->
 	<app title="Friday Night Funkin' Astro Engine" file="Astro Engine" version="0.2.8" packageName="com.astro" main="funkin.game.Main" company="YourFriendOrbl" />
-	<!-- for your mod do like com.astro.MODNAME
-		Or  com.YOURNAME.MODNAME
-	-->
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
 
 	<!-- NOTE TO SELF: DISABLE THIS IF ISSUES ARE FOUND -->
-	<haxedef name="LINC_LUA_RELATIVE_DYNAMIC_LIB"/>
 	<!-- stable luas PUT AFTER FIRST LINE WITH APP NAME AND ETC -->
+	<haxedef name="LINC_LUA_RELATIVE_DYNAMIC_LIB"/>
 
 	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file or you can set the actual size of your file manually at "FlxPreloaderBase-onUpdate-bytesTotal"-->
 	<app preloader="flixel.system.FlxPreloader" />
@@ -112,40 +111,57 @@
 
 	<!-- ____________________________ Window Settings ___________________________ -->
 
-	<!--These window settings apply to all targets-->
+	<!-- These window settings apply to all targets -->
 	<window width="1280" height="720" fps="69" background="#000000" hardware="true" vsync="false" />
 
-	<!--HTML5-specific-->
+	<!-- HTML5-specific -->
 	<window if="html5" resizable="true" />
 
-	<!--Desktop-specific-->
+	<!-- Desktop-specific -->
 	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" vsync="false"/>
 
-	<!--Mobile-specific-->
+	<!-- Mobile-specific -->
 	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" resizable="false"/>
 
-	<!--Switch-specific-->
+	<!-- Switch-specific -->
 	<window if="switch" orientation="landscape" fullscreen="true" width="0" height="0" resizable="true" />
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 
+	<!-- Source classpath -->
 	<classpath name="source" />
-
+	<assets path="assets/source"/>
+	
+	<!-- Build directories -->
 	<set name="BUILD_DIR" value="export/debug" if="debug" />
 	<set name="BUILD_DIR" value="export/release" unless="debug" />
 	<set name="BUILD_DIR" value="export/32bit" if="32bits" />
 
+	<!-- Videos -->
 	<assets path="assets/videos" library="videos" if="VIDEOS_ALLOWED"/>
+
+	<!-- Songs -->
 	<assets path="assets/songs" library="songs" exclude="*.ogg" if="web"/>
 	<assets path="assets/songs" library="songs" exclude="*.mp3" unless="web"/>
+
+	<!-- Shared Assets -->
 	<assets path="assets/shared" exclude="*.ogg" if="web"/>
 	<assets path="assets/shared" exclude="*.mp3" unless="web"/>
+
+	<!-- Mods -->
 	<assets path='mods' embed='false'/>
-	<assets path="assets/embed" exclude="*.ogg" if="web" embed="true"/>
-	<assets path="assets/embed" exclude="*.mp3" unless="web" embed="true"/>
-	<assets path="assets/source"/>
+	<!-- <assets path="assets/embed" exclude="*.ogg" if="web" embed="true"/>
+	<assets path="assets/embed" exclude="*.mp3" unless="web" embed="true"/> -->
+
+	<!-- Week Assets -->
 	<assets path="assets/week_assets" rename="assets" exclude="*.ogg" if="web"/>
 	<assets path="assets/week_assets" rename="assets" exclude="*.mp3" unless="web"/>
+
+	<!-- Embedded Assets -->
+	<assets path="assets/embed" rename="assets/shared" exclude="*.ogg" if="web"/>
+	<assets path="assets/embed" rename="assets/shared" exclude="*.mp3" unless="web"/>
+
+	<!-- Linux icon -->
 	<assets path='art/icons/iconOG.png' rename='icon.png' if="linux" />
 
 	<section if="BASE_GAME_FILES">

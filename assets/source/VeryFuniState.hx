@@ -21,19 +21,17 @@ function setupTitleChanger():Void
 
 function create():Void
 {
-	Logs.trace('gwa gwa gwa');
-
 	setupTitleChanger();
 
 	add(background = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE));
 
-	title = new FlxText("Oooooo you like boys\nur a boykisser".toLowerCase()).setFormat(Paths.font("Futura-CondensedExtraBold.otf", 'embed'), 70, 0xFFFFC0CB, FlxTextAlign.CENTER);
+	title = new FlxText("Oooooo you like boys\nur a boykisser".toLowerCase()).setFormat(Paths.font("Futura-CondensedExtraBold.otf"), 70, 0xFFFFC0CB, FlxTextAlign.CENTER);
 	title.screenCenter(FlxAxes.X);
 	title.y += 25;
 	title.updateHitbox();
 	add(title);
 
-	daKisser = new FlxSprite().loadGraphic(Paths.image('extra/kisser', 'embed'));
+	daKisser = new FlxSprite().loadGraphic(Paths.image('extra/kisser'));
 	daKisser.screenCenter();
 	daKisser.updateHitbox();
 	daKisser.y += 25;
