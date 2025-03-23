@@ -10,7 +10,7 @@
     <lib name="flixel-tools" version="1.5.1"/>
 
     <!-- Hxcpp -->
-    <git name="hxcpp" url="https://github.com/NeeEoo/hxcpp" ref="codename"/>
+    <!-- <git name="hxcpp" url="https://github.com/NeeEoo/hxcpp" ref="codename"/> -->
 
     <!-- Hxcpp Debug Server -->
     <lib name="hxcpp-debug-server"/>
