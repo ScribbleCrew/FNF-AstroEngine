@@ -6,7 +6,7 @@ package funkin.game;
  * I don't actually what made me rewrite this, but it's soo so cool!
  *
  * To **Modders**:
- * If you want to enable/disable soft-modding support, change `CUSTOM_FPS_ALLOWED` @ **Project.xml**.
+ * If you want to enable/disable soft-modding support, change `CUSTOM_FPS_ALLOWED` in `project.xml`.
  * To change the default fps fields, edit `__defaultOptions`.
  *
  * **NOTICE**: If you're using this class outside of this engine make sure to give me credit.
