@@ -143,6 +143,7 @@
 	<assets path='mods' embed='false'/>
 	<assets path="assets/embed" exclude="*.ogg" if="web" embed="true"/>
 	<assets path="assets/embed" exclude="*.mp3" unless="web" embed="true"/>
+	<assets path="assets/source"/>
 	<assets path="assets/week_assets" rename="assets" exclude="*.ogg" if="web"/>
 	<assets path="assets/week_assets" rename="assets" exclude="*.mp3" unless="web"/>
 	<assets path='art/icons/iconOG.png' rename='icon.png' if="linux" />

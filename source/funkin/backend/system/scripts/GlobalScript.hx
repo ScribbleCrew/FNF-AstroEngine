@@ -129,7 +129,7 @@ class GlobalScript
 		final _className:String = currentClassName.substring(currentClassName.lastIndexOf('.') + 1).toLowerCase(); 
 		
 		// Loop through all mod folders containing scripts.
-		for (folderName in Mods.directoriesWithFile(Paths.getSharedPath(), 'source/'))
+		for (folderName in Mods.directoriesWithFile('assets/', 'source/'))
 		{
 			// Get all files inside the directory
 			for (_fileName in FileSystem.readDirectory(folderName))
@@ -299,9 +299,9 @@ class GlobalScript
 
 		try
 		{
-		
 			hscriptInstance = new HScript(null, filePath);
 			if (hscriptInstance.exists('onCreate')) hscriptInstance.call('onCreate');
+			if(hscriptInstance.exists('create')) hscriptInstance.call('onCreate');
 			hscriptInstances.push(hscriptInstance);
 
 			Logs.prefixedTrace('successfully initialized HScript interp on "$filePath"', 'Global Script', GREEN);

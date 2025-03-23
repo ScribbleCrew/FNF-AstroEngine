@@ -53,10 +53,12 @@ abstract class MusicBeatState extends FlxState
 	 */
 	@:isVar
 	var beatsOnSection(get, null):Float;
+
 	@:dox(hide) inline function get_beatsOnSection():Float
 	{
 		// section beats, idk...
-		final sectionBeats:Null<Float> = PlayState.SONG != null && PlayState.SONG.notes[curSection] != null ? PlayState.SONG.notes[curSection].sectionBeats : 4;
+		final sectionBeats:Null<Float> = PlayState.SONG != null
+			&& PlayState.SONG.notes[curSection] != null ? PlayState.SONG.notes[curSection].sectionBeats : 4;
 		return sectionBeats ?? 4;
 	}
 
@@ -65,6 +67,7 @@ abstract class MusicBeatState extends FlxState
 	 * @returns Controls Instance
 	 */
 	public var controls(get, never):Controls;
+
 	@:dox(hide) inline function get_controls():Controls
 		return Controls.instance;
 
@@ -78,11 +81,11 @@ abstract class MusicBeatState extends FlxState
 	/**
 	 * Variables
 	 */
-	public var variables(default,null):Map<String, Dynamic> = new Map<String, Dynamic>();
+	public var variables(default, null):Map<String, Dynamic> = new Map<String, Dynamic>();
 
 	/**
-	* List of all stages.	
-	*/
+	 * List of all stages.	
+	 */
 	@:allow(funkin.backend.base.BaseStage)
 	var stages:Array<BaseStage> = [];
 
@@ -98,15 +101,23 @@ abstract class MusicBeatState extends FlxState
 		// not MusicBeatState, it's whatever is extending from it, since this is an abstract class.
 		GlobalScript.instance.executeClassScripts();
 		super.create();
-		GlobalScript.instance.callOnScripts('onCreatePost', []);//gwa gwa lua
+		GlobalScript.instance.callOnScripts('onCreatePost', []); // gwa gwa lua
 
 		if (!_isCameraLoaded)
 			setupCamera();
 
 		// transition stuff (ignore this).
-		if (!skipNextTransOut) openSubState(new FunkinFadeTransition(0.5, true));
+		if (!skipNextTransOut)
+			openSubState(new FunkinFadeTransition(0.5, true));
 		FlxTransitionableState.skipNextTransOut = false;
 	}
+
+	// public function new(?scriptName:String, ?scriptsAllowed:Bool = true)
+	// {
+	// 	super();
+	// 	this.scriptsAllowed = #if ALLOW_SCRIPTED_STATES scriptsAllowed #else false #end;
+	// 	this.scriptName = scriptName;
+	// }
 
 	/**
 	 * Sets up the custom camera.
@@ -126,6 +137,7 @@ abstract class MusicBeatState extends FlxState
 	 */
 	@:allow(funkin.backend.system.MusicBeatSubstate)
 	@:dox(hide) static var _elapsed:Float = 0;
+
 	inline function stageAccess(func:BaseStage->(Void)):Void
 	{
 		// very cool stage access function.
@@ -140,7 +152,8 @@ abstract class MusicBeatState extends FlxState
 	function updateSection():Void
 	{
 		// Gather todo steps.
-		if (stepsToDo < 1) stepsToDo = Math.round(beatsOnSection * 4);
+		if (stepsToDo < 1)
+			stepsToDo = Math.round(beatsOnSection * 4);
 
 		// update da section.
 		while (curStep >= stepsToDo)
@@ -156,7 +169,8 @@ abstract class MusicBeatState extends FlxState
 	 */
 	function rollbackSection():Void
 	{
-		if (curStep < 0) return;
+		if (curStep < 0)
+			return;
 
 		// saving the last section
 		final lastSection:Int = curSection;
@@ -169,13 +183,15 @@ abstract class MusicBeatState extends FlxState
 			if (PlayState.SONG.notes[i] != null)
 			{
 				stepsToDo += Math.round(beatsOnSection * 4);
-				if (stepsToDo > curStep) break;
+				if (stepsToDo > curStep)
+					break;
 				curSection++;
 			}
 		}
 
 		// section hit, damn.
-		if (curSection > lastSection) sectionHit();
+		if (curSection > lastSection)
+			sectionHit();
 	}
 
 	/**
@@ -195,8 +211,9 @@ abstract class MusicBeatState extends FlxState
 	{
 		// saving vars
 		final lastChange:BPMChangeEvent = Conductor.getBPMFromSeconds(Conductor.songPosition);
-		final curStepChange:Float = ((Conductor.songPosition - funkin.backend.utils.ClientPrefs.data.noteOffset) - lastChange.songTime) / lastChange.stepCrochet;
-	
+		final curStepChange:Float = ((Conductor.songPosition - funkin.backend.utils.ClientPrefs.data.noteOffset)
+			- lastChange.songTime) / lastChange.stepCrochet;
+
 		// update curstep.
 		curDecStep = lastChange.stepTime + curStepChange;
 		curStep = lastChange.stepTime + Math.floor(curStepChange);
@@ -211,7 +228,8 @@ abstract class MusicBeatState extends FlxState
 	{
 		// Make sure the next state doesn't equal null or the current state.
 		nextState ??= FlxG.state;
-		if (nextState == FlxG.state) return resetState();
+		if (nextState == FlxG.state)
+			return resetState();
 
 		// Custom trans in.
 		FlxTransitionableState.skipNextTransIn ? FlxG.switchState(nextState) : FunkinFadeTransition.startTransition(nextState);
@@ -223,7 +241,7 @@ abstract class MusicBeatState extends FlxState
 	 */
 	public static function resetState():Void
 	{
-		// depending on `skipNextTransIn`. 
+		// depending on `skipNextTransIn`.
 		FlxTransitionableState.skipNextTransIn ? FlxG.resetState() : FunkinFadeTransition.startTransition();
 		FlxTransitionableState.skipNextTransIn = false;
 	}
@@ -248,8 +266,10 @@ abstract class MusicBeatState extends FlxState
 		});
 
 		// beathit stuff
-		if (curStep % 4 == 0) beatHit();
+		if (curStep % 4 == 0)
+			beatHit();
 	}
+
 	/**
 	 *	The Beathit.
 	 */
@@ -285,7 +305,8 @@ abstract class MusicBeatState extends FlxState
 		GlobalScript.instance.callOnScripts('onSectionHit', []);
 	}
 
-	@:dox(hide) function _updateShaders(elapsed:Float):Void {
+	@:dox(hide) function _updateShaders(elapsed:Float):Void
+	{
 		if (_shaderGroup != null)
 			for (shader in _shaderGroup)
 				try
@@ -301,7 +322,8 @@ abstract class MusicBeatState extends FlxState
 		_elapsed += elapsed;
 
 		// Fullscreen stuff.
-		if (FlxG.save.data != null) FlxG.save.data.fullscreen = FlxG.fullscreen;
+		if (FlxG.save.data != null)
+			FlxG.save.data.fullscreen = FlxG.fullscreen;
 
 		// CurBeat stuff, sooo so cool!!!
 		final oldStep:Int = curStep;
@@ -314,8 +336,10 @@ abstract class MusicBeatState extends FlxState
 		// Step Hit
 		if (oldStep != curStep)
 		{
-			if (curStep > 0) stepHit();
-			if (PlayState.SONG != null) oldStep < curStep ? updateSection() : rollbackSection();
+			if (curStep > 0)
+				stepHit();
+			if (PlayState.SONG != null)
+				oldStep < curStep ? updateSection() : rollbackSection();
 		}
 
 		// Softmoddin'
@@ -324,7 +348,7 @@ abstract class MusicBeatState extends FlxState
 		super.update(elapsed);
 		GlobalScript.instance.callOnScripts('onUpdatePost', [elapsed]);
 	}
-	
+
 	@:dox(hide) override function destroy():Void
 	{
 		// Softmoddin'

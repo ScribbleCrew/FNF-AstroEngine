@@ -202,7 +202,7 @@ class Song
 					final fmt = fmt.toLowerCase();
 					if (!fmt.startsWith('astro_v') && !fmt.startsWith('psych_v1')) // Convert to Psych 1.0 format
 					{
-						trace('converting chart $nameForError with format $fmt to astro_v${EngineData.VERSION} format...');
+						Logs.prefixedTrace('Converted chart $nameForError ($fmt) to astro_v${EngineData.VERSION}', 'SONG HANDLER', BLUE);
 						songJson.format = 'astro_v${EngineData.VERSION}_convert';
 						convert(songJson);
 					}
