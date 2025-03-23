@@ -150,8 +150,6 @@
 
 	<!-- Mods -->
 	<assets path='mods' embed='false'/>
-	<!-- <assets path="assets/embed" exclude="*.ogg" if="web" embed="true"/>
-	<assets path="assets/embed" exclude="*.mp3" unless="web" embed="true"/> -->
 
 	<!-- Week Assets -->
 	<assets path="assets/week_assets" rename="assets" exclude="*.ogg" if="web"/>

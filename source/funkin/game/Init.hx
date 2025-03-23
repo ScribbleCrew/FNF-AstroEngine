@@ -2,11 +2,9 @@ package funkin.game;
 
 import funkin.backend.utils.Paths;
 import funkin.backend.system.initialization.*;
-
 // __init__ imports
 #if desktop
 import funkin.backend.system.initialization.TemporaryFolder;
-
 /**
  * Just to make sure DCE doesn't remove this, since it's not directly referenced anywhere else.
  */
@@ -69,14 +67,14 @@ class Init extends flixel.FlxState
 
 		#if VIDEOS_ALLOWED
 		final loadingText:FlxText = new FlxText();
-		loadingText.setFormat(Paths.font("engine/Mojangles.tff",'embed'), 24, FlxColor.WHITE);
+		loadingText.setFormat(Paths.font("engine/Mojangles.ttf"), 24, FlxColor.WHITE);
 		loadingText.text = "Loading...";
 		loadingText.screenCenter();
 		add(loadingText);
 
 		hxvlc.util.Handle.initAsync(#if (hxvlc >= "1.8.0") ['--no-lua'] #end, _ ->
 		{
-			Logs.prefixedTrace(_ ? "LibVLC initialized" : "Error on initializing LibVLC!",'hxvlc',YELLOW);
+			Logs.prefixedTrace(_ ? "LibVLC initialized" : "Error on initializing LibVLC!", 'hxvlc', YELLOW);
 			clearState();
 		});
 		#else
