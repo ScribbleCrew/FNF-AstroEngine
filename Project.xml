@@ -195,13 +195,14 @@
 
 	<!-- Debug Sever -->
 	<haxelib name="hxcpp-debug-server" if="DEBUG_SERVER_ALLOWED"/>
+
 	<haxedef name="HXC_LIBVLC_LOGGING" if="VIDEOS_ALLOWED DEBUG_SERVER_ALLOWED" />
 	<haxedef name="HXVLC_NO_SHARE_DIRECTORY" if="VIDEOS_ALLOWED" />
 	<define name="x86_BUILD" if="32bits" />
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 
-	<!-- A Script That Runs Before Complie -->
+	<!-- A Scripts That Runs Before Compile -->
 	<prebuild haxe="source/Prebuild.hx" unless="display"/>
 	<postbuild haxe="source/Postbuild.hx" unless="display"/>
 
@@ -214,7 +215,7 @@
 	<!--Disable the Flixel core debugger. Automatically gets set whenever you compile in release mode!-->
 	<haxedef name="FLX_NO_DEBUG" unless="debug" />
 
-	<!--Enable this for Nape release builds for a serious peformance improvement-->
+	<!--Enable this for Nape release builds for a serious performance improvement-->
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
 
 	<!-- Crash Handler -->
