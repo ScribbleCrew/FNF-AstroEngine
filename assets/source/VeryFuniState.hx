@@ -23,6 +23,8 @@ function new(returnState:FlxState):Void
 
 function create():Void
 {
+	//FlxG.sound.music.stop(); ||| ugh... flixel being weird
+
 	titleTween();
 	makeSprites();
 
@@ -66,6 +68,8 @@ function update(elapsed:Float):Void
 {
 	if (!gonnaLeave && FlxG.keys.justPressed.ANY)
 	{
+		FlxG.sound.play(Paths.sound('scrollMenu'));
+
 		gonnaLeave = true;
 		titleTimer.cancel();
 		WindowUtil.title = "wawawawawawawawawawawa";
