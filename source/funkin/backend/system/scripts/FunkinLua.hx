@@ -89,11 +89,6 @@ class FunkinLua
 		lua = LuaL.newstate();
 		LuaL.openlibs(lua);
 
-		// trace('Lua version: ' + Lua.version());
-		// trace("LuaJIT version: " + Lua.versionJIT());
-
-		// LuaL.dostring(lua, CLENSE);
-
 		this.scriptName = scriptName.trim();
 		var game:PlayState = PlayState.instance;
 		if (game != null)
@@ -107,6 +102,68 @@ class FunkinLua
 		#end
 
 		// Lua shit
+		setCustomCallbacks(game);
+
+		#if DISCORD_ALLOWED DiscordClient.addLuaCallbacks(lua); #end
+		#if ACHIEVEMENTS_ALLOWED Achievements.addLuaCallbacks(lua); #end
+		#if HSCRIPT_ALLOWED HScript.implement(this); #end
+		#if flxanimate FlxAnimateFunctions.implement(this); #end
+		#if SHADERS_ALLOWED ShaderFunctions.implement(this); #end
+		#if FLX_SAVE SaveFunctions.implement(this); #end
+
+		ReflectionFunctions.implement(this);
+		TextFunctions.implement(this);
+		ExtraFunctions.implement(this);
+		CustomSubstate.implement(this);
+		DeprecatedFunctions.implement(this);
+		FileFunctions.implement(this);
+
+		for (name => func in customFunctions)
+		{
+			if (func != null)
+				Lua_helper.add_callback(lua, name, func);
+		}
+
+		try
+		{
+			var isString:Bool = !FileSystem.exists(scriptName);
+			var result:Dynamic = null;
+			if (!isString)
+				result = LuaL.dofile(lua, scriptName);
+			else
+				result = LuaL.dostring(lua, scriptName);
+
+			var resultStr:String = Lua.tostring(lua, result);
+			if (resultStr != null && result != 0)
+			{
+				trace(resultStr);
+				#if windows
+				lime.app.Application.current.window.alert(resultStr, 'Error on lua script!');
+				#else
+				luaTrace('$scriptName\n$resultStr', true, false, FlxColor.RED);
+				#end
+				lua = null;
+				return;
+			}
+			if (isString)
+				scriptName = 'unknown';
+		}
+		catch (e:Dynamic)
+		{
+			trace(e);
+			return;
+		}
+	}
+
+	public function execute(?args:Array<Dynamic>){
+		Logs.prefixedTrace('lua file loaded succesfully: $scriptName', 'Global Script', GREEN);
+		call('new', args ??=[]);
+		call('onCreate', []);
+		return this;
+	}
+
+
+	function setCustomCallbacks(game:PlayState){
 		set('Function_StopLua', GlobalScript.functions.Function_StopLua);
 		set('Function_StopHScript', GlobalScript.functions.Function_StopHScript);
 		set('Function_StopAll', GlobalScript.functions.Function_StopAll);
@@ -118,32 +175,32 @@ class FunkinLua
 		set('modFolder', this.modFolder);
 
 		// Song/Week shit
-		if(PlayState.instance != null)
-	{
-		set('curBpm', Conductor.bpm);
-		set('bpm', PlayState.SONG.bpm);
-		set('scrollSpeed', PlayState.SONG.speed);
-		set('crochet', Conductor.crochet);
-		set('stepCrochet', Conductor.stepCrochet);
-		set('songLength', FlxG.sound.music.length);
-		set('songName', PlayState.SONG.song);
-		set('songPath', Paths.formatToSongPath(PlayState.SONG.song));
-		set('loadedSongName', Song.loadedSongName);
-		set('loadedSongPath', Paths.formatToSongPath(Song.loadedSongName));
-		set('chartPath', Song.chartPath);
-		set('startedCountdown', false);
-		set('curStage', PlayState.SONG.stage);
+		if (PlayState.instance != null)
+		{
+			set('curBpm', Conductor.bpm);
+			set('bpm', PlayState.SONG.bpm);
+			set('scrollSpeed', PlayState.SONG.speed);
+			set('crochet', Conductor.crochet);
+			set('stepCrochet', Conductor.stepCrochet);
+			set('songLength', FlxG.sound.music.length);
+			set('songName', PlayState.SONG.song);
+			set('songPath', Paths.formatToSongPath(PlayState.SONG.song));
+			set('loadedSongName', Song.loadedSongName);
+			set('loadedSongPath', Paths.formatToSongPath(Song.loadedSongName));
+			set('chartPath', Song.chartPath);
+			set('startedCountdown', false);
+			set('curStage', PlayState.SONG.stage);
 
-		set('isStoryMode', PlayState.isStoryMode);
-		set('difficulty', PlayState.storyDifficulty);
+			set('isStoryMode', PlayState.isStoryMode);
+			set('difficulty', PlayState.storyDifficulty);
 
-		set('difficultyName', Difficulty.getString());
-		set('difficultyPath', Paths.formatToSongPath(Difficulty.getString()));
-		set('weekRaw', PlayState.storyWeek);
-		set('week', WeekData.weeksList[PlayState.storyWeek]);
-		set('seenCutscene', PlayState.seenCutscene);
-		set('hasVocals', PlayState.SONG.needsVoices);
-	}
+			set('difficultyName', Difficulty.getString());
+			set('difficultyPath', Paths.formatToSongPath(Difficulty.getString()));
+			set('weekRaw', PlayState.storyWeek);
+			set('week', WeekData.weeksList[PlayState.storyWeek]);
+			set('seenCutscene', PlayState.seenCutscene);
+			set('hasVocals', PlayState.SONG.needsVoices);
+		}
 
 		// Camera poo
 		set('cameraX', 0);
@@ -263,7 +320,7 @@ class FunkinLua
 			GlobalScript.instance.setOnScripts(varName, arg, exclusions);
 		});
 		#end
-		
+
 		#if HSCRIPT_ALLOWED
 		addLocalCallback("setOnHScript", function(varName:String, arg:Dynamic, ?ignoreSelf:Bool = false, ?exclusions:Array<String> = null)
 		{
@@ -429,8 +486,8 @@ class FunkinLua
 							luaTrace('addHScript: The script "' + foundScript + '" is already running!');
 							return;
 						}
-
-				GlobalScript.instance.initHScriptHook(foundScript);
+				
+				new HScript(null, foundScript).run();
 				return;
 			}
 			luaTrace("addHScript: Script doesn't exist!", false, false, FlxColor.RED);
@@ -1761,7 +1818,7 @@ class FunkinLua
 		Lua_helper.add_callback(lua, "debugPrint",
 			function(text:Dynamic = '', color:String = 'WHITE') PlayState.instance.addTextToDebug(text, CoolUtil.colorFromString(color)));
 
-		Lua_helper.add_callback(lua, "print", function(text:Dynamic = '') Logs.prefixedTrace(text,'Funkin Lua', ORANGE));
+		Lua_helper.add_callback(lua, "print", function(text:Dynamic = '') Logs.prefixedTrace(text, 'Funkin Lua', ORANGE));
 
 		addLocalCallback("close", function()
 		{
@@ -1769,59 +1826,6 @@ class FunkinLua
 			trace('Closing script $scriptName');
 			return closed;
 		});
-
-		#if DISCORD_ALLOWED DiscordClient.addLuaCallbacks(lua); #end
-		#if ACHIEVEMENTS_ALLOWED Achievements.addLuaCallbacks(lua); #end
-		#if HSCRIPT_ALLOWED HScript.implement(this); #end
-		#if flxanimate FlxAnimateFunctions.implement(this); #end
-		#if SHADERS_ALLOWED ShaderFunctions.implement(this); #end
-		#if FLX_SAVE SaveFunctions.implement(this); #end
-
-		ReflectionFunctions.implement(this);
-		TextFunctions.implement(this);
-		ExtraFunctions.implement(this);
-		CustomSubstate.implement(this);
-		DeprecatedFunctions.implement(this);
-		FileFunctions.implement(this);
-
-		for (name => func in customFunctions)
-		{
-			if (func != null)
-				Lua_helper.add_callback(lua, name, func);
-		}
-
-		try
-		{
-			var isString:Bool = !FileSystem.exists(scriptName);
-			var result:Dynamic = null;
-			if (!isString)
-				result = LuaL.dofile(lua, scriptName);
-			else
-				result = LuaL.dostring(lua, scriptName);
-
-			var resultStr:String = Lua.tostring(lua, result);
-			if (resultStr != null && result != 0)
-			{
-				trace(resultStr);
-				#if windows
-				lime.app.Application.current.window.alert(resultStr, 'Error on lua script!');
-				#else
-				luaTrace('$scriptName\n$resultStr', true, false, FlxColor.RED);
-				#end
-				lua = null;
-				return;
-			}
-			if (isString)
-				scriptName = 'unknown';
-		}
-		catch (e:Dynamic)
-		{
-			trace(e);
-			return;
-		}
-		Logs.prefixedTrace('lua file loaded succesfully:' + scriptName, 'Global Script', GREEN);
-
-		call('onCreate', []);
 	}
 
 	// main
@@ -2025,8 +2029,7 @@ class FunkinLua
 		var v:String = Lua.tostring(lua, -1);
 		Lua.pop(lua, 1);
 
-		if (v != null)
-			v = v.trim();
+		if (v != null) v = v.trim();
 		if (v == null || v == "")
 		{
 			switch (status)
@@ -2045,9 +2048,12 @@ class FunkinLua
 		return null;
 	}
 
-	public function addLocalCallback(name:String, myFunction:Dynamic)
+	/**
+	* Add local lua callback.
+	*/
+	public function addLocalCallback(name:String, functionName:Dynamic):Void
 	{
-		callbacks.set(name, myFunction);
+		callbacks.set(name, functionName);
 		Lua_helper.add_callback(lua, name, null); // just so that it gets called
 	}
 

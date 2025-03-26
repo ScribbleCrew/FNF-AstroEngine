@@ -258,7 +258,7 @@ class TitleState extends MusicBeatState
 
 		#if ASTRO_WATERMARKS
 		if (FlxG.keys.justPressed.SEVEN)
-			MusicBeatState.switchState(new funkin.game.states.owo.VeryFuniState(new TitleState()));
+			MusicBeatState.switchState("VeryFuniState", [new TitleState()]);//YES, FINALLY IT WORKS!!?!?!?!?
 		#end
 
 		#if mobile

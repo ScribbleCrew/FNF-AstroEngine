@@ -5,16 +5,18 @@ import funkin.game.objects.scorebars.DefaultHUD;
 class BaseScorebar extends FlxBasic
 {
 	private var game(get, never):Dynamic;
-
+	private var baseUI:DefaultHUD = null;
 	private var scoreUpdate(default, set):Void->Void;
-	@:noCompletion private inline function set_scoreUpdate(erm:Void->Void):Void->Void
-		{
-			game.scoreUpdate = erm;
-			erm();
-			return erm;
-		}
 
-	private var defaultPos(get,never):FlxPoint;
+	@:noCompletion private inline function set_scoreUpdate(erm:Void->Void):Void->Void
+	{
+		game.scoreUpdate = erm;
+		erm();
+		return erm;
+	}
+
+	private var defaultPos(get, never):FlxPoint;
+
 	@:noCompletion private inline function get_defaultPos():FlxPoint
 		return game.baseUI.healthBar.getPosition();
 
@@ -25,11 +27,10 @@ class BaseScorebar extends FlxBasic
 		else
 		{
 			FlxG.log.add('Scorebar Created');
-			
-			super();
-			game.baseUI = new DefaultHUD();
-			create();
 
+			super();
+			baseUI = game.baseUI = new DefaultHUD();
+			create();
 			game.ui = this;
 			scoreUpdate = updateScore;
 
@@ -49,12 +50,12 @@ class BaseScorebar extends FlxBasic
 		return cast FlxG.state;
 
 	// uhh owo?
-	function add(object:FlxBasic) : Void
+	function add(object:FlxBasic):Void
 		game.uiGroup.add(object);
 
-	function remove(object:FlxBasic) : Void
+	function remove(object:FlxBasic):Void
 		game.uiGroup.remove(object);
 
-	function insert(position:Int, object:FlxBasic) : Void
+	function insert(position:Int, object:FlxBasic):Void
 		game.uiGroup.insert(position, object);
 }

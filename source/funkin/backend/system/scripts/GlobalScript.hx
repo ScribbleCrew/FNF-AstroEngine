@@ -119,14 +119,14 @@ class GlobalScript
 	 * Execute class scripts inside of mods/source.
 	 * Used inside The BeatStates.
 	 */
-	public function executeClassScripts():Void
+	public function executeClassScripts(?customClass:String, ?scriptArgs):Void
 	{
 		// Get the current state's class name.
 		final currentClass:Class<Dynamic> = Type.getClass(FlxG.state);
-		final currentClassName:String = Type.getClassName(currentClass);
+		final _className:String = customClass != null ? customClass : Type.getClassName(currentClass);
 
 		// Convert to lowercase for consistency
-		final _className:String = currentClassName.substring(currentClassName.lastIndexOf('.') + 1).toLowerCase(); 
+		final __className:String = _className.substring(_className.lastIndexOf('.') + 1).toLowerCase(); 
 		
 		// Loop through all mod folders containing scripts.
 		for (folderName in Mods.directoriesWithFile('assets/', 'source/'))
@@ -145,11 +145,11 @@ class GlobalScript
 
 				// Ensure the Global Script (global.hx, or anything that starts with global) runs no matter
 				// the state, and scripts that are for specific states run when matching the state name.
-				if (convertedScriptName != _className && !convertedScriptName.contains("global")) continue;
+				if (convertedScriptName != __className && !convertedScriptName.contains("global")) continue;
 
 				// Execute Lua/HScript scripts if flag concurrent flag is enabled.
-				#if LUA_ALLOWED if (checkScriptExtensions(_fileName, "lua")) new FunkinLua(convertedScriptPath); #end
-				#if HSCRIPT_ALLOWED if (checkScriptExtensions(_fileName, "haxe")) GlobalScript.instance.initHScriptHook(convertedScriptPath); #end
+				#if LUA_ALLOWED if (checkScriptExtensions(_fileName, "lua")) new FunkinLua(convertedScriptPath).execute(scriptArgs); #end
+				#if HSCRIPT_ALLOWED if (checkScriptExtensions(_fileName, "haxe")) new HScript(null, convertedScriptPath).run(scriptArgs); #end
 			}
 		}
 	}
@@ -189,14 +189,14 @@ class GlobalScript
 		luaScript = Paths.modFolders(luaFile);
 
 		FileSystem.exists(luaScript) ? {
-			luaInstances.push(new FunkinLua(luaScript));
+			luaInstances.push(new FunkinLua(luaScript).execute());
 
 			return GlobalStatus.SUCCESS;
 		} : {
 			luaScript = Paths.getSharedPath(luaFile);
 			if (FileSystem.exists(luaScript))
 			{
-				luaInstances.push(new FunkinLua(luaScript));
+				luaInstances.push(new FunkinLua(luaScript).execute());
 
 				return GlobalStatus.SUCCESS;
 			}
@@ -206,7 +206,7 @@ class GlobalScript
 
 		if (OpenFlAssets.exists(luaScript))
 		{
-			luaInstances.push(new FunkinLua(luaScript));
+			luaInstances.push(new FunkinLua(luaScript).execute());
 			return GlobalStatus.SUCCESS;
 		}
 		#end
@@ -275,7 +275,7 @@ class GlobalScript
 	#end
 
 	#if HSCRIPT_ALLOWED
-	public function startHScriptsNamed(scriptFile:String):GlobalStatus
+	public function startHScriptsNamed(scriptFile:String)
 	{
 		var scriptToLoad:String;
 		#if MODS_ALLOWED
@@ -288,9 +288,9 @@ class GlobalScript
 
 		if (FileSystem.exists(scriptToLoad))
 			if (!Iris.instances.exists(scriptToLoad))
-				return initHScriptHook(scriptToLoad);
+				return new HScript(null, scriptToLoad).run();
 
-		return GlobalStatus.UNKNOWN;
+		return null;
 	}
 
 	public function initHScriptHook(filePath:String):GlobalStatus

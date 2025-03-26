@@ -1,5 +1,7 @@
+import funkin.game.states.MainMenuState;
+
 // Shouldn't be static as this is a returning state (going to be used more than once).
-var leftState:Bool = false;
+var gonnaLeave:Bool = false;
 
 // sprites
 var background:FlxSprite;
@@ -12,52 +14,69 @@ var titleTimer:FlxTimer;
 // title options
 final titles:Array<String> = [':3', '>:3c', '>;3c', '=3', ';3c', ';3', ':3c'];
 
-// setup the window title changer
-function setupTitleChanger():Void
-{
-	titleTimer = new FlxTimer().start(2.5, (timer) -> WindowUtil.title = titles[FlxG.random.int(0, titles.length - 1)], 0);
-	titleTimer.onComplete(titleTimer);
-}
+// the returning state.
+var returningState:FlxState = null;
+
+// really cool new function (took me forever to implement this).
+function new(returnState:FlxState):Void
+	returningState = returnState;
 
 function create():Void
 {
-	setupTitleChanger();
-
-	add(background = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE));
-
-	title = new FlxText("Oooooo you like boys\nur a boykisser".toLowerCase()).setFormat(Paths.font("Futura-CondensedExtraBold.otf"), 70, 0xFFFFC0CB, FlxTextAlign.CENTER);
-	title.screenCenter(FlxAxes.X);
-	title.y += 25;
-	title.updateHitbox();
-	add(title);
-
-	daKisser = new FlxSprite().loadGraphic(Paths.image('extra/kisser'));
-	daKisser.screenCenter();
-	daKisser.updateHitbox();
-	daKisser.y += 25;
-	add(daKisser);
+	titleTween();
+	makeSprites();
 
 	FlxTween.tween(daKisser, {x: daKisser.x}, 0.3, {ease: FlxEase.expoOut, type: FlxTween.PINGPONG, onComplete: (twn) -> daKisser.flipX = !daKisser.flipX});
 	FlxTween.num(Main.framerateCounter.alpha, 0, .6, {ease: FlxEase.expoOut, startDelay: .2}, Main.framerateCounter.set_alpha);
 }
 
-function destroy():Void
+// setup the window title changer
+function titleTween():Void
 {
-	titleTimer = FlxDestroyUtil.destroy(titleTimer);
+	titleTimer = new FlxTimer().start(2.5, (timer) -> WindowUtil.title = titles[FlxG.random.int(0, titles.length - 1)], 0);
+	titleTimer.onComplete(titleTimer);
 }
+
+// make the sprites for this cool state.
+function makeSprites():Void
+{
+	// wahahah
+	add(background = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE));
+
+	// title, lol :3
+	title = new FlxText().setFormat(Paths.font("Futura-CondensedExtraBold.otf"), 70, FlxColor.BLACK, FlxTextAlign.CENTER);
+	title.text = "Oooooo you like boys\nur a boykisser".toLowerCase();
+	title.screenCenter(FlxAxes.X);
+	title.y += 25;
+	title.updateHitbox();
+	add(title);
+
+	// da main cutie.
+	daKisser = new FlxSprite().loadGraphic(Paths.image('extra/kisser'));
+	daKisser.screenCenter();
+	daKisser.updateHitbox();
+	daKisser.y += 25;
+	add(daKisser);
+}
+
+function destroy():Void
+	titleTimer = FlxDestroyUtil.destroy(titleTimer);
 
 function update(elapsed:Float):Void
 {
-	if (!leftState && FlxG.keys.justPressed.ANY)
+	if (!gonnaLeave && FlxG.keys.justPressed.ANY)
 	{
-		leftState = true;
+		gonnaLeave = true;
+		titleTimer.cancel();
+		WindowUtil.title = "wawawawawawawawawawawa";
+
 		FlxG.sound.play(Paths.sound('cancelMenu'));
 		FlxTween.cancelTweensOf(daKisser);
 		FlxG.camera.flash(0xFFFFC0CB);
 		FlxTween.tween(FlxG.camera, {zoom: 1.8}, 6, {ease: FlxEase.expoOut});
 
-		new FlxTimer().start(5.55, _ -> FlxG.camera.fade(FlxColor.BLACK, .1, false, () -> MusicBeatState.switchState(_return ?? new MainMenuState())));
-		
+		new FlxTimer().start(5.55, _ -> FlxG.camera.fade(FlxColor.BLACK, .1, false, () -> MusicBeatState.switchState(returningState ?? new MainMenuState())));
+
 		FlxTween.tween(title, {alpha: 0}, .5, {ease: FlxEase.expoOut});
 		FlxTween.tween(background, {alpha: 0}, .75, {
 			ease: FlxEase.expoOut,
@@ -66,7 +85,6 @@ function update(elapsed:Float):Void
 				onComplete: _ ->
 				{
 					FlxTween.num(Main.framerateCounter.alpha, ClientPrefs.data.fpsCounterAlpha, .5, {ease: FlxEase.expoOut}, Main.framerateCounter.set_alpha);
-					titleTimer.cancel();
 					WindowUtil.title = '%{GAME_TITLE}'; // YEAH!
 				}
 			})

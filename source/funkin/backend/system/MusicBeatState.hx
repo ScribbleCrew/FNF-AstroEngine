@@ -5,7 +5,7 @@ import funkin.backend.Conductor;
 import flixel.addons.transition.FlxTransitionableState;
 
 @:access(funkin.backend.ShaderBackend.update)
-abstract class MusicBeatState extends FlxState
+/*abstract*/ class MusicBeatState extends FlxState//my poor abstract state
 {
 	/**
 	 * Group which contains all shader instances which
@@ -53,7 +53,6 @@ abstract class MusicBeatState extends FlxState
 	 */
 	@:isVar
 	var beatsOnSection(get, null):Float;
-
 	@:dox(hide) inline function get_beatsOnSection():Float
 	{
 		// section beats, idk...
@@ -67,7 +66,6 @@ abstract class MusicBeatState extends FlxState
 	 * @returns Controls Instance
 	 */
 	public var controls(get, never):Controls;
-
 	@:dox(hide) inline function get_controls():Controls
 		return Controls.instance;
 
@@ -89,11 +87,17 @@ abstract class MusicBeatState extends FlxState
 	@:allow(funkin.backend.base.BaseStage)
 	var stages:Array<BaseStage> = [];
 
+	/**
+	 * The custom state script name.
+	 */
 	var scriptName:String = null;
-	public function new(?scriptName:String)
+	var scriptArgs = null;
+
+	public function new(?scriptName:String, ?args:Array<Dynamic>)
 		{
 			super();
 			this.scriptName = scriptName;
+			this.scriptArgs = args;
 		}
 
 	@:dox(hide) override function create():Void
@@ -106,7 +110,7 @@ abstract class MusicBeatState extends FlxState
 		// global script stuff.
 		// gets the metadata of the current class.
 		// not MusicBeatState, it's whatever is extending from it, since this is an abstract class.
-		GlobalScript.instance.executeClassScripts();
+		GlobalScript.instance.executeClassScripts(scriptName, scriptArgs);
 		super.create();
 		GlobalScript.instance.callOnScripts('onCreatePost', []); // gwa gwa lua
 		GlobalScript.instance.callOnScripts('createPost', []);
@@ -224,11 +228,12 @@ abstract class MusicBeatState extends FlxState
 	 * Switches the state with a transition tween too.
 	 *
 	 * @param nextState The state you want to switch too.
+	 * @param scriptName The script name you want to load.
 	 */
-	public static function switchState(nextState:EitherTwo<FlxState, MusicBeatState>):Void
+	public static function switchState(?nextState:EitherTwo<FlxState, MusicBeatState>, ?scriptName:String, ?args:Array<Dynamic>):Void
 	{
 		// Make sure the next state doesn't equal null or the current state.
-		nextState ??= FlxG.state;
+		nextState ??= new MusicBeatState(scriptName,args);
 		if (nextState == FlxG.state)
 			return resetState();
 
@@ -250,7 +255,7 @@ abstract class MusicBeatState extends FlxState
 	/**
 	 *	Gets the current state using a cast with the type of `MusicBeatState`.
 	 */
-	public inline static function getState():MusicBeatState
+	inline static function getState():MusicBeatState
 		return cast(FlxG.state, MusicBeatState);
 
 	/**

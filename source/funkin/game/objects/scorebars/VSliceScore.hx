@@ -2,14 +2,13 @@ package funkin.game.objects.scorebars;
 
 class VSliceScore extends BaseScorebar
 {
-	private var scoreText:FlxText;
+	var scoreText:FlxText;
 
 	override function create() : Void
-	{	
+	{		
 		super.create();
-		
-		final healthBarPosition:Bar = game.baseUI.healthBar.bg;
-		scoreText = new FlxText(healthBarPosition.x + healthBarPosition.width - 190, healthBarPosition.y + 30, 0, '>;3c', 20);
+
+		scoreText = new FlxText(baseUI.healthBar.bg.x + baseUI.healthBar.bg.width - 190, baseUI.healthBar.bg.y + 30, 0, '>;3c', 20);
 		scoreText.scrollFactor.set();
 		scoreText.borderSize = 1.25;
 		scoreText.visible = !ClientPrefs.data.hideHud;
@@ -21,5 +20,5 @@ class VSliceScore extends BaseScorebar
 	}
 
 	override function updateScore() : Void
-		scoreText.text = 'Score: ' + flixel.util.FlxStringUtil.formatMoney(game.instance.songScore, false, true);
+		if (scoreText!=null) scoreText.text = 'Score: ' + flixel.util.FlxStringUtil.formatMoney(game.instance.songScore, false, true);
 }

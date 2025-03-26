@@ -129,6 +129,35 @@ class HScript extends Iris
 			}
 		}
 	}
+	public function safeCall(funcToRun:String, ?args:Array<Dynamic>):IrisCall
+	{
+		if (exists(funcToRun))
+			return call(funcToRun, args);
+		return null;
+	}
+
+	public function run(?args:Array<Dynamic>) : HScript{
+		try
+		{		
+			safeCall('new', args);
+			safeCall('onCreate');
+			safeCall('create');
+			GlobalScript.instance.hscriptInstances.push(this);
+
+			Logs.prefixedTrace('successfully initialized HScript interp on "$filePath"', 'Global Script', GREEN);
+		}
+		catch (error:IrisError)
+		{
+			final filePosInfos:HScriptInfos = cast {_fileName: filePath, showLine: false};
+			Iris.error(Printer.errorToString(error, false), filePosInfos);
+
+			final castInstance = cast(Iris.instances.get(filePath), HScript);
+			if (castInstance != null)
+				castInstance.destroy();
+		}
+
+		return this;
+	}
 
 	var varsToBring(default, set):Any = null;
 	

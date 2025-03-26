@@ -4,6 +4,7 @@ import funkin.backend.Conductor;
 import funkin.backend.utils.Controls;
 
 // only get needed stuff
+@:access(funkin.backend.system.MusicBeatState.getState)
 @:access(funkin.backend.system.MusicBeatState.beatsOnSection)
 @:access(funkin.backend.system.MusicBeatState._updateShaders)
 abstract class MusicBeatSubstate extends flixel.FlxSubState
@@ -152,6 +153,7 @@ abstract class MusicBeatSubstate extends flixel.FlxSubState
 		{
 			// keeps elapsed while in a substate.
 			MusicBeatState._elapsed += elapsed;
+			
 			// update shaders while in an substate.
 			MusicBeatState.getState()._updateShaders(elapsed);
 		}

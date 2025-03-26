@@ -835,12 +835,12 @@ class PlayState extends MusicBeatState
 			{
 				#if LUA_ALLOWED
 				if(file.toLowerCase().endsWith('.lua'))
-					new FunkinLua(folder + file);
+					new FunkinLua(folder + file).execute();
 				#end
 
 				#if HSCRIPT_ALLOWED
 				if(file.toLowerCase().endsWith('.hx'))
-					GlobalScript.instance.initHScriptHook(folder + file);
+					new HScript(null, folder + file).run();
 				#end
 			}
 		#end
@@ -1003,12 +1003,12 @@ class PlayState extends MusicBeatState
 			{
 				#if LUA_ALLOWED
 				if (file.toLowerCase().endsWith('.lua'))
-					new FunkinLua(folder + file);
+					new FunkinLua(folder + file).execute();
 				#end
 
 				#if HSCRIPT_ALLOWED
 				if (file.toLowerCase().endsWith('.hx'))
-					GlobalScript.instance.initHScriptHook(folder + file);
+					new HScript(null, folder + file).run();
 				#end
 			}
 		#end
@@ -1216,7 +1216,7 @@ class PlayState extends MusicBeatState
 				}
 			}
 			if (doPush)
-				new FunkinLua(luaFile);
+				new FunkinLua(luaFile).execute();
 		}
 		#end
 
@@ -1245,7 +1245,7 @@ class PlayState extends MusicBeatState
 				doPush = false;
 
 			if (doPush)
-				GlobalScript.instance.initHScriptHook(scriptFile);
+				new HScript(null, scriptFile).run();
 		}
 		#end
 	}

@@ -253,7 +253,7 @@ class LuaUtils
 			
 			default:
 				var obj:Dynamic = MusicBeatState.getVariables().get(objectName);
-				if(obj == null) obj = getVarInArray(MusicBeatState.getState(), objectName, allowMaps);
+				if(obj == null) obj = getVarInArray(@:privateAccess MusicBeatState.getState(), objectName, allowMaps);
 				return obj;
 		}
 	}
@@ -270,7 +270,7 @@ class LuaUtils
 	public static function getTargetInstance()
 	{
 		if(PlayState.instance != null) return PlayState.instance.isDead ? GameOverSubstate.instance : PlayState.instance;
-		return MusicBeatState.getState();
+		return @:privateAccess MusicBeatState.getState();
 	}
 
 	public static inline function getLowestCharacterGroup():FlxSpriteGroup
