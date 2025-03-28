@@ -13,6 +13,8 @@ import lime.utils.Assets;
 import flixel.FlxState;
 import flixel.addons.transition.FlxTransitionableState;
 
+import haxe.ds.StringMap;
+
 #if cpp
 @:headerCode('
 #include <iostream>
@@ -25,7 +27,7 @@ class LoadingState extends MusicBeatState
 	public static var loaded:Int = 0;
 	public static var loadMax:Int = 0;
 
-	static var originalBitmapKeys:Map<String, String> = [];
+	static var originalBitmapKeys:StringMap<String> = [];
 	static var requestedBitmaps:Map<String, BitmapData> = [];
 	static var mutex:Mutex;
 	static var threadPool:FixedThreadPool = null;

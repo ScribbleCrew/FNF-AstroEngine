@@ -1,5 +1,6 @@
 package funkin.backend.utils;
 
+import haxe.ds.StringMap;
 import funkin.backend.system.initialization.Volume;
 import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.FlxG;
@@ -21,10 +22,14 @@ import flixel.input.keyboard.FlxKey;
 	public var lowQuality:Bool = false;
 	public var hideHud:Bool = false;
 	public var botplayEnabled:Bool = false;
-	#if SHADERS_ALLOWED
-	public var shaders:Bool = true;
-	#end
-	public var cacheOnGPU:Bool = #if !switch false #else true #end;// GPU Caching made by Raltyro
+	#if SHADERS_ALLOWED public var shaders:Bool = true; #end
+
+	/**
+	* CPU caching, decreases memory usage by pushing some of the load to the gpu.
+	* Made by Raltyro	
+	*/
+	public var cacheOnGPU:Bool = #if !switch false #else true #end;
+
 	public var framerate:Int = 60;
 	public var cursing:Bool = true;
 	public var violence:Bool = true;
@@ -80,24 +85,54 @@ import flixel.input.keyboard.FlxKey;
 		[0xFFFF884E, 0xFFFFFAF5, 0xFF6C0000]
 	];
 
-	// Astro Engine
+	/**
+	 * Discord RPC toggle.	
+	 */
 	public var discordRPC:Bool = true;
+
+	/**
+	 * Score-bar type.	
+	 */
 	public var scoreBarType:String = 'Astro';
+
+	/**
+	 * Force player's chosen note splashes over songs.
+	 */
 	public var forceNoteSplashes:Bool = false;
+
+	/**
+	 * Show rating stats.
+	 */
 	public var showRatingStats:Bool = true;
 	
-	#if WINDOW_CUSTOMIZATION public var darkmodeEnabled:Bool = false; #end
-	#if ASTRO_WATERMARKS public var goober:Bool = false; #end
+	#if WINDOW_CUSTOMIZATION
+	/**
+	 * Window darkmode.
+	 */
+	public var darkmodeEnabled:Bool = false;
+	#end
+
+	#if ASTRO_WATERMARKS
+	/**
+	 * Orbl's furry stuff, don't mind it.
+	 */
+	public  var goober:Bool = false; 
+	#end
 
 	public var stats:Map<String, Dynamic> = ['Max Misses' => 0, 'Max Score' => 0];
-
-	public var achievementsMap:Map<String, Bool> = new Map<String, Bool>();
 }
 
 @:access(funkin.backend.client.DiscordClient._checkClientID)
 class ClientPrefs
 {
+	/**
+	* Current save data.	
+	*/
 	public static var data:SaveVariables = {};
+
+	/**
+	* Default save data.	
+	*/
 	public static var defaultData:SaveVariables = {};
 
 	// Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
@@ -121,6 +156,7 @@ class ClientPrefs
 		'debug_1' => [SEVEN],
 		'debug_2' => [EIGHT]
 	];
+
 	public static var gamepadBinds:Map<String, Array<FlxGamepadInputID>> = [
 		'note_up' => [DPAD_UP, Y],
 		'note_left' => [DPAD_LEFT, X],
@@ -135,6 +171,7 @@ class ClientPrefs
 		'pause' => [START],
 		'reset' => [BACK]
 	];
+
 	public static var defaultKeys:Map<String, Array<FlxKey>> = null;
 	public static var defaultButtons:Map<String, Array<FlxGamepadInputID>> = null;
 
@@ -151,39 +188,33 @@ class ClientPrefs
 						gamepadBinds.set(button, defaultButtons.get(button).copy());
 		}
 
+	public static function clearInvalidKeys(key:String):Void
+		{
+			var keyBind:Array<FlxKey> = keyBinds.get(key);
+			var gamepadBind:Array<FlxGamepadInputID> = gamepadBinds.get(key);
+			while(keyBind != null && keyBind.contains(NONE)) keyBind.remove(NONE);
+			while(gamepadBind != null && gamepadBind.contains(NONE)) gamepadBind.remove(NONE);
+		}
 
-		public static function clearInvalidKeys(key:String)
-			{
-				var keyBind:Array<FlxKey> = keyBinds.get(key);
-				var gamepadBind:Array<FlxGamepadInputID> = gamepadBinds.get(key);
-				while(keyBind != null && keyBind.contains(NONE)) keyBind.remove(NONE);
-				while(gamepadBind != null && gamepadBind.contains(NONE)) gamepadBind.remove(NONE);
-			}
-		
-			public static function loadDefaultKeys()
-			{
-				defaultKeys = keyBinds.copy();
-				defaultButtons = gamepadBinds.copy();
-			}
+	public static function loadDefaultKeys():Void
+	{
+		defaultKeys = keyBinds.copy();
+		defaultButtons = gamepadBinds.copy();
+	}
 
-	// public static function loadDefaultKeys()
-	// {
-	// 	defaultKeys = keyBinds.copy();
-	// 	// trace(defaultKeys);
-	// }
-
-	public static function saveSettings()
+	public static function saveSettings():Void
 	{
 		for (key in Reflect.fields(data))
 			Reflect.setField(FlxG.save.data, key, Reflect.field(data, key));
 
+		#if ACHIEVEMENTS_ALLOWED Achievements.save(); #end
 		FlxG.save.flush();
 
 		try{
 			final save:FlxSave = new FlxSave();
-			save.bind('controls_v2',
-				CoolUtil.getSavePath()); // Placing this in a separate save so that it can be manually deleted without removing your Score and stuff
+			save.bind('controls_v2', CoolUtil.savePath); // Placing this in a separate save so that it can be manually deleted without removing your Score and stuff
 			save.data.customControls = keyBinds;
+			save.data.gamepad = gamepadBinds;
 			save.flush();
 			FlxG.log.notice("Successfully saved settings.");
 		} catch(e:Dynamic)
@@ -192,15 +223,20 @@ class ClientPrefs
 
 	public static function loadPrefs()
 	{
+		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
+
 		for (key in Reflect.fields(data))
-			if (key != 'gameplaySettings' && key != 'stats' && key != 'achievementsMap' && Reflect.hasField(FlxG.save.data, key))
+			if (key != 'gameplaySettings' && Reflect.hasField(FlxG.save.data, key))
 				Reflect.setField(data, key, Reflect.field(FlxG.save.data, key));
 
 		#if (!html5 && !switch)
-		if (FlxG.save.data.framerate == null)
-			data.framerate = Std.int(FlxMath.bound(FlxG.stage.application.window.displayMode.refreshRate, 60, 240));
-		#end
+		FlxG.autoPause = ClientPrefs.data.autoPause;
 
+		if(FlxG.save.data.framerate == null) {
+			final refreshRate:Int = FlxG.stage.application.window.displayMode.refreshRate;
+			data.framerate = Std.int(FlxMath.bound(refreshRate, 60, 240));
+		}
+		#end
 		if (data.framerate > FlxG.drawFramerate)
 		{
 			FlxG.updateFramerate = data.framerate;
@@ -226,13 +262,6 @@ class ClientPrefs
 				data.stats.set(name, value);
 		}
 
-		if (FlxG.save.data.achievementsMap != null)
-		{
-			final savedMap:Map<String, Bool> = FlxG.save.data.achievementsMap;
-			for (name => value in savedMap)
-				data.achievementsMap.set(name, value);
-		}
-
 		// flixel automatically saves your volume!
 		if (FlxG.save.data.volume != null)
 			FlxG.sound.volume = FlxG.save.data.volume;
@@ -241,13 +270,23 @@ class ClientPrefs
 
 		#if DISCORD_ALLOWED DiscordClient._checkClientID();#end
 
-		final save:FlxSave = new FlxSave();
-		save.bind('controls_v2', CoolUtil.getSavePath());
-		if (save != null && save.data.customControls != null)
+		final controlsSave:FlxSave = new FlxSave();
+		controlsSave.bind('controls_v2', CoolUtil.savePath);
+		if(controlsSave != null)
 		{
-			var loadedControls:Map<String, Array<FlxKey>> = save.data.customControls;
-			for (control => keys in loadedControls)
-				keyBinds.set(control, keys);
+			if(controlsSave.data.keyboard != null)
+			{
+				final loadedControls:Map<String, Array<FlxKey>> = controlsSave.data.keyboard;
+				for (control => keys in loadedControls)
+					if(keyBinds.exists(control)) keyBinds.set(control, keys);
+			}
+			if(controlsSave.data.gamepad != null)
+			{
+				final loadedControls:Map<String, Array<FlxGamepadInputID>> = controlsSave.data.gamepad;// haxe being weird
+				for (control => keys in loadedControls)
+					if(gamepadBinds.exists(control)) gamepadBinds.set(control, keys);
+			}
+			reloadVolumeKeys();
 		}
 
 		reloadVolumeKeys();
@@ -262,9 +301,9 @@ class ClientPrefs
 			saveSettings();
 			is = true;
 		}
-		catch (e) {}
+		catch (error:Dynamic) {}
 		//Logs.defaultTrace('e');
-		Logs.prefixedTrace('Loaded ClientPrefs : ${Std.string(is).toUpperCase()}','User Preferences', GREEN);
+		Logs.prefixedTrace('Loaded ClientPrefs : ${Std.string(is)}','User Preferences', GREEN);
 		return;
 	}
 
@@ -275,39 +314,19 @@ class ClientPrefs
 		return (data.gameplaySettings.exists(name) ? data.gameplaySettings.get(name) : defaultValue);
 	}
 
-	public static function reloadVolumeKeys()
+	public static function reloadVolumeKeys():Void
 	{
-		Volume.muteKeys = copyKey(keyBinds.get('volume_mute'));
-		Volume.volumeDownKeys = copyKey(keyBinds.get('volume_down'));
-		Volume.volumeUpKeys = copyKey(keyBinds.get('volume_up'));
+		Volume.muteKeys = keyBinds.get('volume_mute').copy();
+		Volume.volumeDownKeys = keyBinds.get('volume_down').copy();
+		Volume.volumeUpKeys = keyBinds.get('volume_up').copy();
 
 		toggleVolumeKeys(true);
 	}
 
-	public static function toggleVolumeKeys(?turnOn:Bool = true)
+	public static function toggleVolumeKeys(?toggle:Bool = true) : Void
 	{
-		final emptyArray = [];
-		FlxG.sound.muteKeys = turnOn ? Volume.muteKeys : emptyArray;
-		FlxG.sound.volumeDownKeys = turnOn ? Volume.volumeDownKeys : emptyArray;
-		FlxG.sound.volumeUpKeys = turnOn ? Volume.volumeUpKeys : emptyArray;
-	}
-
-	public static function copyKey(arrayToCopy:Array<FlxKey>):Array<FlxKey>
-	{
-		var copiedArray:Array<FlxKey> = arrayToCopy.copy();
-		var i:Int = 0;
-		var len:Int = copiedArray.length;
-
-		while (i < len)
-		{
-			if (copiedArray[i] == NONE)
-			{
-				copiedArray.remove(NONE);
-				--i;
-			}
-			i++;
-			len = copiedArray.length;
-		}
-		return copiedArray;
+		FlxG.sound.muteKeys = toggle ? Volume.muteKeys : [];
+		FlxG.sound.volumeDownKeys = toggle ? Volume.volumeDownKeys : [];
+		FlxG.sound.volumeUpKeys = toggle ? Volume.volumeUpKeys : [];
 	}
 }

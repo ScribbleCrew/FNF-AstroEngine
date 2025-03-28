@@ -28,6 +28,14 @@ class CoolUtil
 		return (m / snap);
 	}
 
+	public static inline function isNaN(v:Dynamic)
+		{
+			return v is Float && Math.isNaN((v : Float));
+		}
+	
+		public static inline function getDefault<T>(v:Null<T>, defaultValue:T):T
+			return (v == null || isNaN(v)) ? defaultValue : v;
+
 	public static function floorDecimal(value:Float, decimals:Int):Float
 	{
 		if (decimals < 1)
@@ -170,12 +178,10 @@ class CoolUtil
 		since newer flixel versions are being enforced anyways.
 		@crowplexus
 	**/
+	public static var savePath(get,default):String;
 	@:access(flixel.util.FlxSave.validate)
-	inline public static function getSavePath():String
-	{
-		final company:String = FlxG.stage.application.meta.get('company');
-		return '${company}/${FlxSave.validate(FlxG.stage.application.meta.get('file'))}';
-	}
+	inline public static function get_savePath():String
+		return '${FlxG.stage.application.meta.get('company')}/${FlxSave.validate(FlxG.stage.application.meta.get('file'))}';
 
 	public static function setTextBorderFromString(text:FlxText, border:String)
 	{

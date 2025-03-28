@@ -87,18 +87,27 @@ import flixel.addons.transition.FlxTransitionableState;
 	@:allow(funkin.backend.base.BaseStage)
 	var stages:Array<BaseStage> = [];
 
+	#if SOFTCODED_STATES
 	/**
-	 * The custom state script name.
+	 * Softcoded state script name.
 	 */
 	var scriptName:String = null;
-	var scriptArgs = null;
 
-	public function new(?scriptName:String, ?args:Array<Dynamic>)
-		{
-			super();
-			this.scriptName = scriptName;
-			this.scriptArgs = args;
-		}
+	/**
+	* Softcoded state script args.	
+	*/
+	var scriptArgs = null;
+	#end
+
+	public function new(?scriptName:String, ?args:Array<Dynamic>):Void
+	{
+		super();
+
+		#if SOFTCODED_STATES
+		this.scriptName = scriptName;
+		this.scriptArgs = args;
+		#end
+	}
 
 	@:dox(hide) override function create():Void
 	{
@@ -107,6 +116,7 @@ import flixel.addons.transition.FlxTransitionableState;
 		_shaderGroup = null;
 		_elapsed = 0;
 
+		#if SOFTCODED_STATES
 		// global script stuff.
 		// gets the metadata of the current class.
 		// not MusicBeatState, it's whatever is extending from it, since this is an abstract class.
@@ -114,6 +124,7 @@ import flixel.addons.transition.FlxTransitionableState;
 		super.create();
 		GlobalScript.instance.callOnScripts('onCreatePost', []); // gwa gwa lua
 		GlobalScript.instance.callOnScripts('createPost', []);
+		#end
 
 		if (!_isCameraLoaded)
 			setupCamera();

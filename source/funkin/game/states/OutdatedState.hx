@@ -1,13 +1,12 @@
 package funkin.game.states;
+
 #if CHECK_FOR_UPDATES
 import funkin.backend.data.EngineData;
 import funkin.backend.CoolUtil;
 
 class OutdatedState extends MusicBeatState
 {
-	public static var leftState:Bool = false;
-
-	var warnText:FlxText;
+	public static var _left:Bool = false;
 
 	final text:String = "Sup bro, looks like you're running an   \n
 			outdated version of Astro Engine ["
@@ -20,6 +19,9 @@ class OutdatedState extends MusicBeatState
 			\n
 			Thank you for using the Engine!\n>;3c";
 
+			
+	var warnText:FlxText;
+	
 	override function create():Void
 	{
 		#if desktop
@@ -37,24 +39,25 @@ class OutdatedState extends MusicBeatState
 		add(warnText);
 	}
 
-	override function update(elapsed:Float)
+	override function update(elapsed:Float):Void
 	{
-		if (!leftState)
+		if (!_left)
 		{
 			if (controls.ACCEPT)
 			{
-				leftState = true;
+				_left = true;
 				CoolUtil.browserLoad('${EngineData.REPOSITORY}/releases');
 			}
 			else if (controls.BACK)
-				leftState = true;
+				_left = true;
 
-			if (leftState)
+			if (_left)
 			{
 				FlxG.sound.play(Paths.sound('cancelMenu'));
-				FlxTween.tween(warnText, {alpha: 0}, 1, {onComplete: (twn) -> MusicBeatState.switchState(new funkin.game.states.MainMenuState())});
+				FlxTween.tween(warnText, {alpha: 0}, 1, {onComplete: (twn:FlxTween) -> MusicBeatState.switchState(new funkin.game.states.MainMenuState())});
 			}
 		}
+
 		super.update(elapsed);
 	}
 }

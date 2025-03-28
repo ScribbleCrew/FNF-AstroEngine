@@ -246,7 +246,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		FlxG.cameras.add(camUI, false);
 
 		chartEditorSave = new FlxSave();
-		chartEditorSave.bind('chart_editor_data', CoolUtil.getSavePath());
+		chartEditorSave.bind('chart_editor_data', CoolUtil.savePath);
 
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.antialiasing = ClientPrefs.data.antialiasing;

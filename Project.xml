@@ -51,6 +51,8 @@
 
 	<!-- Custom FPS allowed -->
 	<define name="CUSTOM_FPS_ALLOWED"/>
+	<define name="TITLE_SCREEN_XML"/>
+	<define name="SOFTCODED_STATES"/>
 
 	<!-- Multi-threaded loading -->
 	<define name="MULTITHREADED_LOADING"/>

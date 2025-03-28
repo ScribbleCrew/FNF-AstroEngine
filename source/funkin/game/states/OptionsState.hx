@@ -1,28 +1,8 @@
 package funkin.game.states;
 
-import flash.text.TextField;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxMath;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
-import lime.utils.Assets;
-import flixel.FlxSubState;
-import flash.text.TextField;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.util.FlxSave;
-import haxe.Json;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
-import flixel.util.FlxTimer;
-import flixel.input.keyboard.FlxKey;
-import flixel.graphics.FlxGraphic;
-import funkin.backend.utils.Controls;
-import funkin.game.options.*;
-import funkin.backend.system.MusicBeatSubstate;
 import funkin.backend.system.MusicBeatState;
 
 class OptionsState extends MusicBeatState
@@ -34,7 +14,6 @@ class OptionsState extends MusicBeatState
 		'Controls',
 		'Graphics',
 		'Gameplay',
-		'Stats',
 		'Visuals and UI',
 		'Adjust Delay and Combo'
 	];
@@ -56,8 +35,6 @@ class OptionsState extends MusicBeatState
 				openSubState(new VisualsUISubState());
 			case 'Gameplay':
 				openSubState(new GameplaySettingsSubState());
-			case 'Stats':
-				openSubState(new StatsSubState());
 			case 'Adjust Delay and Combo':
 				LoadingState.loadAndSwitchState(new NoteOffsetState());
 		}
@@ -124,7 +101,7 @@ class OptionsState extends MusicBeatState
 		#end
 	}
 
-	override function update(elapsed:Float)
+	@:dox(hide) override function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
 

@@ -26,7 +26,7 @@ class Init extends flixel.FlxState
 		Paths.clearUnusedMemory();
 		WindowUtil.title = '';
 
-		FlxG.save.bind('funkin', funkin.backend.CoolUtil.getSavePath());
+		FlxG.save.bind('funkin', funkin.backend.CoolUtil.savePath);
 
 		ClientPrefs.loadDefaultKeys();
 

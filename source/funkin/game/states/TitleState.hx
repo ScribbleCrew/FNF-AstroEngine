@@ -7,24 +7,25 @@ import flixel.graphics.frames.FlxFrame;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup;
 
-private typedef TitleData =
+using funkin.backend.CoolUtil;
+
+typedef TitleData =
 {
-	titlex:Float,
-	titley:Float,
-	startx:Float,
-	starty:Float,
-	gfx:Float,
-	gfy:Float,
+	logoPosition:FlxPoint,
+	startTextPosition:FlxPoint,
+	gfPosition:FlxPoint,
 	backgroundSprite:String,
 	bpm:Int
 }
+
 // needs rewrite
+
 @:access(flixel.animation.FlxAnimationController)
 class TitleState extends MusicBeatState
 {
 	/**
-	* Has title state been initialized.
-	*/
+	 * Has title state been initialized.
+	 */
 	public static var initialized:Bool = false;
 
 	#if CHECK_FOR_UPDATES
@@ -80,9 +81,7 @@ class TitleState extends MusicBeatState
 		}
 		#end
 
-		//titleConfig = tjson.TJSON.parse(Paths.getTextFromFile('data/config/titleConfig.json'));
 		loadXML();
-
 		if (!initialized)
 			persistentUpdate = persistentDraw = true;
 
@@ -111,43 +110,59 @@ class TitleState extends MusicBeatState
 			Logs.prefixedTrace('Max Score: $maxS - Max Misses: $mostM', 'Info', ORANGE);
 	}
 
-	function loadXML() : Void{
+	function loadXML():Void
+	{
+		titleConfig = {
+			logoPosition: FlxPoint.get(-150, -100),
+			startTextPosition: FlxPoint.get(100, 576),
+			gfPosition: FlxPoint.get(512, 40),
+			bpm: 102,
+			backgroundSprite: ""
+		};
+		
+		#if TITLE_SCREEN_XML
 		try
+		{
+			final xml = new Access(Xml.parse(Paths.getTextFromFile('data/config/titlescreen.xml')).firstElement());
+			if (xml != null)
 			{
-				final xml = new Access(Xml.parse(Paths.getTextFromFile('data/config/titlescreen.xml')).firstElement());
-				if (xml != null)
+				// title stuff
+				final logoPos = FlxPoint.get(-150, -100);
+				final node:Access = xml.node.logo;
+				if (node.name != null)
 				{
-					// title stuff
-					final titleX:Float = xml.has.titlex ? Std.parseFloat(xml.node.titlex.att.value) : -150;
-					final titleY:Float = xml.has.titley ? Std.parseFloat(xml.node.titley.att.value) : -100;
-					
-					// start stuff
-					final startX:Float = xml.has.startx ? Std.parseFloat(xml.node.startx.att.value) :100;
-					final startY:Float = xml.has.starty ? Std.parseFloat(xml.node.starty.att.value) :576;
-
-					// girlfriend stuff
-					final gfPos:FlxPoint = new FlxPoint();
-					gfPos.x = xml.has.gfx ? Std.parseFloat(xml.node.gfx.att.value) :512;
-					gfPos.y = xml.has.gfy ? Std.parseFloat(xml.node.gfy.att.value) :40;
-					
-					final bpm:Int = xml.has.bpm ? Std.parseInt(xml.att.bpm) : 102;
-					final backgroundSprite:String = xml.has.backgroundSprite ? xml.att.backgroundSprite : "";
-					
-					titleConfig = {
-						titlex: titleX,
-						titley: titleY,
-						startx: startX,
-						starty: startY,
-						gfx: gfPos.x,
-						gfy: gfPos.y,
-						backgroundSprite: backgroundSprite,
-						bpm: bpm
-					};
+					logoPos.x = Std.parseFloat(node.has.x ? node.att.x : null).getDefault(-150);
+					logoPos.y = Std.parseFloat(node.has.y ? node.att.y : null).getDefault(-100);
 				}
-			}
-			catch (e:Dynamic)
-				Logs.prefixedTrace(e, 'Credits State', RED);
+				titleConfig.logoPosition = logoPos;
 
+				// start stuff
+				final startTextPos = FlxPoint.get(100, 576);
+				final node:Access = xml.node.startText;
+				if (node.name != null)
+				{
+					startTextPos.x = Std.parseFloat(node.has.x ? node.att.x : null).getDefault(100);
+					startTextPos.y = Std.parseFloat(node.has.y ? node.att.y : null).getDefault(576);
+				}
+				titleConfig.startTextPosition = startTextPos;
+
+				// girlfriend stuff
+				final gfPos = FlxPoint.get(512, 40);
+				final node:Access = xml.node.gf;
+				if (node.name != null)
+				{
+					gfPos.x = Std.parseFloat(node.has.x ? node.att.x : null).getDefault(512);
+					gfPos.y = Std.parseFloat(node.has.y ? node.att.y : null).getDefault(40);
+				}
+				titleConfig.gfPosition = gfPos;
+
+				// other stuff
+				titleConfig.bpm = Std.parseInt(xml.has.bpm ? xml.att.bpm : null).getDefault(102);
+				titleConfig.backgroundSprite = xml.has.backgroundSprite ? xml.att.backgroundSprite : "";
+			}
+		} catch (error:Dynamic)
+			Logs.prefixedTrace(error, 'Credits State', RED);
+			#end
 	}
 
 	var introGroup:TitleIntroGroup;
@@ -173,7 +188,7 @@ class TitleState extends MusicBeatState
 			bg.makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		add(bg);
 
-		logoBl = new FlxSprite(titleConfig.titlex, titleConfig.titley);
+		logoBl = new FlxSprite(titleConfig.logoPosition.x, titleConfig.logoPosition.y);
 		logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
 		logoBl.antialiasing = ClientPrefs.data.antialiasing;
 		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24, false);
@@ -182,7 +197,7 @@ class TitleState extends MusicBeatState
 
 		swagShader = new ColorSwap();
 
-		gfDance = new FlxSprite(titleConfig.gfx, titleConfig.gfy);
+		gfDance = new FlxSprite(titleConfig.gfPosition.x, titleConfig.gfPosition.y);
 		gfDance.frames = Paths.getSparrowAtlas('gfDanceTitle');
 		gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
 		gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
@@ -193,7 +208,7 @@ class TitleState extends MusicBeatState
 		add(logoBl);
 		logoBl.shader = swagShader.shader;
 
-		titleText = new FlxSprite((titleConfig.startx + 30), titleConfig.starty);
+		titleText = new FlxSprite((titleConfig.startTextPosition.x + 30), titleConfig.startTextPosition.y);
 		titleText.frames = Paths.getSparrowAtlas('titleEnter');
 		var animFrames:Array<FlxFrame> = [];
 		@:privateAccess {
@@ -231,13 +246,9 @@ class TitleState extends MusicBeatState
 	}
 
 	var introTextList(get, never):Array<Array<String>>;
-	@:dox(hide) @:noCompletion private function get_introTextList():Array<Array<String>>
+	@:dox(hide) @:noCompletion function get_introTextList():Array<Array<String>>
 	{
-		final firstArray:Array<String> = #if MODS_ALLOWED 
-		Mods.mergeAllTextsNamed('data/introText.txt') 
-		#else 
-		Assets.getText(Paths.txt('introText')).split('\n') 
-		#end;
+		final firstArray:Array<String> = #if MODS_ALLOWED Mods.mergeAllTextsNamed('data/introText.txt') #else Assets.getText(Paths.txt('introText')).split('\n') #end;
 		return [for (i in firstArray) i.split('--')];
 	}
 
@@ -258,7 +269,7 @@ class TitleState extends MusicBeatState
 
 		#if ASTRO_WATERMARKS
 		if (FlxG.keys.justPressed.SEVEN)
-			MusicBeatState.switchState("VeryFuniState", [new TitleState()]);//YES, FINALLY IT WORKS!!?!?!?!?
+			MusicBeatState.switchState("VeryFuniState", [new TitleState()]); // YES, FINALLY IT WORKS!!?!?!?!?
 		#end
 
 		#if mobile
@@ -318,8 +329,9 @@ class TitleState extends MusicBeatState
 					#if CHECK_FOR_UPDATES
 					if (_mustUpdate)
 						MusicBeatState.switchState(new funkin.game.states.OutdatedState());
-					else #end
-						MusicBeatState.switchState(new funkin.game.states.MainMenuState());
+					else
+					#end
+					MusicBeatState.switchState(new funkin.game.states.MainMenuState());
 
 					closedState = true;
 				});
@@ -340,12 +352,13 @@ class TitleState extends MusicBeatState
 		super.update(elapsed);
 	}
 
-
 	/**
-	* Basically curBeat but won't be skipped if you hold the tab or resize the screen	
-	*/
+	 * Basically curBeat but won't be skipped if you hold the tab or resize the screen	
+	 */
 	private var sickBeats:Int = 0;
+
 	public static var closedState:Bool = false;
+
 	override function beatHit()
 	{
 		super.beatHit();
@@ -404,6 +417,7 @@ class TitleState extends MusicBeatState
 	}
 
 	var skippedIntro:Bool = false;
+
 	function skipIntro():Void
 	{
 		if (!skippedIntro)

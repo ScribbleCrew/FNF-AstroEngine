@@ -1,6 +1,8 @@
 package funkin.game.states;
 
 import funkin.backend.system.initialization.Logs;
+import haxe.ds.StringMap;
+
 #if flixel
 import flixel.util.*;
 import flixel.input.keyboard.FlxKey;
@@ -617,11 +619,6 @@ class PlayState extends MusicBeatState
 	 * less laggy controls.
 	 */
 	private var keysArray:Array<String>;
-
-	/**
-	 * The precache list.
-	 */
-	public var precacheList:Map<String, String> = new Map<String, String>();
 
 	/**
 	 * Stores the last judgement object.
@@ -1343,8 +1340,6 @@ class PlayState extends MusicBeatState
 		if (dialogueFile.dialogue.length > 0)
 		{
 			inCutscene = true;
-			precacheList.set('dialogue', 'sound');
-			precacheList.set('dialogueClose', 'sound');
 			astroDialogue = new DialogueBoxBubbly(dialogueFile, song);
 			astroDialogue.scrollFactor.set();
 			if (endingSong)
