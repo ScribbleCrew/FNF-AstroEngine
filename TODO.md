@@ -1,7 +1,9 @@
 # ```TODO```
 
+* fix loading state stringmap by init StringMap();
+* .put on all flxpos
 * Rewrite TitleState
-* checkbox colors maybe turn into json. // (background, color2, color3) idk names.
+* checkbox colors maybe turn into xml. // (background, color2, color3) idk names.
 * Document PlayState & Paths (again).
 * LATER: Rewrite FlxG.mouse w controllers support (giant cursor for controllers).
 * Rewrite all psych stuff.
