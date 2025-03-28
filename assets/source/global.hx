@@ -1,3 +1,3 @@
 // RAN EVERY TIME THE STATE CHANGES.
 // LIKE EVERY TIME!!!
-function onCreate() {}
+function create():Void {}
