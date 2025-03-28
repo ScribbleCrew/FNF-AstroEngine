@@ -27,7 +27,7 @@ class LoadingState extends MusicBeatState
 	public static var loaded:Int = 0;
 	public static var loadMax:Int = 0;
 
-	static var originalBitmapKeys:StringMap<String> = [];
+	static var originalBitmapKeys:haxe.ds.StringMap<String> = [];
 	static var requestedBitmaps:Map<String, BitmapData> = [];
 	static var mutex:Mutex;
 	static var threadPool:FixedThreadPool = null;
