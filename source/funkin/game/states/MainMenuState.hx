@@ -152,7 +152,7 @@ class MainMenuState extends MusicBeatState
 		#end
 
 		// Editor Debug Keys
-		debugKeys = ClientPrefs.copyKey(ClientPrefs.keyBinds.get('debug_1'));
+		debugKeys = ClientPrefs.keyBinds.get('debug_1').copy();
 
 		// Camera
 		camAchievement = new FlxCamera();

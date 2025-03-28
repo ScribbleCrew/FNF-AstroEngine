@@ -669,8 +669,8 @@ class PlayState extends MusicBeatState
 		// Lua
 		instance = this;
 		PauseSubState.songName = null; // Reset to default
-		debugKeysChart = ClientPrefs.copyKey(ClientPrefs.keyBinds.get('debug_1'));
-		debugKeysCharacter = ClientPrefs.copyKey(ClientPrefs.keyBinds.get('debug_2'));
+		debugKeysChart = ClientPrefs.keyBinds.get('debug_1').copy();
+		debugKeysCharacter = ClientPrefs.keyBinds.get('debug_2').copy();
 		playbackRate = ClientPrefs.getGameplaySetting('songspeed', 1);
 		keysArray = ['note_left', 'note_down', 'note_up', 'note_right'];
 
