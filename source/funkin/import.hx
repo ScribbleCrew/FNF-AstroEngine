@@ -124,6 +124,7 @@ import hxdiscord_rpc.Types;
 
 // Haxe
 import haxe.*;
+using haxe.std.ArrayTools;
 
 // Lime
 import lime.app.Application;

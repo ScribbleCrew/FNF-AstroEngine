@@ -4,23 +4,18 @@ import funkin.game.objects.scorebars.DefaultHUD;
 
 class BaseScorebar extends FlxBasic
 {
-	private var game(get, never):Dynamic;
-	private var baseUI:DefaultHUD = null;
-	private var scoreUpdate(default, set):Void->Void;
+	private var game(get, never):PlayState;
+	@:dox(hide) inline function get_game():PlayState
+		return PlayState.instance;
 
-	@:noCompletion private inline function set_scoreUpdate(erm:Void->Void):Void->Void
+	private var scoreUpdate(default, set):Void->Void;
+	@:dox(hide) inline function set_scoreUpdate(erm:Void->Void):Void->Void
 	{
-		game.scoreUpdate = erm;
 		erm();
-		return erm;
+		return game.scoreUpdate = erm;
 	}
 
-	private var defaultPos(get, never):FlxPoint;
-
-	@:noCompletion private inline function get_defaultPos():FlxPoint
-		return game.baseUI.healthBar.getPosition();
-
-	public function new()
+	public function new():Void
 	{
 		if (this.game == null)
 			destroy();
@@ -29,33 +24,26 @@ class BaseScorebar extends FlxBasic
 			FlxG.log.add('Scorebar Created');
 
 			super();
-			baseUI = game.baseUI = new DefaultHUD();
 			create();
 			game.ui = this;
 			scoreUpdate = updateScore;
-
+			createPost();
 			PlayState.instance.uiGroup.forEach((spr) -> spr.alpha = 0);
 		}
 	}
 
-	public function create()
-	{
-	}
+	public function create() {}
+	public function createPost() {}
+	public function updateScore() {}
 
-	public function updateScore()
-	{
-	}
 
-	private inline function get_game():Dynamic
-		return cast FlxG.state;
-
-	// uhh owo?
+	// modified add, remove and insert functions.
 	function add(object:FlxBasic):Void
-		game.uiGroup.add(object);
+		game.uiGroup.add(untyped object);
 
 	function remove(object:FlxBasic):Void
-		game.uiGroup.remove(object);
+		game.uiGroup.remove(untyped object);
 
 	function insert(position:Int, object:FlxBasic):Void
-		game.uiGroup.insert(position, object);
+		game.uiGroup.insert(position, untyped object);
 }

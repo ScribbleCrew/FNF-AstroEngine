@@ -1,16 +1,17 @@
 package funkin.game.objects.scorebars;
 
-class PsychScore extends BaseScorebar
+using funkin.backend.utils.StringUtils;
+class PsychScore extends DefaultHUD
 {
 	private var scoreText:FlxText;
 
-	override function create()
+	override function create():Void
 	{
 		super.create();
 
 		//game.baseUI.defaultFont = Constants.DEFAULT_FONT;
 
-		scoreText = new FlxText(0, defaultPos.y + 40, FlxG.width, "", 20);
+		scoreText = new FlxText(0, healthBar.y + 40, FlxG.width, "", 20);
 		scoreText.scrollFactor.set();
 		scoreText.borderSize = 1.25;
 		scoreText.visible = !ClientPrefs.data.hideHud;
@@ -19,15 +20,6 @@ class PsychScore extends BaseScorebar
 		add(scoreText);
 	}
 
-	override function updateScore()
-	{
-		scoreText.text = 'Score: '
-			+ PlayState.instance.songScore
-			+ ' - Misses: '
-			+ PlayState.instance.songMisses
-			+ ' - Rating: '
-			+ PlayState.instance.ratingName
-			+
-			(PlayState.instance.ratingName != '?' ? ' (${Highscore.floorDecimal(PlayState.instance.ratingPercent * 100, 2)}%) - ${PlayState.instance.ratingFC}' : '');
-	}
+	override function updateScore():Void
+		scoreText.text = 'Score: {1} | Misses: {2} | Rating: {3}'.replaceAll([PlayState.instance.songScore, PlayState.instance.songMisses, PlayState.instance.formattedRating]);
 }

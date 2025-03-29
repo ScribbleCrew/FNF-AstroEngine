@@ -244,12 +244,6 @@ class PlayState extends MusicBeatState
 		}
 
 	/**
-	 * The default base ui.
-	 * Isn't used for lua.
-	 */
-	public var baseUI:DefaultHUD = null;
-
-	/**
 	 * The current ui.
 	 * Used for lua.
 	 */
@@ -1034,7 +1028,7 @@ class PlayState extends MusicBeatState
 
 		resetRPC();
 
-		//#if DISCORD_ALLOWED DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character); #end
+		//#if DISCORD_ALLOWED DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", ui.iconP2.character); #end
 		#if desktop WindowUtil.title = ('%{GAME_TITLE} - $detailsText'); #end
 
 		stageAccess(function(stage:BaseStage) stage.createPost());
@@ -1452,15 +1446,15 @@ class PlayState extends MusicBeatState
 						FlxG.sound.play(Paths.sound('intro3' + introSoundsSuffix), 0.6);
 						tick = THREE;
 					case 1:
-						countdownReady = baseUI.createCountdownSprite(introAlts[0], antialias);
+						countdownReady = ui.createCountdownSprite(introAlts[0], antialias);
 						FlxG.sound.play(Paths.sound('intro2' + introSoundsSuffix), 0.6);
 						tick = TWO;
 					case 2:
-						countdownSet = baseUI.createCountdownSprite(introAlts[1], antialias);
+						countdownSet = ui.createCountdownSprite(introAlts[1], antialias);
 						FlxG.sound.play(Paths.sound('intro1' + introSoundsSuffix), 0.6);
 						tick = ONE;
 					case 3:
-						countdownGo = baseUI.createCountdownSprite(introAlts[2], antialias);
+						countdownGo = ui.createCountdownSprite(introAlts[2], antialias);
 						FlxG.sound.play(Paths.sound('introGo' + introSoundsSuffix), 0.6);
 						tick = GO;
 					case 4:
@@ -1631,7 +1625,7 @@ class PlayState extends MusicBeatState
 
 		// Song duration in a float, useful for the time left feature
 		songLength = FlxG.sound.music.length;
-		baseUI.startSong();
+		ui.startSong();
 
 		uiGroup.forEach((spr:FlxSprite) -> FlxTween.tween(spr, {alpha: 1}, 0.5, {ease: FlxEase.circOut}));
 		uiBackgroundGroup.forEach(function(spr:FlxSprite) FlxTween.tween(spr, {alpha: 0.6}, 0.5, {ease: FlxEase.circOut}));
@@ -1641,7 +1635,7 @@ class PlayState extends MusicBeatState
 
 		
 		#if DISCORD_ALLOWED
-		if(autoUpdateRPC) DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character, true, songLength);
+		if(autoUpdateRPC) DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", ui.iconP2.character, true, songLength);
 		#end
 		#if desktop WindowUtil.title = ('%{GAME_TITLE} - $detailsText - ${SONG.song} (${storyDifficultyText})'); #end
 	}
@@ -2024,14 +2018,14 @@ class PlayState extends MusicBeatState
 		if (!paused)
 		{
 			#if DISCORD_ALLOWED
-			if (health > 0 && autoUpdateRPC) DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
+			if (health > 0 && autoUpdateRPC) DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", ui.iconP2.character);
 			#end
 
 			#if VIDEOS_ALLOWED
 			if (videoCutscene != null) videoCutscene.pause();
 			#end
 
-			#if DISCORD_ALLOWED DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character); #end
+			#if DISCORD_ALLOWED DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", ui.iconP2.character); #end
 			#if desktop WindowUtil.title = ('%{GAME_TITLE} - Paused - ${SONG.song}'); #end
 		}
 		#end
@@ -2047,9 +2041,9 @@ class PlayState extends MusicBeatState
 		if(!autoUpdateRPC) return;
 
 		if (showTime)
-			DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character, true, songLength - Conductor.songPosition - ClientPrefs.data.noteOffset);
+			DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", ui.iconP2.character, true, songLength - Conductor.songPosition - ClientPrefs.data.noteOffset);
 		else
-			DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character);
+			DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", ui.iconP2.character);
 		#end
 	}
 
@@ -2124,8 +2118,8 @@ class PlayState extends MusicBeatState
 		if (health > 2)
 			health = 2;
 
-		if(baseUI != null)
-			baseUI.update(elapsed);
+		if(ui != null)
+			ui.update(elapsed);
 
 		if (FlxG.keys.anyJustPressed(debugKeysCharacter) && !endingSong && !inCutscene)
 			openCharacterEditor();
@@ -2160,7 +2154,7 @@ class PlayState extends MusicBeatState
 						secondsTotal = 0;
 
 					if (ClientPrefs.data.timeBarType != 'Song Name')
-						baseUI.timeTxt.text = flixel.util.FlxStringUtil.formatTime(secondsTotal, false);
+						ui.timeTxt.text = flixel.util.FlxStringUtil.formatTime(secondsTotal, false);
 				}
 			}
 
@@ -2323,7 +2317,7 @@ class PlayState extends MusicBeatState
 		}
 		openSubState(new PauseSubState());
 
-		#if DISCORD_ALLOWED DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character); #end
+		#if DISCORD_ALLOWED DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", ui.iconP2.character); #end
 		#if desktop WindowUtil.title = ('%{GAME_TITLE} - Paused - ${SONG.song}'); #end
 	}
 
@@ -2410,7 +2404,7 @@ class PlayState extends MusicBeatState
 					openSubState(new GameOverSubstate(boyfriend));
 				}
 
-				#if DISCORD_ALLOWED DiscordClient.changePresence("Game Over - " + detailsText, SONG.song + " (" + storyDifficultyText + ")", baseUI.iconP2.character); #end
+				#if DISCORD_ALLOWED DiscordClient.changePresence("Game Over - " + detailsText, SONG.song + " (" + storyDifficultyText + ")", ui.iconP2.character); #end
 				#if desktop WindowUtil.title = ('%{GAME_TITLE} - Game Over - ${detailsText} - ${SONG.song}');#end
 
 				return isDead = true;
@@ -2629,7 +2623,7 @@ class PlayState extends MusicBeatState
 							boyfriend.alpha = 0.00001;
 							boyfriend = boyfriendMap.get(value2);
 							boyfriend.alpha = lastAlpha;
-							baseUI.iconP1.changeIcon(boyfriend.healthIcon);
+							ui.iconP1.changeIcon(boyfriend.healthIcon);
 						}
 						GlobalScript.instance.setOnScripts('boyfriendName', boyfriend.curCharacter);
 
@@ -2657,7 +2651,7 @@ class PlayState extends MusicBeatState
 								gf.visible = false;
 							}
 							dad.alpha = lastAlpha;
-							baseUI.iconP2.changeIcon(dad.healthIcon);
+							ui.iconP2.changeIcon(dad.healthIcon);
 						}
 						GlobalScript.instance.setOnScripts('dadName', dad.curCharacter);
 
@@ -2679,7 +2673,7 @@ class PlayState extends MusicBeatState
 							GlobalScript.instance.setOnScripts('gfName', gf.curCharacter);
 						}
 				}
-				baseUI.reloadHealthBarColors();
+				ui.reloadHealthBarColors();
 
 			case 'Change Scroll Speed':
 				if (songSpeedType != "constant")
@@ -2872,8 +2866,8 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		baseUI.timeBar.visible = false;
-		baseUI.timeTxt.visible = false;
+		ui.timeBar.visible = false;
+		ui.timeTxt.visible = false;
 		canPause = false;
 		endingSong = true;
 		camZooming = false;
@@ -3798,7 +3792,7 @@ class PlayState extends MusicBeatState
 			notes.sort(FlxSort.byY, ClientPrefs.data.downScroll ? FlxSort.ASCENDING : FlxSort.DESCENDING);
 		}
 
-		baseUI.beatHit();
+		ui.beatHit();
 
 		characterBopper(curBeat);
 
@@ -3877,6 +3871,17 @@ class PlayState extends MusicBeatState
 	public var ratingName:String = '?';
 	public var ratingPercent:Float;
 	public var ratingFC:String;
+
+	public var formattedRating(get,never):String;
+	@:dox(hide) function get_formattedRating():String{
+		var str:String = ratingName;
+		if(totalPlayed != 0)
+		{
+			final percent:Float = CoolUtil.floorDecimal(PlayState.instance.ratingPercent * 100, 2);
+			str += ' (${percent}%) - ' + PlayState.instance.ratingFC;
+		}
+		return str;
+	}
 
 	public function RecalculateRating(badHit:Bool = false)
 	{

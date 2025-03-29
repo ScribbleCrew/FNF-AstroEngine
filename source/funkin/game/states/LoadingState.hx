@@ -21,18 +21,30 @@ import haxe.ds.StringMap;
 #include <thread>
 ')
 #end
-
 class LoadingState extends MusicBeatState
 {
 	public static var loaded:Int = 0;
 	public static var loadMax:Int = 0;
 
-	static var originalBitmapKeys:haxe.ds.StringMap<String> = [];
+	static var originalBitmapKeys:StringMap<String> = new StringMap();
 	static var requestedBitmaps:Map<String, BitmapData> = [];
 	static var mutex:Mutex;
 	static var threadPool:FixedThreadPool = null;
 
-	function new(target:FlxState, stopMusic:Bool)
+	#if cpp
+	/**
+	 * Gets the CPU's thread count.
+	 */
+	@:isVar
+	public static var cpuThreads(get, never):Int;
+	@:dox(hide) inline static function get_cpuThreads():Int
+		return untyped __cpp__("std::thread::hardware_concurrency()");
+	// @:functionCode('return std::thread::hardware_concurrency();')
+	#end
+
+	var target:FlxState = null;
+	var stopMusic:Bool = false;
+	function new(target:FlxState, stopMusic:Bool):Void
 	{
 		this.target = target;
 		this.stopMusic = stopMusic;
@@ -43,8 +55,6 @@ class LoadingState extends MusicBeatState
 	inline static public function loadAndSwitchState(target:FlxState, stopMusic = false, intrusive:Bool = true)
 		MusicBeatState.switchState(getNextState(target, stopMusic, intrusive));
 	
-	var target:FlxState = null;
-	var stopMusic:Bool = false;
 	var dontUpdate:Bool = false;
 
 	var bar:FlxSprite;
@@ -517,20 +527,17 @@ class LoadingState extends MusicBeatState
 	{
 		// trace('scheduled $func in threadPool');
 		#if debug
-		var threadSchedule = Sys.time();
+		final threadSchedule:Float = Sys.time();
 		#end
 		threadPool.run(() -> {
 			#if debug
-			var threadStart = Sys.time();
+			final threadStart:Float = Sys.time();
 			trace('$traceData took ${threadStart - threadSchedule}s to start preloading');
 			#end
 
 			try {
 				if (func() != null) {
-					#if debug
-					var diff = Sys.time() - threadStart;
-					trace('finished preloading $traceData in ${diff}s');
-					#end
+					#if debug trace('finished preloading $traceData in ${Sys.time() - threadStart}s');#end
 				} else trace('ERROR! fail on preloading $traceData ');
 			}
 			catch(e:Dynamic) {
@@ -656,16 +663,5 @@ class LoadingState extends MusicBeatState
 			Logs.prefixedTrace('fail on preloading image $key','ERROR', RED);
 
 		return null;
-	}
-	#if cpp
-	/**
-	 * Gets the CPU's thread count.
-	 */
-	@:isVar
-	public static var cpuThreads(get, never):Int;
-	@:dox(hide) inline static function get_cpuThreads():Int
-		return untyped __cpp__("std::thread::hardware_concurrency()");
-	// @:functionCode('return std::thread::hardware_concurrency();')
-	#end
-	
+	}	
 }

@@ -1,11 +1,9 @@
 package funkin.game.objects.scorebars;
 
 //TODO: import notes here.
-class DefaultHUD extends FlxBasic
+class DefaultHUD extends BaseScorebar
 {
-	private var game(get,null):PlayState;
-	@:dox(hide) inline function get_game():PlayState
-		return PlayState.instance;
+
 
 	// Bars
 	public var timeBar:Bar;
@@ -19,13 +17,9 @@ class DefaultHUD extends FlxBasic
 	// Botplay Txt
 	public var botplaySine:Float = 0;
 	public var botplayTxt:FlxText;
-
+	
 	public function new()
 	{
-		super();
-
-		game.baseUI = this;
-
 		createHealthBar();
 		createSongTimer();
 
@@ -37,6 +31,8 @@ class DefaultHUD extends FlxBasic
 		game.uiGroup.add(botplayTxt);
 		if (ClientPrefs.data.downScroll)
 			botplayTxt.y = healthBar.y + 70;
+
+		super();
 	}
 
 	function createHealthBar()

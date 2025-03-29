@@ -5,7 +5,7 @@ import funkin.backend.Highscore;
 
 using flixel.util.FlxSpriteUtil;
 
-class AstroScore extends BaseScorebar
+class AstroScore extends DefaultHUD
 {
 	private var scoreText:FlxText;
 	private var watermark:FlxText;
@@ -20,21 +20,21 @@ class AstroScore extends BaseScorebar
 
 	override function create():Void
 	{
-		scoreText = new FlxText(0, defaultPos.y + 36, FlxG.width, "erm, owo???", 20);
+		scoreText = new FlxText(0, healthBar.y + 36, FlxG.width, "erm, owo???", 20);
 		scoreText.scrollFactor.set();
 		scoreText.borderSize = 1.25;
 		scoreText.visible = !ClientPrefs.data.hideHud;
 		scoreText.setFormat(Paths.font("PhantomMuff.ttf"), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(scoreText);
 
-		watermark = new FlxText(40, defaultPos.y + 37, 0, "", 16);
+		watermark = new FlxText(40, healthBar.y + 37, 0, "", 16);
 		watermark.setFormat(Paths.font("PhantomMuff.ttf"), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		watermark.scrollFactor.set();
 		watermark.borderSize = 1.25;
 		watermark.visible = !ClientPrefs.data.hideHud;
 		add(watermark);
 
-		songLeft = new FlxText(1140, defaultPos.y + 37, 0, "0:00 • 0:00", 16);
+		songLeft = new FlxText(1140, healthBar.y + 37, 0, "0:00 • 0:00", 16);
 		songLeft.setFormat(Paths.font("PhantomMuff.ttf"), 20, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		songLeft.scrollFactor.set();
 		songLeft.borderSize = 1.25;
@@ -50,7 +50,7 @@ class AstroScore extends BaseScorebar
 
 		watermark.text = PlayState.SONG.song.replace("-", '').capitalize() + " • " + Difficulty.list[PlayState.storyDifficulty];
 		addCurveBG(watermark.x - 10, scoreText.y + 4.5, watermark.fieldWidth + 20, 35, 35, 0, game.uiBackgroundGroup); // WaterMark
-		addCurveBG(defaultPos.x, scoreText.y + 4.5, 600, 35, 35, 0, game.uiBackgroundGroup); // ScoreBar
+		addCurveBG(healthBar.x, scoreText.y + 4.5, 600, 35, 35, 0, game.uiBackgroundGroup); // ScoreBar
 		addCurveBG(songLeft.x - 12.5, scoreText.y + 4.5, 125, 35, 35, 0, game.uiBackgroundGroup); // TimeBar (Alt)
 
 		songLeft.y += 10;
@@ -102,7 +102,7 @@ class AstroScore extends BaseScorebar
 
 		super.create();
 
-		game.baseUI.timeTxt.setFormat(Paths.font("PhantomMuff.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		timeTxt.setFormat(Paths.font("PhantomMuff.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 	}
 
 	override function update(elapsed:Float):Void

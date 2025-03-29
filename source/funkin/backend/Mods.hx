@@ -36,7 +36,7 @@ class Mods
 
 	inline public static function pushGlobalMods():Array<String> // prob a better way to do this but idc
 	{
-		globalMods.resetArray();
+		globalMods.empty();
 		
 		for(mod in parseList().enabled)
 		{

@@ -1,14 +1,14 @@
 package funkin.game.objects.scorebars;
 
-class VSliceScore extends BaseScorebar
+class VSliceScore extends DefaultHUD
 {
 	var scoreText:FlxText;
 
-	override function create() : Void
-	{		
+	override function create():Void
+	{
 		super.create();
 
-		scoreText = new FlxText(baseUI.healthBar.bg.x + baseUI.healthBar.bg.width - 190, baseUI.healthBar.bg.y + 30, 0, '>;3c', 20);
+		scoreText = new FlxText(healthBar.bg.x + healthBar.bg.width - 190, healthBar.bg.y + 30, 0, '>;3c', 20);
 		scoreText.scrollFactor.set();
 		scoreText.borderSize = 1.25;
 		scoreText.visible = !ClientPrefs.data.hideHud;
@@ -16,9 +16,12 @@ class VSliceScore extends BaseScorebar
 		scoreText.setFormat(Constants.DEFAULT_FONT, 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(scoreText);
 
-		game.baseUI.timeTxt.visible = game.baseUI.timeBar.visible = false;
+		timeTxt.visible = timeBar.visible = false;
 	}
 
-	override function updateScore() : Void
-		if (scoreText!=null) scoreText.text = 'Score: ' + flixel.util.FlxStringUtil.formatMoney(game.instance.songScore, false, true);
+	override function updateScore():Void
+	{
+		final moneyScore:String = flixel.util.FlxStringUtil.formatMoney(PlayState.instance.songScore, false, true);
+		scoreText.text = 'Score: {1}'.replaceAll([moneyScore]);
+	}
 }
