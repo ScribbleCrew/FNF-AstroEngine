@@ -5,9 +5,9 @@ package funkin.game.objects.scorebars;
 using funkin.backend.utils.StringUtils;
 class PsychScore extends BaseScorebar
 {
-	private var scoreText:FlxText;
+	var scoreText:FlxText;
 
-	override function create()
+	override function create():Void
 	{
 		super.create();
 
@@ -22,16 +22,14 @@ class PsychScore extends BaseScorebar
 		add(scoreText);
 	}
 
-	override function updateScore():Void
-	{
-		var str:String = PlayState.instance.ratingName;
+	function fixedRating():String {
+		var formattedRating:String = PlayState.instance.ratingName;
 		if(PlayState.instance.totalPlayed != 0)
-		{
-			final percent:Float = CoolUtil.floorDecimal(PlayState.instance.ratingPercent * 100, 2);
-			str += ' (${percent}%) - ' + PlayState.instance.ratingFC;
-		}
-
-		final tempScore = StringUtils.replaceAll('Score: {1} | Misses: {2} | Rating: {3}', [PlayState.instance.songScore, PlayState.instance.songMisses, str]);
-		scoreText.text = tempScore;
+			formattedRating += ' (${CoolUtil.floorDecimal(PlayState.instance.ratingPercent * 100, 2)}%) - ' + PlayState.instance.ratingFC;
+		return formattedRating;
 	}
+
+	override function updateScore():Void
+		scoreText.text = 'Score: {1} | Misses: {2} | Rating: {3}'.substitute([PlayState.instance.songScore, PlayState.instance.songMisses, fixedRating()]);
+
 }

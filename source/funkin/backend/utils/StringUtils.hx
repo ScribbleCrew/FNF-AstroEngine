@@ -9,7 +9,7 @@ class StringUtils
 	* @param y uhh, values...
 	* @returns Converted Phrase.	
 	*/
-	public inline static function replaceAll(x:String, y:Array<Dynamic> = null):String
+	public inline static function substitute(x:String, y:Array<Dynamic> = null):String
 		{			
 			if(y != null)
 				for (num => value in y)

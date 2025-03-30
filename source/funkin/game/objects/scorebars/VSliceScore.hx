@@ -22,6 +22,6 @@ class VSliceScore extends DefaultHUD
 	override function updateScore():Void
 	{
 		final moneyScore:String = flixel.util.FlxStringUtil.formatMoney(PlayState.instance.songScore, false, true);
-		scoreText.text = 'Score: {1}'.replaceAll([moneyScore]);
+		scoreText.text = 'Score: {1}'.substitute([moneyScore]);
 	}
 }

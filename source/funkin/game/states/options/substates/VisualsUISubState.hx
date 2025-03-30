@@ -30,7 +30,7 @@ class VisualsUISubState extends BaseOptionsMenu
 	var notesTween:Array<FlxTween> = [];
 	var noteY:Float = 90;
 
-	public function new()
+	public function new():Void
 	{
 		title = 'Visuals and UI';
 		rpcTitle = 'Visuals & UI Settings Menu'; // for Discord Rich Presence
@@ -60,6 +60,8 @@ class VisualsUISubState extends BaseOptionsMenu
 			noteOptionID = optionsArray.length - 1;
 		}
 
+		addOption(new Option('User Interface:', "Which scorebar do you what?", 'scoreBarType', STRING, ['Astro', 'Psych', 'V-Slice']));
+
 		var noteSplashes:Array<String> = Mods.mergeAllTextsNamed('images/noteSplashes/list.txt');
 		if (noteSplashes.length > 0)
 		{
@@ -71,40 +73,23 @@ class VisualsUISubState extends BaseOptionsMenu
 			addOption(option);
 		}
 
-		var option:Option = new Option('Time Bar:', "What should the Time Bar display?", 'timeBarType', STRING,
-			['Time Left', 'Time Elapsed', 'Song Name', 'Disabled']);
-		addOption(option);
-
-		var option:Option = new Option('Scorebar:', "Which scorebar do you what?", 'scoreBarType', STRING, ['Astro', 'Psych', 'V-Slice']);
-		addOption(option);
+		addOption(new Option('Time Bar:', "What should the Time Bar display?", 'timeBarType', STRING, ['Time Left', 'Time Elapsed', 'Song Name', 'Disabled']));
 
 		var option:Option = new Option('Hide HUD', 'Hide\'s all HUD elements\nimproves performance.', 'hideHud', BOOL);
 		addOption(option);
 		option.onChange = () ->
 		{
-			if (ClientPrefs.data.hideHud)
-			{
-				ClientPrefs.data.showFPS = false;
-			}
-			else
-			{
-				ClientPrefs.data.showFPS = true;
-			}
+			ClientPrefs.data.showFPS = !ClientPrefs.data.hideHud;
 
 			if (funkin.game.Main.framerateCounter != null)
 				funkin.game.Main.framerateCounter.visible = ClientPrefs.data.showFPS;
 		};
 
-		var option:Option = new Option('Flashing Lights', "Uncheck this if you're sensitive to flashing lights!", 'flashing', BOOL);
-		addOption(option);
+		addOption(new Option('Flashing Lights', "Uncheck this if you're sensitive to flashing lights!", 'flashing', BOOL));
+		addOption(new Option('Camera Zooms', "If unchecked, the camera won't zoom in on a beat hit.", 'camZooms', BOOL));
+		addOption(new Option('Score Text Zoom on Hit', "If unchecked, disables the Score text zooming\neverytime you hit a note.", 'scoreZoom', BOOL));
 
-		var option:Option = new Option('Camera Zooms', "If unchecked, the camera won't zoom in on a beat hit.", 'camZooms', BOOL);
-		addOption(option);
-
-		var option:Option = new Option('Score Text Zoom on Hit', "If unchecked, disables the Score text zooming\neverytime you hit a note.", 'scoreZoom', BOOL);
-		addOption(option);
-
-		var option:Option = new Option('Health Bar Opacity', 'How much transparent should the health bar and icons be.', 'healthBarAlpha', PERCENT);
+		final option:Option = new Option('Health Bar Opacity', 'How much transparent should the health bar and icons be.', 'healthBarAlpha', PERCENT);
 		option.scrollSpeed = 1.6;
 		option.minValue = 0.0;
 		option.maxValue = 1;
@@ -113,9 +98,15 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(option);
 
 		#if !mobile
-		var option:Option = new Option('FPS Counter', 'If unchecked, hides FPS Counter.', 'showFPS', BOOL);
+		final option:Option = new Option('FPS Counter', 'If unchecked, hides FPS Counter.', 'showFPS', BOOL);
+		option.onChange = () ->
+		{
+			funkin.backend.utils.ClientPrefs.data.hideHud = !funkin.backend.utils.ClientPrefs.data.showFPS;
+
+			if (funkin.game.Main.framerateCounter != null)
+				funkin.game.Main.framerateCounter.visible = funkin.backend.utils.ClientPrefs.data.showFPS;
+		};
 		addOption(option);
-		option.onChange = onChangeFPSCounter;
 
 		var option:Option = new Option('FPS Counter Opacity', 'The transparency of the FPS counter.', 'fpsCounterAlpha', PERCENT);
 		option.scrollSpeed = 1.6;
@@ -123,53 +114,49 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.maxValue = 1;
 		option.changeValue = 0.1;
 		option.decimals = 1;
-		option.onChange = () ->
-		{
-			@:privateAccess
-			FlxTween.num(Main.framerateCounter.alpha,ClientPrefs.data.fpsCounterAlpha,.1,{ease:FlxEase.expoOut},Main.framerateCounter.set_alpha);
-		};
+		option.onChange = () -> @:privateAccess FlxTween.num(Main.framerateCounter.alpha, ClientPrefs.data.fpsCounterAlpha, .1, {ease: FlxEase.expoOut},
+			Main.framerateCounter.set_alpha);
 		addOption(option);
 		#end
 
 		var option:Option = new Option('Pause Screen Song:', "What song do you prefer for the Pause Screen?", 'pauseMusic', STRING,
 			['None', 'Breakfast', 'Tea Time']);
 		addOption(option);
-		option.onChange = onChangePauseMusic;
+		option.onChange = () ->
+		{
+			if (funkin.backend.utils.ClientPrefs.data.pauseMusic == 'None')
+				FlxG.sound.music.volume = 0;
+			else
+				FlxG.sound.playMusic(Paths.music(Paths.formatToSongPath(funkin.backend.utils.ClientPrefs.data.pauseMusic)));
 
-		#if CHECK_FOR_UPDATES
-		var option:Option = new Option('Check for Updates', 'On Release builds, turn this on to check for updates when you start the game.',
-			'checkForUpdates', BOOL);
-		addOption(option);
-		#end
+			changedMusic = true;
+		};
 
-		var option:Option = new Option('Combo Stacking',
-			"If unchecked, Ratings and Combo won't stack, saving on System Memory and making them easier to read", 'comboStacking', BOOL);
-		addOption(option);
+		#if CHECK_FOR_UPDATES addOption(new Option('Check for Updates', 'On Release builds, turn this on to check for updates when you start the game.',
+			'checkForUpdates', BOOL)); #end
+		addOption(new Option('Combo Stacking', "If unchecked, Ratings and Combo won't stack, saving on System Memory and making them easier to read",
+			'comboStacking', BOOL));
 
 		super();
 		add(notes);
 	}
 
-	override function changeSelection(change:Int = 0, ?snd:Bool = true)
+	override function changeSelection(change:Int = 0, ?snd:Bool = true):Void
 	{
 		super.changeSelection(change, snd);
 
-		if (noteOptionID < 0)
-			return;
+		if (noteOptionID < 0) return;
 
 		for (i in 0...Note.colArray.length)
 		{
-			var note:StrumNote = notes.members[i];
-			if (notesTween[i] != null)
-				notesTween[i].cancel();
-			if (curSelected == noteOptionID)
-				notesTween[i] = FlxTween.tween(note, {y: noteY}, Math.abs(note.y / (200 + noteY)) / 3, {ease: FlxEase.quadInOut});
-			else
-				notesTween[i] = FlxTween.tween(note, {y: -200}, Math.abs(note.y / (200 + noteY)) / 3, {ease: FlxEase.quadInOut});
+			final note:StrumNote = notes.members[i];
+			if (notesTween[i] != null) notesTween[i].cancel();
+
+			notesTween[i] = FlxTween.tween(note, {y: curSelected == noteOptionID ? noteY : -200}, Math.abs(note.y / (200 + noteY)) / 3, {ease: FlxEase.quadInOut});
 		}
 	}
 
-	function onChangeNoteSkin()
+	function onChangeNoteSkin():Void
 	{
 		notes.forEachAlive(function(note:StrumNote)
 		{
@@ -179,7 +166,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		});
 	}
 
-	function changeNoteSkin(note:StrumNote)
+	function changeNoteSkin(note:StrumNote):Void
 	{
 		var skin:String = Note.defaultNoteSkin;
 		var customSkin:String = skin + Note.getNoteSkinPostfix();
@@ -193,37 +180,10 @@ class VisualsUISubState extends BaseOptionsMenu
 
 	var changedMusic:Bool = false;
 
-	function onChangePauseMusic()
-	{
-		if (funkin.backend.utils.ClientPrefs.data.pauseMusic == 'None')
-			FlxG.sound.music.volume = 0;
-		else
-			FlxG.sound.playMusic(Paths.music(Paths.formatToSongPath(funkin.backend.utils.ClientPrefs.data.pauseMusic)));
-
-		changedMusic = true;
-	}
-
-	override function destroy()
+	override function destroy():Void
 	{
 		if (changedMusic)
 			FlxG.sound.playMusic(Paths.music('freakyMenu'));
 		super.destroy();
 	}
-
-	#if !mobile
-	function onChangeFPSCounter()
-	{
-		if (funkin.backend.utils.ClientPrefs.data.showFPS)
-		{
-			funkin.backend.utils.ClientPrefs.data.hideHud = false;
-		}
-		else
-		{
-			funkin.backend.utils.ClientPrefs.data.hideHud = true;
-		}
-
-		if (funkin.game.Main.framerateCounter != null)
-			funkin.game.Main.framerateCounter.visible = funkin.backend.utils.ClientPrefs.data.showFPS;
-	}
-	#end
 }

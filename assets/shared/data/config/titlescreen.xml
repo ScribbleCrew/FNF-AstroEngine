@@ -1,6 +1,14 @@
 <!DOCTYPE AE-title-data>
 <titlescreen bpm="102" backgroundSprite="">
     <logo x="-150" y="-100"/>
-    <startText x="100" y="576"/>
     <gf x="512" y="40"/>
+
+    <startText x="100" y="576">
+        <colorStart color="0xFF33FFFF" alpha="1"/>
+        <colorEnd color="0xFF3333CC" alpha=".64"/>
+    </startText>
+
+    <beat>
+    <!-- TODO -->
+    </beat>
 </titlescreen>

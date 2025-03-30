@@ -1,10 +1,8 @@
 package funkin.game.objects.scorebars;
 
-//TODO: import notes here.
+// TODO: import notes here.
 class DefaultHUD extends BaseScorebar
 {
-
-
 	// Bars
 	public var timeBar:Bar;
 	public var timeTxt:FlxText;
@@ -17,7 +15,7 @@ class DefaultHUD extends BaseScorebar
 	// Botplay Txt
 	public var botplaySine:Float = 0;
 	public var botplayTxt:FlxText;
-	
+
 	public function new()
 	{
 		createHealthBar();
@@ -61,28 +59,28 @@ class DefaultHUD extends BaseScorebar
 	}
 
 	inline public function createCountdownSprite(image:String, antialias:Bool):FlxSprite
-		{
-			var spr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(image));
-			spr.cameras = [game.camHUD];
-			spr.scrollFactor.set();
-			spr.updateHitbox();
-	
-			if (PlayState.isPixelStage)
-				spr.setGraphicSize(Std.int(spr.width * PlayState.daPixelZoom));
-	
-			spr.screenCenter();
-			spr.antialiasing = antialias;
-			game.insert(game.members.indexOf(game.noteGroup), spr);
-			FlxTween.tween(spr, {/*y: spr.y + 100,*/ alpha: 0}, Conductor.crochet / 1000, {
-				ease: FlxEase.cubeInOut,
-				onComplete: function(twn:FlxTween)
-				{
-					game.remove(spr);
-					spr.destroy();
-				}
-			});
-			return spr;
-		}
+	{
+		var spr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(image));
+		spr.cameras = [game.camHUD];
+		spr.scrollFactor.set();
+		spr.updateHitbox();
+
+		if (PlayState.isPixelStage)
+			spr.setGraphicSize(Std.int(spr.width * PlayState.daPixelZoom));
+
+		spr.screenCenter();
+		spr.antialiasing = antialias;
+		game.insert(game.members.indexOf(game.noteGroup), spr);
+		FlxTween.tween(spr, {/*y: spr.y + 100,*/ alpha: 0}, Conductor.crochet / 1000, {
+			ease: FlxEase.cubeInOut,
+			onComplete: function(twn:FlxTween)
+			{
+				game.remove(spr);
+				spr.destroy();
+			}
+		});
+		return spr;
+	}
 
 	public function beatHit()
 	{
@@ -148,45 +146,43 @@ class DefaultHUD extends BaseScorebar
 		FlxTween.tween(timeTxt, {alpha: 1}, 0.5, {ease: FlxEase.circOut});
 	}
 
-	
 	override public function update(elapsed:Float)
-		{
-			super.update(elapsed);
-	
-			var mult:Float = FlxMath.lerp(1, iconP1.scale.x, CoolUtil.boundTo(1 - (elapsed * 9 * game.playbackRate), 0, 1));
-			iconP1.scale.set(mult, mult);
-			iconP1.updateHitbox();
-	
-			var mult:Float = FlxMath.lerp(1, iconP2.scale.x, CoolUtil.boundTo(1 - (elapsed * 9 * game.playbackRate), 0, 1));
-			iconP2.scale.set(mult, mult);
-			iconP2.updateHitbox();
-	
-			final iconOffset:Int = 26;
-	
-			iconP1.x = healthBar.x
-				+ (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01))
-				+ (150 * iconP1.scale.x - 150) / 2
-				- iconOffset;
-			iconP2.x = healthBar.x
-				+ (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01))
-				- (150 * iconP2.scale.x) / 2
-				- iconOffset * 2;
-	
-			if (healthBar.percent < 20)
-				iconP1.animation.curAnim.curFrame = 1;
-			else
-				iconP1.animation.curAnim.curFrame = 0;
-	
-			if (healthBar.percent > 80)
-				iconP2.animation.curAnim.curFrame = 1;
-			else
-				iconP2.animation.curAnim.curFrame = 0;
+	{
+		super.update(elapsed);
 
-			if (botplayTxt.visible)
-				{
-					botplaySine += 180 * elapsed;
-					botplayTxt.alpha = 1 - Math.sin((Math.PI * botplaySine) / 180);
-				}
+		var mult:Float = FlxMath.lerp(1, iconP1.scale.x, CoolUtil.boundTo(1 - (elapsed * 9 * game.playbackRate), 0, 1));
+		iconP1.scale.set(mult, mult);
+		iconP1.updateHitbox();
+
+		var mult:Float = FlxMath.lerp(1, iconP2.scale.x, CoolUtil.boundTo(1 - (elapsed * 9 * game.playbackRate), 0, 1));
+		iconP2.scale.set(mult, mult);
+		iconP2.updateHitbox();
+
+		final iconOffset:Int = 26;
+
+		iconP1.x = healthBar.x
+			+ (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01))
+			+ (150 * iconP1.scale.x - 150) / 2
+			- iconOffset;
+		iconP2.x = healthBar.x
+			+ (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01))
+			- (150 * iconP2.scale.x) / 2
+			- iconOffset * 2;
+
+		if (healthBar.percent < 20)
+			iconP1.animation.curAnim.curFrame = 1;
+		else
+			iconP1.animation.curAnim.curFrame = 0;
+
+		if (healthBar.percent > 80)
+			iconP2.animation.curAnim.curFrame = 1;
+		else
+			iconP2.animation.curAnim.curFrame = 0;
+
+		if (botplayTxt.visible)
+		{
+			botplaySine += 180 * elapsed;
+			botplayTxt.alpha = 1 - Math.sin((Math.PI * botplaySine) / 180);
 		}
-	
+	}
 }

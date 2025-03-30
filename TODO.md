@@ -1,14 +1,13 @@
 # ```TODO```
 
-* fix loading state stringmap by init StringMap();
-* .put on all flxpos
-* Rewrite TitleState
+* .put on all flxpos (credits title uhh idk)
+* Rewrite TitleState -- DOING 3/30/2025
 * checkbox colors maybe turn into xml. // (background, color2, color3) idk names.
 * Document PlayState & Paths (again).
 * LATER: Rewrite FlxG.mouse w controllers support (giant cursor for controllers).
 * Rewrite all psych stuff.
 * Rewrite & Change Options UI.
-* Add more softmodding support.
+* Add more softmodding support.(never ending)
 * become more professional (remove memes from files).
 * Document all code.
 

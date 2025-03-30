@@ -21,5 +21,5 @@ class PsychScore extends DefaultHUD
 	}
 
 	override function updateScore():Void
-		scoreText.text = 'Score: {1} | Misses: {2} | Rating: {3}'.replaceAll([PlayState.instance.songScore, PlayState.instance.songMisses, PlayState.instance.formattedRating]);
+		scoreText.text = 'Score: {1} | Misses: {2} | Rating: {3}'.substitute([PlayState.instance.songScore, PlayState.instance.songMisses, PlayState.instance.formattedRating]);
 }
