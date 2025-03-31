@@ -3,8 +3,16 @@ name: macOS
 on:
   push:
     branches: [main, experimental]
+    paths:
+      - 'assets/**'
+      - 'source/**'
+      - '.github/workflows/**'
   pull_request:
     branches: [main, experimental]
+    paths:
+      - 'assets/**'
+      - 'source/**'
+      - '.github/workflows/**'
 
   workflow_dispatch:
 
