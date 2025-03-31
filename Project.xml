@@ -51,7 +51,7 @@
 
 	<!-- Custom FPS allowed -->
 	<define name="CUSTOM_FPS_ALLOWED"/>
-
+ 
 	<!-- Should the Title Screen xml be used. -->
 	<define name="TITLE_SCREEN_XML"/>
 
