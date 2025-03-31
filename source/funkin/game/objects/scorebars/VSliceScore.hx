@@ -1,6 +1,7 @@
 package funkin.game.objects.scorebars;
 
-class VSliceScore extends DefaultHUD
+// todo: adjust the strums to fit the v-slice style.
+class VSliceScore extends UserInterface
 {
 	override function create():Void
 	{
@@ -14,13 +15,13 @@ class VSliceScore extends DefaultHUD
 		scoreText.setFormat(Constants.DEFAULT_FONT, 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(scoreText);
 
-		game.shouldTweenScore = false;
-		timeTxt.visible = timeBar.visible = false;
+		game.shouldTweenScore = timeTxt.visible = timeBar.visible = false;
 	}
 
 	override function updateScore():Void
 	{
-		final moneyScore:String = flixel.util.FlxStringUtil.formatMoney(PlayState.instance.songScore, false, true);
-		scoreText.text = 'Score: {1}'.substitute([moneyScore]);
+		scoreText.text = 'Score: {1}'.substitute([
+			FlxStringUtil.formatMoney(PlayState.instance.songScore, false, true)
+		]);
 	}
 }

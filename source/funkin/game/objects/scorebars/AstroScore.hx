@@ -4,8 +4,9 @@ import flixel.util.FlxStringUtil;
 import funkin.backend.Highscore;
 
 using flixel.util.FlxSpriteUtil;
-
-class AstroScore extends DefaultHUD
+// messy code :(
+// todo: completely rewrite this.
+class AstroScore extends UserInterface
 {
 	private var watermark:FlxText;
 	private var songLeft:FlxText;
@@ -17,8 +18,23 @@ class AstroScore extends DefaultHUD
 	private var shitsTxt:FlxText;
 	private var missTxt:FlxText;
 
+	/**
+	 * Stores HUD Objects in a Group	
+	 */
+	public var uiBackgroundGroup:FlxTypedGroup<FlxSprite>;
+
+	function setupBGGroup()
+	{
+		game.insert(game.members.indexOf(game.uiGroup), uiBackgroundGroup = new FlxTypedGroup<FlxSprite>());//brah
+		uiBackgroundGroup.visible = !ClientPrefs.data.downScroll;
+		uiBackgroundGroup.visible = !ClientPrefs.data.hideHud;
+		uiBackgroundGroup.cameras = [game.camHUD];
+	}
+
 	override function create():Void
 	{
+		setupBGGroup();
+
 		scoreText = new FlxText(0, healthBar.y + 36, FlxG.width, "erm, owo???", 20);
 		scoreText.scrollFactor.set();
 		scoreText.borderSize = 1.25;
@@ -47,10 +63,10 @@ class AstroScore extends DefaultHUD
 		versionTxtSmth.visible = !ClientPrefs.data.hideHud;
 		add(versionTxtSmth);
 
-		watermark.text = PlayState.SONG.song.replace("-", '').capitalize() + " • " + Difficulty.list[PlayState.storyDifficulty];
-		addCurveBG(watermark.x - 10, scoreText.y + 4.5, watermark.fieldWidth + 20, 35, 35, 0, game.uiBackgroundGroup); // WaterMark
-		addCurveBG(healthBar.x, scoreText.y + 4.5, 600, 35, 35, 0, game.uiBackgroundGroup); // ScoreBar
-		addCurveBG(songLeft.x - 12.5, scoreText.y + 4.5, 125, 35, 35, 0, game.uiBackgroundGroup); // TimeBar (Alt)
+		watermark.text = PlayState.SONG.song.replace("-", ' ').capitalize() + " • " + Difficulty.list[PlayState.storyDifficulty];
+		addCurveBG(watermark.x - 10, scoreText.y + 4.5, watermark.fieldWidth + 20, 35, 35, 0, uiBackgroundGroup); // WaterMark
+		addCurveBG(healthBar.x, scoreText.y + 4.5, 600, 35, 35, 0, uiBackgroundGroup); // ScoreBar
+		addCurveBG(songLeft.x - 12.5, scoreText.y + 4.5, 125, 35, 35, 0, uiBackgroundGroup); // TimeBar (Alt)
 
 		songLeft.y += 10;
 		watermark.y += 10;
@@ -68,40 +84,47 @@ class AstroScore extends DefaultHUD
 				MAIN_SIZE).setFormat(Paths.font("PhantomMuff.ttf"), MAIN_SIZE, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			sickTxt.visible = !ClientPrefs.data.hideHud;
 			add(sickTxt);
-			addCurveBG(sickTxt.x - 10, sickTxt.y - 2.5, sickTxt.fieldWidth - 10, 35, 35, 0, game.uiBackgroundGroup);
+			addCurveBG(sickTxt.x - 10, sickTxt.y - 2.5, sickTxt.fieldWidth - 10, 35, 35, 0, uiBackgroundGroup);
 
 			goodsTxt = new FlxText(x, main_y, 0, "GOODS: 000",
 				MAIN_SIZE).setFormat(Paths.font("PhantomMuff.ttf"), MAIN_SIZE, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			goodsTxt.visible = !ClientPrefs.data.hideHud;
 			goodsTxt.y += y;
 			add(goodsTxt);
-			addCurveBG(goodsTxt.x - 10, goodsTxt.y - 2.5, sickTxt.fieldWidth - 10, 35, 35, 0, game.uiBackgroundGroup);
+			addCurveBG(goodsTxt.x - 10, goodsTxt.y - 2.5, sickTxt.fieldWidth - 10, 35, 35, 0, uiBackgroundGroup);
 
 			badTxt = new FlxText(x, main_y, 0, "BAD: 000",
 				MAIN_SIZE).setFormat(Paths.font("PhantomMuff.ttf"), MAIN_SIZE, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			badTxt.visible = !ClientPrefs.data.hideHud;
 			badTxt.y = goodsTxt.y + y;
 			add(badTxt);
-			addCurveBG(badTxt.x - 10, badTxt.y - 2.5, sickTxt.fieldWidth - 10, 35, 35, 0, game.uiBackgroundGroup);
+			addCurveBG(badTxt.x - 10, badTxt.y - 2.5, sickTxt.fieldWidth - 10, 35, 35, 0, uiBackgroundGroup);
 
 			shitsTxt = new FlxText(x, main_y, 0, "SHIT: 000",
 				MAIN_SIZE).setFormat(Paths.font("PhantomMuff.ttf"), MAIN_SIZE, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			shitsTxt.visible = !ClientPrefs.data.hideHud;
 			shitsTxt.y = badTxt.y + y;
 			add(shitsTxt);
-			addCurveBG(shitsTxt.x - 10, shitsTxt.y - 2.5, sickTxt.fieldWidth - 10, 35, 35, 0, game.uiBackgroundGroup);
+			addCurveBG(shitsTxt.x - 10, shitsTxt.y - 2.5, sickTxt.fieldWidth - 10, 35, 35, 0, uiBackgroundGroup);
 
 			missTxt = new FlxText(x, main_y, 0, "MISS: 000",
 				MAIN_SIZE).setFormat(Paths.font("PhantomMuff.ttf"), MAIN_SIZE, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			missTxt.visible = !ClientPrefs.data.hideHud;
 			missTxt.y = shitsTxt.y + y;
 			add(missTxt);
-			addCurveBG(missTxt.x - 10, missTxt.y - 2.5, sickTxt.fieldWidth - 10, 35, 35, 0, game.uiBackgroundGroup);
+			addCurveBG(missTxt.x - 10, missTxt.y - 2.5, sickTxt.fieldWidth - 10, 35, 35, 0, uiBackgroundGroup);
 		}
 
 		super.create();
 
 		timeTxt.setFormat(Paths.font("PhantomMuff.ttf"), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+	}
+
+	override function startSong()
+	{
+		uiBackgroundGroup.forEach(function(spr:FlxSprite) FlxTween.tween(spr, {alpha: 0.6}, 0.5, {ease: FlxEase.circOut}));
+
+		super.startSong();
 	}
 
 	override function update(elapsed:Float):Void
@@ -115,14 +138,13 @@ class AstroScore extends DefaultHUD
 
 	override function updateScore():Void
 	{
-		scoreText.text = 'Score: '
-			+ game.songScore
-			+ ' • Misses: '
-			+ game.songMisses
-			+ ' • Rating: '
-			+ game.ratingName
-			+ (game.ratingName != '?' ? ' (${Highscore.floorDecimal(game.ratingPercent * 100, 2)}%) - ${game.ratingFC}' : '');
-
+		scoreText.text = 'Score: {1} • Misses: {2} • Rating: {3}{4}'.substitute([// i love this func
+			game.songScore,
+			game.songMisses,
+			game.ratingName,
+			(game.ratingName != '?' ? ' (${Highscore.floorDecimal(game.ratingPercent * 100, 2)}%) - ${game.ratingFC}' : '')
+		]);
+			
 		if (ClientPrefs.data.showRatingStats)
 			updateStats();
 	}
@@ -144,10 +166,11 @@ class AstroScore extends DefaultHUD
 	@:dox(show) private function addCurveBG(x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0, ellipseWidthAndHeight:Int = 0, startAlpha:Int = 0,
 			?group:FlxTypedGroup<Dynamic>)
 	{
-		final width = Std.int(width);
-		final height = Std.int(height);
+		// width and height
+		final width:Int = Std.int(width);
+		final height:Int = Std.int(height);
 
-		final curveSpr = new FlxSprite(x, y).makeGraphic(width, height, FlxColor.TRANSPARENT, false);
+		final curveSpr:FlxSprite = new FlxSprite(x, y).makeGraphic(width, height, FlxColor.TRANSPARENT, false);
 		curveSpr.drawRoundRect(0, 0, width, height, ellipseWidthAndHeight, ellipseWidthAndHeight, FlxColor.BLACK);
 		curveSpr.alpha = startAlpha;
 

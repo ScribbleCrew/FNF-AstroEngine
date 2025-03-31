@@ -1,8 +1,19 @@
-package funkin.game.objects.scorebars;
+package funkin.backend.base;
 
-// TODO: import notes here.
-class DefaultHUD extends BaseScorebar
+import flixel.util.FlxDestroyUtil.IFlxDestroyable;
+// messy code like always
+@:access(funkin.game.states.PlayState.updateTime)
+@:access(funkin.game.states.PlayState.songPercent)
+@:access(funkin.game.states.PlayState.songLength)
+abstract class UserInterface extends FlxBasic
 {
+	/**
+	 * Current PlayState instance.	
+	 */
+	private var game(get, never):PlayState;
+	@:dox(hide) inline function get_game():PlayState
+		return PlayState.instance;
+
 	// Bars
 	public var timeBar:Bar;
 	public var timeTxt:FlxText;
@@ -17,21 +28,45 @@ class DefaultHUD extends BaseScorebar
 	public var botplayTxt:FlxText;
 	public var scoreText:FlxText;
 
-	public function new()
+	public function create():Void
+	{
+	}
+
+	public function createPost():Void
+	{
+	}
+
+	public function updateScore():Void
+	{
+	}
+
+	public function new():Void
 	{
 		createHealthBar();
 		createSongTimer();
+		makeBotplayTxt();
 
-		botplayTxt = new FlxText(400, healthBar.y - 90, FlxG.width - 800, 'BOTPLAY', 32);
+		if (this.game == null)
+			destroy();
+		else
+		{
+			super();
+			create();
+			game.uiGroup.forEach(_->_.alpha=0);//failsafe
+			FlxG.log.add('Scorebar Created');
+			game.ui = this;
+			createPost();
+		}
+	}
+
+	function makeBotplayTxt()
+	{
+		botplayTxt = new FlxText(400, ClientPrefs.data.downScroll ? healthBar.y + 70 : healthBar.y - 90, FlxG.width - 800, 'BOTPLAY', 32);
 		botplayTxt.setFormat(Constants.DEFAULT_FONT, 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		botplayTxt.scrollFactor.set();
 		botplayTxt.borderSize = 1.25;
 		botplayTxt.visible = game.cpuControlled;
-		game.uiGroup.add(botplayTxt);
-		if (ClientPrefs.data.downScroll)
-			botplayTxt.y = healthBar.y + 70;
-
-		super();
+		add(botplayTxt);
 	}
 
 	function createHealthBar()
@@ -43,20 +78,20 @@ class DefaultHUD extends BaseScorebar
 		healthBar.visible = !ClientPrefs.data.hideHud;
 		healthBar.alpha = ClientPrefs.data.healthBarAlpha;
 		reloadHealthBarColors();
-		game.uiGroup.add(healthBar);
+		game.add(healthBar);
 
 		// furry
 		iconP1 = new HealthIcon(game.boyfriend.healthIcon, true);
 		iconP1.y = healthBar.y - 75;
 		iconP1.visible = !ClientPrefs.data.hideHud;
 		iconP1.alpha = ClientPrefs.data.healthBarAlpha;
-		game.uiGroup.add(iconP1);
+		game.add(iconP1);
 
 		iconP2 = new HealthIcon(game.dad.healthIcon, false);
 		iconP2.y = healthBar.y - 75;
 		iconP2.visible = !ClientPrefs.data.hideHud;
 		iconP2.alpha = ClientPrefs.data.healthBarAlpha;
-		game.uiGroup.add(iconP2);
+		game.add(iconP2);
 	}
 
 	inline public function createCountdownSprite(image:String, antialias:Bool):FlxSprite
@@ -83,7 +118,7 @@ class DefaultHUD extends BaseScorebar
 		return spr;
 	}
 
-	public function beatHit()
+	public function beatHit():Void
 	{
 		iconP1.scale.set(1.2, 1.2);
 		iconP2.scale.set(1.2, 1.2);
@@ -126,8 +161,8 @@ class DefaultHUD extends BaseScorebar
 		timeBar.alpha = 0;
 		timeBar.visible = showTime;
 		timeBar.leftBar.color = FlxColor.fromRGB(game.dad.healthColorArray[0], game.dad.healthColorArray[1], game.dad.healthColorArray[2]);
-		game.uiGroup.add(timeBar);
-		game.uiGroup.add(timeTxt);
+		add(timeBar);
+		add(timeTxt);
 
 		if (ClientPrefs.data.hideHud)
 			timeBar.visible = false;
@@ -147,34 +182,45 @@ class DefaultHUD extends BaseScorebar
 		FlxTween.tween(timeTxt, {alpha: 1}, 0.5, {ease: FlxEase.circOut});
 	}
 
-	override function update(elapsed:Float)
+	@:dox(hide) override function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
-
-		if(!game.startingSong){
+		if (!game.startingSong)
+		{
 			if (!game.paused)
+			{
+				if (game.updateTime)
 				{
-					if (game.updateTime)
-					{
-						var curTime:Float = Conductor.songPosition - ClientPrefs.data.noteOffset;
-						if (curTime < 0)
-							curTime = 0;
-						game.songPercent = (curTime / game.songLength);
-	
-						var songCalc:Float = (game.songLength - curTime);
-						if (ClientPrefs.data.timeBarType == 'Time Elapsed')
-							songCalc = curTime;
-	
-						var secondsTotal:Int = Math.floor(songCalc / 1000);
-						if (secondsTotal < 0)
-							secondsTotal = 0;
-	
-						if (ClientPrefs.data.timeBarType != 'Song Name')
-							timeTxt.text = flixel.util.FlxStringUtil.formatTime(secondsTotal, false);
-					}
+					var curTime:Float = Conductor.songPosition - ClientPrefs.data.noteOffset;
+					if (curTime < 0)
+						curTime = 0;
+					game.songPercent = (curTime / game.songLength);
+
+					var songCalc:Float = (game.songLength - curTime);
+					if (ClientPrefs.data.timeBarType == 'Time Elapsed')
+						songCalc = curTime;
+
+					var secondsTotal:Int = Math.floor(songCalc / 1000);
+					if (secondsTotal < 0)
+						secondsTotal = 0;
+
+					if (ClientPrefs.data.timeBarType != 'Song Name')
+						timeTxt.text = flixel.util.FlxStringUtil.formatTime(secondsTotal, false);
 				}
+			}
 		}
 
+		iconUpdate(elapsed);
+
+		if (botplayTxt.visible)
+		{
+			botplaySine += 180 * elapsed;
+			botplayTxt.alpha = 1 - Math.sin((Math.PI * botplaySine) / 180);
+		}
+	}
+
+	function iconUpdate(elapsed:Float)
+	{
 		var mult:Float = FlxMath.lerp(1, iconP1.scale.x, MathsAddon.boundTo(1 - (elapsed * 9 * game.playbackRate), 0, 1));
 		iconP1.scale.set(mult, mult);
 		iconP1.updateHitbox();
@@ -194,20 +240,32 @@ class DefaultHUD extends BaseScorebar
 			- (150 * iconP2.scale.x) / 2
 			- iconOffset * 2;
 
-		if (healthBar.percent < 20)
-			iconP1.animation.curAnim.curFrame = 1;
-		else
-			iconP1.animation.curAnim.curFrame = 0;
+		iconP1.animation.curAnim.curFrame = healthBar.percent < 20 ? 1 : 0;
+		iconP2.animation.curAnim.curFrame = healthBar.percent > 80 ? 1 : 0;
+	}
 
-		if (healthBar.percent > 80)
-			iconP2.animation.curAnim.curFrame = 1;
+	// modified add, remove and insert functions.
+	function add(object:FlxBasic, ?customGroup:flixel.group.FlxSpriteGroup):Void
+	{
+		if(customGroup!=null)
+			customGroup.add(cast object);// unsafe casts
 		else
-			iconP2.animation.curAnim.curFrame = 0;
+			game.uiGroup.add(cast object);
+	}
 
-		if (botplayTxt.visible)
-		{
-			botplaySine += 180 * elapsed;
-			botplayTxt.alpha = 1 - Math.sin((Math.PI * botplaySine) / 180);
-		}
+	function remove(object:FlxBasic, ?customGroup:flixel.group.FlxSpriteGroup):Void
+	{
+		if(customGroup!=null)
+			customGroup.remove(cast object);
+		else
+			game.uiGroup.remove(cast object);
+	}
+
+	function insert(position:Int, object:FlxBasic, ?customGroup:flixel.group.FlxSpriteGroup):Void
+	{
+		if(customGroup!=null)
+			customGroup.insert(position, cast object);
+		else
+			game.uiGroup.insert(position, cast object);
 	}
 }
