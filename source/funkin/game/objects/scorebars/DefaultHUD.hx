@@ -175,11 +175,11 @@ class DefaultHUD extends BaseScorebar
 				}
 		}
 
-		var mult:Float = FlxMath.lerp(1, iconP1.scale.x, CoolUtil.boundTo(1 - (elapsed * 9 * game.playbackRate), 0, 1));
+		var mult:Float = FlxMath.lerp(1, iconP1.scale.x, MathsAddon.boundTo(1 - (elapsed * 9 * game.playbackRate), 0, 1));
 		iconP1.scale.set(mult, mult);
 		iconP1.updateHitbox();
 
-		var mult:Float = FlxMath.lerp(1, iconP2.scale.x, CoolUtil.boundTo(1 - (elapsed * 9 * game.playbackRate), 0, 1));
+		var mult:Float = FlxMath.lerp(1, iconP2.scale.x, MathsAddon.boundTo(1 - (elapsed * 9 * game.playbackRate), 0, 1));
 		iconP2.scale.set(mult, mult);
 		iconP2.updateHitbox();
 

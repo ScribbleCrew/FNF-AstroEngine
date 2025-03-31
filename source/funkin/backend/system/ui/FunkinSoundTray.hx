@@ -72,10 +72,10 @@ class FunkinSoundTray extends FlxSoundTray
 		return Assets.getBitmapData(file);
 	}
 
-	override public function update(MS:Float):Void
+	@:dox(hide) override public function update(MS:Float):Void
 	{
-		y = CoolUtil.coolLerp(y, lerpYPos, 0.1);
-		alpha = CoolUtil.coolLerp(alpha, alphaTarget, 0.25);
+		y = MathsAddon.coolLerp(y, lerpYPos, 0.1);
+		alpha = MathsAddon.coolLerp(alpha, alphaTarget, 0.25);
 
 		if (_timer > 0)
 		{
@@ -104,7 +104,7 @@ class FunkinSoundTray extends FlxSoundTray
 		}
 	}
 
-	override public function show(up:Bool = false):Void
+	@:dox(hide) override public function show(up:Bool = false):Void
 	{
 		_timer = 1;
 		lerpYPos = 10;
@@ -112,35 +112,22 @@ class FunkinSoundTray extends FlxSoundTray
 		active = true;
 
 		var globalVolume:Int = Math.round(FlxG.sound.volume * 10);
-		if (FlxG.sound.muted)
-			globalVolume = 0;
+		if (FlxG.sound.muted) globalVolume = 0;
 
 		if (!silent)
 		{
-			var sound = null;
-			#if MODS_ALLOWED
-			sound = Paths.returnSound('sounds/soundtray/${up ? volumeUpSound : volumeDownSound}');
-			#else
-			final path = 'assets/shared/sounds/soundtray/';
-			sound = FlxAssets.getSound(path + (up ? volumeUpSound : volumeDownSound));
-			#end
+			var sound:openfl.media.Sound = null;
+			final path:String = 'sounds/soundtray/';
+			sound = #if MODS_ALLOWED Paths.returnSound('$path${up ? volumeUpSound : volumeDownSound}') #else FlxAssets.getSound('assets/shared/$path' + (up ? volumeUpSound : volumeDownSound)) #end;
 
 			if (globalVolume == 10)
-				#if MODS_ALLOWED
-				sound = Paths.returnSound('sounds/soundtray/$volumeMaxSound');
-				#else
-				sound = FlxAssets.getSound('assets/shared/sounds/soundtray/$volumeMaxSound');
-				#end
-				if (sound != null)
-					FlxG.sound.load(sound).play();
+				sound = #if MODS_ALLOWED Paths.returnSound('sounds/soundtray/$volumeMaxSound') #else FlxAssets.getSound('assets/shared/sounds/soundtray/$volumeMaxSound') #end;
+			
+			if (sound != null)
+				FlxG.sound.load(sound).play();
 		}
 
 		for (i in 0..._bars.length)
-		{
-			if (i < globalVolume)
-				_bars[i].visible = true;
-			else
-				_bars[i].visible = false;
-		}
+			_bars[i].visible = (i < globalVolume);
 	}
 }

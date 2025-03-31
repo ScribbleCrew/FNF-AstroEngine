@@ -13,49 +13,24 @@ import openfl.utils.Assets;
 class CoolUtil
 {
 	public static function checkStats(dataStore:String = 'Max Score', otheridk:Dynamic) // simple but effective
-		{
-			if (ClientPrefs.data.stats.get(dataStore) < otheridk)
-				ClientPrefs.data.stats.set(dataStore, otheridk);
-	
-			ClientPrefs.saveSettings();
-		}
-		
-	inline public static function quantize(f:Float, snap:Float)
 	{
-		// changed so this actually works lol
-		var m:Float = Math.fround(f * snap);
-		trace(snap);
-		return (m / snap);
+		if (ClientPrefs.data.stats.get(dataStore) < otheridk)
+			ClientPrefs.data.stats.set(dataStore, otheridk);
+
+		ClientPrefs.saveSettings();
 	}
 
-	public static inline function isNaN(v:Dynamic)
-		{
-			return v is Float && Math.isNaN((v : Float));
-		}
-	
-		public static inline function getDefault<T>(v:Null<T>, defaultValue:T):T
-			return (v == null || isNaN(v)) ? defaultValue : v;
-
-	public static function floorDecimal(value:Float, decimals:Int):Float
+	public static inline function getDefault<T>(v:Null<T>, defaultValue:T):T
 	{
-		if (decimals < 1)
-			return Math.floor(value);
-
-		var tempMult:Float = 1;
-		for (i in 0...decimals)
-			tempMult *= 10;
-
-		var newValue:Float = Math.floor(value * tempMult);
-		return newValue / tempMult;
+		return (v == null || MathsAddon.isNaN(v)) ? defaultValue : v;
 	}
 
 	static var _mousePoint:FlxPoint = new FlxPoint();
 	static var _objPoint:FlxPoint = new FlxPoint();
 
-	public static function mouseOverlapping<T:flixel.FlxObject>(obj:T, ?mousePoint:FlxPoint, ?camera:flixel.FlxCamera)
+	public static function mouseOverlapping<T:flixel.FlxObject>(obj:T, ?mousePoint:FlxPoint, ?camera:flixel.FlxCamera):Bool
 	{
-		if (camera == null)
-			camera = obj.camera;
+		camera ??= obj.camera;
 		if (mousePoint == null)
 		{
 			mousePoint = _mousePoint;
@@ -66,15 +41,6 @@ class CoolUtil
 			return FlxMath.pointInCoordinates(mousePoint.x, mousePoint.y, _objPoint.x, _objPoint.y, obj.width, obj.height);
 		}
 	}
-
-	public static function coolLerp(base:Float, target:Float, ratio:Float):Float
-		return base + cameraLerp(ratio) * (target - base);
-
-	public static function cameraLerp(lerp:Float):Float
-		return lerp * (FlxG.elapsed / (1 / 60));
-
-	inline public static function boundTo(value:Float, min:Float, max:Float):Float
-		return Math.max(min, Math.min(max, value));
 
 	public static function coolTextFile(path:String):Array<String>
 	{
@@ -178,7 +144,8 @@ class CoolUtil
 		since newer flixel versions are being enforced anyways.
 		@crowplexus
 	**/
-	public static var savePath(get,default):String;
+	public static var savePath(get, default):String;
+
 	@:access(flixel.util.FlxSave.validate)
 	inline public static function get_savePath():String
 		return '${FlxG.stage.application.meta.get('company')}/${FlxSave.validate(FlxG.stage.application.meta.get('file'))}';

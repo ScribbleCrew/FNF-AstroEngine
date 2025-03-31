@@ -1963,7 +1963,7 @@ class PlayState 	extends MusicBeatState
 		super.closeSubState();
 	}
 
-	override public function onFocus():Void
+	@:dox(hide) override public function onFocus():Void
 	{
 		if (!paused)
 		{
@@ -1983,7 +1983,7 @@ class PlayState 	extends MusicBeatState
 		super.onFocus();
 	}
 
-	override public function onFocusLost():Void
+	@:dox(hide) override public function onFocusLost():Void
 	{
 		#if desktop
 		if (!paused)
@@ -2132,8 +2132,8 @@ class PlayState 	extends MusicBeatState
 
 		if (camZooming)
 		{
-			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125 * camZoomingDecay * playbackRate), 0, 1));
-			camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125 * camZoomingDecay * playbackRate), 0, 1));
+			FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, MathsAddon.boundTo(1 - (elapsed * 3.125 * camZoomingDecay * playbackRate), 0, 1));
+			camHUD.zoom = FlxMath.lerp(1, camHUD.zoom, MathsAddon.boundTo(1 - (elapsed * 3.125 * camZoomingDecay * playbackRate), 0, 1));
 		}
 
 		FlxG.watch.addQuick("secShit", curSection);
@@ -2686,21 +2686,20 @@ class PlayState 	extends MusicBeatState
 						LuaUtils.setVarInArray(this, value1, trueValue);
 					}
 				}
-				catch (e:Dynamic)
+				catch (error:Dynamic)
 				{
-					var len:Int = e.message.indexOf('\n') + 1;
-					if (len <= 0)
-						len = e.message.length;
+					var errorLength:Int = error.message.indexOf('\n') + 1;// only include the actual error message.
+					if (errorLength <= 0) errorLength = error.message.length;
+
 					#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
-					addTextToDebug('ERROR ("Set Property" Event) - ' + e.message.substr(0, len), FlxColor.RED);
+					addTextToDebug('ERROR ("Set Property" Event) - ' + error.message.substr(0, errorLength), FlxColor.RED);
 					#else
-					FlxG.log.warn('ERROR ("Set Property" Event) - ' + e.message.substr(0, len));
+					FlxG.log.warn('ERROR ("Set Property" Event) - ' + error.message.substr(0, errorLength));
 					#end
 				}
 
 			case 'Play Sound':
-				if (flValue2 == null)
-					flValue2 = 1;
+				flValue2 ??= 1;
 				FlxG.sound.play(Paths.sound(value1), flValue2);
 		}
 		stageAccess(function(stage:BaseStage) stage.eventCalled(eventName, value1, value2, flValue1, flValue2, strumTime));
@@ -3814,7 +3813,7 @@ class PlayState 	extends MusicBeatState
 	@:dox(hide) function get_formattedRating():String{
 		var str:String = ratingName;
 		if(totalPlayed != 0)
-			str += ' (${CoolUtil.floorDecimal(PlayState.instance.ratingPercent * 100, 2)}%) - ' + PlayState.instance.ratingFC;
+			str += ' (${MathsAddon.floorDecimal(PlayState.instance.ratingPercent * 100, 2)}%) - ' + PlayState.instance.ratingFC;
 		return str;
 	}
 

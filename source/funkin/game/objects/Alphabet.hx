@@ -168,7 +168,7 @@ class Alphabet extends FlxSpriteGroup
 	{
 		if (isMenuItem)
 		{
-			var lerpVal:Float = CoolUtil.boundTo(elapsed * 9.6, 0, 1);
+			var lerpVal:Float = MathsAddon.boundTo(elapsed * 9.6, 0, 1);
 			if (changeX)
 				x = FlxMath.lerp(x, (targetY * distancePerItem.x) + startPosition.x, lerpVal);
 			if (changeY)
@@ -177,7 +177,7 @@ class Alphabet extends FlxSpriteGroup
 
 		if (astroMenuItem)
 		{
-			var lerpVal:Float = CoolUtil.boundTo(elapsed * 9.6, 0, 1);
+			var lerpVal:Float = MathsAddon.boundTo(elapsed * 9.6, 0, 1);
 			if (changeX)
 				x = FlxMath.lerp(x, (targetY * distancePerItem.x) + startPosition.x, lerpVal);
 			if (changeY)

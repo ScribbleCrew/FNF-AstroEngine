@@ -535,12 +535,8 @@ class BaseOptionsMenu extends BaseMenu
 
 		for(i in 0...optionsArray.length){
 			final lol = optionsArray[i];
-			if(lol.onMove==null)continue;
-			if(i == curSelected){
-				lol.onMove(true);
-			} else {
-				lol.onMove(false);
-			}
+			if(lol.onMove == null) continue;
+			lol.onMove(i == curSelected);
 		}
 
 		for (num => item in grpOptions.members)

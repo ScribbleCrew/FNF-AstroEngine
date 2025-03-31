@@ -124,6 +124,7 @@ import hxdiscord_rpc.Types;
 
 // Haxe
 import haxe.*;
+import haxe.std.MathsAddon;// maths addon!!!!
 using haxe.std.ArrayTools;
 
 // Lime

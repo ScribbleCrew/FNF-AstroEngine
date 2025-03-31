@@ -228,7 +228,7 @@ class AchievementsMenuState extends MusicBeatState
 		{
 			var val1:Float = options[curSelected].curProgress;
 			var val2:Float = options[curSelected].maxProgress;
-			progressTxt.text = CoolUtil.floorDecimal(val1, options[curSelected].decProgress) + ' / ' + CoolUtil.floorDecimal(val2, options[curSelected].decProgress);
+			progressTxt.text = MathsAddon.floorDecimal(val1, options[curSelected].decProgress) + ' / ' + MathsAddon.floorDecimal(val2, options[curSelected].decProgress);
 
 			barTween = FlxTween.tween(progressBar, {percent: (val1 / val2) * 100}, 0.5, {ease: FlxEase.quadOut,
 				onComplete: function(twn:FlxTween) progressBar.updateBar(),

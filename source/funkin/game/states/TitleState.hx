@@ -335,7 +335,7 @@ class TitleState extends MusicBeatState
 
 	@:dox(hide) override function update(elapsed:Float):Void
 	{
-		final mult:Float = FlxMath.lerp(1, FlxG.camera.zoom, CoolUtil.boundTo(1 - (elapsed * 9 * 1), 0, 1));
+		final mult:Float = FlxMath.lerp(1, FlxG.camera.zoom, MathsAddon.boundTo(1 - (elapsed * 9 * 1), 0, 1));
 		FlxG.camera.zoom = mult;
 
 		if (FlxG.sound.music != null)
@@ -355,7 +355,7 @@ class TitleState extends MusicBeatState
 
 		if (newTitle)
 		{
-			titleTimer += CoolUtil.boundTo(elapsed, 0, 1);
+			titleTimer += MathsAddon.boundTo(elapsed, 0, 1);
 			if (titleTimer > 2)
 				titleTimer -= 2;
 		}
