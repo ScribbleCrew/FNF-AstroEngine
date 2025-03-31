@@ -7,12 +7,14 @@ on:
       - 'assets/**'
       - 'source/**'
       - '.github/workflows/**'
+      - 'Project.xml'
   pull_request:
     branches: [main, experimental]
     paths:
       - 'assets/**'
       - 'source/**'
       - '.github/workflows/**'
+      - 'Project.xml'
 
   workflow_dispatch:
 
