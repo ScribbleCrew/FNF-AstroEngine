@@ -2,6 +2,7 @@ Allowed file extensions.
 
 Haxe (HScript):
 - .hx
+- .hxc
 
 Lua:
 - .funkinlua

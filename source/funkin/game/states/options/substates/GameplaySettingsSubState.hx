@@ -36,7 +36,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		var option:Option = new Option('Force Splashes', "Override song set notesplash asset.", 'forceNoteSplashes', BOOL);
 		addOption(option);
 
-		if (ClientPrefs.data.scoreBarType == 'Astro')
+		if (ClientPrefs.data.interfaceType == 'Astro')
 		{
 			var option:Option = new Option('Rating Stats', "Show Rating Stats", 'showRatingStats', BOOL);
 			addOption(option);

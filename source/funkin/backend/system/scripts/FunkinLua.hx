@@ -891,7 +891,7 @@ class FunkinLua
 		});
 		Lua_helper.add_callback(lua, "endSong", function()
 		{
-			game.KillNotes();
+			game.killNotes();
 			game.endSong();
 			return true;
 		});

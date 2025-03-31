@@ -93,7 +93,7 @@ import flixel.input.keyboard.FlxKey;
 	/**
 	 * Score-bar type.	
 	 */
-	public var scoreBarType:String = 'Astro';
+	public var interfaceType:String = 'Astro';
 
 	/**
 	 * Force player's chosen note splashes over songs.

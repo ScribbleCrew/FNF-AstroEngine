@@ -2,8 +2,6 @@ package funkin.game.objects.scorebars;
 
 class VSliceScore extends DefaultHUD
 {
-	var scoreText:FlxText;
-
 	override function create():Void
 	{
 		super.create();
@@ -16,6 +14,7 @@ class VSliceScore extends DefaultHUD
 		scoreText.setFormat(Constants.DEFAULT_FONT, 16, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(scoreText);
 
+		game.shouldTweenScore = false;
 		timeTxt.visible = timeBar.visible = false;
 	}
 

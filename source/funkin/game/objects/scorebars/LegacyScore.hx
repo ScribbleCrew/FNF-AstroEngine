@@ -22,14 +22,7 @@ class PsychScore extends BaseScorebar
 		add(scoreText);
 	}
 
-	function fixedRating():String {
-		var formattedRating:String = PlayState.instance.ratingName;
-		if(PlayState.instance.totalPlayed != 0)
-			formattedRating += ' (${CoolUtil.floorDecimal(PlayState.instance.ratingPercent * 100, 2)}%) - ' + PlayState.instance.ratingFC;
-		return formattedRating;
-	}
-
 	override function updateScore():Void
-		scoreText.text = 'Score: {1} | Misses: {2} | Rating: {3}'.substitute([PlayState.instance.songScore, PlayState.instance.songMisses, fixedRating()]);
+		scoreText.text = 'Score: {1} | Misses: {2} | Rating: {3}'.substitute([PlayState.instance.songScore, PlayState.instance.songMisses, PlayState.instance.formattedRating]);
 
 }

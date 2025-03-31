@@ -3,8 +3,6 @@ package funkin.game.objects.scorebars;
 using funkin.backend.utils.StringUtils;
 class PsychScore extends DefaultHUD
 {
-	private var scoreText:FlxText;
-
 	override function create():Void
 	{
 		super.create();

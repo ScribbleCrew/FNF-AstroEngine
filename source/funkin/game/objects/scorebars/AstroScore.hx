@@ -7,7 +7,6 @@ using flixel.util.FlxSpriteUtil;
 
 class AstroScore extends DefaultHUD
 {
-	private var scoreText:FlxText;
 	private var watermark:FlxText;
 	private var songLeft:FlxText;
 	private var versionTxtSmth:FlxText;

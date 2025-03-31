@@ -282,9 +282,13 @@ import flixel.addons.transition.FlxTransitionableState;
 			stage.stepHit();
 		});
 
-		// beathit stuff
+		// beat hit stuff
 		if (curStep % 4 == 0)
 			beatHit();
+
+		GlobalScript.instance.setOnScripts('curStep', curStep);//oops i forgor
+		GlobalScript.instance.callOnScripts('onStepHit', []);
+		GlobalScript.instance.callOnScripts('stepHit', []);
 	}
 
 	/**

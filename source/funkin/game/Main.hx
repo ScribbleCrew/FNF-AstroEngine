@@ -40,6 +40,11 @@ class Main extends flixel.FlxGame
 	 */
 	public static var instance(default, null):Main;
 
+	/**
+	* The current state name.
+	*/
+	public static var stateName:String = '';
+
 	/**	
 	 * Framerate variable.
 	 * used to handle my new sexy fps code.

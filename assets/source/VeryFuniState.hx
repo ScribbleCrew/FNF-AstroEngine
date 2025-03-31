@@ -1,3 +1,24 @@
+/**                                     
+ *      :                             :     
+ *     t#,                           t#,    
+ *    ;##W.                         ;##W.   
+ *   :#L:WE             ;          :#L:WE   
+ *  .KG  ,#D          .DL         .KG  ,#D  
+ *  EE    ;#f f.     :K#L     LWL EE    ;#f 
+ * f#.     t#iEW:   ;W##L   .E#f f#.     t#i
+ * :#G     GK E#t  t#KE#L  ,W#;  :#G     GK 
+ *  ;#L   LW. E#t f#D.L#L t#K:    ;#L   LW. 
+ *   t#f f#:  E#jG#f  L#LL#G       t#f f#:  
+ *    f#D#;   E###;   L###j         f#D#;   
+ *     G#t    E#K:    L#W;           G#t    
+ *      t     EG      LE.             t     
+ *            ;       ;@                    
+ *                           
+ * CUSTOM STATE EXAMPLE!!!!1111
+ * Use this state as am example and use the Template.hx has a base. 
+ * (NOTICE: ENUMS/TYPEDEF NOT CURRENTLY SUPPORTED, PLEASE TRY FIND ANOTHER WAY, MAKE A PR IF YOU FIND A GOOD METHOD).	
+ */
+
 import funkin.game.states.MainMenuState;
 
 // Shouldn't be static as this is a returning state (going to be used more than once).

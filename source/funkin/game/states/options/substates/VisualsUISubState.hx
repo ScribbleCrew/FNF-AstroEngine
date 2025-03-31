@@ -60,7 +60,7 @@ class VisualsUISubState extends BaseOptionsMenu
 			noteOptionID = optionsArray.length - 1;
 		}
 
-		addOption(new Option('User Interface:', "Which scorebar do you what?", 'scoreBarType', STRING, ['Astro', 'Psych', 'V-Slice']));
+		addOption(new Option('User Interface:', "What user interface would you like?", 'interfaceType', STRING, ['Astro', 'Psych', 'V-Slice']));
 
 		var noteSplashes:Array<String> = Mods.mergeAllTextsNamed('images/noteSplashes/list.txt');
 		if (noteSplashes.length > 0)
@@ -68,7 +68,7 @@ class VisualsUISubState extends BaseOptionsMenu
 			if (!noteSplashes.contains(ClientPrefs.data.splashSkin))
 				ClientPrefs.data.splashSkin = ClientPrefs.defaultData.splashSkin; // Reset to default if saved splashskin couldnt be found
 
-			noteSplashes.insert(0, ClientPrefs.defaultData.splashSkin); // Default skin always comes first
+			noteSplashes.insert(1, ClientPrefs.defaultData.splashSkin); // Default skin always comes first
 			var option:Option = new Option('Note Splashes:', "Select your prefered Note Splash variation or turn it off.", 'splashSkin', STRING, noteSplashes);
 			addOption(option);
 		}

@@ -15,6 +15,7 @@ class DefaultHUD extends BaseScorebar
 	// Botplay Txt
 	public var botplaySine:Float = 0;
 	public var botplayTxt:FlxText;
+	public var scoreText:FlxText;
 
 	public function new()
 	{
@@ -146,9 +147,33 @@ class DefaultHUD extends BaseScorebar
 		FlxTween.tween(timeTxt, {alpha: 1}, 0.5, {ease: FlxEase.circOut});
 	}
 
-	override public function update(elapsed:Float)
+	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		if(!game.startingSong){
+			if (!game.paused)
+				{
+					if (game.updateTime)
+					{
+						var curTime:Float = Conductor.songPosition - ClientPrefs.data.noteOffset;
+						if (curTime < 0)
+							curTime = 0;
+						game.songPercent = (curTime / game.songLength);
+	
+						var songCalc:Float = (game.songLength - curTime);
+						if (ClientPrefs.data.timeBarType == 'Time Elapsed')
+							songCalc = curTime;
+	
+						var secondsTotal:Int = Math.floor(songCalc / 1000);
+						if (secondsTotal < 0)
+							secondsTotal = 0;
+	
+						if (ClientPrefs.data.timeBarType != 'Song Name')
+							timeTxt.text = flixel.util.FlxStringUtil.formatTime(secondsTotal, false);
+					}
+				}
+		}
 
 		var mult:Float = FlxMath.lerp(1, iconP1.scale.x, CoolUtil.boundTo(1 - (elapsed * 9 * game.playbackRate), 0, 1));
 		iconP1.scale.set(mult, mult);
