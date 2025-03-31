@@ -1,6 +1,11 @@
 # Auto detect text files and perform LF normalization
-* text=auto
+* text=auto eol=lf
 
-*.hxs linguist-language=Haxe
-*.hsc linguist-language=Haxe
+# Haxe Stuff
+*.hx linguist-language=Haxe
+*.hxc linguist-language=Haxe
+*.hxp linguist-language=Haxe
 *.hscript linguist-language=Haxe
+
+# Lua Stuff
+*.funkinlua linguist-language=Lua

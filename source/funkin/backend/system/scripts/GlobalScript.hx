@@ -47,7 +47,7 @@ class GlobalScript
 			instance = new GlobalScript(); // i aint making a constructor
 			functions = new ScriptFunctions(); // lazy mf
 			#if LUA_ALLOWED extensions.set('lua', [".lua", ".funkinlua"]);#end
-			#if HSCRIPT_ALLOWED extensions.set('haxe', [".hx", ".hxc"]); /* funi extensions */ #end
+			#if HSCRIPT_ALLOWED extensions.set('haxe', [".hx", ".hxc", ".hxp", ".hscript" /* why would anyone need this... */]); /* funi extensions */ #end
 		
 			Logs.prefixedTrace('Successfully initialized', 'GlobalScript', GREEN);
 		}
