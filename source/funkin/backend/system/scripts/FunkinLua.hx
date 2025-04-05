@@ -1,6 +1,6 @@
 package funkin.backend.system.scripts;
 
-import funkin.backend.system.scripts.luaStuff.*;
+import funkin.backend.system.scripts.objects.*;
 import funkin.game.states.LoadingState;
 import openfl.display.BitmapData;
 #if LUA_ALLOWED

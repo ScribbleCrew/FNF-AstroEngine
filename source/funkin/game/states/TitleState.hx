@@ -134,16 +134,14 @@ class TitleState extends MusicBeatState
 	* Skip intro function.	
 	*/
 	function skipIntro():Void
-	{
 		if (!skippedIntro)
-		{
-			remove(introGroup.newsgroundSprite);
+		{	
+			introGroup.empty();
 			remove(introGroup);
 			FlxG.camera.flash(FlxColor.WHITE, 4);
 
 			skippedIntro = true;
 		}
-	}
 
 	function loadXMLData():Void
 	{
@@ -433,41 +431,51 @@ class TitleState extends MusicBeatState
 		}
 
 		// intro.
+		var newsgroundSprite:FlxSprite = new FlxSprite();// fix stupid flixel shi.
 		if (!closedState)
 		{
 			// basically controls the fnf intro
 			sickBeats++;
-			switch (sickBeats)
+			switch (sickBeats)//TODO: include this inside the .xml file.
 			{
 				case 1:
 					FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
 					FlxG.sound.music.fadeIn(4, 0, 0.7);
+					
+					// newsground sprite stuff.
+					newsgroundSprite = new FlxSprite(0, FlxG.height * 0.52).loadGraphic(Paths.image('newgrounds_logo'));
+					newsgroundSprite.visible = false;
+					newsgroundSprite.setGraphicSize(Std.int(newsgroundSprite.width * 0.8));
+					newsgroundSprite.updateHitbox();
+					newsgroundSprite.screenCenter(X);
+					newsgroundSprite.antialiasing = ClientPrefs.data.antialiasing;
+					introGroup.add(newsgroundSprite);
 				case 2:
-					introGroup.create(['Astro Engine by'], 40);
+					introGroup.create(['Astro Engine by'], FlxPoint.get(0,40));
 				case 4:
-					introGroup.make('YourFriendOrbl', 40);
+					introGroup.include('YourFriendOrbl', FlxPoint.get(0,40));
 				case 5:
-					introGroup.delete();
+					introGroup.empty();
 				case 6:
-					introGroup.create(['Not associated', 'with'], -40);
+					introGroup.create(['Not associated', 'with'], FlxPoint.get(0,-40));
 				case 8:
-					introGroup.make('newgrounds', -40);
-					introGroup.newsgroundSprite.visible = true;
+					introGroup.include('newgrounds', FlxPoint.get(0,-40));
+					newsgroundSprite.visible = true;
 				case 9:
-					introGroup.delete();
-					introGroup.newsgroundSprite.visible = false;
+					introGroup.empty();
+					newsgroundSprite.visible = false;
 				case 10:
 					introGroup.create([curWacky[0]]);
 				case 12:
-					introGroup.make(curWacky[1]);
+					introGroup.include(curWacky[1]);
 				case 13:
-					introGroup.delete();
+					introGroup.empty();
 				case 14:
-					introGroup.make('Friday');
+					introGroup.create(['Friday']);
 				case 15:
-					introGroup.make('Night');
+					introGroup.include('Night');
 				case 16:
-					introGroup.make('Funkin');
+					introGroup.include('Funkin');
 				case 17:
 					skipIntro();
 			}

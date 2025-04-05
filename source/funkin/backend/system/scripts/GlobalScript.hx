@@ -7,7 +7,7 @@ import haxe.macro.Context;
 /**
  * The return status for scripts.	
  */
-enum GlobalStatus
+enum GlobalStatus// whats even the point of this. i'll remove it later...
 {
 	/**
 	 * Success (when correctly ran).	

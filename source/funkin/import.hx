@@ -66,7 +66,7 @@ import haxe.extern.*;
 
 // Lua
 import funkin.backend.system.scripts.*;
-import funkin.backend.system.scripts.luaStuff.*;
+import funkin.backend.system.scripts.objects.*;
 #if LUA_ALLOWED
 import llua.*;
 import llua.Lua;

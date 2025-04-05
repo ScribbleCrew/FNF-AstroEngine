@@ -192,13 +192,13 @@ class FlxUINumericStepper extends FlxUIInputText
 	}
 
 	public var broadcastStepperEvent:Bool = true;
-	function _internalOnChange()
+	function _internalOnChange():Void
 	{
 		if(onValueChange != null) onValueChange();
 		if(broadcastStepperEvent) FlxUIEventHandler.event(CHANGE_EVENT, this);
 	}
 
-	override function setGraphicSize(width:Float = 0, height:Float = 0)
+	@:dox(hide) override function setGraphicSize(width:Float = 0, height:Float = 0)
 	{
 		super.setGraphicSize(width, height);
 		behindText.setGraphicSize(width - 32, height - 2);

@@ -592,7 +592,7 @@ class PlayState extends MusicBeatState
 	/**
 	 * Lua debug text group.
 	 */
-	private var luaDebugGroup:FlxTypedGroup<DebugLuaText>;
+	private var luaDebugGroup:FlxTypedGroup<DebugText>;
 	#end
 
 	/**
@@ -828,7 +828,7 @@ class PlayState extends MusicBeatState
 		#end
 
 		#if LUA_ALLOWED
-		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
+		luaDebugGroup = new FlxTypedGroup<DebugText>();
 		luaDebugGroup.cameras = [camOther];
 		add(luaDebugGroup);
 		#end
@@ -1080,8 +1080,8 @@ class PlayState extends MusicBeatState
 	#end
 
 	#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
-	public function addTextToDebug(text:String, color:FlxColor):DebugLuaText {
-		var newText:DebugLuaText = luaDebugGroup.recycle(DebugLuaText);
+	public function addTextToDebug(text:String, color:FlxColor):DebugText {
+		var newText:DebugText = luaDebugGroup.recycle(DebugText);
 		newText.text = text;
 		newText.color = color;
 		newText.disableTime = 6;
@@ -1089,7 +1089,7 @@ class PlayState extends MusicBeatState
 		newText.alpha = 1;
 		newText.setPosition(10, 8 - newText.height);
 
-		luaDebugGroup.forEachAlive(function(spr:DebugLuaText) spr.y += newText.height + 2);
+		luaDebugGroup.forEachAlive(function(spr:DebugText) spr.y += newText.height + 2);
 		luaDebugGroup.add(newText);
 
 		Sys.println(text);

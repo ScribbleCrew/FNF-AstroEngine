@@ -1,4 +1,4 @@
-package funkin.backend.system.scripts.luaStuff;
+package funkin.backend.system.scripts.objects;
 
 import flixel.text.FlxText.FlxTextBorderStyle;
 import flixel.util.FlxColor;

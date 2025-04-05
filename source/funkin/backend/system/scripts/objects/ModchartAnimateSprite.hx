@@ -1,6 +1,7 @@
-package funkin.backend.system.scripts.luaStuff;
+package funkin.backend.system.scripts.objects;
 
-class ModchartSprite extends FlxSprite
+#if flxanimate
+class ModchartAnimateSprite extends FlxAnimate
 {
 	public var animOffsets:Map<String, Array<Float>> = new Map<String, Array<Float>>();
 	public function new(?x:Float = 0, ?y:Float = 0)
@@ -11,7 +12,7 @@ class ModchartSprite extends FlxSprite
 
 	public function playAnim(name:String, forced:Bool = false, ?reverse:Bool = false, ?startFrame:Int = 0)
 	{
-		animation.play(name, forced, reverse, startFrame);
+		anim.play(name, forced, reverse, startFrame);
 		
 		var daOffset = animOffsets.get(name);
 		if (animOffsets.exists(name)) offset.set(daOffset[0], daOffset[1]);
@@ -22,3 +23,4 @@ class ModchartSprite extends FlxSprite
 		animOffsets.set(name, [x, y]);
 	}
 }
+#end

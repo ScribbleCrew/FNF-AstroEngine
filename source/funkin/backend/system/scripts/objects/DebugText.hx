@@ -1,8 +1,8 @@
-package funkin.backend.system.scripts.luaStuff;
+package funkin.backend.system.scripts.objects;
 
 import flixel.util.FlxColor;
 
-class DebugLuaText extends flixel.text.FlxText
+class DebugText extends flixel.text.FlxText
 {
 	public var disableTime:Float = 6;
 
