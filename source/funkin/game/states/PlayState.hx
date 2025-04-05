@@ -1353,7 +1353,7 @@ class PlayState extends MusicBeatState
 		seenCutscene = true;
 		inCutscene = false;
 		var ret:Dynamic = GlobalScript.instance.callOnScripts('onStartCountdown', null, true);
-		if (ret != GlobalScript.functions.Function_Stop)
+		if (ret != ScriptUtil.Function_Stop)
 		{
 			if (skipCountdown || startOnTime > 0)
 				skipArrowStartTween = true;
@@ -1848,10 +1848,8 @@ class PlayState extends MusicBeatState
 	function eventNoteEarlyTrigger(event:EventNote):Float
 	{
 		var returnedValue:Null<Float> = GlobalScript.instance.callOnScripts('eventEarlyTrigger', [event.event, event.value1, event.value2, event.strumTime], [], [0]);
-		if (returnedValue != null && returnedValue != 0 && returnedValue != GlobalScript.functions.Function_Continue)
-		{
+		if (returnedValue != null && returnedValue != 0 && returnedValue != cast(ScriptUtil.Function_Continue, Null<Float>))
 			return returnedValue;
-		}
 
 		switch (event.event)
 		{
@@ -2096,7 +2094,7 @@ class PlayState extends MusicBeatState
 		if (controls.PAUSE && startedCountdown && canPause)
 		{
 			final onPauseScrips:Dynamic = GlobalScript.instance.callOnScripts('onPause', [], false);
-			if (onPauseScrips != GlobalScript.functions.Function_Stop)
+			if (onPauseScrips != ScriptUtil.Function_Stop)
 				openPauseMenu();
 		}
 
@@ -2333,7 +2331,7 @@ class PlayState extends MusicBeatState
 		if (((skipHealthCheck && instakillOnMiss) || health <= 0) && !practiceMode && !isDead && gameOverTimer == null)
 		{
 			var ret:Dynamic = GlobalScript.instance.callOnScripts('onGameOver', [], false);
-			if (ret != GlobalScript.functions.Function_Stop)
+			if (ret != ScriptUtil.Function_Stop)
 			{
 				FlxG.animationTimeScale = 1;
 				boyfriend.stunned = true;
@@ -2811,7 +2809,7 @@ class PlayState extends MusicBeatState
 
 		#if ACHIEVEMENTS_ALLOWED checkForAchievement([WeekData.getWeekFileName() + '_nomiss', 'ur_bad', 'ur_good', 'hype', 'two_keys', 'toastie', 'debugger']); #end
 
-		if (GlobalScript.instance.callOnScripts('onEndSong', [], false) != GlobalScript.functions.Function_Stop && !transitioning)
+		if (GlobalScript.instance.callOnScripts('onEndSong', [], false) != ScriptUtil.Function_Stop && !transitioning)
 		{
 			#if !switch
 			Highscore.saveScore(SONG.song, songScore, storyDifficulty, Math.isNaN(ratingPercent) ? 0 : ratingPercent);
@@ -3123,7 +3121,7 @@ class PlayState extends MusicBeatState
 			return;
 
 		var ret:Dynamic = GlobalScript.instance.callOnScripts('onKeyPressPre', [key]);
-		if (ret == GlobalScript.functions.Function_Stop)
+		if (ret == ScriptUtil.Function_Stop)
 			return;
 
 		// more accurate hit time for the ratings?
@@ -3210,7 +3208,7 @@ class PlayState extends MusicBeatState
 			return;
 
 		var ret:Dynamic = GlobalScript.instance.callOnScripts('onKeyReleasePre', [key]);
-		if (ret == GlobalScript.functions.Function_Stop)
+		if (ret == ScriptUtil.Function_Stop)
 			return;
 
 		var spr:StrumNote = playerStrums.members[key];
@@ -3797,7 +3795,7 @@ class PlayState extends MusicBeatState
 		GlobalScript.instance.setOnScripts('hits', songHits);
 
 		var ret:Dynamic = GlobalScript.instance.callOnScripts('onRecalculateRating', [], false);
-		if (ret != GlobalScript.functions.Function_Stop)
+		if (ret != ScriptUtil.Function_Stop)
 		{
 			if (totalPlayed < 1) // Prevent divide by 0
 				ratingName = '?';

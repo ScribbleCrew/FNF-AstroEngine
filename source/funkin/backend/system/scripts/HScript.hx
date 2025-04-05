@@ -18,7 +18,7 @@ typedef HScriptInfos = {
 	#end
 }
 
-class HScript extends Iris
+class HScript extends Iris implements IScript
 {
 	public var filePath:String;
 	public var modFolder:String;
@@ -376,11 +376,11 @@ class HScript extends Iris
 		set('customSubstate', CustomSubstate.instance);
 		set('customSubstateName', CustomSubstate.name);
 
-		set('Function_Stop', GlobalScript.functions.Function_Stop);
-		set('Function_Continue', GlobalScript.functions.Function_Continue);
-		set('Function_StopLua', GlobalScript.functions.Function_StopLua); //doesnt do much cuz HScript has a lower priority than Lua
-		set('Function_StopHScript', GlobalScript.functions.Function_StopHScript);
-		set('Function_StopAll', GlobalScript.functions.Function_StopAll);
+		set('Function_Stop', Function_Stop);
+		set('Function_Continue', Function_Continue);
+		set('Function_StopLua', Function_StopLua); //doesnt do much cuz HScript has a lower priority than Lua
+		set('Function_StopHScript', Function_StopHScript);
+		set('Function_StopAll', Function_StopAll);
 	}
 
 	#if LUA_ALLOWED
@@ -453,22 +453,22 @@ class HScript extends Iris
 	}
 	#end
 
-	override function call(funcToRun:String, ?args:Array<Dynamic>):IrisCall {
-		if (funcToRun == null || interp == null) return null;
+	override function call(functionName:String, ?args:Array<Dynamic>):IrisCall {
+		if (functionName == null || interp == null) return null;
 
-		if (!exists(funcToRun)) {
-			Iris.error('No function named: $funcToRun', this.interp.posInfos());
+		if (!exists(functionName)) {
+			Iris.error('No function named: $functionName', this.interp.posInfos());
 			return null;
 		}
 
 		try {
-			var func:Dynamic = interp.variables.get(funcToRun); // function signature
+			var func:Dynamic = interp.variables.get(functionName); // function signature
 			final ret = Reflect.callMethod(null, func, args ?? []);
-			return {funName: funcToRun, signature: func, returnValue: ret};
+			return {funName: functionName, signature: func, returnValue: ret};
 		}
 		catch(e:IrisError) {
 			var pos:HScriptInfos = cast this.interp.posInfos();
-			pos.funcName = funcToRun;
+			pos.funcName = functionName;
 			#if LUA_ALLOWED
 			if (parentLua != null)
 			{

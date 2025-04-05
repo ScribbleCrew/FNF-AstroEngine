@@ -68,7 +68,7 @@ import funkin.backend.system.scripts.HScript;
 import crowplexus.iris.Iris;
 #end
 
-class FunkinLua
+class FunkinLua implements IScript
 {
 	public var lua:State = null;
 	public var camTarget:FlxCamera;
@@ -164,11 +164,11 @@ class FunkinLua
 
 
 	function setCustomCallbacks(game:PlayState){
-		set('Function_StopLua', GlobalScript.functions.Function_StopLua);
-		set('Function_StopHScript', GlobalScript.functions.Function_StopHScript);
-		set('Function_StopAll', GlobalScript.functions.Function_StopAll);
-		set('Function_Stop', GlobalScript.functions.Function_Stop);
-		set('Function_Continue', GlobalScript.functions.Function_Continue);
+		set('Function_StopLua', Function_StopLua);
+		set('Function_StopHScript', Function_StopHScript);
+		set('Function_StopAll', Function_StopAll);
+		set('Function_Stop', Function_Stop);
+		set('Function_Continue', Function_Continue);
 		set('luaDebugMode', false);
 		set('luaDeprecatedWarnings', true);
 		set('version', EngineData.VERSION.trim());
@@ -1833,57 +1833,77 @@ class FunkinLua
 
 	public static var lastCalledScript:FunkinLua = null;
 
-	public function call(func:String, args:Array<Dynamic>):Dynamic
+	public function call(functionName:String, ?funcArgs:Array<Dynamic>):Dynamic
 	{
 		if (closed)
-			return GlobalScript.functions.Function_Continue;
+			return Function_Continue;
 
-		lastCalledFunction = func;
+		lastCalledFunction = functionName;
 		lastCalledScript = this;
+		
+		if(lua == null) return Function_Continue;
+		funcArgs ??= [];
+
 		try
 		{
 			if (lua == null)
-				return GlobalScript.functions.Function_Continue;
+				return Function_Continue;
 
-			Lua.getglobal(lua, func);
+			Lua.getglobal(lua, functionName);
 			var type:Int = Lua.type(lua, -1);
 
 			if (type != Lua.LUA_TFUNCTION)
 			{
-				if (type > Lua.LUA_TNIL)
-					luaTrace("ERROR (" + func + "): attempt to call a " + LuaUtils.typeToString(type) + " value", false, false, FlxColor.RED);
+
+				if (type > Lua.LUA_TNIL){
+					final message:String = "ERROR: " + scriptName + " (" + functionName + "): attempt to call a " + typeToString(type) + " value";
+					luaTrace(message, true, false, FlxColor.RED);
+				}
 
 				Lua.pop(lua, 1);
-				return GlobalScript.functions.Function_Continue;
+				return Function_Continue;
 			}
 
-			for (arg in args)
-				Convert.toLua(lua, arg);
-			var status:Int = Lua.pcall(lua, args.length, 1, 0);
+			for (arg in funcArgs) Convert.toLua(lua, arg);
+			final status:Int = Lua.pcall(lua, funcArgs.length, 1, 0);
 
 			// Checks if it's not successful, then show a error.
 			if (status != Lua.LUA_OK)
 			{
-				var error:String = getErrorMessage(status);
-				luaTrace("ERROR (" + func + "): " + error, false, false, FlxColor.RED);
-				return GlobalScript.functions.Function_Continue;
+				final error:String = getErrorMessage(status);
+				luaTrace("ERROR (" + functionName + "): " + error, false, false, FlxColor.RED);
+				stop();
+				return Function_Continue;
 			}
 
 			// If successful, pass and then return the result.
 			var result:Dynamic = cast Convert.fromLua(lua, -1);
-			if (result == null)
-				result = GlobalScript.functions.Function_Continue;
+			result ??= Function_Continue;
 
 			Lua.pop(lua, 1);
-			if (closed)
-				stop();
+			if (closed) stop();
 			return result;
 		}
 		catch (e:Dynamic)
 		{
-			trace(e);
+			Logs.trace(e, RED);
 		}
-		return GlobalScript.functions.Function_Continue;
+		return Function_Continue;
+	}
+
+	static function typeToString(type:Int):String {
+		#if LUA_ALLOWED
+		switch(type)
+		{
+			case Lua.LUA_TBOOLEAN: return "boolean";
+			case Lua.LUA_TNUMBER: return "number";
+			case Lua.LUA_TSTRING: return "string";
+			case Lua.LUA_TTABLE: return "table";
+			case Lua.LUA_TFUNCTION: return "function";
+		}
+		if (type <= Lua.LUA_TNIL) return "nil";
+		#end
+		return "unknown";
 	}
 
 	public function set(variable:String, data:Dynamic)

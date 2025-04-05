@@ -33,11 +33,6 @@ class GlobalScript
 	public static var instance(default, null):GlobalScript = null;
 
 	/**
-	 * Script Functions, like `##ASTRO_GLOBALSCRIPT_FUNCTION_CONTINUE`.
-	 */
-	public static var functions(default, null):ScriptFunctions = null;
-
-	/**
 	 * Creates a new instance of `GlobalScript`.
 	 */
 	public static function init():Void
@@ -45,7 +40,6 @@ class GlobalScript
 		try
 		{
 			instance = new GlobalScript(); // i aint making a constructor
-			functions = new ScriptFunctions(); // lazy mf
 			#if LUA_ALLOWED extensions.set('lua', [".lua", ".funkinlua"]);#end
 			#if HSCRIPT_ALLOWED extensions.set('haxe', [".hx", ".hxc", ".hxp", ".hscript" /* why would anyone need this... */]); /* funi extensions */ #end
 		
@@ -163,7 +157,7 @@ class GlobalScript
 		// Null checks.
 		args ??= [];
 		exclusions ??= [];
-		excludeValues ??= [GlobalScript.functions.Function_Continue];
+		excludeValues ??= [Function_Continue];
 
 		// calling.
 		var scriptCall:Dynamic = #if LUA_ALLOWED callOnLuas(functionName, args, ignoreStops, exclusions, excludeValues) #else null #end;
@@ -216,14 +210,14 @@ class GlobalScript
 	public function callOnLuas(functionName:String, args:Array<Dynamic> = null, ignoreStops = false, exclusions:Array<String> = null,
 			excludeValues:Array<Dynamic> = null):Dynamic
 	{
-		var returnVal:Dynamic = GlobalScript.functions.Function_Continue;
+		var returnVal:Dynamic = Function_Continue;
 		#if LUA_ALLOWED
 		if (args == null)
 			args = [];
 		if (exclusions == null)
 			exclusions = [];
 		if (excludeValues == null)
-			excludeValues = [GlobalScript.functions.Function_Continue];
+			excludeValues = [Function_Continue];
 
 		var arr:Array<FunkinLua> = [];
 		for (script in luaInstances)
@@ -238,7 +232,7 @@ class GlobalScript
 				continue;
 
 			var myValue:Dynamic = script.call(functionName, args);
-			if ((myValue == GlobalScript.functions.Function_StopLua || myValue == GlobalScript.functions.Function_StopAll)
+			if ((myValue == Function_StopLua || myValue == Function_StopAll)
 				&& !excludeValues.contains(myValue)
 				&& !ignoreStops)
 			{
@@ -334,14 +328,14 @@ class GlobalScript
 	public function callOnHScript(functionName:String, args:Array<Dynamic> = null, ?ignoreStops:Bool = false, exclusions:Array<String> = null,
 			excludeValues:Array<Dynamic> = null):Dynamic
 	{
-		var returnVal:String = GlobalScript.functions.Function_Continue;
+		var returnVal:String = Function_Continue;
 
 		#if HSCRIPT_ALLOWED
 		if (exclusions == null)
 			exclusions = new Array();
 		if (excludeValues == null)
 			excludeValues = new Array();
-		excludeValues.push(GlobalScript.functions.Function_Continue);
+		excludeValues.push(Function_Continue);
 
 		final len:Int = hscriptInstances.length;
 		if (len < 1)
@@ -358,7 +352,7 @@ class GlobalScript
 				var callValue = script.call(functionName, args);
 				var myValue:Dynamic = callValue.returnValue;
 
-				if ((myValue == GlobalScript.functions.Function_StopHScript || myValue == GlobalScript.functions.Function_StopAll)
+				if ((myValue == Function_StopHScript || myValue == Function_StopAll)
 					&& !excludeValues.contains(myValue)
 					&& !ignoreStops)
 				{
@@ -431,21 +425,4 @@ class GlobalScript
 	}
 
 	public function new():Void {}
-}
-
-typedef ScriptFunction = Dynamic; // it looks cool, im sowwy :(
-
-@:publicFields class ScriptFunctions
-{
-	#if (HSCRIPT_ALLOWED || LUA_ALLOWED)
-	final Function_Stop:ScriptFunction = "##ASTRO_GLOBALSCRIPT_FUNCTION_STOP";
-	final Function_Continue:ScriptFunction = "##ASTRO_GLOBALSCRIPT_FUNCTION_CONTINUE";
-	final Function_StopAll:ScriptFunction = "##ASTRO_GLOBALSCRIPT_FUNCTION_STOPALL";
-
-	#if LUA_ALLOWED final Function_StopLua:ScriptFunction = "##ASTRO_GLOBALSCRIPT_FUNCTIONSTOP_LUA"; #end
-	#if HSCRIPT_ALLOWED final Function_StopHScript:ScriptFunction = "##ASTRO_GLOBALSCRIPT_FUNCTIONSTOP_HSCRIPT"; #end
-	#end
-	public function new():Void
-	{
-	}
 }
