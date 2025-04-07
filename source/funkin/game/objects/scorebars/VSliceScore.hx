@@ -3,7 +3,7 @@ package funkin.game.objects.scorebars;
 // todo: adjust the strums to fit the v-slice style.
 class VSliceScore extends UserInterface
 {
-	override function create():Void
+	@:dox(hide) override function create():Void
 	{
 		super.create();
 
@@ -18,10 +18,6 @@ class VSliceScore extends UserInterface
 		game.shouldTweenScore = timeTxt.visible = timeBar.visible = false;
 	}
 
-	override function updateScore():Void
-	{
-		scoreText.text = 'Score: {1}'.substitute([
-			FlxStringUtil.formatMoney(PlayState.instance.songScore, false, true)
-		]);
-	}
+	@:dox(hide) override function updateScore():Void
+		scoreText.text = 'Score: {1}'.substitute([FlxStringUtil.formatMoney(PlayState.instance.songScore, false, true)]);
 }

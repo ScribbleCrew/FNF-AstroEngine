@@ -2,7 +2,7 @@ package funkin.game.objects.scorebars;
 
 class PsychScore extends UserInterface
 {
-	override function create():Void
+	@:dox(hide) override function create():Void
 	{
 		scoreText = new FlxText(0, healthBar.y + 40, FlxG.width, "", 20);
 		scoreText.scrollFactor.set();
@@ -13,7 +13,7 @@ class PsychScore extends UserInterface
 		add(scoreText);
 	}
 
-	override function updateScore():Void
+	@:dox(hide) override function updateScore():Void
 	{
 		scoreText.text = 'Score: {1} | Misses: {2} | Rating: {3}'.substitute([
 			PlayState.instance.songScore,

@@ -5,9 +5,7 @@ package funkin.game.objects.scorebars;
 using funkin.backend.utils.StringUtils;
 class PsychScore extends BaseScorebar
 {
-	var scoreText:FlxText;
-
-	override function create():Void
+	@:dox(hide) override function create():Void
 	{
 		super.create();
 
@@ -22,7 +20,7 @@ class PsychScore extends BaseScorebar
 		add(scoreText);
 	}
 
-	override function updateScore():Void
+	@:dox(hide) override function updateScore():Void
 		scoreText.text = 'Score: {1} | Misses: {2} | Rating: {3}'.substitute([PlayState.instance.songScore, PlayState.instance.songMisses, PlayState.instance.formattedRating]);
 
 }

@@ -136,7 +136,7 @@ class AstroScore extends UserInterface
 			+ FlxStringUtil.formatTime(Math.max(0, Math.floor(FlxG.sound.music.length / 1000)), false);
 	}
 
-	override function updateScore():Void
+	@:dox(hide)override function updateScore():Void
 	{
 		scoreText.text = 'Score: {1} • Misses: {2} • Rating: {3}{4}'.substitute([// i love this func
 			game.songScore,
@@ -149,7 +149,7 @@ class AstroScore extends UserInterface
 			updateStats();
 	}
 
-	@:dox(show) private dynamic function updateStats():Void
+	@:dox(hide) private dynamic function updateStats():Void
 	{
 		final sicks:Int = game.ratingsData[0].hits;
 		final goods:Int = game.ratingsData[1].hits;
@@ -163,7 +163,10 @@ class AstroScore extends UserInterface
 		missTxt.text = 'Miss: ${game.songMisses}';
 	}
 
-	@:dox(show) private function addCurveBG(x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0, ellipseWidthAndHeight:Int = 0, startAlpha:Int = 0,
+	/**
+	* Create a round rect.	
+	*/
+	 private function addCurveBG(x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0, ellipseWidthAndHeight:Int = 0, startAlpha:Int = 0,
 			?group:FlxTypedGroup<Dynamic>)
 	{
 		// width and height
