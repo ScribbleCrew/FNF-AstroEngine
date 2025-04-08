@@ -41,8 +41,6 @@ typedef TitleStartColor =
 	alpha:Float
 }
 
-// needs rewrite
-
 @:access(flixel.animation.FlxAnimationController)
 class TitleState extends MusicBeatState
 {

@@ -1,0 +1,1 @@
+Songs can either go in data/ or data/songs/
