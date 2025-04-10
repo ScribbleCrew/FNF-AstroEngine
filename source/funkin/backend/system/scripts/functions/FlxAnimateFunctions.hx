@@ -1,7 +1,7 @@
 package funkin.backend.system.scripts.functions;
 
 import openfl.utils.Assets;
-
+import funkin.backend.system.scripts.objects.ModchartSprite.ModchartAnimateSprite;
 #if (LUA_ALLOWED && flxanimate)
 class FlxAnimateFunctions
 {

@@ -1,30 +1,5 @@
 package funkin.backend.system.scripts;
 
-import haxe.macro.Type.ClassType;
-import haxe.macro.Type.Ref;
-import haxe.macro.Context;
-
-/**
- * The return status for scripts.	
- */
-enum GlobalStatus// whats even the point of this. i'll remove it later...
-{
-	/**
-	 * Success (when correctly ran).	
-	 */
-	SUCCESS;
-
-	/**
-	 * Error (error, ofc).	
-	 */
-	ERROR;
-
-	/**
-	 * Unknown (doesn't know what happened).	
-	 */
-	UNKNOWN;
-}
-
 class GlobalScript
 {
 	/**
@@ -171,13 +146,13 @@ class GlobalScript
 	#end
 
 	#if LUA_ALLOWED
-	public function startLuasNamed(luaFile:String):GlobalStatus
+	public function startLuasNamed(luaFile:String):Bool
 	{
 		var luaScript:String;
 
 		for (script in luaInstances)
 			if (script.scriptName == luaFile)
-				return GlobalStatus.ERROR;
+				return false;
 
 		#if MODS_ALLOWED
 		luaScript = Paths.modFolders(luaFile);
@@ -185,14 +160,14 @@ class GlobalScript
 		FileSystem.exists(luaScript) ? {
 			luaInstances.push(new FunkinLua(luaScript).execute());
 
-			return GlobalStatus.SUCCESS;
+			return true;
 		} : {
 			luaScript = Paths.getSharedPath(luaFile);
 			if (FileSystem.exists(luaScript))
 			{
 				luaInstances.push(new FunkinLua(luaScript).execute());
 
-				return GlobalStatus.SUCCESS;
+				return true;
 			}
 			}
 		#elseif sys
@@ -201,10 +176,10 @@ class GlobalScript
 		if (OpenFlAssets.exists(luaScript))
 		{
 			luaInstances.push(new FunkinLua(luaScript).execute());
-			return GlobalStatus.SUCCESS;
+			return true;
 		}
 		#end
-		return GlobalStatus.ERROR;
+		return false;
 	}
 
 	public function callOnLuas(functionName:String, args:Array<Dynamic> = null, ignoreStops = false, exclusions:Array<String> = null,
@@ -287,7 +262,7 @@ class GlobalScript
 		return null;
 	}
 
-	public function initHScriptHook(filePath:String):GlobalStatus
+	public function initHScriptHook(filePath:String):Bool
 	{
 		var hscriptInstance:HScript = null;
 
@@ -300,7 +275,7 @@ class GlobalScript
 
 			Logs.prefixedTrace('successfully initialized HScript interp on "$filePath"', 'Global Script', GREEN);
 
-			return GlobalStatus.SUCCESS;
+			return true;
 		}
 		catch (error:IrisError)
 		{
@@ -311,10 +286,10 @@ class GlobalScript
 			if (hscriptInstance != null)
 				hscriptInstance.destroy();
 
-			return GlobalStatus.ERROR;
+			return false;
 		}
 
-		return GlobalStatus.UNKNOWN;
+		return false;//unknown
 	}
 
 	/**

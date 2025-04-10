@@ -8,7 +8,8 @@ import funkin.game.states.PlayState;
 class ModchartText extends flixel.text.FlxText
 {
 	public var wasAdded:Bool = false;
-	public function new(x:Float, y:Float, text:String, width:Float)
+	
+	public function new(x:Float, y:Float, text:String, width:Float):Void
 	{
 		super(x, y, width, text, 16);
 		setFormat(Constants.DEFAULT_FONT, 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);

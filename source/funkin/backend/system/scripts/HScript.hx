@@ -391,13 +391,9 @@ class HScript extends Iris implements IScript
 			{
 				final retVal:IrisCall = funk.hscript.call(funcToRun, funcArgs);
 				if (retVal != null)
-				{
 					return (retVal.returnValue == null || LuaUtils.isOfTypes(retVal.returnValue, [Bool, Int, Float, String, Array])) ? retVal.returnValue : null;
-				}
 				else if (funk.hscript.returnValue != null)
-				{
 					return funk.hscript.returnValue;
-				}
 			}
 			return null;
 		});
