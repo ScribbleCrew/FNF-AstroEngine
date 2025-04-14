@@ -15,10 +15,11 @@
  *            ;       ;@                    
  *                           
  * CUSTOM STATE EXAMPLE!!!!1111
- * Use this state as am example and use the Template.hx has a base. 
- * (NOTICE: ENUMS/TYPEDEF NOT CURRENTLY SUPPORTED, PLEASE TRY FIND ANOTHER WAY, MAKE A PR IF YOU FIND A GOOD METHOD).	
+ * Use this state as an example and use `Template.hx` as a base. 
+ * (NOTICE: ENUMS/TYPEDEF/CLASSES NOT CURRENTLY SUPPORTED BY HSCRIPT-IRIS, PLEASE TRY FIND ANOTHER WAY, MAKE A PR IF YOU HAVE A RELIABLE METHOD).	
  */
 
+// idk but softmoddin' weird!!!
 import funkin.game.states.MainMenuState;
 
 // Shouldn't be static as this is a returning state (going to be used more than once).
