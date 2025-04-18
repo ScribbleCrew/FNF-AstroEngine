@@ -177,6 +177,14 @@ class FunkinLua implements IScript
 		DeprecatedFunctions.implement(this);
 		FileFunctions.implement(this);
 
+		#if SOFTCODED_STATES
+		Lua_helper.add_callback(lua, "closeSub", () ->
+		{
+			if (FlxG.state?.subState != null)
+				FlxG.state.subState.close();
+		});
+		#end
+
 		for (name => func in customFunctions)
 		{
 			if (func != null)

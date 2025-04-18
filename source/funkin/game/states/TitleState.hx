@@ -373,11 +373,15 @@ class TitleState extends MusicBeatState
 
 		var pressedEnter:Bool = FlxG.keys.justPressed.ENTER || controls.ACCEPT;
 
-		#if ASTRO_WATERMARKS if (FlxG.keys.justPressed.SEVEN)
-			MusicBeatState.switchState("VeryFuniState", [new TitleState()]); /* YES, FINALLY IT WORKS!!?!?!?!? */ #end
+		#if ASTRO_WATERMARKS 
+		if (FlxG.keys.justPressed.SEVEN)
+			MusicBeatState.switchState("VeryFuniState", [new TitleState()]); /* YES, FINALLY IT WORKS!!?!?!?!? */ 
+		#end
+
 		#if mobile for (touch in FlxG.touches.list)
 			if (touch.justPressed)
-				pressedEnter = true; #end
+				pressedEnter = true; 
+		#end
 		
 		// game controller support.
 		final gamepad:flixel.input.gamepad.FlxGamepad = FlxG.gamepads.lastActive;

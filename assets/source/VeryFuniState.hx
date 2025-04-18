@@ -15,7 +15,7 @@
  *            ;       ;@                    
  *                           
  * CUSTOM STATE EXAMPLE!!!!1111
- * Use this state as an example and use `Template.hx` as a base. 
+ * Use this state as an example and use `Template.hx` as an base. 
  * (NOTICE: ENUMS/TYPEDEF/CLASSES NOT CURRENTLY SUPPORTED BY HSCRIPT-IRIS, PLEASE TRY FIND ANOTHER WAY, MAKE A PR IF YOU HAVE A RELIABLE METHOD).	
  */
 
@@ -23,7 +23,7 @@
 import funkin.game.states.MainMenuState;
 
 // Shouldn't be static as this is a returning state (going to be used more than once).
-var gonnaLeave:Bool = false;
+var leaving:Bool = false;
 
 // sprites
 var background:FlxSprite;
@@ -45,7 +45,7 @@ function new(returnState:FlxState):Void
 
 function create():Void
 {
-	//FlxG.sound.music.stop(); ||| ugh... flixel being weird
+	// FlxG.sound.music.stop(); ||| ugh... flixel being weird
 
 	titleTween();
 	makeSprites();
@@ -88,11 +88,17 @@ function destroy():Void
 
 function update(elapsed:Float):Void
 {
-	if (!gonnaLeave && FlxG.keys.justPressed.ANY)
+	if (FlxG.keys.justPressed.SIX)
+	{
+		openSubState(new MusicBeatSubstate("CustomSubState", []));
+		return;
+	}
+
+	if (!leaving && FlxG.keys.justPressed.ANY)
 	{
 		FlxG.sound.play(Paths.sound('scrollMenu'));
 
-		gonnaLeave = true;
+		leaving = true;
 		titleTimer.cancel();
 		WindowUtil.title = "wawawawawawawawawawawa";
 

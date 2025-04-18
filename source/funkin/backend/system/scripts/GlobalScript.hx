@@ -88,7 +88,7 @@ class GlobalScript
 	 * Execute class scripts inside of mods/source.
 	 * Used inside The BeatStates.
 	 */
-	public function executeClassScripts(?customClass:String, ?scriptArgs):Void
+	public function executeClassScripts(?customClass:String, ?scriptArgs, ?substate:Bool = false):Void
 	{
 		// Get the current state's class name.
 		final currentClass:Class<Dynamic> = Type.getClass(FlxG.state);
@@ -98,7 +98,7 @@ class GlobalScript
 		final __className:String = _className.substring(_className.lastIndexOf('.') + 1).toLowerCase(); 
 		
 		// Loop through all mod folders containing scripts.
-		for (folderName in Mods.directoriesWithFile('assets/', 'source/'))
+		for (folderName in Mods.directoriesWithFile('assets/', substate ? 'source/substate/':'source/'))
 		{
 			// Get all files inside the directory
 			for (_fileName in FileSystem.readDirectory(folderName))

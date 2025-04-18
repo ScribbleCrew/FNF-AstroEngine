@@ -7,7 +7,7 @@ import funkin.backend.utils.Controls;
 @:access(funkin.backend.system.MusicBeatState.getState)
 @:access(funkin.backend.system.MusicBeatState.beatsOnSection)
 @:access(funkin.backend.system.MusicBeatState._updateShaders)
-abstract class MusicBeatSubstate extends flixel.FlxSubState
+ class MusicBeatSubstate extends flixel.FlxSubState
 {
 	/**
 	 * The current section, expressed as an int.	
@@ -75,6 +75,38 @@ abstract class MusicBeatSubstate extends flixel.FlxSubState
 			sectionHit();
 		}
 	}
+	#if SOFTCODED_STATES
+	/**
+	 * Softcoded state script name.
+	 */
+	var scriptName:String = null;
+
+	/**
+	* Softcoded state script args.	
+	*/
+	var scriptArgs = null;
+	#end
+
+	public function new(?scriptName:String, ?args:Array<Dynamic>):Void
+	{
+		super();
+
+		#if SOFTCODED_STATES
+		this.scriptName = scriptName;
+		this.scriptArgs = args;
+		#end
+	}
+	override function create() {
+		#if SOFTCODED_STATES
+		// global script stuff.
+		// gets the metadata of the current class.
+		// not MusicBeatState, it's whatever is extending from it, since this is an abstract class.
+		GlobalScript.instance.executeClassScripts(scriptName, scriptArgs, true);
+		super.create();
+		GlobalScript.instance.callOnScripts('onCreatePost', []); // gwa gwa lua
+		GlobalScript.instance.callOnScripts('createPost', []);
+		#end
+	}
 
 	/**
 	 *	Rolls the current selection back.
@@ -104,6 +136,10 @@ abstract class MusicBeatSubstate extends flixel.FlxSubState
 		// section hit, damn.
 		if (curSection > lastSection)
 			sectionHit();
+
+		GlobalScript.instance.setOnScripts('curStep', curStep);//oops i forgor
+		GlobalScript.instance.callOnScripts('onStepHit', []);
+		GlobalScript.instance.callOnScripts('stepHit', []);
 	}
 
 	/**
@@ -140,12 +176,23 @@ abstract class MusicBeatSubstate extends flixel.FlxSubState
 	/**
 	 *	The beat hit.
 	 */
-	public function beatHit():Void {/* Beat Hit */}
+	public function beatHit():Void {/* Beat Hit */
+			// softmoddin'
+			GlobalScript.instance.setOnScripts('curBeat', curBeat); // DAWGG?????
+			GlobalScript.instance.callOnScripts('onBeatHit', []);
+			GlobalScript.instance.callOnScripts('beatHit', []);}
+
 
 	/**
 	 *	The section hit.
 	 */
-	public function sectionHit():Void {/* Section Hit */}
+	public function sectionHit():Void {/* Section Hit */
+	
+			// softmoddin'
+			GlobalScript.instance.setOnScripts('curSection', curSection);
+			GlobalScript.instance.callOnScripts('onSectionHit', []);
+			GlobalScript.instance.callOnScripts('sectionHit', []);}
+
 
 	@:dox(hide) override function update(elapsed:Float):Void
 	{
@@ -174,6 +221,18 @@ abstract class MusicBeatSubstate extends flixel.FlxSubState
 			();
 		}
 
+		GlobalScript.instance.callOnScripts('onUpdate', [elapsed]); // gwa
+		GlobalScript.instance.callOnScripts('update', [elapsed]); // gwa
 		super.update(elapsed);
+		GlobalScript.instance.callOnScripts('onUpdatePost', [elapsed]);
+		GlobalScript.instance.callOnScripts('updatePost', [elapsed]);
 	}
+
+	/*
+		@:dox(hide) override function destroy():Void
+	{
+		// Softmoddin'
+		GlobalScript.instance.destroy();
+		super.destroy();
+	} */
 }

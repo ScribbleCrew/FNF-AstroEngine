@@ -214,6 +214,17 @@ class HScript extends Iris implements IScript
 		set('StringTools', StringTools);
 		#if flxanimate set('FlxAnimate', FlxAnimate); #end
 
+		#if SOFTCODED_STATES
+		// for custom substates ;3
+		function closeInstanceSubstate() : Void {
+			if(FlxG.state?.subState!=null)
+				FlxG.state.subState.close();
+		}
+
+		set('close', closeInstanceSubstate);
+		set('closeSub', closeInstanceSubstate);
+		#end
+
 		// Functions & Variables
 		set('setVar', function(name:String, value:Dynamic) {
 			MusicBeatState.getVariables().set(name, value);
