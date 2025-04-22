@@ -113,7 +113,7 @@ class MainMenuState extends MusicBeatState
 	// Version
 	final engineVersions:Array<MenuVersionStructure> = [
 		{
-			name: 'Astro Engine v${EngineData.VERSION}',
+			name: 'Astro Engine v${EngineData.VERSION}'#if debug + ",ASTRO_N64"#end,
 			offset: new FlxPoint(0, 0)
 		}
 		// {
@@ -122,7 +122,7 @@ class MainMenuState extends MusicBeatState
 		// },
 		#if GIT_ALLOWED 
 		,{
-			name: 'Commit: ${GitMacro.commitNumber} (${GitMacro.commitHash})',
+			name: 'Git Commit: ${GitMacro.commitNumber} (${GitMacro.commitHash})',
 			offset: new FlxPoint(0, 0)
 		}
 		#end
