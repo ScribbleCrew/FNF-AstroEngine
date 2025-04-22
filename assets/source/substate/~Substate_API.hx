@@ -1,5 +1,5 @@
 /**
-* Astro Engine's Custom Sub-State Script Template. 
+* Astro Engine's Custom Substate Script Template. 
 * ----------------------
 * Avoid trying to use oop (object orientated programming) inside in any script; I don't entirely know if it's supported by hscript-iris.
 * Use `CustomSubState.hx` as an example.
@@ -18,8 +18,12 @@ function new(arg1:Dynamic, arg2:Any, arg3:Null<Float>):Void {}
 
 // All currently supported functions.
 // applies to lua as well.
-function close():Void {} // HScript ONLY!!
-function closeSub():Void {} // Lua & HScript ONLY!!
+close();// Haxe ONLY!!
+closeSub();  // Lua & Haxe
+
+// Close Callbacks
+function onClose() : Void {}
+function onClosePost() : Void {}
 
 function create():Void {}
 function createPost():Void {}

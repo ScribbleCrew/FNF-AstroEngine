@@ -178,18 +178,15 @@ class FunkinLua implements IScript
 		FileFunctions.implement(this);
 
 		#if SOFTCODED_STATES
-		Lua_helper.add_callback(lua, "closeSub", () ->
+		Lua_helper.add_callback(lua, 'closeSub', () ->
 		{
-			if (FlxG.state?.subState != null)
+			if (FlxG.state != null && FlxG.state.subState != null)
 				FlxG.state.subState.close();
 		});
 		#end
 
-		for (name => func in customFunctions)
-		{
-			if (func != null)
-				Lua_helper.add_callback(lua, name, func);
-		}
+		// custom functions.
+		for (name => func in customFunctions) if (func != null) Lua_helper.add_callback(lua, name, func);
 
 		try
 		{
@@ -547,7 +544,7 @@ class FunkinLua implements IScript
 			if (foundScript != null)
 			{
 				if (!ignoreAlreadyRunning)
-					for (script in GlobalScript.instance.hscriptInstances)
+					for (script in GlobalScript.instance.hscriptInstances.get(Main.stateName))
 						if (script.origin == foundScript)
 						{
 							luaTrace('addHScript: The script "' + foundScript + '" is already running!');
@@ -586,7 +583,7 @@ class FunkinLua implements IScript
 			if (foundScript != null)
 			{
 				if (!ignoreAlreadyRunning)
-					for (script in GlobalScript.instance.hscriptInstances)
+					for (script in GlobalScript.instance.hscriptInstances.get(Main.stateName))
 						if (script.origin == foundScript)
 						{
 							trace('Closing script ' + (script.origin != null ? script.origin : luaFile));

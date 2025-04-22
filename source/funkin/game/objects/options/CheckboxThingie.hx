@@ -28,7 +28,7 @@ class CheckboxThingie extends FlxRGBSprite
 		return check;
 	}
 
-	private var colorArray:Array<String> = Mods.mergeAllTextsNamed('data/checkboxColors.txt');
+	private var colorArray:Array<String> = Mods.mergeAllTextsNamed('data/config/checkboxColors.txt');
 
 	public function new(x:Float = 0, y:Float = 0, ?checked = false):Void
 	{

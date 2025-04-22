@@ -1,5 +1,2 @@
-// RAN EVERY TIME THE STATE CHANGES.
-// LIKE EVERY TIME!!!
-function create():Void {
-    trace('create(); init');
-}
+function update(elapsed:Float):Void
+	if (FlxG.keys.justPressed.F5) FlxG.resetState();

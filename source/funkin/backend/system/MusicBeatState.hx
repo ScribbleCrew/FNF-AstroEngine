@@ -116,6 +116,9 @@ import flixel.addons.transition.FlxTransitionableState;
 		_shaderGroup = null;
 		_elapsed = 0;
 
+		final className = Type.getClassName(Type.getClass(FlxG.state));
+		funkin.game.Main.stateName = className.substring(className.lastIndexOf('.') + 1);
+		
 		#if SOFTCODED_STATES
 		// global script stuff.
 		// gets the metadata of the current class.
@@ -244,6 +247,7 @@ import flixel.addons.transition.FlxTransitionableState;
 	public static function switchState(?nextState:EitherTwo<FlxState, MusicBeatState>, ?scriptName:String, ?args:Array<Dynamic>):Void
 	{
 		// Make sure the next state doesn't equal null or the current state.
+		trace(scriptName.toString());
 		nextState ??= new MusicBeatState(scriptName,args);
 		if (nextState == FlxG.state)
 			return resetState();

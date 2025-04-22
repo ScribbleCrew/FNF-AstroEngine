@@ -45,7 +45,12 @@ function new(returnState:FlxState):Void
 
 function create():Void
 {
-	// FlxG.sound.music.stop(); ||| ugh... flixel being weird
+	// lightmode stuff
+	savedDarkmodeSetting = WindowUtil.darkmode;
+	WindowUtil.darkmode = false;
+
+	// ugh... flixel being weird
+	// FlxG.sound.music.stop();
 
 	titleTween();
 	makeSprites();
@@ -86,11 +91,17 @@ function makeSprites():Void
 function destroy():Void
 	titleTimer = FlxDestroyUtil.destroy(titleTimer);
 
+var savedDarkmodeSetting:Bool = false;
+
 function update(elapsed:Float):Void
 {
+	// if(FlxG.state?.subState != null) return;
+
 	if (FlxG.keys.justPressed.SIX)
 	{
-		openSubState(new MusicBeatSubstate("CustomSubState", []));
+		// persistentUpdate = false;
+		// persistentDraw = true;
+		openSubState(new MusicBeatSubstate("ExampleSubstate", []));
 		return;
 	}
 
@@ -101,13 +112,17 @@ function update(elapsed:Float):Void
 		leaving = true;
 		titleTimer.cancel();
 		WindowUtil.title = "wawawawawawawawawawawa";
-
+		WindowUtil.darkmode = true;
 		FlxG.sound.play(Paths.sound('cancelMenu'));
 		FlxTween.cancelTweensOf(daKisser);
 		FlxG.camera.flash(0xFFFFC0CB);
 		FlxTween.tween(FlxG.camera, {zoom: 1.8}, 6, {ease: FlxEase.expoOut});
 
-		new FlxTimer().start(5.55, _ -> FlxG.camera.fade(FlxColor.BLACK, .1, false, () -> MusicBeatState.switchState(returningState ?? new MainMenuState())));
+		new FlxTimer().start(5.55, _ -> FlxG.camera.fade(FlxColor.BLACK, .1, false, () ->
+		{
+			WindowUtil.darkmode = savedDarkmodeSetting;
+			MusicBeatState.switchState(returningState ?? new MainMenuState());
+		}));
 
 		FlxTween.tween(title, {alpha: 0}, .5, {ease: FlxEase.expoOut});
 		FlxTween.tween(background, {alpha: 0}, .75, {

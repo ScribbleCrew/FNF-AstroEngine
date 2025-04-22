@@ -1,3 +1,4 @@
+-- You can do anything you would usually do on a normal script.
 function onCreate()
     print('eee');
 end

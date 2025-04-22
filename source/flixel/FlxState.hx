@@ -94,10 +94,9 @@ class FlxState extends FlxGroup
 	
 	public function new ()
 	{
+		// final className = Type.getClassName(Type.getClass(FlxG.state));
+		// funkin.game.Main.stateName = className.substring(className.lastIndexOf('.') + 1);
 		super(0);
-
-		final className = Type.getClassName(Type.getClass(FlxG.state));
-		funkin.game.Main.stateName = className.substring(className.lastIndexOf('.') + 1);
 	}
 	
 	/**

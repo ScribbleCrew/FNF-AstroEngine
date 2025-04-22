@@ -12,6 +12,13 @@ var customSprite:FlxSprite = new FlxSprite();
 customSprite.makeGraphic(100, 100, FlxColor.BLACK); 
 add(customSprite);
 
+// Custom Text
+var closeText:FlxText = new FlxText();
+closeText.text = "Press enter/space to leave!!!";
+closeText.setFormat(null, 70, FlxColor.WHITE, FlxTextAlign.CENTER);
+add(closeText);
+FlxTween.tween(closeText, {alpha: 1}, 0.2, {ease: FlxEase.expoOut});
+
 // Constructor function, runs when creating a instance of this script.
 // This function also supports augments.
 function new(arg1:Dynamic, arg2:Any, arg3:Null<Float>):Void {}

@@ -89,12 +89,13 @@ import funkin.backend.utils.Controls;
 
 	public function new(?scriptName:String, ?args:Array<Dynamic>):Void
 	{
-		super();
-
+		final className = Type.getClassName(Type.getClass(FlxG.state));
 		#if SOFTCODED_STATES
 		this.scriptName = scriptName;
 		this.scriptArgs = args;
 		#end
+		funkin.game.Main.stateName = scriptName != null ? scriptName : className.substring(className.lastIndexOf('.') + 1);// softmodded script support :D
+		super();
 	}
 	override function create() {
 		#if SOFTCODED_STATES
@@ -226,6 +227,16 @@ import funkin.backend.utils.Controls;
 		super.update(elapsed);
 		GlobalScript.instance.callOnScripts('onUpdatePost', [elapsed]);
 		GlobalScript.instance.callOnScripts('updatePost', [elapsed]);
+	}
+
+	override function close() {
+		GlobalScript.instance.callOnScripts('onClose');
+		trace('Pre: ${funkin.game.Main.stateName}');
+		final className = Type.getClassName(Type.getClass(_parentState));
+		funkin.game.Main.stateName = className.substring(className.lastIndexOf('.') + 1);
+		super.close();
+		trace('Post: ${funkin.game.Main.stateName}');
+		GlobalScript.instance.callOnScripts('onClosePost');
 	}
 
 	/*

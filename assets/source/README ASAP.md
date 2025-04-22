@@ -1,4 +1,4 @@
-./readme.txt
+./README ASAP.txt
 
 Information:
     You can make custom states using Haxe or Lua.
@@ -7,6 +7,11 @@ Information:
             MusicBeatState.switchState("<CUSTOM_STATE_NAME>", [<args here>]);
         - Substates:
             openSubState(new MusicBeatSubstate("<CUSTOM_SUBSTATE_NAME>", [<args here>]));
+    Any script that starts with "~" will be ignored.
+
+    API(s):
+        State API: `~State_API.hx`
+        Substate API: `~Substate_API.hx`
 
 GlobalScript:
     Anything that starts with the global will be run every state change.
@@ -21,7 +26,7 @@ Allowed file extensions:
         - *.hxc
         - *.hxp
         - *.hscript
-    
+
     Lua:
         - *.lua
         - *.funkinlua

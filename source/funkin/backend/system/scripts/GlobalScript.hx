@@ -28,7 +28,7 @@ class GlobalScript
 	/**
 	 * Contains all HScript instances.
 	 */
-	public var hscriptInstances:Array<HScript> = [];
+	public var hscriptInstances:Map<String, Array<HScript>> = [];
 
 	/**
 	 * Excludes any HScript instances.
@@ -105,6 +105,9 @@ class GlobalScript
 			{
 				// Skip files without valid extensions
 				if (!checkScriptExtensions(_fileName)) continue;
+				
+				// Skips disabled scripts.
+				if(_fileName.startsWith("~")) continue;
 
 				// Combines the folder path with the file name.
 				final convertedScriptPath:String = folderName + _fileName;
@@ -271,7 +274,7 @@ class GlobalScript
 			hscriptInstance = new HScript(null, filePath);
 			if (hscriptInstance.exists('onCreate')) hscriptInstance.call('onCreate');
 			if(hscriptInstance.exists('create')) hscriptInstance.call('create');
-			hscriptInstances.push(hscriptInstance);
+			//hscriptInstances.push(hscriptInstance);
 
 			Logs.prefixedTrace('successfully initialized HScript interp on "$filePath"', 'Global Script', GREEN);
 
@@ -312,11 +315,12 @@ class GlobalScript
 			excludeValues = new Array();
 		excludeValues.push(Function_Continue);
 
-		final len:Int = hscriptInstances.length;
-		if (len < 1)
-			return returnVal;
+		final uhh:Array<HScript> = hscriptInstances.safeGet(Main.stateName, []);
+	//	trace(uhh);
+		final len:Int = uhh.length;
+		if (len < 1) return returnVal;
 
-		for (script in hscriptInstances)
+		for (script in uhh)
 		{
 			@:privateAccess
 			if (script == null || !script.exists(functionName) || exclusions.contains(script.origin))
@@ -350,8 +354,8 @@ class GlobalScript
 	{
 		#if HSCRIPT_ALLOWED
 		exclusions ??= [];
-
-		for (script in hscriptInstances)
+		final uhh:Array<HScript> = hscriptInstances.safeGet(Main.stateName, []);
+		for (script in uhh)
 		{
 			if (exclusions.contains(script.origin))
 				continue;
@@ -380,7 +384,8 @@ class GlobalScript
 		#end
 
 		#if HSCRIPT_ALLOWED
-		for (haxeScript in GlobalScript.instance.hscriptInstances)
+		final uhh:Array<HScript> = hscriptInstances.safeGet(Main.stateName, []);
+		for (haxeScript in uhh)
 		{
 			if (haxeScript != null)
 			{
@@ -395,7 +400,11 @@ class GlobalScript
 				haxeScript.destroy();
 			}
 		}
-		GlobalScript.instance.hscriptInstances = [];
+		// reset hscript.
+		final stateName = Main.stateName;
+		if(GlobalScript.instance.hscriptInstances.exists(stateName))
+			GlobalScript.instance.hscriptInstances.set(stateName, []);
+	//	GlobalScript.instance.hscriptInstances = [];
 		#end
 	}
 

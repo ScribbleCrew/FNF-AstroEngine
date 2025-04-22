@@ -1,5 +1,5 @@
 <!-- https://shields.io/badges/git-hub-actions-workflow-status -->
-
+current version codename: ASTRO_N64
 <div align="center">
     <img src="https://raw.githubusercontent.com/ScribbleCrew/.github/refs/heads/main/branding/4000x%20rounded.png" width="250" height="250" style="border-radius: 15%;"/>
     <br>

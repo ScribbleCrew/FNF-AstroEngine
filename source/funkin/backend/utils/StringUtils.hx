@@ -2,6 +2,13 @@ package funkin.backend.utils;
 
 class StringUtils
 {
+
+	public inline static function safeGet(map:Map<Dynamic, Dynamic>, arg, placeholder) {
+		if(!map.exists(arg))
+			map.set(arg,placeholder);
+		return map.get(arg);
+	}
+
 	/**
 	* Helps shorten strings.
 	*
@@ -32,7 +39,7 @@ class StringUtils
 	 * @param resetVal Optional the reset value
 	 * @return Resetted Map
 	*/
-	@:deprecated('Deprecated in ASTRO_??? i forgor')
+	@:deprecated('Deprecated in ASTRO_N64')
 	public static function resetMap(map:Map<Dynamic, Dynamic>, ?resetVal:Dynamic = false)
 		for (i in map.keys()) map.set(i, resetVal);
 

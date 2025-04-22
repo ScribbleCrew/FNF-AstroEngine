@@ -142,7 +142,19 @@ class HScript extends Iris implements IScript
 			safeCall('new', args);
 			safeCall('onCreate');
 			safeCall('create');
-			GlobalScript.instance.hscriptInstances.push(this);
+			//GlobalScript.instance.hscriptInstances.push(this);
+
+			if(GlobalScript.instance.hscriptInstances.exists(Main.stateName)){
+				trace('true');
+				final fixed = GlobalScript.instance.hscriptInstances.get(Main.stateName);
+				trace(fixed);
+				fixed.push(this);
+				GlobalScript.instance.hscriptInstances.set(Main.stateName, fixed);
+				trace(fixed);
+				trace(GlobalScript.instance.hscriptInstances);
+			}
+			else
+				GlobalScript.instance.hscriptInstances.set(Main.stateName, [this]);
 
 			Logs.prefixedTrace('successfully initialized HScript interp on "$filePath"', 'Global Script', GREEN);
 		}
@@ -188,6 +200,7 @@ class HScript extends Iris implements IScript
 		set('FlxState', FlxState);
 		set('MusicBeatState', MusicBeatState);
 		set('MusicBeatSubstate', MusicBeatSubstate);
+		set('TitleState', TitleState);
 
 		set('FlxTimer', flixel.util.FlxTimer);
 		set('FlxTween', flixel.tweens.FlxTween);
@@ -217,7 +230,7 @@ class HScript extends Iris implements IScript
 		#if SOFTCODED_STATES
 		// for custom substates ;3
 		function closeInstanceSubstate() : Void {
-			if(FlxG.state?.subState!=null)
+			if (FlxG.state != null && FlxG.state.subState != null)
 				FlxG.state.subState.close();
 		}
 
