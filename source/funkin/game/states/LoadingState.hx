@@ -24,19 +24,9 @@ class LoadingState extends MusicBeatState
 
 	static var originalBitmapKeys:StringMap<String> = new StringMap();
 	static var requestedBitmaps:Map<String, BitmapData> = [];
+	
 	static var mutex:Mutex;
 	static var threadPool:FixedThreadPool = null;
-
-	#if cpp
-	/**
-	 * Gets the CPU's thread count.
-	 */
-	@:isVar
-	public static var cpuThreads(get, never):Int;
-
-	@:dox(hide) inline static function get_cpuThreads():Int
-		return untyped __cpp__("std::thread::hardware_concurrency()");
-	#end
 
 	/**
 	 * The target state.	
@@ -272,41 +262,32 @@ class LoadingState extends MusicBeatState
 		return target;
 	}
 
-	static var AssetsToPrepare:Map<String, Array<String>> = ["images" => [], "sounds" => [], "music" => []];
-	static var imagesToPrepare:Array<String> = [];
-	static var soundsToPrepare:Array<String> = [];
-	static var musicToPrepare:Array<String> = [];
-	static var songsToPrepare:Array<String> = [];
+	static var AssetsToPrepare:Map<String, Array<String>> = ["images" => [], "sounds" => [], "music" => [], "songs" => []];
 
 	public static function prepare(images:Array<String> = null, sounds:Array<String> = null, music:Array<String> = null):Void
 	{
 		if (images != null)
-		{
 			AssetsToPrepare.set('images', AssetsToPrepare.get('images').concat(images)); // good?
-			trace(AssetsToPrepare.get('images'));
-			imagesToPrepare = imagesToPrepare.concat(images);
-		}
 		if (sounds != null)
-			soundsToPrepare = soundsToPrepare.concat(sounds);
+			AssetsToPrepare.set('sounds', AssetsToPrepare.get('sounds').concat(sounds));
 		if (music != null)
-			musicToPrepare = musicToPrepare.concat(music);
+			AssetsToPrepare.set('music', AssetsToPrepare.get('music').concat(music));
 	}
 
 	static var initialThreadCompleted:Bool = true;
 	static var dontPreloadDefaultVoices:Bool = false;
 
-	static function _startPool()
-	{
-		threadPool = new FixedThreadPool(#if MULTITHREADED_LOADING #if cpp cpuThreads #else 8 #end #else 1 #end);
-	}
+	static function _startPool() : Void
+		threadPool = new FixedThreadPool(#if MULTITHREADED_LOADING #if cpp OsAPI.cpuThreads #else 8 #end #else 1 #end);
 
 	public static function prepareToSong()
 	{
 		_startPool();
-		imagesToPrepare = [];
-		soundsToPrepare = [];
-		musicToPrepare = [];
-		songsToPrepare = [];
+
+		AssetsToPrepare.set('images', []);
+		AssetsToPrepare.set('sounds', []);
+		AssetsToPrepare.set('music', []);
+		AssetsToPrepare.set('songs', []);
 
 		initialThreadCompleted = false;
 		var threadsCompleted:Int = 0;
@@ -334,7 +315,7 @@ class LoadingState extends MusicBeatState
 			var customSkin:String = noteSkin + Note.getNoteSkinPostfix();
 			if (Paths.fileExists('images/$customSkin.png', IMAGE))
 				noteSkin = customSkin;
-			imagesToPrepare.push(noteSkin);
+			AssetsToPrepare.get('images').push(noteSkin);
 			//
 
 			// LOAD NOTE SPLASH IMAGE
@@ -343,7 +324,7 @@ class LoadingState extends MusicBeatState
 				noteSplash = PlayState.SONG.splashSkin;
 			else
 				noteSplash += NoteSplash.getSplashSkinPostfix();
-			imagesToPrepare.push(noteSplash);
+			AssetsToPrepare.get('images').push(noteSplash);
 
 			try
 			{
@@ -351,11 +332,8 @@ class LoadingState extends MusicBeatState
 				var json:Dynamic = null;
 
 				#if MODS_ALLOWED
-				var moddyFile:String = Paths.modsJson('$folder/preload');
-				if (FileSystem.exists(moddyFile))
-					json = tjson.TJSON.parse(File.getContent(moddyFile));
-				else
-					json = tjson.TJSON.parse(File.getContent(path));
+				final moddyFile:String = Paths.modsJson('$folder/preload');
+				json = tjson.TJSON.parse(File.getContent(FileSystem.exists(moddyFile) ? moddyFile : path));
 				#else
 				json = tjson.TJSON.parse(Assets.getText(path));
 				#end
@@ -429,7 +407,7 @@ class LoadingState extends MusicBeatState
 					prepare(imgs, snds, mscs);
 				}
 
-				songsToPrepare.push('$folder/Inst');
+				AssetsToPrepare.get('songs').push('$folder/Inst');
 
 				var player1:String = song.player1;
 				var player2:String = song.player2;
@@ -445,11 +423,11 @@ class LoadingState extends MusicBeatState
 					if (Paths.fileExists('$prefixVocals-Player.${Constants.SOUND_EXT}', SOUND, false, 'songs')
 						&& Paths.fileExists('$prefixVocals-Opponent.${Constants.SOUND_EXT}', SOUND, false, 'songs'))
 					{
-						songsToPrepare.push('$prefixVocals-Player');
-						songsToPrepare.push('$prefixVocals-Opponent');
+						AssetsToPrepare.get('songs').push('$prefixVocals-Player');
+						AssetsToPrepare.get('songs').push('$prefixVocals-Opponent');
 					}
 					else if (Paths.fileExists('$prefixVocals.${Constants.SOUND_EXT}', SOUND, false, 'songs'))
-						songsToPrepare.push(prefixVocals);
+						AssetsToPrepare.get('songs').push(prefixVocals);
 				}
 
 				if (player2 != player1)
@@ -498,12 +476,17 @@ class LoadingState extends MusicBeatState
 
 	public static function clearInvalids()
 	{
-		clearInvalidFrom(imagesToPrepare, 'images', '.png', IMAGE);
-		clearInvalidFrom(soundsToPrepare, 'sounds', '.${Constants.SOUND_EXT}', SOUND);
-		clearInvalidFrom(musicToPrepare, 'music', ' .${Constants.SOUND_EXT}', SOUND);
-		clearInvalidFrom(songsToPrepare, 'songs', '.${Constants.SOUND_EXT}', SOUND, 'songs');
+		clearInvalidFrom(AssetsToPrepare.get('images'), 'images', '.png', IMAGE);
+		clearInvalidFrom(AssetsToPrepare.get('sounds'), 'sounds', '.${Constants.SOUND_EXT}', SOUND);
+		clearInvalidFrom(AssetsToPrepare.get('music'), 'music', ' .${Constants.SOUND_EXT}', SOUND);
+		clearInvalidFrom(AssetsToPrepare.get('songs'), 'songs', '.${Constants.SOUND_EXT}', SOUND, 'songs');
 
-		for (arr in [imagesToPrepare, soundsToPrepare, musicToPrepare, songsToPrepare])
+		for (arr in [
+			AssetsToPrepare.get('images'),
+			AssetsToPrepare.get('sounds'),
+			AssetsToPrepare.get('music'),
+			AssetsToPrepare.get('songs')
+		])
 			while (arr.contains(null))
 				arr.remove(null);
 	}
@@ -545,18 +528,17 @@ class LoadingState extends MusicBeatState
 			if (member.endsWith('/') || (!Paths.fileExists(myKey, type, false, parentFolder) && (doTrace = true)))
 			{
 				arr.remove(member);
-				if (doTrace)
-					trace('Removed invalid $prefix: $member');
+				if (doTrace) trace('Removed invalid $prefix: $member');
 			}
 			else
 				i++;
 		}
 	}
 
-	public static function startThreads()
+	public static function startThreads() : Void
 	{
 		mutex = new Mutex();
-		loadMax = imagesToPrepare.length + soundsToPrepare.length + musicToPrepare.length + songsToPrepare.length;
+		loadMax = AssetsToPrepare.get('images').length + AssetsToPrepare.get('sounds').length + AssetsToPrepare.get('music').length + AssetsToPrepare.get('songs').length;
 		loaded = 0;
 
 		// then start threads
@@ -566,15 +548,15 @@ class LoadingState extends MusicBeatState
 	static function _threadFunc()
 	{
 		_startPool();
-		for (sound in soundsToPrepare)
+		for (sound in AssetsToPrepare.get('sounds'))
 			initThread(() -> preloadSound('sounds/$sound'), 'sound $sound');
-		for (music in musicToPrepare)
+		for (music in AssetsToPrepare.get('music'))
 			initThread(() -> preloadSound('music/$music'), 'music $music');
-		for (song in songsToPrepare)
+		for (song in AssetsToPrepare.get('songs'))
 			initThread(() -> preloadSound(song, 'songs', true, false), 'song $song');
 
 		// for images, they get to have their own thread
-		for (image in imagesToPrepare)
+		for (image in AssetsToPrepare.get('images'))
 			initThread(() -> preloadGraphic(image), 'image $image');
 	}
 
@@ -595,7 +577,7 @@ class LoadingState extends MusicBeatState
 			{
 				if (func() != null)
 				{
-					#if debug trace('finished preloading $traceData in ${Sys.time() - threadStart}s'); #end
+					#if debug Logs.prefixedTrace('finished preloading $traceData in ${Sys.time() - threadStart}s', 'LoadingState, DEBUG' ,GREEN); #end
 				}
 				else
 					trace('ERROR! fail on preloading $traceData ');
@@ -630,7 +612,7 @@ class LoadingState extends MusicBeatState
 			{
 				var split:Array<String> = img.split(',');
 				for (file in split)
-					imagesToPrepare.push(file.trim());
+					AssetsToPrepare.get('images').push(file.trim());
 			}
 			#if flxanimate
 			else
@@ -643,8 +625,7 @@ class LoadingState extends MusicBeatState
 
 					if (Paths.fileExists('images/$img/spritemap$st.png', IMAGE))
 					{
-						// trace('found Sprite PNG');
-						imagesToPrepare.push('$img/spritemap$st');
+						AssetsToPrepare.get('images').push('$img/spritemap$st');
 						break;
 					}
 				}
@@ -653,7 +634,7 @@ class LoadingState extends MusicBeatState
 
 			if (prefixVocals != null && character.vocals_file != null && character.vocals_file.length > 0)
 			{
-				songsToPrepare.push(prefixVocals + "-" + character.vocals_file);
+				AssetsToPrepare.get('songs').push(prefixVocals + "-" + character.vocals_file);
 				if (char == PlayState.SONG.player1)
 					dontPreloadDefaultVoices = true;
 			}
