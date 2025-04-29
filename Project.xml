@@ -249,6 +249,9 @@
 	<!--Macro fixes-->
 	<haxeflag name="--macro" value="allowPackage('flash')" />
 	<haxeflag name="--macro" value="include('my.pack')" />
+	
+	<!-- dce fix -->
+	<haxeflag name="--macro" value="dce.macros.DCEMacro.init()" />
 
 	<haxedef name="hscriptPos" if="HSCRIPT_ALLOWED" />
 

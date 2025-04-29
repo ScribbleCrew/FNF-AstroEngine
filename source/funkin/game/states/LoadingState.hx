@@ -39,7 +39,6 @@ class LoadingState extends MusicBeatState
 	public static var cpuThreads(get, never):Int;
 	@:dox(hide) inline static function get_cpuThreads():Int
 		return untyped __cpp__("std::thread::hardware_concurrency()");
-	// @:functionCode('return std::thread::hardware_concurrency();')
 	#end
 
 	var target:FlxState = null;
@@ -90,11 +89,11 @@ class LoadingState extends MusicBeatState
 		}
 
 		#if ASTRO_WATERMARKS // PSYCH LOADING SCREEN
-		var bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+		/*var bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.setGraphicSize(Std.int(FlxG.width));
 		bg.color = 0xFFD16FFF;
 		bg.updateHitbox();
-		add(bg);
+		add(bg); */
 	
 		loadingText = new FlxText(520, 600, 400, 'Now Loading...', 32);
 		loadingText.setFormat(Constants.DEFAULT_FONT, 32, FlxColor.WHITE, LEFT, OUTLINE_FAST, FlxColor.BLACK);
@@ -102,26 +101,11 @@ class LoadingState extends MusicBeatState
 		add(loadingText);
 	
 		logo = new FlxSprite(0, 0).loadGraphic(Paths.image('astro'));
-		logo.scale.set(0.75, 0.75);
+		logo.scale.set(0.25, 0.25);
 		logo.updateHitbox();
 		logo.antialiasing = ClientPrefs.data.antialiasing;
-		logo.screenCenter();
-		logo.x -= 50;
-		logo.y -= 40;
+		logo.x = FlxG.width - logo.width - 10;
 		add(logo);
-
-		#else // BASE GAME LOADING SCREEN
-		var bg = new FlxSprite().makeGraphic(1, 1, 0xFFCAFF4D);
-		bg.scale.set(FlxG.width, FlxG.height);
-		bg.updateHitbox();
-		bg.screenCenter();
-		add(bg);
-
-		funkay = new FlxSprite(0, 0).loadGraphic(Paths.image('funkay'));
-		funkay.antialiasing = ClientPrefs.data.antialiasing;
-		funkay.setGraphicSize(0, FlxG.height);
-		funkay.updateHitbox();
-		add(funkay);
 		#end
 
 		var bg:FlxSprite = new FlxSprite(0, 660).makeGraphic(1, 1, FlxColor.BLACK);

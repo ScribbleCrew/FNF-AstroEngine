@@ -4,10 +4,7 @@ package funkin.game.states;
 import flixel.util.*;
 import flixel.input.keyboard.FlxKey;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.transition.FlxTransitionableState;
-import flixel.AttachedFlxSprite;
-import flixel.graphics.FlxGraphic;
 #end
 
 #if lime
@@ -15,14 +12,12 @@ import lime.utils.Assets;
 #end
 
 #if openfl
-import openfl.Lib;
 import openfl.utils.Assets as OpenFlAssets;
 import openfl.events.KeyboardEvent;
 #end
 
 #if !flash
 import flixel.addons.display.FlxRuntimeShader;
-import openfl.filters.ShaderFilter;
 #end
 
 /**
@@ -2266,7 +2261,7 @@ class PlayState extends MusicBeatState
 	/**
 	 * Open the pause menu.
 	 */
-	public function openPauseMenu()
+	public function openPauseMenu() : Void
 	{
 		persistentUpdate = false;
 		persistentDraw = true;
@@ -2278,6 +2273,7 @@ class PlayState extends MusicBeatState
 			vocals.pause();
 			opponentVocals.pause();
 		}
+
 		openSubState(new PauseSubState());
 
 		#if DISCORD_ALLOWED DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", ui.iconP2.character); #end
@@ -2289,12 +2285,11 @@ class PlayState extends MusicBeatState
 		canResync = false;
 		persistentUpdate = false;
 		paused = true;
-		if (FlxG.sound.music != null)
-			FlxG.sound.music.stop();
-		if (vocals != null)
-			vocals.pause();
-		if (opponentVocals != null)
-			opponentVocals.pause();
+
+		if (FlxG.sound.music != null) FlxG.sound.music.stop();
+		if (vocals != null) vocals.pause();
+		if (opponentVocals != null) opponentVocals.pause();
+
 		cancelMusicFadeTween();
 
 		MusicBeatState.switchState(new ChartingState());
@@ -2322,7 +2317,9 @@ class PlayState extends MusicBeatState
 		MusicBeatState.switchState(new CharacterEditorState(SONG.player2));
 	}
 
+	@:unreflective
 	public var isDead:Bool = false; // Don't mess with this on Lua!!!
+
 	public var gameOverTimer:FlxTimer;
 
 	function doDeathCheck(?skipHealthCheck:Bool = false)

@@ -32,6 +32,7 @@ class FPS extends openfl.text.TextField
 	 * I genuinely have no idea what this does, all i know is that 
 	 * it's used to calculate the framerate.
 	 */
+	@:unreflective
 	var _times:Array<Float>;
 
 	/**
