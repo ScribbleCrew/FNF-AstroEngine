@@ -179,7 +179,7 @@ class Song
 	{
 		final stupidHaxe = 'astro_v${EngineData.VERSION}';
 
-		var songJson:SwagSong = cast Json.parse(rawData);
+		var songJson:SwagSong = cast tjson.TJSON.parse(rawData);
 		if (Reflect.hasField(songJson, 'song'))
 		{
 			var subSong:SwagSong = Reflect.field(songJson, 'song');

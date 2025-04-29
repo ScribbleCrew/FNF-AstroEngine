@@ -797,7 +797,7 @@ class NoteSplashEditorState extends MusicBeatState
 
         try 
         {
-            var txtLoaded:Dynamic = Json.parse(Json.stringify(_file));
+            var txtLoaded:Dynamic = tjson.TJSON.parse(Json.stringify(_file));
             var txt:String = null;
             var file:String = "config.json";
             #if MODS_ALLOWED
