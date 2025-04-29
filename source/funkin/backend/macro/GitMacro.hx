@@ -11,6 +11,7 @@ class GitMacro
 	 * Current git commit number.
 	 */
 	public static var commitNumber(get, never):Int;
+
 	@:dox(hide) static function get_commitNumber()
 		return _commitNumber();
 
@@ -18,6 +19,7 @@ class GitMacro
 	 * Current git commit hash.
 	 */
 	public static var commitHash(get, never):String;
+
 	@:dox(hide) static function get_commitHash()
 		return _commitHash();
 
@@ -25,6 +27,7 @@ class GitMacro
 	 * Current git branch.
 	 */
 	public static var branch(get, never):String;
+
 	@:dox(hide) static function get_branch()
 		return _currentBranch();
 
@@ -43,9 +46,8 @@ class GitMacro
 			return macro $v{Std.parseInt(process.stdout.readLine())};
 		}
 		catch (e)
-		
 			trace("Error getting current commit number from git: " + e);
-		
+
 		return macro $v{0} #end
 	}
 
@@ -62,9 +64,8 @@ class GitMacro
 			return macro $v{process.stdout.readLine()};
 		}
 		catch (e)
-		
 			trace("Error getting current commit hash from git: " + e);
-		
+
 		return macro $v{"~"} #end
 	}
 
@@ -81,9 +82,8 @@ class GitMacro
 			return macro $v{process.stdout.readLine()};
 		}
 		catch (e)
-		
 			trace("Error getting current branch from git: " + e);
-		
+
 		return macro $v{""} #end
 	}
 }
