@@ -1,16 +1,31 @@
 package funkin.game.transitions;
 
 class FunkinFadeTransition extends MusicBeatSubstate
-{
+{	
+	/**
+	* The finish callback duh...	
+	*/
 	public static var finishCallback:Void->Void;
 
+	/**
+	 * Is the transition going in or out.	
+	 */
 	@:noCompletion private var _isTransIn:Bool = false;
+
+	/**
+	 * The fade duration.	
+	 */
 	@:noCompletion private var _fadeDuration:Float;
 
 	var transBlack:FlxSprite;
 	var transGradient:FlxSprite;
 
-	public function new(duration:Float, isTransIn:Bool) : Void
+	/**
+	 * Constructor
+	 * @param duration The fade duration.
+	 * @param isTransIn Is it transiting in?	
+	 */
+	public function new(duration:Float, isTransIn:Bool):Void
 	{
 		this._fadeDuration = duration;
 		this._isTransIn = isTransIn;
@@ -20,16 +35,22 @@ class FunkinFadeTransition extends MusicBeatSubstate
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 	}
 
-	// Custom made Trans in
-	public static function startTransition(nextState:FlxState = null)
-		{
-			if (nextState == null) nextState = FlxG.state;
-			
-			FlxG.state.openSubState(new FunkinFadeTransition(0.6, false));
-			nextState == FlxG.state ? FunkinFadeTransition.finishCallback = ()-> FlxG.resetState() : FunkinFadeTransition.finishCallback = ()-> FlxG.switchState(nextState);
-		}
+	/**
+	 * StartTransition
+	 * Custom made Trans in
+	 * @param nextState The Next State.	
+	 */
+	public static function startTransition(nextState:FlxState = null):Void
+	{
+		if (nextState == null)
+			nextState = FlxG.state;
 
-	override function create() : Void
+		FlxG.state.openSubState(new FunkinFadeTransition(0.6, false));
+		nextState == FlxG.state ? FunkinFadeTransition.finishCallback = () -> FlxG.resetState() : FunkinFadeTransition.finishCallback = () ->
+			FlxG.switchState(nextState);
+	}
+
+	@:dox(hide) override function create():Void
 	{
 		final width:Int = Std.int(FlxG.width / Math.max(camera.zoom, 0.001));
 		final height:Int = Std.int(FlxG.height / Math.max(camera.zoom, 0.001));
@@ -48,36 +69,26 @@ class FunkinFadeTransition extends MusicBeatSubstate
 		transBlack.screenCenter(X);
 		add(transBlack);
 
-		if (_isTransIn)
-			transGradient.y = transBlack.y - transBlack.height;
-		else
-			transGradient.y = -transGradient.height;
+		transGradient.y = _isTransIn ? (transBlack.y - transBlack.height) : -transGradient.height;
 
 		super.create();
 	}
 
-	override function update(elapsed:Float)
+	@:dox(hide) override function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
 
 		final height:Float = FlxG.height * Math.max(camera.zoom, 0.001);
 		final targetPos:Float = transGradient.height + 50 * Math.max(camera.zoom, 0.001);
-		if (_fadeDuration > 0)
-			transGradient.y += (height + targetPos) * elapsed / _fadeDuration;
-		else
-			transGradient.y = (targetPos) * elapsed;
 
-		if (_isTransIn)
-			transBlack.y = transGradient.y + transGradient.height;
-		else
-			transBlack.y = transGradient.y - transBlack.height;
+		_fadeDuration > 0 ? (transGradient.y += (height + targetPos) * elapsed / _fadeDuration) : (transGradient.y = (targetPos) * elapsed);
+		transBlack.y = _isTransIn ? (transGradient.y + transGradient.height) : (transGradient.y - transBlack.height);
 
-		if (transGradient.y >= targetPos)
-			close();
+		if (transGradient.y >= targetPos) close();
 	}
 
 	// Don't delete this
-	override function close():Void
+	@:dox(hide) override function close():Void
 	{
 		super.close();
 

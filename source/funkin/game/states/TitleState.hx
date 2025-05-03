@@ -97,8 +97,7 @@ class TitleState extends MusicBeatState
 		if (ClientPrefs.data.checkForUpdates && !closedState)
 		{
 			Logs.prefixedTrace('Checking for update', 'Update Sync', CYAN);
-
-			final http:haxe.Http = new haxe.Http("https://raw.githubusercontent.com/ScribbleCrew/FNF-AstroEngine/main/gitVersion.txt");
+			final http:haxe.Http = new haxe.Http(GitMacro.toRawHubCDN("ScribbleCrew/FNF-AstroEngine/main/gitVersion.txt"));
 			http.onData = function(data:String)
 			{
 				updateVersion = data.split('\n')[0].trim();
@@ -111,7 +110,7 @@ class TitleState extends MusicBeatState
 					_mustUpdate = true;
 				}
 			}
-			http.onError = (error) -> trace('error: $error');
+			http.onError = (error:Dynamic) -> trace('error: $error');
 			http.request();
 		}
 		#end
@@ -168,6 +167,7 @@ class TitleState extends MusicBeatState
 	 * Skip intro function.	
 	 */
 	function skipIntro():Void
+	{
 		if (!skippedIntro)
 		{
 			introGroup.empty();
@@ -175,10 +175,12 @@ class TitleState extends MusicBeatState
 			FlxG.camera.flash(FlxColor.WHITE, 4);
 			skippedIntro = true;
 		}
+	}
 
 	#if TITLE_SCREEN_XML
 	/**
-	 * Load XML data.
+	 * Loads data from the titlescreen xml.
+	 * Used for intro positioning.
 	 */
 	function loadXMLData():Void
 	{
@@ -341,11 +343,10 @@ class TitleState extends MusicBeatState
 	 * Intro text list.	
 	 */
 	var introTextList(get, never):Array<Array<String>>;
-
 	@:dox(hide) function get_introTextList():Array<Array<String>>
 		return [
-			for (i in #if MODS_ALLOWED Mods.mergeAllTextsNamed('data/introText.txt') #else Assets.getText(Paths.txt('introText'))
-				.split('\n') #end) i.split('--')
+			for (i in #if MODS_ALLOWED Mods.mergeAllTextsNamed('data/introText.txt') #else Assets.getText(Paths.txt('introText')).split('\n') #end)
+				i.split('--')
 		];
 
 	/**
@@ -373,24 +374,27 @@ class TitleState extends MusicBeatState
 
 		var pressedEnter:Bool = FlxG.keys.justPressed.ENTER || controls.ACCEPT;
 
-
-		#if mobile for (touch in FlxG.touches.list)
+		#if mobile
+		for (touch in FlxG.touches.list)
 			if (touch.justPressed)
-				pressedEnter = true; 
+				pressedEnter = true;
 		#end
-		
+
 		// game controller support.
 		final gamepad:flixel.input.gamepad.FlxGamepad = FlxG.gamepads.lastActive;
 		if (gamepad != null)
 		{
-			if (gamepad.justPressed.START) pressedEnter = true;
-			#if switch if (gamepad.justPressed.B) pressedEnter = true; #end
+			if (gamepad.justPressed.START)
+				pressedEnter = true;
+			#if switch if (gamepad.justPressed.B)
+				pressedEnter = true; #end
 		}
 
 		if (newTitle)
 		{
 			titleTimer += MathsAddon.boundTo(elapsed, 0, 1);
-			if (titleTimer > 2) titleTimer -= 2;
+			if (titleTimer > 2)
+				titleTimer -= 2;
 		}
 
 		if (initialized && !transitioning && skippedIntro)
@@ -398,7 +402,8 @@ class TitleState extends MusicBeatState
 			if (newTitle && !pressedEnter)
 			{
 				var timer:Float = titleTimer;
-				if (timer >= 1) timer = (-timer) + 2;
+				if (timer >= 1)
+					timer = (-timer) + 2;
 
 				timer = FlxEase.quadInOut(timer);
 
@@ -421,15 +426,13 @@ class TitleState extends MusicBeatState
 
 				new FlxTimer().start(1, function(tmr:FlxTimer):Void
 				{
-					MusicBeatState.switchState(#if CHECK_FOR_UPDATES _mustUpdate ? new funkin.game.states.OutdatedState() : #end
-						new funkin.game.states.MainMenuState());
+					MusicBeatState.switchState(#if CHECK_FOR_UPDATES _mustUpdate ? new funkin.game.states.OutdatedState() : #end new funkin.game.states.MainMenuState());
 					closedState = true;
 				});
 			}
 		}
 
-		if (initialized && pressedEnter && !skippedIntro)
-			skipIntro();
+		if (initialized && pressedEnter && !skippedIntro) skipIntro();
 
 		// hue control.
 		if (swagShader != null)
@@ -456,7 +459,8 @@ class TitleState extends MusicBeatState
 		super.beatHit();
 
 		// logo bump animation, maybe use flxtweens instead?
-		if (logo != null) logo.animation.play('bump', true);
+		if (logo != null)
+			logo.animation.play('bump', true);
 
 		// girlfriend dancin'
 		if (gfDance != null)

@@ -31,6 +31,10 @@ class GitMacro
 	@:dox(hide) static function get_branch()
 		return _currentBranch();
 
+
+	public static macro function toRawHubCDN(huh:String)
+		return macro $v{"https://raw.githubusercontent.com/" + huh.replace("github.com/", "").replace("/blob/", "/")};	
+
 	//
 
 	@:dox(hide) @:noCompletion private static macro function _commitNumber()
