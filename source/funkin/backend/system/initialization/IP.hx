@@ -18,21 +18,27 @@ package funkin.backend.system.initialization;
 	];
 
     // backend ip...
-	@:unreflective @:noPrivateAccess static var _ip:String = "Fetch"; // ugh
+	@:unreflective 
+	@:noCompletion 
+	@:noPrivateAccess 
+	static var _ip:String = "Fetch"; // ugh
 
     // ip...
-	@:unreflective @:noUsing public static var ip(get, never):String;
-	@:unreflective @:noUsing @:noCompletion static function get_ip():String
+	@:unreflective 
+	public static var ip(get, never):String;
+	
+	@:unreflective 
+	@:noCompletion 
+	static function get_ip():String
 		return _ip;
 
-	public static function init(index:Int = 0):Void
+	public static function init(i:Int = 0):Void
 	{
-		if (index >= services.length)
-			return;
+		if (i >= services.length) return;
 
-		final http:Http = new Http(services[index]);
+		final http:Http = new Http(services[i]);
 		http.onData = function(data:String):Void _ip = data.trim();
-		http.onError = function(error:String):Void init(index + 1);
+		http.onError = function(error:String):Void init(i + 1);
 		http.request();
 	}
 }

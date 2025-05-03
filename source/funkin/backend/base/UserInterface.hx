@@ -11,7 +11,7 @@ abstract class UserInterface extends FlxBasic
 	 * Current PlayState instance.	
 	 */
 	private var game(get, never):PlayState;
-	@:dox(hide) inline function get_game():PlayState
+	@:dox(hide) @:noCompletion inline function get_game():PlayState
 		return PlayState.instance;
 
 	// Bars
@@ -28,17 +28,9 @@ abstract class UserInterface extends FlxBasic
 	public var botplayTxt:FlxText;
 	public var scoreText:FlxText;
 
-	public function create():Void
-	{
-	}
-
-	public function createPost():Void
-	{
-	}
-
-	public function updateScore():Void
-	{
-	}
+	public function create():Void {}
+	public function createPost():Void {}
+	public function updateScore():Void{}
 
 	public function new():Void
 	{
@@ -78,20 +70,20 @@ abstract class UserInterface extends FlxBasic
 		healthBar.visible = !ClientPrefs.data.hideHud;
 		healthBar.alpha = ClientPrefs.data.healthBarAlpha;
 		reloadHealthBarColors();
-		game.add(healthBar);
+		add(healthBar);
 
 		// furry
 		iconP1 = new HealthIcon(game.boyfriend.healthIcon, true);
 		iconP1.y = healthBar.y - 75;
 		iconP1.visible = !ClientPrefs.data.hideHud;
 		iconP1.alpha = ClientPrefs.data.healthBarAlpha;
-		game.add(iconP1);
+		add(iconP1);
 
 		iconP2 = new HealthIcon(game.dad.healthIcon, false);
 		iconP2.y = healthBar.y - 75;
 		iconP2.visible = !ClientPrefs.data.hideHud;
 		iconP2.alpha = ClientPrefs.data.healthBarAlpha;
-		game.add(iconP2);
+		add(iconP2);
 	}
 
 	inline public function createCountdownSprite(image:String, antialias:Bool):FlxSprite
@@ -137,37 +129,33 @@ abstract class UserInterface extends FlxBasic
 
 	function createSongTimer()
 	{
-		var showTime:Bool = (ClientPrefs.data.timeBarType != 'Disabled');
-		timeTxt = new FlxText(PlayState.STRUM_X + (FlxG.width / 2) - 248, 14, 400, "eeeeeee", 32);
+		final showTime:Bool = (ClientPrefs.data.timeBarType != 'Disabled');
+
+		timeTxt = new FlxText(PlayState.STRUM_X + (FlxG.width / 2) - 248, 14, 400, "0:00", 32);
 		timeTxt.setFormat(Constants.DEFAULT_FONT, 35, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		timeTxt.scrollFactor.set();
 		timeTxt.alpha = 0;
 		timeTxt.borderSize = 2;
 		timeTxt.visible = showTime;
 
-		if (ClientPrefs.data.downScroll)
-			timeTxt.y = FlxG.height - 44;
+		if (ClientPrefs.data.downScroll) timeTxt.y = FlxG.height - 44;
+		if (ClientPrefs.data.timeBarType == 'Song Name') timeTxt.text = PlayState.SONG.song;
 
-		if (ClientPrefs.data.timeBarType == 'Song Name')
-			timeTxt.text = PlayState.SONG.song;
+		@:privateAccess{
+			PlayState.instance.updateTime = showTime;
 
-		@:privateAccess
-		PlayState.instance.updateTime = showTime;
-
-		@:privateAccess
-		timeBar = new Bar(0, timeTxt.y + (timeTxt.height / 4), 'timeBar', function() return game.songPercent, 0, 1);
+			timeBar = new Bar(0, timeTxt.y + (timeTxt.height / 4), 'timeBar', function() return game.songPercent, 0, 1);
+		}
 		timeBar.scrollFactor.set();
 		timeBar.screenCenter(X);
 		timeBar.alpha = 0;
 		timeBar.visible = showTime;
 		timeBar.leftBar.color = FlxColor.fromRGB(game.dad.healthColorArray[0], game.dad.healthColorArray[1], game.dad.healthColorArray[2]);
 		add(timeBar);
+
 		add(timeTxt);
 
-		if (ClientPrefs.data.hideHud)
-			timeBar.visible = false;
-		else
-			timeBar.visible = showTime;
+		timeBar.visible = ClientPrefs.data.hideHud ? false : showTime;
 
 		if (ClientPrefs.data.timeBarType == 'Song Name')
 		{
@@ -176,7 +164,7 @@ abstract class UserInterface extends FlxBasic
 		}
 	}
 
-	public function startSong()
+	public function startSong() : Void
 	{
 		FlxTween.tween(timeBar, {alpha: 1}, 0.5, {ease: FlxEase.circOut});
 		FlxTween.tween(timeTxt, {alpha: 1}, 0.5, {ease: FlxEase.circOut});
@@ -219,28 +207,36 @@ abstract class UserInterface extends FlxBasic
 		}
 	}
 
-	function iconUpdate(elapsed:Float)
+	function findMultFromIcon(iconInstance:HealthIcon, elapsed:Float):Float {
+		return FlxMath.lerp(1, iconInstance.scale.x, MathsAddon.boundTo(1 - (elapsed * 9 * game.playbackRate), 0, 1));
+	}
+
+	function iconUpdate(elapsed:Float):Void
 	{
-		var mult:Float = FlxMath.lerp(1, iconP1.scale.x, MathsAddon.boundTo(1 - (elapsed * 9 * game.playbackRate), 0, 1));
-		iconP1.scale.set(mult, mult);
-		iconP1.updateHitbox();
-
-		var mult:Float = FlxMath.lerp(1, iconP2.scale.x, MathsAddon.boundTo(1 - (elapsed * 9 * game.playbackRate), 0, 1));
-		iconP2.scale.set(mult, mult);
-		iconP2.updateHitbox();
-
 		final iconOffset:Int = 26;
 
+		// icon player 1
+		final iconP1Mult:Float = findMultFromIcon(iconP1, elapsed);
+		iconP1.scale.set(iconP1Mult, iconP1Mult);
+		iconP1.updateHitbox();
+
 		iconP1.x = healthBar.x
-			+ (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01))
-			+ (150 * iconP1.scale.x - 150) / 2
-			- iconOffset;
+		+ (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01))
+		+ (150 * iconP1.scale.x - 150) / 2
+		- iconOffset;
+
+		iconP1.animation.curAnim.curFrame = healthBar.percent < 20 ? 1 : 0;
+
+		// icon player 2
+		final iconP2Mult:Float = findMultFromIcon(iconP2, elapsed);
+		iconP2.scale.set(iconP2Mult, iconP2Mult);
+		iconP2.updateHitbox();
+
 		iconP2.x = healthBar.x
 			+ (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01))
 			- (150 * iconP2.scale.x) / 2
 			- iconOffset * 2;
 
-		iconP1.animation.curAnim.curFrame = healthBar.percent < 20 ? 1 : 0;
 		iconP2.animation.curAnim.curFrame = healthBar.percent > 80 ? 1 : 0;
 	}
 
@@ -248,7 +244,7 @@ abstract class UserInterface extends FlxBasic
 	function add(object:FlxBasic, ?customGroup:flixel.group.FlxSpriteGroup):Void
 	{
 		if(customGroup!=null)
-			customGroup.add(cast object);// unsafe casts
+			customGroup.add(cast object);// unsafe cast
 		else
 			game.uiGroup.add(cast object);
 	}
