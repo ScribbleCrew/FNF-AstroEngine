@@ -12,6 +12,11 @@ import openfl.utils.Assets;
 
 class CoolUtil
 {
+
+	/**
+	* Uhh
+	* @deprecated since ASTRO_N64	
+	*/
 	public static function checkStats(dataStore:String = 'Max Score', otheridk:Dynamic) // simple but effective
 	{
 		if (ClientPrefs.data.stats.get(dataStore) < otheridk)

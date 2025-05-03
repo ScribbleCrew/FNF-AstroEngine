@@ -19,7 +19,12 @@ import haxe.ds.StringMap;
 #end
 class LoadingState extends MusicBeatState
 {
+	/**
+	* The amount of loaded files.
+	*/
 	public static var loaded:Int = 0;
+
+
 	public static var loadMax:Int = 0;
 
 	static var originalBitmapKeys:StringMap<String> = new StringMap();
@@ -69,7 +74,6 @@ class LoadingState extends MusicBeatState
 
 	#if ASTRO_WATERMARKS
 	var logo:FlxSprite;
-	var loadingText:FlxText;
 	var timePassed:Float;
 	#else
 	var funkay:FlxSprite;
@@ -79,13 +83,6 @@ class LoadingState extends MusicBeatState
 
 	override function create()
 	{
-		#if ASTRO_WATERMARKS
-		loadingText = new FlxText(520, 600, 400, 'Now Loading...', 32);
-		loadingText.setFormat(Constants.DEFAULT_FONT, 32, FlxColor.WHITE, LEFT, OUTLINE_FAST, FlxColor.BLACK);
-		loadingText.borderSize = 2;
-		add(loadingText);
-		#end
-
 		var bg:FlxSprite = new FlxSprite(0, 660).makeGraphic(1, 1, FlxColor.BLACK);
 		bg.scale.set(FlxG.width - 300, 25);
 		bg.updateHitbox();
@@ -161,21 +158,6 @@ class LoadingState extends MusicBeatState
 			bar.scale.x = barWidth * curPercent;
 			bar.updateHitbox();
 		}
-
-		#if ASTRO_WATERMARKS
-		timePassed += elapsed;
-		var dots:String = '';
-		switch (Math.floor(timePassed % 1 * 3))
-		{
-			case 0:
-				dots = '.';
-			case 1:
-				dots = '..';
-			case 2:
-				dots = '...';
-		}
-		loadingText.text = 'Now Loading$dots';
-		#end
 	}
 
 	var finishedLoading:Bool = false;
@@ -262,16 +244,19 @@ class LoadingState extends MusicBeatState
 		return target;
 	}
 
+	/**
+	* Map of assets to preload.	
+	*/
 	static var AssetsToPrepare:Map<String, Array<String>> = ["images" => [], "sounds" => [], "music" => [], "songs" => []];
 
+	/**
+	*	
+	*/
 	public static function prepare(images:Array<String> = null, sounds:Array<String> = null, music:Array<String> = null):Void
 	{
-		if (images != null)
-			AssetsToPrepare.set('images', AssetsToPrepare.get('images').concat(images)); // good?
-		if (sounds != null)
-			AssetsToPrepare.set('sounds', AssetsToPrepare.get('sounds').concat(sounds));
-		if (music != null)
-			AssetsToPrepare.set('music', AssetsToPrepare.get('music').concat(music));
+		if (images != null) AssetsToPrepare.get('images').concat(images); // good?
+		if (sounds != null) AssetsToPrepare.get('sounds').concat(sounds);
+		if (music != null) AssetsToPrepare.get('music').concat(music);
 	}
 
 	static var initialThreadCompleted:Bool = true;
@@ -476,7 +461,7 @@ class LoadingState extends MusicBeatState
 
 	public static function clearInvalids()
 	{
-		clearInvalidFrom(AssetsToPrepare.get('images'), 'images', '.png', IMAGE);
+		clearInvalidFrom(AssetsToPrepare.get('images'), 'images', '${Constants.IMAGE_EXT}', IMAGE);
 		clearInvalidFrom(AssetsToPrepare.get('sounds'), 'sounds', '.${Constants.SOUND_EXT}', SOUND);
 		clearInvalidFrom(AssetsToPrepare.get('music'), 'music', ' .${Constants.SOUND_EXT}', SOUND);
 		clearInvalidFrom(AssetsToPrepare.get('songs'), 'songs', '.${Constants.SOUND_EXT}', SOUND, 'songs');

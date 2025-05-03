@@ -162,8 +162,8 @@
 	<assets path="assets/week_assets" rename="assets" exclude="*.mp3" unless="web"/>
 
 	<!-- Embedded Assets -->
-	<assets path="assets/embed" rename="assets/shared" exclude="*.ogg" if="web"/>
-	<assets path="assets/embed" rename="assets/shared" exclude="*.mp3" unless="web"/>
+	<assets path="assets/embed" rename="assets" exclude="*.ogg" if="web" embed='true'/>
+	<assets path="assets/embed" rename="assets" exclude="*.mp3" unless="web" embed='true'/>
 
 	<!-- Linux icon -->
 	<assets path='art/icons/iconOG.png' rename='icon.png' if="linux" />

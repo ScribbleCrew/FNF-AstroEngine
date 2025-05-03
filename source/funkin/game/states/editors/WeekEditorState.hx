@@ -333,7 +333,7 @@ class WeekEditorState extends MusicBeatState implements FlxUIEventHandler.FlxUIE
 		if(isMissing) {
 			weekThing.visible = false;
 			missingFileText.visible = true;
-			missingFileText.text = 'MISSING FILE: images/storymenu/' + assetName + '.png';
+			missingFileText.text = 'MISSING FILE: images/storymenu/$assetName${Constants.IMAGE_EXT}';
 		}
 		recalculateStuffPosition();
 

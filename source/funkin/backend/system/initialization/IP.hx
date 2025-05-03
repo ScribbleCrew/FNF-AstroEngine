@@ -1,4 +1,4 @@
-package funkin.backend.system;
+package funkin.backend.system.initialization;
 
 // idk why i made this.
 @:unreflective class IP

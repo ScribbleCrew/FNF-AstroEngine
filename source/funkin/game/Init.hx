@@ -29,7 +29,7 @@ class Init extends flixel.FlxState
 		FlxG.save.bind('funkin', funkin.backend.CoolUtil.savePath);
 
 		ClientPrefs.loadDefaultKeys();
-		funkin.backend.system.IP.init();
+		funkin.backend.system.initialization.IP.init();
 
 		#if mobile
 		// Credits to MAJigsaw77 for this awesome piece of code. >:]c

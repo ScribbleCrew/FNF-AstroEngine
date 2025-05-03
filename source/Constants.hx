@@ -26,6 +26,11 @@
 	public static inline final SOUND_EXT:String = #if web "mp3" #else "ogg" #end;
 
 	/**
+	* Image file extension.	
+	*/
+	public static inline final IMAGE_EXT:String = ".png";
+
+	/**
 	 * Video file extension.
 	 */
 	public static inline final VIDEO_EXT:String = "mp4";
