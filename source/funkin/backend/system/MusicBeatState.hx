@@ -157,6 +157,10 @@ import flixel.addons.transition.FlxTransitionableState;
 	@:allow(funkin.backend.system.MusicBeatSubstate)
 	@:dox(hide) static var _elapsed:Float = 0;
 
+	/**
+	* Stage Access Tho...
+	* @param func The Function.	
+	*/
 	inline function stageAccess(func:BaseStage->(Void)):Void
 	{
 		// very cool stage access function.
@@ -247,7 +251,6 @@ import flixel.addons.transition.FlxTransitionableState;
 	public static function switchState(?nextState:EitherTwo<FlxState, MusicBeatState>, ?scriptName:String, ?args:Array<Dynamic>):Void
 	{
 		// Make sure the next state doesn't equal null or the current state.
-		trace(scriptName.toString());
 		nextState ??= new MusicBeatState(scriptName,args);
 		if (nextState == FlxG.state)
 			return resetState();

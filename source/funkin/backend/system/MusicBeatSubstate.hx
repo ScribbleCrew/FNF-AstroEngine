@@ -231,11 +231,9 @@ import funkin.backend.utils.Controls;
 
 	override function close() {
 		GlobalScript.instance.callOnScripts('onClose');
-		trace('Pre: ${funkin.game.Main.stateName}');
 		final className = Type.getClassName(Type.getClass(_parentState));
 		funkin.game.Main.stateName = className.substring(className.lastIndexOf('.') + 1);
 		super.close();
-		trace('Post: ${funkin.game.Main.stateName}');
 		GlobalScript.instance.callOnScripts('onClosePost');
 	}
 

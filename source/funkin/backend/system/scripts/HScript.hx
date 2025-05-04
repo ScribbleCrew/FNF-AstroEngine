@@ -145,13 +145,10 @@ class HScript extends Iris implements IScript
 			//GlobalScript.instance.hscriptInstances.push(this);
 
 			if(GlobalScript.instance.hscriptInstances.exists(Main.stateName)){
-				trace('true');
-				final fixed = GlobalScript.instance.hscriptInstances.get(Main.stateName);
-				trace(fixed);
-				fixed.push(this);
-				GlobalScript.instance.hscriptInstances.set(Main.stateName, fixed);
-				trace(fixed);
-				trace(GlobalScript.instance.hscriptInstances);
+				//final fixed = GlobalScript.instance.hscriptInstances.get(Main.stateName);
+				//fixed.push(this);
+				GlobalScript.instance.hscriptInstances.get(Main.stateName).push(this);
+				//GlobalScript.instance.hscriptInstances.set(Main.stateName, fixed);
 			}
 			else
 				GlobalScript.instance.hscriptInstances.set(Main.stateName, [this]);
