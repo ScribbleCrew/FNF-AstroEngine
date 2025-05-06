@@ -101,6 +101,7 @@ class Note extends FlxSprite
 		b: -1,
 		a: ClientPrefs.data.splashAlpha
 	};
+	public var noteHoldSplash:SustainCover;
 
 	public var offsetX:Float = 0;
 	public var offsetY:Float = 0;
@@ -130,7 +131,7 @@ class Note extends FlxSprite
 	public var hitsoundChartEditor:Bool = true;
 	/**
 	 * Forces the hitsound to be played even if the user's hitsound volume is set to 0
-	**/
+	*/
 	public var hitsoundForce:Bool = false;
 	public var hitsoundVolume(get, default):Float = 1.0;
 	function get_hitsoundVolume():Float {

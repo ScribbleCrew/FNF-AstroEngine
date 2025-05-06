@@ -86,9 +86,17 @@ class NoteSplash extends FlxSprite
 		}
 
 		var path:String = 'images/$texture';
-		if (configs.exists(path))
+
+		function getJsonPath(txt:String):String {
+			if(txt.startsWith("noteSplashes/"))  txt = txt.substr('noteSplashes/'.length);
+			return 'data/notes/splashes/$txt';
+		}
+		
+		final jsonPath:String = getJsonPath(texture);
+
+		if (configs.exists(jsonPath))
 		{
-			this.config = configs.get(path);
+			this.config = configs.get(jsonPath);
 			for (anim in this.config.animations)
 			{
 				if (anim.noteData % 4 == 0)
@@ -96,9 +104,9 @@ class NoteSplash extends FlxSprite
 			}
 			return;
 		}
-		else if (Paths.fileExists('$path.json', TEXT))
+		else if (Paths.fileExists('$jsonPath.json', TEXT))
 		{
-			var config:Dynamic = tjson.TJSON.parse(Paths.getTextFromFile('$path.json'));
+			var config:Dynamic = tjson.TJSON.parse(Paths.getTextFromFile('$jsonPath.json'));
 			if (config != null)
 			{
 				var tempConfig:NoteSplashConfig = {
@@ -118,7 +126,7 @@ class NoteSplash extends FlxSprite
 				}
 
 				this.config = tempConfig;
-				configs.set(path, this.config);
+				configs.set(jsonPath, this.config);
 				return;
 			}
 		}
@@ -128,7 +136,7 @@ class NoteSplash extends FlxSprite
 		var anim:String = 'note splash';
 		var fps:Array<Null<Int>> = [22, 26];
 		var offsets:Array<Array<Float>> = [[0, 0]];
-		if (Paths.fileExists('$path.txt', TEXT)) // Backwards compatibility with 0.7 splash txts
+		if (Paths.fileExists('$jsonPath.txt', TEXT)) // Backwards compatibility with 0.7 splash txts
 		{
 			var configFile:Array<String> = CoolUtil.listFromString(Paths.getTextFromFile('$path.txt'));
 			if (configFile.length > 0)
@@ -188,7 +196,7 @@ class NoteSplash extends FlxSprite
 		}
 
 		this.config = tempConfig;
-		configs.set(path, this.config);
+		configs.set(jsonPath, this.config);
 	}
 
 	public function spawnSplashNote(?x:Float = 0, ?y:Float = 0, ?noteData:Int = 0, ?note:Note, ?randomize:Bool = true)

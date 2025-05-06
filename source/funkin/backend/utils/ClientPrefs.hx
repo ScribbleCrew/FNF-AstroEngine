@@ -95,6 +95,9 @@ import flixel.input.keyboard.FlxKey;
 	 */
 	public var interfaceType:String = 'Astro';
 
+	public var holdSkin:String = "Normal";
+	public var holdSplashAlpha:Float = 0.6;
+	
 	/**
 	 * Force player's chosen note splashes over songs.
 	 */

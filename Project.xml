@@ -92,6 +92,7 @@
 	<define name="GLOBAL_SCRIPT" if="debug"/>
 
 	<!-- Enables funkin sound tray -->
+	<!-- FUNKIN_SOUNDTRAY's Assets are inside the base game files -->
 	<define name="FUNKIN_SOUNDTRAY" if="debug"/>
 
 	<!-- Remove "officialBuild" to use videos on source mod -->

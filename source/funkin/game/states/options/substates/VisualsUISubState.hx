@@ -47,7 +47,7 @@ class VisualsUISubState extends BaseOptionsMenu
 
 		// options
 
-		var noteSkins:Array<String> = Mods.mergeAllTextsNamed('images/noteSkins/list.txt');
+		var noteSkins:Array<String> = Mods.mergeAllTextsNamed('data/notes/skin/list.txt');
 		if (noteSkins.length > 0)
 		{
 			if (!noteSkins.contains(ClientPrefs.data.noteSkin))
@@ -59,10 +59,15 @@ class VisualsUISubState extends BaseOptionsMenu
 			option.onChange = onChangeNoteSkin;
 			noteOptionID = optionsArray.length - 1;
 		}
+		
+		final uhh = Mods.mergeAllTextsNamed('data/interfaceOptions.txt');
+		if(uhh.length > 0){
+			if(!uhh.contains(ClientPrefs.data.interfaceType))
+				ClientPrefs.data.interfaceType = ClientPrefs.defaultData.interfaceType;
+			addOption(new Option('User Interface:', "What user interface would you like?", 'interfaceType', STRING, uhh));
+		}
 
-		addOption(new Option('User Interface:', "What user interface would you like?", 'interfaceType', STRING, ['Astro', 'Psych', 'V-Slice']));
-
-		var noteSplashes:Array<String> = Mods.mergeAllTextsNamed('images/noteSplashes/list.txt');
+		var noteSplashes:Array<String> = Mods.mergeAllTextsNamed('data/notes/splashes/list.txt');
 		if (noteSplashes.length > 0)
 		{
 			if (!noteSplashes.contains(ClientPrefs.data.splashSkin))
@@ -70,6 +75,21 @@ class VisualsUISubState extends BaseOptionsMenu
 
 			noteSplashes.insert(1, ClientPrefs.defaultData.splashSkin); // Default skin always comes first
 			var option:Option = new Option('Note Splashes:', "Select your prefered Note Splash variation or turn it off.", 'splashSkin', STRING, noteSplashes);
+			addOption(option);
+		}
+
+		var holdSkins:Array<String> = Mods.mergeAllTextsNamed('data/notes/covers/list.txt');
+		if(holdSkins.length > 0)
+		{
+			if(!holdSkins.contains(ClientPrefs.data.holdSkin))
+				ClientPrefs.data.holdSkin = ClientPrefs.defaultData.holdSkin; //Reset to default if saved splashskin couldnt be found
+			holdSkins.remove(ClientPrefs.defaultData.holdSkin);
+			holdSkins.insert(0, ClientPrefs.defaultData.holdSkin); //Default skin always comes first
+			var option:Option = new Option('Hold Splashes:',
+				"Select your preferred Hold Splash variation or turn it off.",
+				'holdSkin',
+				STRING,
+				holdSkins);
 			addOption(option);
 		}
 
@@ -90,6 +110,17 @@ class VisualsUISubState extends BaseOptionsMenu
 		addOption(new Option('Score Text Zoom on Hit', "If unchecked, disables the Score text zooming\neverytime you hit a note.", 'scoreZoom', BOOL));
 
 		final option:Option = new Option('Health Bar Opacity', 'How much transparent should the health bar and icons be.', 'healthBarAlpha', PERCENT);
+		option.scrollSpeed = 1.6;
+		option.minValue = 0.0;
+		option.maxValue = 1;
+		option.changeValue = 0.1;
+		option.decimals = 1;
+		addOption(option);
+
+		var option:Option = new Option('Note Hold Splash Opacity',
+		'How much transparent should the Note Hold Splash be.\n0% disables it.',
+		'holdSplashAlpha',
+		PERCENT);
 		option.scrollSpeed = 1.6;
 		option.minValue = 0.0;
 		option.maxValue = 1;
@@ -132,8 +163,9 @@ class VisualsUISubState extends BaseOptionsMenu
 			changedMusic = true;
 		};
 
-		#if CHECK_FOR_UPDATES addOption(new Option('Check for Updates', 'On Release builds, turn this on to check for updates when you start the game.',
-			'checkForUpdates', BOOL)); #end
+		#if CHECK_FOR_UPDATES
+		addOption(new Option('Check for Updates', 'On Release builds, turn this on to check for updates when you start the game.', 'checkForUpdates', BOOL));
+		#end
 		addOption(new Option('Combo Stacking', "If unchecked, Ratings and Combo won't stack, saving on System Memory and making them easier to read",
 			'comboStacking', BOOL));
 
@@ -145,14 +177,17 @@ class VisualsUISubState extends BaseOptionsMenu
 	{
 		super.changeSelection(change, snd);
 
-		if (noteOptionID < 0) return;
+		if (noteOptionID < 0)
+			return;
 
 		for (i in 0...Note.colArray.length)
 		{
 			final note:StrumNote = notes.members[i];
-			if (notesTween[i] != null) notesTween[i].cancel();
+			if (notesTween[i] != null)
+				notesTween[i].cancel();
 
-			notesTween[i] = FlxTween.tween(note, {y: curSelected == noteOptionID ? noteY : -200}, Math.abs(note.y / (200 + noteY)) / 3, {ease: FlxEase.quadInOut});
+			notesTween[i] = FlxTween.tween(note, {y: curSelected == noteOptionID ? noteY : -200}, Math.abs(note.y / (200 + noteY)) / 3,
+				{ease: FlxEase.quadInOut});
 		}
 	}
 

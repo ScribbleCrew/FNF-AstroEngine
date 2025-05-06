@@ -1,0 +1,8 @@
+<!DOCTYPE AE-hold-cover-default>
+<hold-cover-data version="0.0.1">
+    <pixel value="false"/>
+    <offset x="50" y='35'/>
+
+    <!-- maybe -->
+    <!-- <clipRect x="0" y="0" width="0" height="0"/> -->
+</hold-cover-data>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TextureAtlas imagePath="holdCover.png" width="1433" height="462">
+	<!-- Created with Adobe Animate version 21.0.6.41649 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+    <SubTexture name="holdCoverLoop0000" x="0" y="0" width="161" height="135"/>
+    <SubTexture name="holdCoverLoop0001" x="165" y="0" width="161" height="135"/>
+    <SubTexture name="holdCoverLoop0002" x="330" y="0" width="161" height="135"/>
+    <SubTexture name="holdCoverLoop0003" x="495" y="0" width="161" height="135"/>
+    <SubTexture name="holdCoverEnd0000" x="660" y="0" width="255" height="229"/>
+    <SubTexture name="holdCoverEnd0001" x="919" y="0" width="255" height="229"/>
+    <SubTexture name="holdCoverEnd0002" x="1178" y="0" width="255" height="229"/>
+    <SubTexture name="holdCoverEnd0003" x="0" y="233" width="255" height="229"/>
+    <SubTexture name="holdCoverEnd0004" x="259" y="233" width="255" height="229"/>
+    <SubTexture name="holdCoverEnd0005" x="518" y="233" width="255" height="229"/>
+    <SubTexture name="holdCoverEnd0006" x="777" y="233" width="255" height="229"/>
+    <SubTexture name="holdCoverEnd0007" x="1036" y="233" width="255" height="229"/>
+    <SubTexture name="holdCoverEnd0008" x="0" y="0" width="1" height="1"/>
+    <SubTexture name="holdCoverStart0000" x="1295" y="233" width="98" height="98"/>
+</TextureAtlas>
