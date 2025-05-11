@@ -247,7 +247,7 @@ class GlobalScript
 	#end
 
 	#if HSCRIPT_ALLOWED
-	public function startHScriptsNamed(scriptFile:String)
+	public function startHScriptsNamed(scriptFile:String, ?customScriptGroup:String)
 	{
 		var scriptToLoad:String;
 		#if MODS_ALLOWED
@@ -260,7 +260,7 @@ class GlobalScript
 
 		if (FileSystem.exists(scriptToLoad))
 			if (!Iris.instances.exists(scriptToLoad))
-				return new HScript(null, scriptToLoad).run();
+				return new HScript(null, scriptToLoad).run(null, customScriptGroup);
 
 		return null;
 	}

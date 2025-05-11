@@ -863,7 +863,7 @@ class PlayState extends MusicBeatState
 		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
 		// STAGE SCRIPTS
 		#if LUA_ALLOWED GlobalScript.instance.startLuasNamed('stages/' + curStage + '.lua'); #end
-		#if HSCRIPT_ALLOWED GlobalScript.instance.startHScriptsNamed('stages/' + curStage + '.hx'); #end
+		#if HSCRIPT_ALLOWED GlobalScript.instance.startHScriptsNamed('stages/' + curStage + '.hx', 'PlayState'); #end
 
 		// CHARACTER SCRIPTS
 		if (gf != null) startCharacterScripts(gf.curCharacter);
@@ -954,10 +954,10 @@ class PlayState extends MusicBeatState
 
 		#if HSCRIPT_ALLOWED
 		for (noteTypeFileName in noteTypes)
-			GlobalScript.instance.startHScriptsNamed('custom_notetypes/$noteTypeFileName.hx');
+			GlobalScript.instance.startHScriptsNamed('custom_notetypes/$noteTypeFileName.hx', 'PlayState');
 
 		for (eventFileName in eventsPushed)
-			GlobalScript.instance.startHScriptsNamed('custom_events/$eventFileName.hx');
+			GlobalScript.instance.startHScriptsNamed('custom_events/$eventFileName.hx', 'PlayState');
 		#end
 		noteTypes = null;
 		eventsPushed = null;

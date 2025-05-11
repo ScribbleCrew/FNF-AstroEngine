@@ -136,22 +136,21 @@ class HScript extends Iris implements IScript
 		return null;
 	}
 
-	public function run(?args:Array<Dynamic>) : HScript{
+	public function run(?args:Array<Dynamic>, ?customGroupMap:String) : HScript{
 		try
 		{		
-			safeCall('new', args);
+			safeCall('new', args);// iris may implement this in the future. So remove this if it does.
 			safeCall('onCreate');
 			safeCall('create');
 			//GlobalScript.instance.hscriptInstances.push(this);
 
-			if(GlobalScript.instance.hscriptInstances.exists(Main.stateName)){
-				//final fixed = GlobalScript.instance.hscriptInstances.get(Main.stateName);
-				//fixed.push(this);
-				GlobalScript.instance.hscriptInstances.get(Main.stateName).push(this);
-				//GlobalScript.instance.hscriptInstances.set(Main.stateName, fixed);
-			}
+			var uhh = Main.stateName;
+			if(customGroupMap!=null)uhh = customGroupMap;
+
+			if(GlobalScript.instance.hscriptInstances.exists(uhh))
+				GlobalScript.instance.hscriptInstances.get(uhh).push(this);
 			else
-				GlobalScript.instance.hscriptInstances.set(Main.stateName, [this]);
+				GlobalScript.instance.hscriptInstances.set(uhh, [this]);
 
 			Logs.prefixedTrace('successfully initialized HScript interp on "$filePath"', 'Global Script', GREEN);
 		}
