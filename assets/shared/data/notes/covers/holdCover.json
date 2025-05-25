@@ -1,0 +1,160 @@
+{
+    "version": "0.0.1",
+    "allowRGB": true,
+    "allowPixel": true,
+    "scale": 1,
+    "animations": {
+        "purple": {
+            "noteData": [
+                0,
+                4
+            ],
+           "anim_prefixes": {
+                "start": {
+                    "prefix": "holdCoverStart0",
+                    "indices": [],
+                    "fps": 24,
+                    "loop": false,
+                    "offset": {
+                        "x": 40,
+                        "y": 5
+                    }
+                },
+                "hold": {
+                    "prefix": "holdCover0",
+                    "indices": [],
+                    "fps": 24,
+                    "loop": true,
+                    "offset": {
+                        "x": 40,
+                        "y": 15
+                    }
+                },
+                "end": {
+                    "prefix": "holdCoverEnd0",
+                    "indices": [],
+                    "loop": false,
+                    "fps": 24,
+                    "offset": {
+                        "x": 80,
+                        "y": 40
+                    }
+                }
+            }
+        },
+        "red": {
+            "noteData": [
+                3,
+                7
+            ],
+           "anim_prefixes": {
+                "start": {
+                    "prefix": "holdCoverStart0",
+                    "indices": [],
+                    "fps": 24,
+                    "loop": false,
+                    "offset": {
+                        "x": 40,
+                        "y": 5
+                    }
+                },
+                "hold": {
+                    "prefix": "holdCover0",
+                    "indices": [],
+                    "fps": 24,
+                    "loop": true,
+                    "offset": {
+                        "x": 40,
+                        "y": 15
+                    }
+                },
+                "end": {
+                    "prefix": "holdCoverEnd0",
+                    "indices": [],
+                    "loop": false,
+                    "fps": 24,
+                    "offset": {
+                        "x": 80,
+                        "y": 40
+                    }
+                }
+            }
+        },
+        "blue": {
+            "noteData": [
+                1,
+                5
+            ],
+            "anim_prefixes": {
+                "start": {
+                    "prefix": "holdCoverStart0",
+                    "indices": [],
+                    "fps": 24,
+                    "loop": false,
+                    "offset": {
+                        "x": 40,
+                        "y": 5
+                    }
+                },
+                "hold": {
+                    "prefix": "holdCover0",
+                    "indices": [],
+                    "fps": 24,
+                    "loop": true,
+                    "offset": {
+                        "x": 40,
+                        "y": 15
+                    }
+                },
+                "end": {
+                    "prefix": "holdCoverEnd0",
+                    "indices": [],
+                    "loop": false,
+                    "fps": 24,
+                    "offset": {
+                        "x": 80,
+                        "y": 40
+                    }
+                }
+            }
+        },
+        "green": {
+            "noteData": [
+                2,
+                6
+            ],
+            "anim_prefixes": {
+                "start": {
+                    "prefix": "holdCoverStart0",
+                    "indices": [],
+                    "fps": 24,
+                    "loop": false,
+                    "offset": {
+                        "x": 40,
+                        "y": 5
+                    }
+                },
+                "hold": {
+                    "prefix": "holdCover0",
+                    "indices": [],
+                    "fps": 24,
+                    "loop": true,
+                    "offset": {
+                        "x": 40,
+                        "y": 15
+                    }
+                },
+                "end": {
+                    "prefix": "holdCoverEnd0",
+                    "indices": [],
+                    "loop": false,
+                    "fps": 24,
+                    "offset": {
+                        "x": 80,
+                        "y": 40
+                    }
+                }
+            }
+        }
+    }
+}

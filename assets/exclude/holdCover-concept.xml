@@ -1,0 +1,23 @@
+<!DOCTYPE AE-hold-cover-default>
+<hold-cover-data version="0.0.1">
+    <pixel value="false"/>
+    <offset x="30" y='5'/>
+
+    <!-- maybe -->
+    <!-- <clipRect x="0" y="0" width="0" height="0"/> -->
+    <animation>
+        <purple>
+            <offset x='30' y='5' />
+            <fps value="15" />
+            <prefix value="">
+            <indices value="[0,100]">
+        </purple>
+
+        "prefix": "note splash diamond blue 2",
+			"name": "blue2",
+			"indices": []
+        <start duration="0.5" x="0" y="0" width="0" height="0" frame="" ind="[0,1,1,1,1,2,21,22]"/>
+        <hold duration="0.5" x="0" y="0" width="0" height="0"/>
+        <end duration="0.5" x="0" y="0" width="0" height="0"/>
+    </animation>
+</hold-cover-data>

@@ -52,7 +52,7 @@ class OptionsState extends MusicBeatState
 		WindowUtil.title = ('%{GAME_TITLE} - Options');
 		#end
 		FlxG.mouse.visible = false;
-		ClientPrefs.loadPrefs();
+		ClientPrefs.loadPreferences();
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.color = EngineData.MENU_COLOR;

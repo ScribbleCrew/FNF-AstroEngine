@@ -2,6 +2,22 @@ package funkin.backend.system.scripts.functions;
 
 class TextFunctions
 {
+	
+	public static function setTextBorderFromString(text:FlxText, border:String)
+	{
+		switch (border.toLowerCase().trim())
+		{
+			case 'shadow':
+				text.borderStyle = SHADOW;
+			case 'outline':
+				text.borderStyle = OUTLINE;
+			case 'outline_fast', 'outlinefast':
+				text.borderStyle = OUTLINE_FAST;
+			default:
+				text.borderStyle = NONE;
+		}
+	}
+
 	public static function implement(funk:FunkinLua)
 	{
 		var lua = funk.lua;
@@ -71,7 +87,7 @@ class TextFunctions
 			var obj:FlxText = MusicBeatState.getVariables().get(tag);
 			if(obj != null)
 			{
-				CoolUtil.setTextBorderFromString(obj, (size > 0 ? style : 'none'));
+				setTextBorderFromString(obj, (size > 0 ? style : 'none'));
 				if(size > 0)
 					obj.borderSize = size;
 				

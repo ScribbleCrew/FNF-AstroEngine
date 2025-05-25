@@ -24,38 +24,40 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		var option:Option = new Option('Middlescroll', 'If checked, your notes get centered.', 'middleScroll', BOOL);
 		addOption(option);
 
-		var option:Option = new Option('Note Splashes', "If unchecked, hitting \"Sick!\" notes won't show particles.", 'noteSplashes', BOOL);
-		addOption(option);
+		addOption(new Option('Note Splashes', "If unchecked, hitting \"Sick!\" notes won't show particles.", 'noteSplashes', BOOL));
+		addOption(new Option('Hold Splashes', "If unchecked, hold splashes wont-, uhh, splash?", 'holdCovers', BOOL));
 
-		var option:Option = new Option('Opponent Note Splashes', "It's in the fucking name nerd", 'opnoteSplashes', BOOL);
-		addOption(option);
+		addOption(new Option('Opponent Note Splashes', "It's in the fucking name nerd", 'oppNoteSplashes', BOOL));
+		addOption(new Option('Opponent Hold Splashes', "It's in the fucking name nerd", 'oppHoldSplashes', BOOL));
 
-		var option:Option = new Option('Cursing', "aww, the baby doesn't like bad words?", 'cursing', BOOL);
-		addOption(option);
+		addOption(new Option('Cursing', "aww, the baby doesn't like bad words?", 'cursing', BOOL));
 
-		var option:Option = new Option('Force Splashes', "Override song set notesplash asset.", 'forceNoteSplashes', BOOL);
-		addOption(option);
+		if (ClientPrefs.data.interfaceType == 'Astro') addOption(new Option('Rating Stats', "Show Rating Stats", 'showRatingStats', BOOL));
 
-		if (ClientPrefs.data.interfaceType == 'Astro')
-		{
-			var option:Option = new Option('Rating Stats', "Show Rating Stats", 'showRatingStats', BOOL);
-			addOption(option);
-		}
+		/**
+		 * Opponent notes
+		 * If unchecked, opponent notes get hidden.
+		 * They also get hidden by `data.hideHud`	
+		 */
+		addOption(new Option('Opponent Notes', 'If unchecked, opponent notes get hidden.', 'opponentStrums', BOOL));
 
-		var option:Option = new Option('Opponent Notes', 'If unchecked, opponent notes get hidden.', 'opponentStrums', BOOL);
-		addOption(option);
 
-		var option:Option = new Option('Ghost Tapping', "If checked, you won't get misses from pressing keys\nwhile there are no notes able to be hit.",
-			'ghostTapping', BOOL);
-		addOption(option);
+		/**
+		 * Ghost Tapping
+		 * If checked, you won't get misses from pressing keys
+		 * while there are no notes able to be hit.
+		 */
+		addOption(new Option('Ghost Tapping', "If checked, you won't get misses from pressing keys\nwhile there are no notes able to be hit.", 'ghostTapping', BOOL));
 
-		var option:Option = new Option('Disable Reset Button', "If checked, pressing Reset won't do anything.", 'noReset', BOOL);
-		addOption(option);
+		/**
+		* Disable Reset Button
+		* If checked, pressing the reset button wont do anything...	
+		*/
+		addOption(new Option('Disable Reset Button', "If checked, pressing Reset won't do anything.", 'noReset', BOOL));
 
 		#if DISCORD_ALLOWED
-		var option:Option = new Option('Discord Rich Presence',
-			"Uncheck this to prevent accidental leaks, it will hide the Application from your \"Playing\" box on Discord", 'discordRPC', BOOL);
-		addOption(option);
+		var option:Option;
+		addOption(option = new Option('Discord Rich Presence', "Uncheck this to prevent accidental leaks, it will hide the Application from your \"Playing\" box on Discord", 'discordRPC', BOOL) );
 		option.onChange = () -> ClientPrefs.data.discordRPC ? DiscordClient.initialize() : DiscordClient.shutdown();
 		#end
 
@@ -104,10 +106,7 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.changeValue = 0.1;
 		addOption(option);
 
-		#if ASTRO_WATERMARKS
-		var option:Option = new Option('goob', null, 'goober', BOOL);
-		addOption(option);
-		#end
+		#if ASTRO_WATERMARKS addOption(new Option('goob', null, 'goober', BOOL)); #end
 
 		super();
 	}

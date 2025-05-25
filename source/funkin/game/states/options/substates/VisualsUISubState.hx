@@ -1,27 +1,9 @@
 package funkin.game.states.options.substates;
 
-import flash.text.TextField;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxMath;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
-import lime.utils.Assets;
-import flixel.FlxSubState;
-import flash.text.TextField;
 import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.util.FlxSave;
-import haxe.Json;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
-import flixel.util.FlxTimer;
-import flixel.input.keyboard.FlxKey;
-import flixel.graphics.FlxGraphic;
-import funkin.backend.utils.Controls;
-import funkin.game.options.*;
 
 class VisualsUISubState extends BaseOptionsMenu
 {
@@ -81,13 +63,13 @@ class VisualsUISubState extends BaseOptionsMenu
 		var holdSkins:Array<String> = Mods.mergeAllTextsNamed('data/notes/covers/list.txt');
 		if(holdSkins.length > 0)
 		{
-			if(!holdSkins.contains(ClientPrefs.data.holdSkin))
-				ClientPrefs.data.holdSkin = ClientPrefs.defaultData.holdSkin; //Reset to default if saved splashskin couldnt be found
-			holdSkins.remove(ClientPrefs.defaultData.holdSkin);
-			holdSkins.insert(0, ClientPrefs.defaultData.holdSkin); //Default skin always comes first
+			if(!holdSkins.contains(ClientPrefs.data.holdSplashesSkin))
+				ClientPrefs.data.holdSplashesSkin = ClientPrefs.defaultData.holdSplashesSkin; //Reset to default if saved splashskin couldnt be found
+			holdSkins.remove(ClientPrefs.defaultData.holdSplashesSkin);
+			holdSkins.insert(0, ClientPrefs.defaultData.holdSplashesSkin); //Default skin always comes first
 			var option:Option = new Option('Hold Splashes:',
 				"Select your preferred Hold Splash variation or turn it off.",
-				'holdSkin',
+				'holdSplashesSkin',
 				STRING,
 				holdSkins);
 			addOption(option);
@@ -119,7 +101,7 @@ class VisualsUISubState extends BaseOptionsMenu
 
 		var option:Option = new Option('Note Hold Splash Opacity',
 		'How much transparent should the Note Hold Splash be.\n0% disables it.',
-		'holdSplashAlpha',
+		'holdSplashesAlpha',
 		PERCENT);
 		option.scrollSpeed = 1.6;
 		option.minValue = 0.0;

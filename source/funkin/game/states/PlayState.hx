@@ -867,8 +867,8 @@ class PlayState extends MusicBeatState
 
 		// CHARACTER SCRIPTS
 		if (gf != null) startCharacterScripts(gf.curCharacter);
-		if(dad != null) startCharacterScripts(dad.curCharacter);
-		if(boyfriend != null) startCharacterScripts(boyfriend.curCharacter);
+		if (dad != null) startCharacterScripts(dad.curCharacter);
+		if (boyfriend != null) startCharacterScripts(boyfriend.curCharacter);
 		#end
 
 		noteGroup = new FlxTypedGroup<FlxBasic>();
@@ -2346,8 +2346,10 @@ class PlayState extends MusicBeatState
 
 				persistentUpdate = false;
 				persistentDraw = false;
-				FlxTimer.globalManager.clear();
-				FlxTween.globalManager.clear();
+				
+				for(i => v in [FlxTimer.globalManager, FlxTween.globalManager])
+					untyped v.clear();
+
 				FlxG.camera.setFilters([]);
 
 				if (GameOverSubstate.deathDelay > 0)
@@ -3431,9 +3433,9 @@ class PlayState extends MusicBeatState
 		playStrumAnim(true, Std.int(Math.abs(note.noteData)), time);
 		note.hitByOpponent = true;
 
-	/*	if (ClientPrefs.data.opnoteSplashes && !note.isSustainNote)
+		if (ClientPrefs.data.oppNoteSplashes && !note.isSustainNote)
 			spawnNoteSplashOnNote(note);
-*/
+
 		stageAccess(function(stage:BaseStage) stage.opponentNoteHit(note));
 		GlobalScript.instance.callOnScripts('opponentNoteHit', [
 			notes.members.indexOf(note),
@@ -3445,9 +3447,7 @@ class PlayState extends MusicBeatState
 		spawnHoldSplashOnNote(note);
 
 		if (!note.isSustainNote)
-		{
 			invalidateNote(note);
-		}
 	}
 
 	function goodNoteHit(note:Note):Void
@@ -3587,11 +3587,11 @@ class PlayState extends MusicBeatState
 	}
 
 	public function spawnHoldSplashOnNote(note:Note) {
-		if (ClientPrefs.data.holdSplashAlpha <= 0)
+		if (ClientPrefs.data.holdSplashesAlpha <= 0)
 			return;
 
-		if (note != null) {
-			var strum:StrumNote = (note.mustPress ? playerStrums : opponentStrums).members[note.noteData];
+		if (ClientPrefs.data.holdCovers && note != null && !ClientPrefs.data.hideHud) {
+			var strum:StrumNote = ((ClientPrefs.data.oppHoldSplashes && note.hitByOpponent) ? opponentStrums : playerStrums).members[note.noteData];
 			if(strum != null && note.tail.length > 1)
 				spawnHoldSplash(note);
 		}
@@ -3604,7 +3604,7 @@ class PlayState extends MusicBeatState
 	public function spawnHoldSplash(note:Note) : Void {
 		var end:Note = note.isSustainNote ? note.parent.tail[note.parent.tail.length - 1] : note.tail[note.tail.length - 1];
 		var splash:SustainCover = grpHoldSplashes.recycle(SustainCover);
-		splash.setupSusSplash((note.mustPress ? playerStrums : opponentStrums).members[note.noteData], note, playbackRate);
+		splash.setupSustainSplash((note.mustPress ? playerStrums : opponentStrums).members[note.noteData], note, playbackRate);
 		grpHoldSplashes.add(end.noteHoldSplash = splash);
 	}
 
@@ -3622,10 +3622,7 @@ class PlayState extends MusicBeatState
 	{
 		if (ClientPrefs.data.noteSplashes && note != null && !ClientPrefs.data.hideHud)
 		{
-			var strum:StrumNote = playerStrums.members[note.noteData];
-			if (ClientPrefs.data.opnoteSplashes && note.hitByOpponent)
-				strum = opponentStrums.members[note.noteData];
-
+			var strum:StrumNote = ((ClientPrefs.data.oppNoteSplashes && note.hitByOpponent) ? opponentStrums : playerStrums).members[note.noteData];
 			if (strum != null)
 				spawnNoteSplash(strum.x, strum.y, note.noteData, note, strum);
 		}

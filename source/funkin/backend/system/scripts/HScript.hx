@@ -30,7 +30,7 @@ class HScript extends Iris implements IScript
 	{
 		if(parent.hscript == null)
 		{
-			trace('initializing haxe interp for: ${parent.scriptName}');
+			Logs.trace('Initializing haxe interp for {${parent.scriptName}}', RED);
 			parent.hscript = new HScript(parent);
 		}
 	}

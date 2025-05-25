@@ -1,5 +1,6 @@
 package funkin.backend;
 
+import haxe.ds.StringMap;
 import flixel.util.FlxColor;
 import flixel.util.FlxSave;
 import flixel.FlxG;
@@ -12,11 +13,21 @@ import openfl.utils.Assets;
 
 class CoolUtil
 {
+	/**
+	 * Used to uhh fix json maps.	
+	 */
+	public static function mapify<T>(v:Dynamic):Map<String, Dynamic>
+	{
+		final animPrefixes:StringMap<Dynamic> = new StringMap<Dynamic>();
+		for (field in Reflect.fields(v))
+			animPrefixes.set(field, Reflect.field(v, field));
+		return animPrefixes;
+	}
 
 	/**
-	* Uhh
-	* @deprecated since ASTRO_N64	
-	*/
+	 * Uhh
+	 * @deprecated since ASTRO_N64	
+	 */
 	public static function checkStats(dataStore:String = 'Max Score', otheridk:Dynamic) // simple but effective
 	{
 		if (ClientPrefs.data.stats.get(dataStore) < otheridk)
@@ -62,6 +73,19 @@ class CoolUtil
 			daList[i] = daList[i].trim();
 
 		return daList;
+	}
+
+	public static function noteIDToName(id) : String{
+		var i : String = '';
+		switch(id)
+		{
+			case 0,4: i = 'purple';
+			case 1,5: i = 'blue';
+			case 2,6: i = 'green';
+			case 3,7: i = 'red';
+		}
+		
+		return i;
 	}
 
 	inline public static function colorFromString(color:String):FlxColor
@@ -154,19 +178,4 @@ class CoolUtil
 	@:access(flixel.util.FlxSave.validate)
 	inline public static function get_savePath():String
 		return '${FlxG.stage.application.meta.get('company')}/${FlxSave.validate(FlxG.stage.application.meta.get('file'))}';
-
-	public static function setTextBorderFromString(text:FlxText, border:String)
-	{
-		switch (border.toLowerCase().trim())
-		{
-			case 'shadow':
-				text.borderStyle = SHADOW;
-			case 'outline':
-				text.borderStyle = OUTLINE;
-			case 'outline_fast', 'outlinefast':
-				text.borderStyle = OUTLINE_FAST;
-			default:
-				text.borderStyle = NONE;
-		}
-	}
 }

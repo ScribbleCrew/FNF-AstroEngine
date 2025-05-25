@@ -9,46 +9,172 @@ import flixel.input.keyboard.FlxKey;
 
 @:structInit class SaveVariables
 {
+	/**
+	 * Global antialiasing, basically makes everything look sharp and crisp.
+	 */
 	public var antialiasing:Bool = true;
 
+	/**
+	 * Down Scroll.
+	 */
 	public var downScroll:Bool = false;
-	public var middleScroll:Bool = false;
-	public var opponentStrums:Bool = true;
-	public var showFPS:Bool = true;
-	public var flashing:Bool = true;
-	public var autoPause:Bool = true;
-	public var noteSplashes:Bool = true;
-	public var opnoteSplashes:Bool = true;
-	public var lowQuality:Bool = false;
-	public var hideHud:Bool = false;
-	public var botplayEnabled:Bool = false;
-	#if SHADERS_ALLOWED public var shaders:Bool = true; #end
 
 	/**
-	* CPU caching, decreases memory usage by pushing some of the load to the gpu.
-	* Made by Raltyro	
-	*/
+	 * Middle Scroll.
+	 */
+	public var middleScroll:Bool = false;
+
+	/**
+	 * Opponent strums.
+	 */
+	public var opponentStrums:Bool = true;
+
+	/**
+	 * Show FPS
+	 */
+	public var showFPS:Bool = true;
+
+	/**
+	 * Flashing lights.
+	 */
+	public var flashing:Bool = true;
+
+	/**
+	 * Auto pause.
+	 */
+	public var autoPause:Bool = true;
+
+	/**
+	 * Note splashes
+	 */
+	public var noteSplashes:Bool = true;
+
+	/**
+	 * Opponent note splashes.
+	 */
+	public var oppNoteSplashes:Bool = true;
+
+	/**
+	 * Low quality mode.
+	 */
+	public var lowQuality:Bool = false;
+
+	/**
+	 * Should the hud be hidden.
+	 */
+	public var hideHud:Bool = false;
+
+	/**
+	 * Botplay enabled...
+	 */
+	public var botplayEnabled:Bool = false;
+
+	#if SHADERS_ALLOWED
+	/**
+	 * Should shaders be allowed.
+	 */
+	public var shaders:Bool = true;
+	#end
+
+	/**
+	 * CPU caching, decreases memory usage by pushing some of the load to the gpu.
+	 * Made by Raltyro	
+	 */
 	public var cacheOnGPU:Bool = #if !switch false #else true #end;
 
+	/**
+	 * The framerate.
+	 */
 	public var framerate:Int = 60;
+
+	/**
+	 * Cursing
+	 */
 	public var cursing:Bool = true;
+
+	/**
+	 * Violence
+	 */
 	public var violence:Bool = true;
+
+	/**
+	 * Camera zooms.
+	 */
 	public var camZooms:Bool = true;
+
+	/**
+	 * Note offset.
+	 */
 	public var noteOffset:Int = 0;
-	public var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
+
+	/**
+	 * Ghost tapping
+	 */
 	public var ghostTapping:Bool = true;
+
+	/**
+	 * Hit sounds
+	 */
 	public var hitSound:Bool = false;
+
+	/**
+	 * Time bar type.
+	 */
 	public var timeBarType:String = 'Time Left';
+
+	/**
+	 * Score zoom.
+	 */
 	public var scoreZoom:Bool = true;
+
+	/**
+	 * No reset.
+	 */
 	public var noReset:Bool = false;
+
+	/**
+	 * Health bar alpha.
+	 */
 	public var healthBarAlpha:Float = 1;
+
+	/**
+	 * Fps counter alpha.
+	 */
 	public var fpsCounterAlpha:Float = 1;
+
+	/**
+	 * Controller mode.
+	 */
 	public var controllerMode:Bool = false;
+
+	/**
+	 * Mouse events, menu support needed...
+	 */
 	public var mouseEvents:Bool = false;
+
+	/**
+	 * Hitsound volume
+	 */
 	public var hitsoundVolume:Float = 0;
+
+	/**
+	 * The Pause Music
+	 */
 	public var pauseMusic:String = 'Tea Time';
+
+	/**
+	 * Check for updates
+	 */
 	public var checkForUpdates:Bool = true;
+
+	/**
+	 * Combo stacking
+	 */
 	public var comboStacking = true;
+
+	/**
+	 * Gameplay settings
+	 */
 	public var gameplaySettings:Map<String, Dynamic> = [
 		'scrollspeed' => 1.0,
 		'scrolltype' => 'multiplicative',
@@ -61,23 +187,64 @@ import flixel.input.keyboard.FlxKey;
 		'opponentplay' => false
 	];
 
+	/**
+	 * Note's Combo offset.
+	 */
 	public var comboOffset:Array<Int> = [0, 0, 0, 0];
+
+	/**
+	 * Note's Rating Offset.
+	 */
 	public var ratingOffset:Int = 0;
+
+	/**
+	 * Note's Sick Window.	
+	 */
 	public var sickWindow:Int = 45;
+
+	/**
+	 * Note's Good Window.	
+	 */
 	public var goodWindow:Int = 90;
+
+	/**
+	 * Note's Bad Window.	
+	 */
 	public var badWindow:Int = 135;
+
+	/**
+	 * Safe Frames.	
+	 */
 	public var safeFrames:Float = 10;
 
-	// Notes
+	/**
+	 * Note skin.	
+	 */
 	public var noteSkin:String = 'Default';
+
+	/**
+	 * Note splashes skin.	
+	 */
 	public var splashSkin:String = 'Psych';
+
+	/**
+	 * Note splashes alpha.	
+	 */
 	public var splashAlpha:Float = 0.6;
+
+	/**
+	 * Arrow RGB.	
+	 */
 	public var arrowRGB:Array<Array<FlxColor>> = [
 		[0xFFC24B99, 0xFFFFFFFF, 0xFF3C1F56],
 		[0xFF00FFFF, 0xFFFFFFFF, 0xFF1542B7],
 		[0xFF12FA05, 0xFFFFFFFF, 0xFF0A4447],
 		[0xFFF9393F, 0xFFFFFFFF, 0xFF651038]
 	];
+
+	/**
+	 * Arrow RGB Pixel.	
+	 */
 	public var arrowRGBPixel:Array<Array<FlxColor>> = [
 		[0xFFE276FF, 0xFFFFF9FF, 0xFF60008D],
 		[0xFF3DCAFF, 0xFFF4FFFF, 0xFF003060],
@@ -95,19 +262,31 @@ import flixel.input.keyboard.FlxKey;
 	 */
 	public var interfaceType:String = 'Astro';
 
-	public var holdSkin:String = "Normal";
-	public var holdSplashAlpha:Float = 0.6;
-	
 	/**
-	 * Force player's chosen note splashes over songs.
+	 * Hold covers	
 	 */
-	public var forceNoteSplashes:Bool = false;
+	public var holdCovers:Bool = true;
+
+	/**
+	 * Opponent Hold splashes	
+	 */
+	public var oppHoldSplashes:Bool = true;
+
+	/**
+	 * The hold splashes skin.	
+	 */
+	public var holdSplashesSkin:String = "Normal";
+
+	/**
+	 * The hold splashes alpha.	
+	 */
+	public var holdSplashesAlpha:Float = 0.6;
 
 	/**
 	 * Show rating stats.
 	 */
 	public var showRatingStats:Bool = true;
-	
+
 	#if WINDOW_CUSTOMIZATION
 	/**
 	 * Window darkmode.
@@ -119,9 +298,13 @@ import flixel.input.keyboard.FlxKey;
 	/**
 	 * Orbl's furry stuff, don't mind it.
 	 */
-	public  var goober:Bool = false; 
+	public var goober:Bool = false;
 	#end
 
+	/**
+	 * Player Stats
+	 */
+	@:deprecated("Uhh,,, ima revamp this...")
 	public var stats:Map<String, Dynamic> = ['Max Misses' => 0, 'Max Score' => 0];
 }
 
@@ -129,16 +312,20 @@ import flixel.input.keyboard.FlxKey;
 class ClientPrefs
 {
 	/**
-	* Current save data.	
-	*/
+	 * Current save data.	
+	 */
 	public static var data:SaveVariables = {};
 
 	/**
-	* Default save data.	
-	*/
+	 * Default save data.	
+	 */
 	public static var defaultData:SaveVariables = {};
 
-	// Every key has two binds, add your key bind down here and then add your control on options/ControlsSubState.hx and Controls.hx
+	/**
+	 * Keyboard binds.
+	 * Every key has two binds, add your key bind down here and then add your 
+	 * control on options/ControlsSubState.hx and Controls.hx
+	 */
 	public static var keyBinds:Map<String, Array<FlxKey>> = [
 		// Key Bind, Name for ControlsSubState
 		'note_up' => [W, UP],
@@ -160,6 +347,9 @@ class ClientPrefs
 		'debug_2' => [EIGHT]
 	];
 
+	/**
+	 * Gamepad binds.	
+	 */
 	public static var gamepadBinds:Map<String, Array<FlxGamepadInputID>> = [
 		'note_up' => [DPAD_UP, Y],
 		'note_left' => [DPAD_LEFT, X],
@@ -175,36 +365,57 @@ class ClientPrefs
 		'reset' => [BACK]
 	];
 
+	/**
+	 * Default keyboard keys.	
+	 */
 	public static var defaultKeys:Map<String, Array<FlxKey>> = null;
+
+	/**
+	 * Default controller buttons.	
+	 */
 	public static var defaultButtons:Map<String, Array<FlxGamepadInputID>> = null;
 
-	public static function resetKeys(controller:Null<Bool> = null) //Null = both, False = Keyboard, True = Controller
-		{
-			if(controller != true)
-				for (key in keyBinds.keys())
-					if(defaultKeys.exists(key))
-						keyBinds.set(key, defaultKeys.get(key).copy());
-	
-			if(controller != false)
-				for (button in gamepadBinds.keys())
-					if(defaultButtons.exists(button))
-						gamepadBinds.set(button, defaultButtons.get(button).copy());
-		}
+	/**
+	 * Reset all keys.	
+	 */
+	public static function resetKeys(controller:Null<Bool> = null) // Null = both, False = Keyboard, True = Controller
+	{
+		if (controller != true)
+			for (key in keyBinds.keys())
+				if (defaultKeys.exists(key))
+					keyBinds.set(key, defaultKeys.get(key).copy());
 
+		if (controller != false)
+			for (button in gamepadBinds.keys())
+				if (defaultButtons.exists(button))
+					gamepadBinds.set(button, defaultButtons.get(button).copy());
+	}
+
+	/**
+	 * Clear all invalid keys
+	 */
 	public static function clearInvalidKeys(key:String):Void
-		{
-			var keyBind:Array<FlxKey> = keyBinds.get(key);
-			var gamepadBind:Array<FlxGamepadInputID> = gamepadBinds.get(key);
-			while(keyBind != null && keyBind.contains(NONE)) keyBind.remove(NONE);
-			while(gamepadBind != null && gamepadBind.contains(NONE)) gamepadBind.remove(NONE);
-		}
+	{
+		var keyBind:Array<FlxKey> = keyBinds.get(key);
+		var gamepadBind:Array<FlxGamepadInputID> = gamepadBinds.get(key);
+		while (keyBind != null && keyBind.contains(NONE))
+			keyBind.remove(NONE);
+		while (gamepadBind != null && gamepadBind.contains(NONE))
+			gamepadBind.remove(NONE);
+	}
 
+	/**
+	 * Load the default keys.	
+	 */
 	public static function loadDefaultKeys():Void
 	{
 		defaultKeys = keyBinds.copy();
 		defaultButtons = gamepadBinds.copy();
 	}
 
+	/**
+	 * Save settings
+	 */
 	public static function saveSettings():Void
 	{
 		for (key in Reflect.fields(data))
@@ -213,18 +424,24 @@ class ClientPrefs
 		#if ACHIEVEMENTS_ALLOWED Achievements.save(); #end
 		FlxG.save.flush();
 
-		try{
+		try
+		{
 			final save:FlxSave = new FlxSave();
-			save.bind('controls_v2', CoolUtil.savePath); // Placing this in a separate save so that it can be manually deleted without removing your Score and stuff
-			save.data.keyboard = keyBinds;// now it saves :D
+			save.bind('controls_v2',
+				CoolUtil.savePath); // Placing this in a separate save so that it can be manually deleted without removing your Score and stuff
+			save.data.keyboard = keyBinds; // now it saves :D
 			save.data.gamepad = gamepadBinds;
 			save.flush();
 			FlxG.log.notice("Successfully saved settings.");
-		} catch(e:Dynamic)
+		}
+		catch (e:Dynamic)
 			FlxG.log.error("Failed to save settings.");
 	}
 
-	public static function loadPrefs()
+	/**
+	 * Load Prefs.
+	 */
+	public static function loadPreferences()
 	{
 		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
 
@@ -235,7 +452,8 @@ class ClientPrefs
 		#if (!html5 && !switch)
 		FlxG.autoPause = ClientPrefs.data.autoPause;
 
-		if(FlxG.save.data.framerate == null) {
+		if (FlxG.save.data.framerate == null)
+		{
 			final refreshRate:Int = FlxG.stage.application.window.displayMode.refreshRate;
 			data.framerate = Std.int(FlxMath.bound(refreshRate, 60, 240));
 		}
@@ -271,23 +489,25 @@ class ClientPrefs
 		if (FlxG.save.data.mute != null)
 			FlxG.sound.muted = FlxG.save.data.mute;
 
-		#if DISCORD_ALLOWED DiscordClient._checkClientID();#end
+		#if DISCORD_ALLOWED DiscordClient._checkClientID(); #end
 
 		final controlsSave:FlxSave = new FlxSave();
 		controlsSave.bind('controls_v2', CoolUtil.savePath);
-		if(controlsSave != null)
+		if (controlsSave != null)
 		{
-			if(controlsSave.data.keyboard != null)
+			if (controlsSave.data.keyboard != null)
 			{
 				final loadedControls:Map<String, Array<FlxKey>> = controlsSave.data.keyboard;
 				for (control => keys in loadedControls)
-					if(keyBinds.exists(control)) keyBinds.set(control, keys);
+					if (keyBinds.exists(control))
+						keyBinds.set(control, keys);
 			}
-			if(controlsSave.data.gamepad != null)
+			if (controlsSave.data.gamepad != null)
 			{
-				final loadedControls:Map<String, Array<FlxGamepadInputID>> = controlsSave.data.gamepad;// haxe being weird
+				final loadedControls:Map<String, Array<FlxGamepadInputID>> = controlsSave.data.gamepad; // haxe being weird
 				for (control => keys in loadedControls)
-					if(gamepadBinds.exists(control)) gamepadBinds.set(control, keys);
+					if (gamepadBinds.exists(control))
+						gamepadBinds.set(control, keys);
 			}
 			reloadVolumeKeys();
 		}
@@ -295,21 +515,28 @@ class ClientPrefs
 		reloadVolumeKeys();
 	}
 
+	/**
+	 * Init ofc
+	 */
 	public static function init():Void
 	{
 		var is:Bool = false;
 		try
 		{
-			loadPrefs();
+			loadPreferences();
 			saveSettings();
 			is = true;
 		}
-		catch (error:Dynamic) {}
-		//Logs.defaultTrace('e');
-		Logs.prefixedTrace('Loaded ClientPrefs : ${Std.string(is)}','User Preferences', GREEN);
+		catch (error:Dynamic)
+			Logs.prefixedTrace('Error Loading Clientprefs, $error', 'ERROR, Clientprefs', RED);
+
+		Logs.prefixedTrace('Loaded ClientPrefs : ${Std.string(is)}', 'User Preferences', GREEN);
 		return;
 	}
 
+	/**
+	 * Get gameplay setting
+	 */
 	inline public static function getGameplaySetting(name:String, defaultValue:Dynamic = null, ?customDefaultValue:Bool = false):Dynamic
 	{
 		if (!customDefaultValue)
@@ -317,6 +544,9 @@ class ClientPrefs
 		return (data.gameplaySettings.exists(name) ? data.gameplaySettings.get(name) : defaultValue);
 	}
 
+	/**
+	 * Reload volume keys.
+	 */
 	public static function reloadVolumeKeys():Void
 	{
 		Volume.muteKeys = keyBinds.get('volume_mute').copy();
@@ -326,7 +556,10 @@ class ClientPrefs
 		toggleVolumeKeys(true);
 	}
 
-	public static function toggleVolumeKeys(?toggle:Bool = true) : Void
+	/**
+	 * Toggle volume keys
+	 */
+	public static function toggleVolumeKeys(?toggle:Bool = true):Void
 	{
 		FlxG.sound.muteKeys = toggle ? Volume.muteKeys : [];
 		FlxG.sound.volumeDownKeys = toggle ? Volume.volumeDownKeys : [];

@@ -1,5 +1,6 @@
 package funkin.backend.utils.native;
 
+import haxe.ds.StringMap;
 import lime.system.System;
 #if cpp
 @:headerCode('
@@ -22,11 +23,11 @@ class OsAPI
 
 	@:dox(hide) @:noCompletion inline static function get_username():String
 	{
-		final environment:Map<String, String> = Sys.environment();
+		final environment:StringMap<String> = Sys.environment();
 		if (environment.exists("USERNAME"))
-			return environment["USERNAME"];
+			return environment.get("USERNAME");
 		if (environment.exists("USER"))
-			return environment["USER"];
+			return environment.get("USER");
 		return '???';
 	}
 
