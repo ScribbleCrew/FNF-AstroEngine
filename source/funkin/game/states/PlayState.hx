@@ -928,15 +928,7 @@ class PlayState extends MusicBeatState
 		FlxG.worldBounds.set(0, 0, FlxG.width, FlxG.height);
 		moveCameraSection();
 
-		switch (ClientPrefs.data.interfaceType)
-		{
-			case 'Astro':
-				new AstroScore();
-			case 'Psych':
-				new PsychScore();
-			default:
-				new VSliceScore();
-		}
+		// WHERE UI SETUP WAS.
 
 		// set ui cameras.
 		noteGroup.cameras = [camHUD];
@@ -996,13 +988,43 @@ class PlayState extends MusicBeatState
 		else if(Paths.formatToSongPath(ClientPrefs.data.pauseMusic) != 'none')
 			Paths.music(Paths.formatToSongPath(ClientPrefs.data.pauseMusic));
 
-		resetRPC();
 		#if desktop WindowUtil.title = ('%{GAME_TITLE} - $detailsText'); #end
 
 		stageAccess(function(stage:BaseStage) stage.createPost());
 		GlobalScript.instance.callOnScripts('onCreatePost', []);
 
+		if(ui == null){
+			switch (ClientPrefs.data.interfaceType)
+			{
+				case 'Astro':
+					new AstroScore();
+				case 'Psych':
+					new PsychScore();
+				default:
+					new VSliceScore();
+			}
+		}
+
+		resetRPC();
+		
 		super.create();
+
+		if (ui == null)
+		{
+			switch (ClientPrefs.data.interfaceType)
+			{
+				case 'Astro':
+					new AstroScore();
+				case 'Psych':
+					new PsychScore();
+				default:
+					new VSliceScore();
+			}
+		}
+		if(ui!=null && ui.updateScore != null) updateScore();
+
+		resetRPC();
+
 		Paths.clearUnusedMemory();
 
 		CacheUtils.cacheArgs([COUNTDOWN,POPUPSCORE]);// del this class, it's useless...
@@ -1509,8 +1531,10 @@ class PlayState extends MusicBeatState
 			if (ClientPrefs.data.scoreZoom && !miss && !cpuControlled)
 			{
 				if (scoreTxtTween != null) scoreTxtTween.cancel(); // sexy
-				ui.scoreText.scale.set(1.075, 1.075);
-				scoreTxtTween = FlxTween.tween(ui.scoreText.scale, {x: 1, y: 1}, 0.2, {onComplete: (_) -> scoreTxtTween = null});
+				if(ui!=null && ui.scoreText!=null){// dw it wont equal null later, i just haven't gotten to that part yet.
+					ui.scoreText.scale.set(1.075, 1.075);
+					scoreTxtTween = FlxTween.tween(ui.scoreText.scale, {x: 1, y: 1}, 0.2, {onComplete: (_) -> scoreTxtTween = null});
+				}
 			}
 		GlobalScript.instance.callOnScripts('onUpdateScore', [miss]);
 	}

@@ -371,6 +371,27 @@ class HScript extends Iris implements IScript
 		});
 		#end
 
+		if (PlayState.instance != null)
+		{
+			set('addHxObject', function(obj:FlxObject, front:Bool = false)
+			{ // stolen from FunkinLua
+				if (obj == null)
+					return false;
+
+				var instance = LuaUtils.getTargetInstance();
+				if (front)
+					instance.add(obj);
+				else
+				{
+					if (PlayState.instance == null || !PlayState.instance.isDead)
+						instance.insert(instance.members.indexOf(LuaUtils.getLowestCharacterGroup()), obj);
+					else
+						GameOverSubstate.instance.insert(GameOverSubstate.instance.members.indexOf(GameOverSubstate.instance.boyfriend), obj);
+				}
+				return true;
+			});
+		}
+
 		set('addHaxeLibrary', function(libName:String, ?libPackage:String = '') {
 			try {
 				var str:String = '';
