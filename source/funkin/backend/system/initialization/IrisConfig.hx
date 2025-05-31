@@ -1,6 +1,6 @@
 package funkin.backend.system.initialization;
 #if HSCRIPT_ALLOWED
-class IrisConfig
+class IrisConfig// convert to hscript utils
 {
 	public static function init() : Void
 	{

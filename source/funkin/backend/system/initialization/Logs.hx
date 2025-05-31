@@ -73,7 +73,7 @@ import funkin.backend.utils.native.Terminal.TColor;
 	@:noCompletion static function init():Void
 	{
 		defaultTrace = haxe.Log.trace;
-		haxe.Log.trace = __customTrace;
+		//haxe.Log.trace = __customTrace;
 		Logs.prefixedTrace('Finished Setting up custom trace.', 'Logs Client', CYAN);
 	}
 

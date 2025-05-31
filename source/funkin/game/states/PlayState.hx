@@ -1223,8 +1223,8 @@ class PlayState extends MusicBeatState
 
 		if (doPush)
 		{
-			if (Iris.instances.exists(scriptFile))
-				doPush = false;
+			//if (Iris.instances.exists(scriptFile))
+//				doPush = false;
 
 			if (doPush)
 				new HScript(null, scriptFile).run();
@@ -2348,7 +2348,7 @@ class PlayState extends MusicBeatState
 		MusicBeatState.switchState(new CharacterEditorState(SONG.player2));
 	}
 
-	@:unreflective
+	// @:unreflective
 	public var isDead:Bool = false; // Don't mess with this on Lua!!!
 
 	public var gameOverTimer:FlxTimer;

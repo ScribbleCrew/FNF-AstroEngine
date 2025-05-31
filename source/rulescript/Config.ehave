@@ -1,0 +1,48 @@
+package rulescript;
+
+/**
+* For rulescripted classes stuff
+*/
+@:publicFields
+class Config
+{
+	static final CUSTOM_CLASSES_SHADOW_PREFIX:String = '_RSCRIPT';
+
+	static final ALLOWED_CUSTOM_CLASSES:Array<String> = [
+		"nape",
+		"flixel",
+		"sys.Http",
+		"funkin",
+		"funkin.game.objects",
+		"funkin.game.objects.shaders",
+		"flxanimate.FlxAnimate",
+		"openfl.filters",
+		"openfl.geom",
+		"openfl.net",
+		"openfl.text",
+		"openfl.display.Sprite",
+		"openfl.display.Bitmap",
+		"openfl.display.BitmapData",
+		"openfl.display.DisplayObject",
+		"openfl.display.DisplayObjectContainer",
+		"openfl.display.FPS",
+		"openfl.display.Tile",
+		"openfl.display.TileContainer",
+		"openfl.display.Tilemap",
+		"openfl.display.Tileset",
+	];
+
+	static final DISALLOW_CUSTOM_CLASSES:Array<String> = [
+		"openfl.geom.Matrix3D",
+		"openfl.display._internal",
+		"flixel.addons.display.FlxShaderMaskCamera",
+		"flixel.addons.display.FlxSpriteAniRot",
+		"flixel.addons.display.FlxStarField",
+		"flixel.addons.display.FlxZoomCamera",
+		"flixel.system",
+		"flixel.tweens",
+		"flixel.system.macros",
+		"flixel.input",
+		#if hl "haxe.http", "sys.ssl" #end
+	];
+}

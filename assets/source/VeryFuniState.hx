@@ -70,7 +70,8 @@ function titleTween():Void
 function makeSprites():Void
 {
 	// wahahah
-	add(background = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE));
+	add(background = new FlxSprite().makeGraphic(1, 1, FlxColor.WHITE));
+	background.scale.set(FlxG.width, FlxG.height);
 
 	// title, lol :3
 	title = new FlxText().setFormat(Paths.font("Futura-CondensedExtraBold.otf"), 70, FlxColor.BLACK, FlxTextAlign.CENTER);
