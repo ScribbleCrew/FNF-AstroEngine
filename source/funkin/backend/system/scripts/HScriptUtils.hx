@@ -48,7 +48,6 @@ class HScriptUtils
 		if (path.length > 1)
 			moduleName = path.shift();
 
-		// Replace type path dots to slash.
 		final packName = '${(pack.length >= 1 ? pack.join('.') + '.' + (moduleName ?? path[0]) : path[0]).replace('.', '/')}.hx';
 		final filePath = 'source/$packName';
 
@@ -57,9 +56,7 @@ class HScriptUtils
 		{
 			final modPath:String = Paths.mods(mod + '/$filePath');
 			if (FileSystem.exists(modPath))
-			{
 				return tryParseModule(File.getContent(modPath));
-			}
 		}
 		#end
 

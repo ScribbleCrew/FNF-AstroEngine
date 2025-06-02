@@ -8,6 +8,10 @@ import haxe.macro.Type;
 import haxe.macro.Compiler;
 #end
 
+using Lambda;
+using haxe.macro.ComplexTypeTools;
+using haxe.macro.ExprTools;
+using haxe.macro.TypeTools;
 using StringTools;
 
 class RuleScriptedMacro
@@ -17,38 +21,17 @@ class RuleScriptedMacro
 	{
 		if (Context.defined("display") || !Context.defined("CUSTOM_CLASSES"))
 			return;
-		for (apply in Config.ALLOWED_CUSTOM_CLASSES)
-			if (!apply.endsWith(Config.CUSTOM_CLASSES_SHADOW_PREFIX))
-				Compiler.addGlobalMetadata(apply, '@:build(rulescript.macro.RuleScriptedMacro.build())');
+		for (v in Config.ALLOWED_CUSTOM_CLASSES)
+			if (!v.endsWith(Config.CUSTOM_CLASSES_SHADOW_PREFIX))
+				Compiler.addGlobalMetadata(v, '@:build(rulescript.macro.RuleScriptedMacro.build())');
 	}
 
 	public static var modifiedClasses:Array<String> = [];
-	public static var unallowedMetas:Array<String> = [":structInit", ":bitmap", ":noCustomClass", ":generic", ":nullSafety"];
-
-	static function getShadowPackAndName(cl:ClassType, suffix:String):{pack:Array<String>, name:String}
-	{
-		var moduleParts = cl.module.split(".");
-		var className = cl.name;
-		if (moduleParts[moduleParts.length - 1] != className)
-		{
-			return {
-				pack: moduleParts,
-				name: className + suffix
-			};
-		}
-		else
-		{
-			// Normal case
-			return {
-				pack: cl.pack.copy(),
-				name: className + suffix
-			};
-		}
-	}
+	public static var noMetas:Array<String> = [":bitmap", ":noCustomClass", ":structInit", ":generic", ":nullSafety", ":forceOverride", ":ignoreFields"];
 
 	public static function build():Array<Field>
 	{
-		final fields:Array<Field> = Context.getBuildFields();
+		var fields:Array<Field> = Context.getBuildFields();
 		if (fields.length == 0 || fields == null)
 			return null;
 
@@ -58,80 +41,86 @@ class RuleScriptedMacro
 
 		final cl:ClassType = clRef.get();
 
-		if (cl.name.endsWith(Config.CUSTOM_CLASSES_SHADOW_PREFIX))
-			return null;
-		if (cl.module.endsWith(Config.CUSTOM_CLASSES_SHADOW_PREFIX))
+		if (cl.isAbstract || cl.isExtern || cl.isInterface || cl.isFinal)
 			return null;
 
-		if (cl.isAbstract
-			|| cl.isExtern
-			|| cl.isFinal
-			|| cl.isInterface
-			|| cl.params.length > 0 // generic classes
-			|| cl.name.endsWith("_Impl_")
-			|| cl.name.endsWith(Config.CUSTOM_CLASSES_SHADOW_PREFIX)
-			|| modifiedClasses.contains(cl.name)
-			|| !cl.module.endsWith(cl.name) // only deepest class
-		)
+		if (cl.name.endsWith("_Impl_") || cl.name.endsWith(Config.CUSTOM_CLASSES_SHADOW_PREFIX) || modifiedClasses.contains(cl.name))
 			return null;
-
 		if (cl.params.length > 0)
 			return null;
+
 		if (!cl.module.endsWith(cl.name))
 			return null;
-		trace(cl.name);
 
-		for (m in cl.meta.get())
-			if (unallowedMetas.contains(m.name))
+		for (m in cl.meta.get()){
+			trace([cl.name,cl.meta.get()]);
+			if (noMetas.contains(m.name)){
+				trace(['CONTAINS META: ', m.name]);
 				return null;
+		}}
+		// trace(cls.name);
 
-		final key:String = cl.module;
-		for (v in Config.DISALLOW_CUSTOM_CLASSES)
-			if (('$key.${cl.name}').startsWith(v) || key.startsWith(v))
-				return null;
-		// for(v in Config.disallowedClasses) doesStartWith(v) return null;
-		final interfaceType:Type = Context.getType("rulescript.scriptedClass.RuleScriptedClass");
-		final interfaceRef:Null<Ref<ClassType>> = switch (interfaceType)
+		//	if(curType.constructor == null)
+
+		var key:String = cl.module;
+		var fkey:String = cl.module + "." + cl.name;
+
+		for (i in Config.DISALLOW_CUSTOM_CLASSES)
 		{
-			case TInst(ref, _): ref;
-			default: null;
-		};
+			if (fkey.startsWith(i) || key.startsWith(i))
+			{
+				trace([cl.module, cl.name, "true"]);
+				return null;
+			}
+		}
+		trace(cl.name + " isAbstract=" + cl.isAbstract);
+		// for(v in Config.disallowedClasses) doesStartWith(v) return null;
+		// final interfaceType:Type = Context.getType("rulescript.scriptedClass.RuleScriptedClass");
+		// final interfaceRef = null;
+		/*:Null<Ref<ClassType>> = switch (interfaceType)
+			{
+				case TInst(ref, _): ref;
+				default: null;
+		};*/
 
 		var _tempCl:ClassType = cl;
-
-		var isStaticModule:Bool = _tempCl.init == null
-			&& fields.filter(i -> return i.access.contains(AStatic) || i.access.contains(AMacro)).length == 0;
-		while (isStaticModule && _tempCl.superClass != null)
+		var _isStatic:Bool = (_tempCl.init == null
+			&& (fields.filter(f -> return f.access.contains(AStatic) || f.access.contains(AMacro)).length == 0));
+		while (_isStatic && _tempCl.superClass != null)
 		{
 			_tempCl = _tempCl.superClass.t.get();
-			isStaticModule = _tempCl.init == null && _tempCl.fields.get().length == 0;
+			_isStatic = (_tempCl.init == null && (_tempCl.fields.get().length == 0)); // -1
 		}
-		if (isStaticModule)
+		if (_isStatic)
 			return null;
 
-		var shadowInfo = getShadowPackAndName(cl, Config.CUSTOM_CLASSES_SHADOW_PREFIX);
+		trace(cl.constructor);
 
-		final shadowClass:TypeDefinition = macro class
-			{
-			};
-		//shadowClass.pack = cl.pack.copy();
-		shadowClass.name = cl.name + Config.CUSTOM_CLASSES_SHADOW_PREFIX;
-		shadowClass.kind = TDClass({
-			pack: cl.pack.copy(),
-			name: cl.name
-		},
-			(interfaceRef != null) ? [{pack: ["rulescript", "scriptedClass"], name: "RuleScriptedClass", params: []}] : [], false, true, false);
-		// shadowClass.meta = [];
-		shadowClass.meta = cl.meta.get();
-		shadowClass.fields = [];
-		shadowClass.pos = Context.currentPos();
+		try
+		{
+			final shadowClass:TypeDefinition = macro class
+				{
+				};
+			shadowClass.name = cl.name + Config.CUSTOM_CLASSES_SHADOW_PREFIX; // _RSC
+			// shadowClass.pack = shadowInfo.pack;
+			shadowClass.kind = TDClass({
+				pack: cl.pack.copy(),
+				name: cl.name
+			},
+				[{pack: ["rulescript", "scriptedClass"], name: "RuleScriptedClass", params: []}], false, false, false);
+			shadowClass.meta = cl.meta.get().concat([{name: ":ruleScriptedClass", pos: Context.currentPos()}]);
+			//	shadowClass.fields = fields;
+			// shadowClass.pos = Context.currentPos();
 
-		var moduleName = cl.module; // Use the original class's module
-		var imports = Context.getLocalImports().copy();
-		trace(moduleName);
-		Context.defineModule(moduleName, [shadowClass], imports);
-		Utils.setupMetas(shadowClass, imports);
+			final imports:Array<ImportExpr> = Context.getLocalImports().copy();
+			if (imports == null)
+				return null;
+			//		Utils.setupMetas(shadowClass, imports);
 
+			Context.defineModule(cl.module, [shadowClass], imports);
+		}
+		catch (e:Dynamic)
+			trace('err: ${cl.module}.${cl.name} // $e');
 		return fields;
 	}
 	#end

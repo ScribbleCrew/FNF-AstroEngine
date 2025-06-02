@@ -1,5 +1,6 @@
 package funkin.backend.system.scripts;
 
+import rulescript.scriptedClass.RuleScriptedClass;
 import rulescript.types.Typedefs;
 import rulescript.scriptedClass.RuleScriptedClass.ScriptedClass;
 import hscript.Expr.ClassDecl;
@@ -26,7 +27,6 @@ typedef HScriptInfos =
 	var ?isLua:Null<Bool>;
 	#end
 }
-
 class HScript extends RuleScript implements IScript
 {
 	public var filePath:String;
@@ -119,15 +119,18 @@ class HScript extends RuleScript implements IScript
 			scriptName = parent.scriptName;
 		#end
 
-		for (apply in Config.ALLOWED_CUSTOM_CLASSES)
-		{
-			var invalid : Bool = false;
-			for (v in Config.DISALLOW_CUSTOM_CLASSES)
-				if (apply.startsWith(v))
-					invalid = true;
-			if (!invalid)
-				Typedefs.register(apply, HScriptUtils.getScriptedClass(apply));
-		}
+		 for (apply in Config.ALLOWED_CUSTOM_CLASSES)
+		 {
+		 	var invalid : Bool = false;
+		 	for (v in Config.DISALLOW_CUSTOM_CLASSES)
+		 		if (apply.startsWith(v))
+		 			invalid = true;
+		 	if (!invalid){
+				var scriptedClassRef = HScriptUtils.getScriptedClass(apply);
+				if(scriptedClassRef == null) continue;
+		 		Typedefs.register(apply, scriptedClassRef);
+			}
+		 }
 
 		ScriptedTypeUtil.resolveModule = HScriptUtils.resolveModule;
 		RuleScript.resolveScript = ScriptedTypeUtil.resolveScript;
