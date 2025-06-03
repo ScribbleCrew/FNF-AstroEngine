@@ -10,7 +10,8 @@ class HScriptUtils
 	@:noUsing public static function onError(error:haxe.Exception):Dynamic
 	{
 		final details:String = error.details();
-		Logs.prefixedTrace(details, 'ERROR', RED);
+		Logs.prefixedTrace(details, 'HScript Error', RED);
+		if (PlayState.instance != null) PlayState.instance.addTextToDebug(details, 0xFFBB0000);
 		return details;
 	}
 
@@ -18,7 +19,7 @@ class HScriptUtils
 	 * Gets a scripted macro class created by rulescript.
 	 */
 	@:noUsing public static inline function getScriptedClass(className:String)
-		return Type.resolveClass('${className}${Config.CUSTOM_CLASSES_SHADOW_PREFIX}');
+		return Type.resolveClass('${className}${Config.CUSTOM_CLASSES_SHADOW_SUFFIX}');
 	
 	public static function tryParseModule(code : String) : Array<ModuleDecl>
 	{
@@ -48,7 +49,7 @@ class HScriptUtils
 		if (path.length > 1)
 			moduleName = path.shift();
 
-		final packName = '${(pack.length >= 1 ? pack.join('.') + '.' + (moduleName ?? path[0]) : path[0]).replace('.', '/')}.hx';
+		final packName = '${(pack.length >= 1 ? pack.join('.') + '.' + (moduleName ?? path[0]) : path[0]).replace('.', '/')}.hx';// if ?? doesn't work use a newer version of haxe
 		final filePath = 'source/$packName';
 
 		#if MODS_ALLOWED

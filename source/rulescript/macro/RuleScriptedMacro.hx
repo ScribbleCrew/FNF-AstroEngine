@@ -22,7 +22,7 @@ class RuleScriptedMacro
 		if (Context.defined("display") || !Context.defined("CUSTOM_CLASSES"))
 			return;
 		for (v in Config.ALLOWED_CUSTOM_CLASSES)
-			if (!v.endsWith(Config.CUSTOM_CLASSES_SHADOW_PREFIX))
+			if (!v.endsWith(Config.CUSTOM_CLASSES_SHADOW_SUFFIX))
 				Compiler.addGlobalMetadata(v, '@:build(rulescript.macro.RuleScriptedMacro.build())');
 	}
 
@@ -44,7 +44,7 @@ class RuleScriptedMacro
 		if (cl.isAbstract || cl.isExtern || cl.isInterface || cl.isFinal)
 			return null;
 
-		if (cl.name.endsWith("_Impl_") || cl.name.endsWith(Config.CUSTOM_CLASSES_SHADOW_PREFIX) || modifiedClasses.contains(cl.name))
+		if (cl.name.endsWith("_Impl_") || cl.name.endsWith(Config.CUSTOM_CLASSES_SHADOW_SUFFIX) || modifiedClasses.contains(cl.name))
 			return null;
 		if (cl.params.length > 0)
 			return null;
@@ -68,10 +68,7 @@ class RuleScriptedMacro
 		for (i in Config.DISALLOW_CUSTOM_CLASSES)
 		{
 			if (fkey.startsWith(i) || key.startsWith(i))
-			{
-				trace([cl.module, cl.name, "true"]);
 				return null;
-			}
 		}
 		trace(cl.name + " isAbstract=" + cl.isAbstract);
 		// for(v in Config.disallowedClasses) doesStartWith(v) return null;
@@ -101,7 +98,7 @@ class RuleScriptedMacro
 			final shadowClass:TypeDefinition = macro class
 				{
 				};
-			shadowClass.name = cl.name + Config.CUSTOM_CLASSES_SHADOW_PREFIX; // _RSC
+			shadowClass.name = cl.name + Config.CUSTOM_CLASSES_SHADOW_SUFFIX; // _RSC
 			// shadowClass.pack = shadowInfo.pack;
 			shadowClass.kind = TDClass({
 				pack: cl.pack.copy(),

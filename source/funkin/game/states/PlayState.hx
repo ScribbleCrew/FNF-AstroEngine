@@ -805,6 +805,12 @@ class PlayState extends MusicBeatState
 		add(dadGroup);
 		add(boyfriendGroup);
 
+		#if LUA_ALLOWED
+		luaDebugGroup = new FlxTypedGroup<DebugText>();
+		luaDebugGroup.cameras = [camOther];
+		add(luaDebugGroup);
+		#end
+		
 		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
 		// "SCRIPTS FOLDER" SCRIPTS
 		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'scripts/'))
@@ -820,12 +826,6 @@ class PlayState extends MusicBeatState
 					new HScript(null, folder + file).run();
 				#end
 			}
-		#end
-
-		#if LUA_ALLOWED
-		luaDebugGroup = new FlxTypedGroup<DebugText>();
-		luaDebugGroup.cameras = [camOther];
-		add(luaDebugGroup);
 		#end
 		
 		if (!stageData.hide_girlfriend)
@@ -1223,8 +1223,8 @@ class PlayState extends MusicBeatState
 
 		if (doPush)
 		{
-			//if (Iris.instances.exists(scriptFile))
-//				doPush = false;
+			if(HScript.instances.exists(scriptFile))
+				doPush = false;
 
 			if (doPush)
 				new HScript(null, scriptFile).run();

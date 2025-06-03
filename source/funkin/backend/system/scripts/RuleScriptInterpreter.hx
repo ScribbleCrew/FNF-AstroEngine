@@ -22,17 +22,14 @@ class RuleScriptInterpreter extends RuleScriptInterp
 
 	@:dox(hide) override function resolve(id:String):Dynamic
 	{
-		if (locals.exists(id))// local variables first
-			return locals.get(id).r;
-
-		if (variables.exists(id)) // set variables seconds
-			return variables.get(id);
-
-		if (imports.exists(id)) // import variables third
-			return imports.get(id);
-
-		if (parent != null && _instanceFields.contains(id)) // parent variables fourth.
-			return Reflect.getProperty(parent, id);
+		// local variables first
+		if (locals.exists(id)) return locals.get(id).r;
+		// set variables seconds
+		if (variables.exists(id)) return variables.get(id);
+		// import variables third
+		if (imports.exists(id)) return imports.get(id);
+		// parent variables fourth.
+		if (parent != null && _instanceFields.contains(id)) return Reflect.getProperty(parent, id);
 
 		error(EUnknownVariable(id));
 

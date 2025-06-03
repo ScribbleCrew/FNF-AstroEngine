@@ -1,5 +1,6 @@
 package funkin.backend.system.scripts;
 
+import hscript.Expr;
 import rulescript.scriptedClass.RuleScriptedClass;
 import rulescript.types.Typedefs;
 import rulescript.scriptedClass.RuleScriptedClass.ScriptedClass;
@@ -29,6 +30,8 @@ typedef HScriptInfos =
 }
 class HScript extends RuleScript implements IScript
 {
+	public static var instances:Map<String, HScript> = [];
+
 	public var filePath:String;
 	public var modFolder:String;
 	public var returnValue:Dynamic;
@@ -54,12 +57,12 @@ class HScript extends RuleScript implements IScript
 			Logs.trace('Initializing haxe interp for {${parent.scriptName}}', RED);
 			try
 				parent.hscript = new HScript(parent, code, varsToBring)// reg function maybe...
-			catch (e)
+			catch (e:hscript.Expr.Error)
 			{
 				var pos:HScriptInfos = cast {fileName: parent.scriptName, isLua: true};
 				if (parent.lastCalledFunction != '')
 					pos.funcName = parent.lastCalledFunction;
-			//	Iris.error(Printer.errorToString(e, false), pos);
+				ScriptedErrors.error(ScriptedErrors.errorToString(e, false), pos);
 				parent.hscript = null;
 			}
 		}
@@ -69,21 +72,27 @@ class HScript extends RuleScript implements IScript
 			{
 				hs.varsToBring = varsToBring;
 				// hs.parse(true);
-				var ret:Dynamic = hs.execute(code);
+				var ret:Dynamic = hs.tryExecute(code);// was execute but eh...
 				// hs.returnValue = ret;
 			}
-			catch (e)
-			{/*
-				var pos:HScriptInfos = null; cast hs.interp.posInfos();
+			catch (e:hscript.Expr.Error)
+			{
+				var pos:HScriptInfos = null; cast (untyped hs.interp.posInfos());
 				pos.isLua = true;
 				if (parent.lastCalledFunction != '')
 					pos.funcName = parent.lastCalledFunction;
-			//	Iris.error(Printer.errorToString(e, false), pos); */
-				// hs.returnValue = null;
+				ScriptedErrors.error(ScriptedErrors.errorToString(e, false), pos); 
+				hs.returnValue = null;
 			}
 		}
 	}
 	#end
+
+	override function execute(code:EitherType<String, Expr>):Dynamic {
+		final hehee = super.execute(code);
+		instances.set(this.scriptName, this);
+		return hehee;
+	}
 
 	public var origin:String;
 
@@ -203,14 +212,13 @@ class HScript extends RuleScript implements IScript
 
 			Logs.prefixedTrace('successfully initialized HScript interp on "$filePath"', 'Global Script', GREEN);
 		}
-		catch (error)
+		catch (error:hscript.Expr.Error)
 		{
-			/*final filePosInfos:HScriptInfos = cast {_fileName: filePath, showLine: false};
-				Iris.error(Printer.errorToString(error, false), filePosInfos);
-
-				final castInstance = cast(Iris.instances.get(filePath), HScript);
-				if (castInstance != null)
-					castInstance.destroy(); */
+			final filePosInfos:HScriptInfos = cast {_fileName: filePath, showLine: false};
+			ScriptedErrors.error(ScriptedErrors.errorToString(error, false), filePosInfos); 
+			final castInstance = cast(HScript.instances.get(filePath), HScript);
+			if (castInstance != null)
+				castInstance.destroy();
 		}
 
 		return this;
@@ -323,7 +331,7 @@ class HScript extends RuleScript implements IScript
 			{
 				if (this.modFolder == null)
 				{
-				//	Iris.error('getModSetting: Argument #2 is null and script is not inside a packed Mod folder!', this.interp.posInfos());
+					ScriptedErrors.error('getModSetting: Argument #2 is null and script is not inside a packed Mod folder!', untyped this.interp.posInfos()); 
 					return null;
 				}
 				modName = this.modFolder;
@@ -448,8 +456,8 @@ class HScript extends RuleScript implements IScript
 
 			if (funk != null)
 				funk.addLocalCallback(name, func);
-			//else
-			//	Iris.error('createCallback ($name): 3rd argument is null', this.interp.posInfos());
+			else
+				ScriptedErrors.error('createCallback ($name): 3rd argument is null', untyped this.interp.posInfos());
 		},
 		#end
 
@@ -475,7 +483,7 @@ class HScript extends RuleScript implements IScript
 				if (libPackage.length > 0)
 					str = libPackage + '.';
 				set(libName, Type.resolveClass(str + libName));// don't add libs that dce literally FUCKED
-			} catch (e) { /* Iris.error(Printer.errorToString(e, false), this.interp.posInfos()); */ }
+			} catch (e:hscript.Expr.Error) { ScriptedErrors.error(ScriptedErrors.errorToString(e, false), untyped this.interp.posInfos()); }
 		},
 
 		'parentLua' => (#if LUA_ALLOWED parentLua #else null #end),
@@ -531,7 +539,7 @@ class HScript extends RuleScript implements IScript
 				var pos:HScriptInfos = cast {fileName: funk.scriptName, showLine: false};
 				if (funk.lastCalledFunction != '')
 					pos.funcName = funk.lastCalledFunction;
-			//	Iris.error("runHaxeFunction: HScript has not been initialized yet! Use \"runHaxeCode\" to initialize it", pos);
+				ScriptedErrors.error("runHaxeFunction: HScript has not been initialized yet! Use \"runHaxeCode\" to initialize it", pos);
 			}
 			return null;
 		});
@@ -551,7 +559,7 @@ class HScript extends RuleScript implements IScript
 			if (funk.hscript == null)
 				initHaxeModule(funk);
 
-		/*	var pos:HScriptInfos = cast funk.hscript.interp.posInfos();
+			var pos:HScriptInfos = cast (untyped funk.hscript.interp.posInfos());
 			pos.showLine = false;
 			if (funk.lastCalledFunction != '')
 				pos.funcName = funk.lastCalledFunction;
@@ -561,13 +569,15 @@ class HScript extends RuleScript implements IScript
 				if (c != null)
 					funk.hscript.set(libName, c);
 			}
-			catch (e)
+			catch (e:hscript.Expr.Error)
 			{
-				Iris.error(Printer.errorToString(e, false), pos);
-			} */
+				ScriptedErrors.error(ScriptedErrors.errorToString(e, false), pos);
+			} 
+
 			FunkinLua.lastCalledScript = funk;
-		//	if (FunkinLua.getBool('luaDebugMode') && FunkinLua.getBool('luaDeprecatedWarnings'))
-			//	Iris.warn("addHaxeLibrary is deprecated! Import classes through \"import\" in HScript!", pos);
+
+			if (FunkinLua.getBool('luaDebugMode') && FunkinLua.getBool('luaDeprecatedWarnings'))
+				ScriptedErrors.error("addHaxeLibrary is deprecated! Import classes through \"import\" in HScript!", pos);
 		});
 	}
 	#end
@@ -579,7 +589,7 @@ class HScript extends RuleScript implements IScript
 
 		if (!exists(functionName))
 		{
-			//Iris.error('No function named: $functionName', this.interp.posInfos());
+			ScriptedErrors.error('No function named: $functionName', untyped this.interp.posInfos());
 			return null;
 		}
 
@@ -589,9 +599,9 @@ class HScript extends RuleScript implements IScript
 			final ret = Reflect.callMethod(null, func, args ?? []);
 			return {funName: functionName, signature: func, returnValue: ret};
 		}
-		catch (e)
+		catch (e:hscript.Expr.Error)
 		{
-			/*var pos:HScriptInfos = cast this.interp.posInfos();
+			var pos:HScriptInfos = cast (untyped this.interp.posInfos()); // ughhh i fucking hate untyped shitz
 			pos.funcName = functionName;
 			#if LUA_ALLOWED
 			if (parentLua != null)
@@ -600,8 +610,8 @@ class HScript extends RuleScript implements IScript
 				if (parentLua.lastCalledFunction != '')
 					pos.funcName = parentLua.lastCalledFunction;
 			}
-			#end */
-			//Iris.error(Printer.errorToString(e, false), pos);
+			#end
+			ScriptedErrors.error(ScriptedErrors.errorToString(e, false), pos);
 		}
 		return null;
 	}

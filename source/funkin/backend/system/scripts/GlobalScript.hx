@@ -1,5 +1,7 @@
 package funkin.backend.system.scripts;
 
+import hscript.Printer;
+
 class GlobalScript
 {
 	/**
@@ -259,7 +261,7 @@ class GlobalScript
 		#end
 
 		if (FileSystem.exists(scriptToLoad))
-			//if (!Iris.instances.exists(scriptToLoad)) // make my own
+			if (!HScript.instances.exists(scriptToLoad)) // make my own
 				return new HScript(null, scriptToLoad).run(null, customScriptGroup);
 
 	//	RuleScript.i
@@ -282,14 +284,13 @@ class GlobalScript
 
 			return true;
 		}
-		catch (error)
+		catch (error:hscript.Expr.Error)
 		{
-		/*	final filePosInfos:HScriptInfos = cast {_fileName: filePath, showLine: false};
-			Iris.error(Printer.errorToString(error, false), filePosInfos);
+			final filePosInfos:HScriptInfos = cast {_fileName: filePath, showLine: false};
+			ScriptedErrors.error(ScriptedErrors.errorToString(error, false), filePosInfos);
 
-			hscriptInstance = cast(Iris.instances.get(filePath), HScript);
-			if (hscriptInstance != null)
-				hscriptInstance.destroy(); */
+			hscriptInstance = cast(HScript.instances.get(filePath), HScript);
+			if (hscriptInstance != null) hscriptInstance.destroy(); 
 
 			return false;
 		}
