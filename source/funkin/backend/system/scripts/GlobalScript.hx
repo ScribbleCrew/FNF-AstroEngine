@@ -78,10 +78,9 @@ class GlobalScript
 	/**
 	 * Set vars on scripts.	
 	 */
-	public function setOnScripts(variable:String, arg:Dynamic, exclusions:Array<String> = null)
+	public function setOnScripts(variable:String, arg:Dynamic, exclusions:Array<String> = null) : Void
 	{
-		if (exclusions == null)
-			exclusions = [];
+		exclusions ??= [];
 		#if LUA_ALLOWED setOnLuas(variable, arg, exclusions); #end
 		#if HSCRIPT_ALLOWED setOnHScript(variable, arg, exclusions); #end
 	}
@@ -90,7 +89,7 @@ class GlobalScript
 	 * Execute class scripts inside of mods/source.
 	 * Used inside The BeatStates.
 	 */
-	public function executeClassScripts(?customClass:String, ?scriptArgs, ?substate:Bool = false):Void
+	public function executeClassScripts(?customClass:String, ?scriptArgs:Array<Dynamic>, ?substate:Bool = false):Void
 	{
 		// Get the current state's class name.
 		final currentClass:Class<Dynamic> = Type.getClass(FlxG.state);
@@ -100,7 +99,7 @@ class GlobalScript
 		final __className:String = _className.substring(_className.lastIndexOf('.') + 1).toLowerCase(); 
 		
 		// Loop through all mod folders containing scripts.
-		for (folderName in Mods.directoriesWithFile('assets/', substate ? 'source/substate/':'source/'))
+		for (folderName in Mods.directoriesWithFile(Paths.getSharedPath(), substate ? 'scripts/states/substate/':'scripts/states/'))
 		{
 			// Get all files inside the directory
 			for (_fileName in FileSystem.readDirectory(folderName))

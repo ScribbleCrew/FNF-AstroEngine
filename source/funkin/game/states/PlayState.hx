@@ -963,7 +963,7 @@ class PlayState extends MusicBeatState
 
 		// SONG SPECIFIC SCRIPTS
 		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
-		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'data/$songName/'))
+		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'scripts/songs/$songName/'))
 			for (file in FileSystem.readDirectory(folder))
 			{
 				#if LUA_ALLOWED if (file.toLowerCase().endsWith('.lua')) new FunkinLua(folder + file).execute(); #end
@@ -994,7 +994,7 @@ class PlayState extends MusicBeatState
 		GlobalScript.instance.callOnScripts('onCreatePost', []);
 
 		if(ui == null){
-			switch (ClientPrefs.data.interfaceType)
+			switch (ClientPrefs.data.interfaceType) // turn into scripts
 			{
 				case 'Astro':
 					new AstroScore();
@@ -1205,7 +1205,7 @@ class PlayState extends MusicBeatState
 		// HScript
 		#if HSCRIPT_ALLOWED
 		var doPush:Bool = false;
-		var scriptFile:String = 'characters/' + name + '.hx';
+		var scriptFile:String = 'scripts/characters/' + name + '.hx';
 		#if MODS_ALLOWED
 		var replacePath:String = Paths.modFolders(scriptFile);
 		if (FileSystem.exists(replacePath))

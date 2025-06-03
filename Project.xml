@@ -1,5 +1,7 @@
+<!-- TODO: make into hxproj file whatever -->
+
 <?xml version="1.0" encoding="utf-8"?>
-<project>
+<project> 
 	<!-- _________________________ Application Settings _________________________ -->
 
 	<!-- To Modders: Change the `packageName` to something like `com.astro.fnf.<MOD_NAME>` or `com.<CUSTOM_NAME>.<MOD_NAME>`  -->
@@ -141,7 +143,6 @@
 
 	<!-- Source classpath -->
 	<classpath name="source" />
-	<assets path="assets/source"/>
 	
 	<!-- Build directories -->
 	<set name="BUILD_DIR" value="export/debug" if="debug" />

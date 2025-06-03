@@ -10,7 +10,7 @@ class HScriptUtils
 	@:noUsing public static function onError(error:haxe.Exception):Dynamic
 	{
 		final details:String = error.details();
-		Logs.prefixedTrace(details, 'HScript Error', RED);
+		Logs.prefixedTrace(details, 'ERROR', RED);
 		if (PlayState.instance != null) PlayState.instance.addTextToDebug(details, 0xFFBB0000);
 		return details;
 	}
@@ -50,7 +50,7 @@ class HScriptUtils
 			moduleName = path.shift();
 
 		final packName = '${(pack.length >= 1 ? pack.join('.') + '.' + (moduleName ?? path[0]) : path[0]).replace('.', '/')}.hx';// if ?? doesn't work use a newer version of haxe
-		final filePath = 'source/$packName';
+		final filePath = 'scripts/$packName';
 
 		#if MODS_ALLOWED
 		for (mod in (Mods.parseList().enabled).concat(['']))
@@ -62,7 +62,7 @@ class HScriptUtils
 		#end
 
 		// Check file.
-		var full = 'assets/' + filePath;
+		var full = Paths.getSharedPath() + filePath;
 		if (!FileSystem.exists(full))
 			return null;
 		return tryParseModule(File.getContent(full));

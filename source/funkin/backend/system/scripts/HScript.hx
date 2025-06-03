@@ -500,7 +500,7 @@ class HScript extends RuleScript implements IScript
 		'Function_Continue' => Function_Continue,
 		'Function_StopLua' => Function_StopLua, // doesnt do much cuz HScript has a lower priority than Lua
 		'Function_StopHScript' => Function_StopHScript,
-		'Function_StopAll' => Function_StopAll
+		'Function_StopAll' => Function_StopAll,
 	];
 	}
 
