@@ -54,7 +54,7 @@ class Init extends flixel.FlxState
 		#if DISCORD_ALLOWED DiscordClient.prepare(); #end
 		#if SHADERS_ALLOWED ShaderResizeFix.init(); #end
 		#if windows AudioSwitchFix.init(); #end
-		//#if HSCRIPT_ALLOWED IrisConfig.init(); #end
+
 		GlobalScript.init();
 
 		funkin.game.objects.Alphabet.AlphaCharacter.loadAlphabetData();
