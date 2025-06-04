@@ -1,5 +1,6 @@
 package funkin.backend.animation;
 
+// add custom anim offsets
 class AnimationController extends flixel.animation.FlxAnimationController
 {
 	/**
