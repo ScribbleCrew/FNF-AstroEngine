@@ -89,7 +89,8 @@ class Mall extends BaseStage
 				FlxG.sound.play(Paths.sound('Lights_Shut_off'));
 	
 				var blackShit:FlxSprite = new FlxSprite(-FlxG.width * FlxG.camera.zoom,
-					-FlxG.height * FlxG.camera.zoom).makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);
+					-FlxG.height * FlxG.camera.zoom).makeGraphic(1,1, FlxColor.BLACK);
+				blackShit.scale.set(FlxG.width * 3, FlxG.height * 3);
 				blackShit.scrollFactor.set();
 				add(blackShit);
 				camHUD.visible = false;

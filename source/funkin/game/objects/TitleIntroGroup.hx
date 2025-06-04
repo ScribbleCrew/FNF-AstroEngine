@@ -17,8 +17,9 @@ class TitleIntroGroup extends FlxTypedSpriteGroup<flixel.FlxSprite>
 	public function new():Void
 	{
 		super();
-
-		add(new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK));
+		var bg;
+		add(bg = new FlxSprite().makeGraphic(1,1, FlxColor.BLACK));
+		bg.scale.set(FlxG.width, FlxG.height);
 		add(customGroup = new FlxTypedSpriteGroup<flixel.FlxSprite>());
 	}
 

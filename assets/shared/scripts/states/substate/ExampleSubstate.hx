@@ -1,4 +1,4 @@
-import flixel.FlxSprite;
+import flixel.util.FlxAxes;
 
 var bg:FlxSprite;
 var closeText:FlxText;
