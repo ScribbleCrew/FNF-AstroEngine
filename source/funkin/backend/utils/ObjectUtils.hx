@@ -57,4 +57,13 @@ class ObjectUtils
 				return NONE;
 		}
 	}
+
+	/**
+	* A better way of making a graphic.	
+	*/
+	public static inline function makeSolid(obj:FlxSprite, width : Float, height : Float, color : FlxColor) : flixel.FlxSprite{
+		obj.makeGraphic(1,1,color);
+		obj.scale.set(width, height);
+		return obj;
+	}
 }

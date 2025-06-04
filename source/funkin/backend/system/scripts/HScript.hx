@@ -148,7 +148,7 @@ class HScript extends RuleScript implements IScript
 		super(interp, new HxParser());
 		getParser(HxParser).allowAll();
 		errorHandler = HScriptUtils.onError;
-		interp.parent = FlxG.state;
+		interp.parent = FlxG.state?.subState != null ? FlxG.state.subState : FlxG.state;// scripted substates fix
 	
 		if(variables.exists('main'))
 			variables.get('main')();

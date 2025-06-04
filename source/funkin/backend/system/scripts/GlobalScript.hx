@@ -99,7 +99,7 @@ class GlobalScript
 		final __className:String = _className.substring(_className.lastIndexOf('.') + 1).toLowerCase(); 
 		
 		// Loop through all mod folders containing scripts.
-		for (folderName in Mods.directoriesWithFile(Paths.getSharedPath(), substate ? 'scripts/states/substate/':'scripts/states/'))
+		for (folderName in Mods.directoriesWithFile(Paths.getSharedPath(), substate ? 'scripts/states/substates/':'scripts/states/'))
 		{
 			// Get all files inside the directory
 			for (_fileName in FileSystem.readDirectory(folderName))

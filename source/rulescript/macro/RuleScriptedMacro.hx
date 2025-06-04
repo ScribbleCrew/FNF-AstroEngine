@@ -52,12 +52,10 @@ class RuleScriptedMacro
 		if (!cl.module.endsWith(cl.name))
 			return null;
 
-		for (m in cl.meta.get()){
-			trace([cl.name,cl.meta.get()]);
-			if (noMetas.contains(m.name)){
-				trace(['CONTAINS META: ', m.name]);
+		for (m in cl.meta.get())
+			if (noMetas.contains(m.name))
 				return null;
-		}}
+
 		// trace(cls.name);
 
 		//	if(curType.constructor == null)
@@ -70,7 +68,7 @@ class RuleScriptedMacro
 			if (fkey.startsWith(i) || key.startsWith(i))
 				return null;
 		}
-		trace(cl.name + " isAbstract=" + cl.isAbstract);
+		//trace(cl.name + " isAbstract=" + cl.isAbstract);
 		// for(v in Config.disallowedClasses) doesStartWith(v) return null;
 		// final interfaceType:Type = Context.getType("rulescript.scriptedClass.RuleScriptedClass");
 		// final interfaceRef = null;
@@ -91,7 +89,7 @@ class RuleScriptedMacro
 		if (_isStatic)
 			return null;
 
-		trace(cl.constructor);
+	//	trace(cl.constructor);
 
 		try
 		{

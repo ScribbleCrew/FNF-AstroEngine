@@ -75,6 +75,7 @@ import funkin.backend.utils.Controls;
 			sectionHit();
 		}
 	}
+	
 	#if SOFTCODED_STATES
 	/**
 	 * Softcoded state script name.
@@ -97,7 +98,8 @@ import funkin.backend.utils.Controls;
 		funkin.game.Main.stateName = scriptName != null ? scriptName : className.substring(className.lastIndexOf('.') + 1);// softmodded script support :D
 		super();
 	}
-	override function create() {
+
+	@:dox(hide) override function create() : Void {
 		#if SOFTCODED_STATES
 		// global script stuff.
 		// gets the metadata of the current class.
@@ -178,21 +180,22 @@ import funkin.backend.utils.Controls;
 	 *	The beat hit.
 	 */
 	public function beatHit():Void {/* Beat Hit */
-			// softmoddin'
-			GlobalScript.instance.setOnScripts('curBeat', curBeat); // DAWGG?????
-			GlobalScript.instance.callOnScripts('onBeatHit', []);
-			GlobalScript.instance.callOnScripts('beatHit', []);}
+		// softmoddin'
+		GlobalScript.instance.setOnScripts('curBeat', curBeat); // DAWGG?????
+		GlobalScript.instance.callOnScripts('onBeatHit', []);
+		GlobalScript.instance.callOnScripts('beatHit', []);
+	}
 
 
 	/**
 	 *	The section hit.
 	 */
 	public function sectionHit():Void {/* Section Hit */
-	
-			// softmoddin'
-			GlobalScript.instance.setOnScripts('curSection', curSection);
-			GlobalScript.instance.callOnScripts('onSectionHit', []);
-			GlobalScript.instance.callOnScripts('sectionHit', []);}
+		// softmoddin'
+		GlobalScript.instance.setOnScripts('curSection', curSection);
+		GlobalScript.instance.callOnScripts('onSectionHit', []);
+		GlobalScript.instance.callOnScripts('sectionHit', []);
+	}
 
 
 	@:dox(hide) override function update(elapsed:Float):Void
@@ -229,19 +232,11 @@ import funkin.backend.utils.Controls;
 		GlobalScript.instance.callOnScripts('updatePost', [elapsed]);
 	}
 
-	override function close() {
+	@:dox(hide) override function close() {
 		GlobalScript.instance.callOnScripts('onClose');
 		final className = Type.getClassName(Type.getClass(_parentState));
 		funkin.game.Main.stateName = className.substring(className.lastIndexOf('.') + 1);
-		super.close();
 		GlobalScript.instance.callOnScripts('onClosePost');
+		super.close();
 	}
-
-	/*
-		@:dox(hide) override function destroy():Void
-	{
-		// Softmoddin'
-		GlobalScript.instance.destroy();
-		super.destroy();
-	} */
 }

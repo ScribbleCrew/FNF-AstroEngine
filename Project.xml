@@ -1,4 +1,4 @@
-<!-- TODO: make into hxproj file whatever -->
+<!-- TODO: make into hxproj file when ever -->
 
 <?xml version="1.0" encoding="utf-8"?>
 <project> 
@@ -47,6 +47,9 @@
 	<!-- Enables Lua Support -->
 	<define name="LUA_ALLOWED" if="desktop" />
 
+	<!-- Enables HScript Support -->
+	<define name="HSCRIPT_ALLOWED" if="desktop" />
+
 	<!-- Enables Threading support -->
 	<define name="THREADING_ALLOWED" />
 
@@ -59,14 +62,11 @@
 	<!-- Should the Title Screen xml be used. -->
 	<define name="TITLE_SCREEN_XML"/>
 
-	<!-- Should soft coded states be allowed -->
-	<define name="SOFTCODED_STATES"/>
-
 	<!-- Multi-threaded loading -->
 	<define name="MULTITHREADED_LOADING"/>
 
-	<!-- Enables HScript Support -->
-	<define name="HSCRIPT_ALLOWED" if="desktop" />
+	<!-- Should soft coded states be allowed -->
+	<define name="SOFTCODED_STATES" if="LUA_ALLOWED || HSCRIPT_ALLOWED"/>
 
 	<!-- Enables FlxAnimate Support -->
 	<define name="FLXANIMATE_ALLOWED" />
