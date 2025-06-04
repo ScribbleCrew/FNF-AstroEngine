@@ -75,19 +75,6 @@ class CoolUtil
 		return daList;
 	}
 
-	public static function noteIDToName(id) : String{
-		var i : String = '';
-		switch(id)
-		{
-			case 0,4: i = 'purple';
-			case 1,5: i = 'blue';
-			case 2,6: i = 'green';
-			case 3,7: i = 'red';
-		}
-		
-		return i;
-	}
-
 	inline public static function colorFromString(color:String):FlxColor
 	{
 		var hideChars = ~/[\t\n\r]/;

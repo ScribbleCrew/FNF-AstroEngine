@@ -87,6 +87,19 @@ class Note extends FlxSprite
 	public static var swagWidth:Float = 160 * 0.7;
 	public static var colArray:Array<String> = ['purple', 'blue', 'green', 'red'];
 
+	public static function noteIDToName(id) : String{
+		var i : String = '';
+		switch(id)
+		{
+			case 0,4: i = 'purple';
+			case 1,5: i = 'blue';
+			case 2,6: i = 'green';
+			case 3,7: i = 'red';
+		}
+		
+		return i;
+	}
+
 	@:isVar
 	public static var defaultNoteSkin(default, never):String = 'noteSkins/NOTE_assets';
 
