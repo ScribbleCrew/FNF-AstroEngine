@@ -8,7 +8,7 @@ class Config
 {
 	static final CUSTOM_CLASSES_SHADOW_SUFFIX:String = '_RSC';
 
-	static final ALLOWED_CUSTOM_CLASSES:Array<String> = [
+	static final ALLOWED_CUSTOM_CLASSES:Array<String> = [// IMPORTANT: ADD NEEDED CLASSES TO THIS...
 		"flixel.FlxSprite",
 		"funkin.game.objects.AchievementPopup"
 	];
