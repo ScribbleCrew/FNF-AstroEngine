@@ -20,6 +20,8 @@
 	<!--Minimum without FLX_NO_GAMEPAD: 11.8, without FLX_NO_NATIVE_CURSOR: 11.2-->
 	<set name="SWF_VERSION" value="11.8" />
 
+	<define name="x86_BUILD" if="32bits" />
+
 	<!-- _____________________________ ASTRO ENGINE CUSTOMIZATION ____________________________ -->
 
 	<!-- Adds base game files. -->
@@ -208,7 +210,6 @@
 	<haxelib name="linc_luajit" if="LUA_ALLOWED"/>
 
 	<!-- HScript -->
-	<!-- <haxelib name="hscript-iris" if="HSCRIPT_ALLOWED" version="1.1.3"/> -->
 	<haxelib name="rulescript" if="HSCRIPT_ALLOWED" version="git"/>
 
 	<!-- Hxvlc -->
@@ -218,14 +219,13 @@
 	<haxelib name="flxanimate" if="FLXANIMATE_ALLOWED"/>
 
 	<!-- Discord API -->
-	<haxelib name="hxdiscord_rpc" if="DISCORD_ALLOWED"/>
+	<haxelib name="hxdiscord_rpc" if="DISCORD_ALLOWED" version="git"/>
 
 	<!-- Debug Sever -->
 	<haxelib name="hxcpp-debug-server" if="DEBUG_SERVER_ALLOWED"/>
 
 	<haxedef name="HXC_LIBVLC_LOGGING" if="VIDEOS_ALLOWED DEBUG_SERVER_ALLOWED" />
 	<haxedef name="HXVLC_NO_SHARE_DIRECTORY" if="VIDEOS_ALLOWED" />
-	<define name="x86_BUILD" if="32bits" />
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 
