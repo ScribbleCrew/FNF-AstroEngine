@@ -813,7 +813,7 @@ class PlayState extends MusicBeatState
 		
 		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
 		// "SCRIPTS FOLDER" SCRIPTS
-		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'scripts/'))
+		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'scripts/songs'))
 			for (file in FileSystem.readDirectory(folder))
 			{
 				#if LUA_ALLOWED
