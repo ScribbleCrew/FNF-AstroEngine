@@ -116,8 +116,8 @@ class LoadingState extends MusicBeatState
 		// grabs all class scripts running for LoadingState.
 		for (i in GlobalScript.instance.hscriptInstances.get('LoadingState'))
 		{ // HAHAHAHAHAHAH
-			i.set('getLoaded', () -> return loaded);
-			i.set('getLoadMax', () -> return loadMax);
+			i.variables.set('getLoaded', () -> return loaded);
+			i.variables.set('getLoadMax', () -> return loadMax);
 			// i.set('barBack', barBack);
 			// i.set('bar', bar);
 		}

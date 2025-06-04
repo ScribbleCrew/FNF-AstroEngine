@@ -805,9 +805,15 @@ class PlayState extends MusicBeatState
 		add(dadGroup);
 		add(boyfriendGroup);
 
+		#if LUA_ALLOWED
+		luaDebugGroup = new FlxTypedGroup<DebugText>();
+		luaDebugGroup.cameras = [camOther];
+		add(luaDebugGroup);
+		#end
+		
 		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
 		// "SCRIPTS FOLDER" SCRIPTS
-		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'scripts/'))
+		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'scripts/songs'))
 			for (file in FileSystem.readDirectory(folder))
 			{
 				#if LUA_ALLOWED
@@ -820,12 +826,6 @@ class PlayState extends MusicBeatState
 					new HScript(null, folder + file).run();
 				#end
 			}
-		#end
-
-		#if LUA_ALLOWED
-		luaDebugGroup = new FlxTypedGroup<DebugText>();
-		luaDebugGroup.cameras = [camOther];
-		add(luaDebugGroup);
 		#end
 		
 		if (!stageData.hide_girlfriend)
@@ -963,7 +963,7 @@ class PlayState extends MusicBeatState
 
 		// SONG SPECIFIC SCRIPTS
 		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
-		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'data/$songName/'))
+		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'scripts/songs/$songName/'))
 			for (file in FileSystem.readDirectory(folder))
 			{
 				#if LUA_ALLOWED if (file.toLowerCase().endsWith('.lua')) new FunkinLua(folder + file).execute(); #end
@@ -994,7 +994,7 @@ class PlayState extends MusicBeatState
 		GlobalScript.instance.callOnScripts('onCreatePost', []);
 
 		if(ui == null){
-			switch (ClientPrefs.data.interfaceType)
+			switch (ClientPrefs.data.interfaceType) // turn into scripts
 			{
 				case 'Astro':
 					new AstroScore();
@@ -1205,7 +1205,7 @@ class PlayState extends MusicBeatState
 		// HScript
 		#if HSCRIPT_ALLOWED
 		var doPush:Bool = false;
-		var scriptFile:String = 'characters/' + name + '.hx';
+		var scriptFile:String = 'scripts/characters/' + name + '.hx';
 		#if MODS_ALLOWED
 		var replacePath:String = Paths.modFolders(scriptFile);
 		if (FileSystem.exists(replacePath))
@@ -1223,7 +1223,7 @@ class PlayState extends MusicBeatState
 
 		if (doPush)
 		{
-			if (Iris.instances.exists(scriptFile))
+			if(HScript.instances.exists(scriptFile))
 				doPush = false;
 
 			if (doPush)
@@ -2348,7 +2348,7 @@ class PlayState extends MusicBeatState
 		MusicBeatState.switchState(new CharacterEditorState(SONG.player2));
 	}
 
-	@:unreflective
+	// @:unreflective
 	public var isDead:Bool = false; // Don't mess with this on Lua!!!
 
 	public var gameOverTimer:FlxTimer;

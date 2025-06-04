@@ -452,7 +452,7 @@ class TitleState extends MusicBeatState
 	/**
 	 * Basically curBeat but won't be skipped if you hold the tab or resize the screen	
 	 */
-	private var sickBeats:Int = 0;
+	@:dox(show) private var sickBeats:Int = 0;
 
 	@:dox(hide) override function beatHit():Void
 	{

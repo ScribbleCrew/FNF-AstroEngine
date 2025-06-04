@@ -1,5 +1,8 @@
 package haxe.std;
 
+@:final
+@:noCompletion
+@:dox(hide)
 @:pure class MathsAddon
 {   
     /**

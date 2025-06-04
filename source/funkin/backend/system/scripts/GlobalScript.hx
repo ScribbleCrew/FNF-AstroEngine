@@ -1,5 +1,7 @@
 package funkin.backend.system.scripts;
 
+import hscript.Printer;
+
 class GlobalScript
 {
 	/**
@@ -76,10 +78,9 @@ class GlobalScript
 	/**
 	 * Set vars on scripts.	
 	 */
-	public function setOnScripts(variable:String, arg:Dynamic, exclusions:Array<String> = null)
+	public function setOnScripts(variable:String, arg:Dynamic, exclusions:Array<String> = null) : Void
 	{
-		if (exclusions == null)
-			exclusions = [];
+		exclusions ??= [];
 		#if LUA_ALLOWED setOnLuas(variable, arg, exclusions); #end
 		#if HSCRIPT_ALLOWED setOnHScript(variable, arg, exclusions); #end
 	}
@@ -88,7 +89,7 @@ class GlobalScript
 	 * Execute class scripts inside of mods/source.
 	 * Used inside The BeatStates.
 	 */
-	public function executeClassScripts(?customClass:String, ?scriptArgs, ?substate:Bool = false):Void
+	public function executeClassScripts(?customClass:String, ?scriptArgs:Array<Dynamic>, ?substate:Bool = false):Void
 	{
 		// Get the current state's class name.
 		final currentClass:Class<Dynamic> = Type.getClass(FlxG.state);
@@ -98,7 +99,7 @@ class GlobalScript
 		final __className:String = _className.substring(_className.lastIndexOf('.') + 1).toLowerCase(); 
 		
 		// Loop through all mod folders containing scripts.
-		for (folderName in Mods.directoriesWithFile('assets/', substate ? 'source/substate/':'source/'))
+		for (folderName in Mods.directoriesWithFile(Paths.getSharedPath(), substate ? 'scripts/states/substate/':'scripts/states/'))
 		{
 			// Get all files inside the directory
 			for (_fileName in FileSystem.readDirectory(folderName))
@@ -259,8 +260,10 @@ class GlobalScript
 		#end
 
 		if (FileSystem.exists(scriptToLoad))
-			if (!Iris.instances.exists(scriptToLoad))
+			if (!HScript.instances.exists(scriptToLoad)) // make my own
 				return new HScript(null, scriptToLoad).run(null, customScriptGroup);
+
+	//	RuleScript.i
 
 		return null;
 	}
@@ -272,22 +275,21 @@ class GlobalScript
 		try
 		{
 			hscriptInstance = new HScript(null, filePath);
-			if (hscriptInstance.exists('onCreate')) hscriptInstance.call('onCreate');
-			if(hscriptInstance.exists('create')) hscriptInstance.call('create');
+			hscriptInstance.variables.get('onCreate')();
+			hscriptInstance.variables.get('create')();
 			//hscriptInstances.push(hscriptInstance);
 
 			Logs.prefixedTrace('successfully initialized HScript interp on "$filePath"', 'Global Script', GREEN);
 
 			return true;
 		}
-		catch (error:IrisError)
+		catch (error:hscript.Expr.Error)
 		{
 			final filePosInfos:HScriptInfos = cast {_fileName: filePath, showLine: false};
-			Iris.error(Printer.errorToString(error, false), filePosInfos);
+			ScriptedErrors.error(ScriptedErrors.errorToString(error, false), filePosInfos);
 
-			hscriptInstance = cast(Iris.instances.get(filePath), HScript);
-			if (hscriptInstance != null)
-				hscriptInstance.destroy();
+			hscriptInstance = cast(HScript.instances.get(filePath), HScript);
+			if (hscriptInstance != null) hscriptInstance.destroy(); 
 
 			return false;
 		}
@@ -316,7 +318,7 @@ class GlobalScript
 		excludeValues.push(Function_Continue);
 
 		final uhh:Array<HScript> = hscriptInstances.safeGet(Main.stateName, []);
-	//	trace(uhh);
+		
 		final len:Int = uhh.length;
 		if (len < 1) return returnVal;
 
@@ -365,7 +367,7 @@ class GlobalScript
 				hscriptExclude.push(variable);
 
 			// set args
-			script.set(variable, arg);
+			script.variables.set(variable, arg);
 		}
 		#end
 	}
@@ -389,11 +391,11 @@ class GlobalScript
 		{
 			if (haxeScript != null)
 			{
-				final onDestory:Dynamic = haxeScript.get('onDestroy');
+				final onDestory:Dynamic = haxeScript.variables.get('onDestroy');
 				if (onDestory != null && Reflect.isFunction(onDestory)) 
 					onDestory();
 
-				final destory:Dynamic = haxeScript.get('destroy');
+				final destory:Dynamic = haxeScript.variables.get('destroy');
 				if (destory != null && Reflect.isFunction(destory)) 
 					destory();
 

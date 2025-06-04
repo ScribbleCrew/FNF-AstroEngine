@@ -4,6 +4,7 @@
 ### Haxe
 export/*
 dump/*
+local/*
 
 ### VS Code
 .vscode/*

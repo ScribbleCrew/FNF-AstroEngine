@@ -1,0 +1,5 @@
+song specific scripts
+    - scripts/songs/<SONG_NAME>/<SCRIPT>/
+
+non song specific scripts
+    - scripts/songs/<SCRIPT>/

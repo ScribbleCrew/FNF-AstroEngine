@@ -16,7 +16,7 @@ class Mods
 		'custom_events',
 		'custom_notetypes',
 		'data',
-		'source',
+		// 'source',
 		'songs',
 		'music',
 		'sounds',

@@ -64,9 +64,6 @@ import funkin.backend.system.scripts.LuaUtils.LuaTweenOptions;
 #if HSCRIPT_ALLOWED
 import funkin.backend.system.scripts.HScript;
 #end
-#if HSCRIPT_ALLOWED
-import crowplexus.iris.Iris;
-#end
 
 class CallbackHandler
 {

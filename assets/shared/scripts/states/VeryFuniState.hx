@@ -1,3 +1,5 @@
+package states;
+
 /**                                     
  *      :                             :     
  *     t#,                           t#,    
@@ -21,6 +23,10 @@
 
 // idk but softmoddin' weird!!!
 import funkin.game.states.MainMenuState;
+import flixel.util.FlxColor;
+import flixel.text.FlxText.FlxTextAlign;
+import flixel.util.FlxAxes;
+import flixel.util.FlxDestroyUtil;
 
 // Shouldn't be static as this is a returning state (going to be used more than once).
 var leaving:Bool = false;
@@ -70,7 +76,9 @@ function titleTween():Void
 function makeSprites():Void
 {
 	// wahahah
-	add(background = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.WHITE));
+	add(background = new FlxSprite().makeGraphic(1, 1, FlxColor.WHITE));
+	background.scale.set(FlxG.width, FlxG.height);
+	background.screenCenter();
 
 	// title, lol :3
 	title = new FlxText().setFormat(Paths.font("Futura-CondensedExtraBold.otf"), 70, FlxColor.BLACK, FlxTextAlign.CENTER);

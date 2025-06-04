@@ -41,8 +41,8 @@ class Main extends flixel.FlxGame
 	public static var instance(default, null):Main;
 
 	/**
-	* The current state name.
-	*/
+	 * The current state name.
+	 */
 	public static var stateName:String = '';
 
 	/**	
@@ -51,9 +51,8 @@ class Main extends flixel.FlxGame
 	 */
 	@:isVar
 	public static var framerateCounter(get, null):FPS;
-	@:dox(hide) inline static function get_framerateCounter():FPS
+	@:dox(hide) @:noCompletion inline static function get_framerateCounter():FPS
 		return #if !mobile framerateCounter #else null #end;
- 
 
 	/**
 	 * Application screen, all this just really does is shorten `Lib.current`.	
@@ -62,6 +61,7 @@ class Main extends flixel.FlxGame
 	 * @returns `Lib.current`.
 	 */
 	public static var applicationScreen(get, never):MovieClip;
+
 	@:dox(hide) inline static function get_applicationScreen():MovieClip
 		return Lib.current;
 
@@ -86,6 +86,11 @@ class Main extends flixel.FlxGame
 	public function new():Void
 	{
 		@:bypassAccessor instance = this;
+
+		/**
+		 * Create the framerate counter.
+		 */
+		framerateCounter = FPS.make();
 
 		#if ALLOW_DPI_FIX
 		/** 
@@ -115,64 +120,65 @@ class Main extends flixel.FlxGame
 			final dpiScale:Float = display.dpi / 96;
 
 			/**
-			* Update the current window's width and height.	
-			*/
+			 * Update the current window's width and height.	
+			 */
 			Application.current.window.width = Std.int(Config.gameSize.width * dpiScale);
 			Application.current.window.height = Std.int(Config.gameSize.height * dpiScale);
-			
+
 			/**
-			* Update the current window's position (XY).	
-			*/
+			 * Update the current window's position (XY).	
+			 */
 			Application.current.window.x = Std.int((Application.current.window.display.bounds.width - Application.current.window.width) / 2);
 			Application.current.window.y = Std.int((Application.current.window.display.bounds.height - Application.current.window.height) / 2);
 		}
 		#end
 
-		super(Config.gameSize.width, Config.gameSize.height, Init, #if (flixel < "5.0.0") Config.zoom, #end Config.framerate, Config.framerate, #if SKIP_SPLASH_SCREEN true #else Config.skipSplash #end, Config.startFullscreen);
+		super(Config.gameSize.width, Config.gameSize.height, Init, #if (flixel < "5.0.0") Config.zoom, #end Config.framerate, Config.framerate,
+			#if SKIP_SPLASH_SCREEN true #else Config.skipSplash #end, Config.startFullscreen);
 
 		#if (FLX_SOUND_TRAY && (FUNKIN_SOUNDTRAY || BASE_GAME_FILES)) // yeah...
 		/**
-		* Custom FlxSound Tray, mainly here to give that v-slice feeling.	
-		*/
+		 * Custom FlxSound Tray, mainly here to give that v-slice feeling.	
+		 */
 		_customSoundTray = funkin.backend.system.ui.FunkinSoundTray;
 		#end
 
 		/**
-		* Add the game.	
-		*/
+		 * Add the game.	
+		 */
 		applicationScreen.stage.addChild(this);
 
 		#if !mobile
 		/**
-		* Create and setup the framerate counter.
-		*/
-		framerateCounter = FPS.make();
+		 * Add and setup the framerate counter.	
+		 */
 		applicationScreen.stage.addChild(framerateCounter.bgSprite);
 		applicationScreen.stage.addChild(framerateCounter);
 
 		/**
-		* Change the stage's align and scale mode.
-		*/
+		 * Change the stage's align and scale mode.
+		 */
 		Lib.current.stage.align = "tl";
 		Lib.current.stage.scaleMode = openfl.display.StageScaleMode.NO_SCALE;
 		#end
 
-		#if linux 
+		#if linux
 		/**
-		* I Don't actually know what his does.	
-		*/
-		Lib.current.stage.window.setIcon(lime.graphics.Image.fromFile("icon.png")); 
+		 * I Don't actually know what his does.	
+		 */
+		Lib.current.stage.window.setIcon(lime.graphics.Image.fromFile("icon.png"));
 		#end
 	}
 
 	/**
-	* Audio disconnected fix.	
-	*/
+	 * Audio disconnected fix.	
+	 */
 	@:dox(hide) static var _audioDisconnected(default, set):Bool = false;
+
 	@:dox(hide) inline static function set__audioDisconnected(value:Bool):Bool // oops
 	{
 		_audioDisconnected = value;
-		AudioSwitchFix.onStateSwitch(FlxG.state);// does this even work.
+		AudioSwitchFix.onStateSwitch(FlxG.state); // does this even work.
 		return value;
 	}
 }

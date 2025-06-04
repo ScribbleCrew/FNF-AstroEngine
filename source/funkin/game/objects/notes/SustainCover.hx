@@ -96,7 +96,7 @@ class SustainCover extends FlxSprite
 	 */
 	public function playAnim(noteID:Int, animName:String, force:Bool = false, reversed:Bool = false, frame:Int = 0):Void
 	{
-		final prefixOffsets:Null<Map<String, Dynamic>> = offsetMap.get(CoolUtil.noteIDToName(noteID));
+		final prefixOffsets:Null<Map<String, Dynamic>> = offsetMap.get(Note.noteIDToName(noteID));
 		final prefixOffset:TwoDimensionalPoint = prefixOffsets.exists(animName) ? prefixOffsets.get(animName) : {x: 0, y: 0};
 		offset.set((PlayState.isPixelStage ? 12 : -10) + prefixOffset.x ?? 0, prefixOffset.y ?? 0);
 		animation.play(animName, force, reversed, frame);
@@ -116,8 +116,8 @@ class SustainCover extends FlxSprite
 				version: raw.version ?? "0.0.1",
 				animations: new Map<String, SustainCoverAnim>(),
 				scale: raw.scale ?? 1,
-				allowRGB: raw.allowRGB ?? false,
-				allowPixel: raw.allowPixel ?? false
+				allowRGB: raw.allowRGB ?? true,
+				allowPixel: raw.allowPixel ?? true
 			};
 
 			final rawAnims:Map<String, Dynamic> = CoolUtil.mapify(raw.animations);

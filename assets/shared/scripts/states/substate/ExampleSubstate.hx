@@ -5,7 +5,8 @@ var closeText:FlxText;
 
 function create():Void
 {
-	bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
+	bg = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
+	bg.scale.set(FlxG.width,FlxG.height);
 	bg.alpha = 0;
 	bg.screenCenter(FlxAxes.X);
 	add(bg);

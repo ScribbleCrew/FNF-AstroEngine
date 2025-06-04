@@ -54,7 +54,7 @@ class Init extends flixel.FlxState
 		#if DISCORD_ALLOWED DiscordClient.prepare(); #end
 		#if SHADERS_ALLOWED ShaderResizeFix.init(); #end
 		#if windows AudioSwitchFix.init(); #end
-		#if HSCRIPT_ALLOWED IrisConfig.init(); #end
+
 		GlobalScript.init();
 
 		funkin.game.objects.Alphabet.AlphaCharacter.loadAlphabetData();
@@ -89,8 +89,9 @@ class Init extends flixel.FlxState
 	{
 		#if windows WindowUtil.darkmode = ClientPrefs.data.darkmodeEnabled; #end
 		#if !mobile
-		Main.framerateCounter.visible = ClientPrefs.data.showFPS;
-		Main.framerateCounter.alpha = ClientPrefs.data.fpsCounterAlpha;
+		if(Main.framerateCounter != null){
+			Main.framerateCounter.visible = ClientPrefs.data.showFPS;
+			Main.framerateCounter.alpha = ClientPrefs.data.fpsCounterAlpha;}
 		#end
 		FlxG.switchState(new TitleState());
 		Logs.prefix = '';

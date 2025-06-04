@@ -21,7 +21,7 @@
                     }
                 },
                 "hold": {
-                    "prefix": "holdCover0",
+                    "prefix": "holdCoverLoop0",
                     "indices": [],
                     "fps": 24,
                     "loop": true,
@@ -59,7 +59,7 @@
                     }
                 },
                 "hold": {
-                    "prefix": "holdCover0",
+                    "prefix": "holdCoverLoop0",
                     "indices": [],
                     "fps": 24,
                     "loop": true,
@@ -97,7 +97,7 @@
                     }
                 },
                 "hold": {
-                    "prefix": "holdCover0",
+                    "prefix": "holdCoverLoop0",
                     "indices": [],
                     "fps": 24,
                     "loop": true,
@@ -135,7 +135,7 @@
                     }
                 },
                 "hold": {
-                    "prefix": "holdCover0",
+                    "prefix": "holdCoverLoop0",
                     "indices": [],
                     "fps": 24,
                     "loop": true,
