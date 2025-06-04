@@ -89,8 +89,9 @@ class Init extends flixel.FlxState
 	{
 		#if windows WindowUtil.darkmode = ClientPrefs.data.darkmodeEnabled; #end
 		#if !mobile
-		Main.framerateCounter.visible = ClientPrefs.data.showFPS;
-		Main.framerateCounter.alpha = ClientPrefs.data.fpsCounterAlpha;
+		if(Main.framerateCounter != null){
+			Main.framerateCounter.visible = ClientPrefs.data.showFPS;
+			Main.framerateCounter.alpha = ClientPrefs.data.fpsCounterAlpha;}
 		#end
 		FlxG.switchState(new TitleState());
 		Logs.prefix = '';
