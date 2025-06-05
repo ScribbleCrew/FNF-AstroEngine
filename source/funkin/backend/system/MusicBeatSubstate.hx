@@ -7,7 +7,7 @@ import funkin.backend.utils.Controls;
 @:access(funkin.backend.system.MusicBeatState.getState)
 @:access(funkin.backend.system.MusicBeatState.beatsOnSection)
 @:access(funkin.backend.system.MusicBeatState._updateShaders)
- class MusicBeatSubstate extends flixel.FlxSubState
+class MusicBeatSubstate extends flixel.FlxSubState implements IBeat
 {
 	/**
 	 * The current section, expressed as an int.	
@@ -75,7 +75,7 @@ import funkin.backend.utils.Controls;
 			sectionHit();
 		}
 	}
-	
+
 	#if SOFTCODED_STATES
 	/**
 	 * Softcoded state script name.
@@ -83,8 +83,8 @@ import funkin.backend.utils.Controls;
 	var scriptName:String = null;
 
 	/**
-	* Softcoded state script args.	
-	*/
+	 * Softcoded state script args.	
+	 */
 	var scriptArgs = null;
 	#end
 
@@ -94,12 +94,16 @@ import funkin.backend.utils.Controls;
 		#if SOFTCODED_STATES
 		this.scriptName = scriptName;
 		this.scriptArgs = args;
+		#else
+			if(scriptName != null || args != null)
+				trace('softcoded states isn\'t allowed');
 		#end
-		funkin.game.Main.stateName = scriptName != null ? scriptName : className.substring(className.lastIndexOf('.') + 1);// softmodded script support :D
+		funkin.game.Main.stateName = scriptName != null ? scriptName : className.substring(className.lastIndexOf('.') + 1); // softmodded script support :D
 		super();
 	}
 
-	@:dox(hide) override function create() : Void {
+	@:dox(hide) override function create():Void
+	{
 		#if SOFTCODED_STATES
 		// global script stuff.
 		// gets the metadata of the current class.
@@ -140,7 +144,7 @@ import funkin.backend.utils.Controls;
 		if (curSection > lastSection)
 			sectionHit();
 
-		GlobalScript.instance.setOnScripts('curStep', curStep);//oops i forgor
+		GlobalScript.instance.setOnScripts('curStep', curStep); // oops i forgor
 		GlobalScript.instance.callOnScripts('onStepHit', []);
 		GlobalScript.instance.callOnScripts('stepHit', []);
 	}
@@ -162,7 +166,8 @@ import funkin.backend.utils.Controls;
 	{
 		// saving vars
 		final lastChange:BPMChangeEvent = Conductor.getBPMFromSeconds(Conductor.songPosition);
-		final curStepChange:Float = ((Conductor.songPosition - funkin.backend.utils.ClientPrefs.data.noteOffset) - lastChange.songTime) / lastChange.stepCrochet;
+		final curStepChange:Float = ((Conductor.songPosition - funkin.backend.utils.ClientPrefs.data.noteOffset)
+			- lastChange.songTime) / lastChange.stepCrochet;
 
 		// update curstep.
 		curDecStep = lastChange.stepTime + curStepChange;
@@ -179,24 +184,24 @@ import funkin.backend.utils.Controls;
 	/**
 	 *	The beat hit.
 	 */
-	public function beatHit():Void {/* Beat Hit */
+	public function beatHit():Void
+	{/* Beat Hit */
 		// softmoddin'
 		GlobalScript.instance.setOnScripts('curBeat', curBeat); // DAWGG?????
 		GlobalScript.instance.callOnScripts('onBeatHit', []);
 		GlobalScript.instance.callOnScripts('beatHit', []);
 	}
 
-
 	/**
 	 *	The section hit.
 	 */
-	public function sectionHit():Void {/* Section Hit */
+	public function sectionHit():Void
+	{/* Section Hit */
 		// softmoddin'
 		GlobalScript.instance.setOnScripts('curSection', curSection);
 		GlobalScript.instance.callOnScripts('onSectionHit', []);
 		GlobalScript.instance.callOnScripts('sectionHit', []);
 	}
-
 
 	@:dox(hide) override function update(elapsed:Float):Void
 	{
@@ -204,7 +209,7 @@ import funkin.backend.utils.Controls;
 		{
 			// keeps elapsed while in a substate.
 			MusicBeatState._elapsed += elapsed;
-			
+
 			// update shaders while in an substate.
 			MusicBeatState.getState()._updateShaders(elapsed);
 		}
@@ -232,11 +237,13 @@ import funkin.backend.utils.Controls;
 		GlobalScript.instance.callOnScripts('updatePost', [elapsed]);
 	}
 
-	@:dox(hide) override function close() {
+	@:dox(hide) override function close():Void
+	{
 		GlobalScript.instance.callOnScripts('onClose');
 		final className = Type.getClassName(Type.getClass(_parentState));
 		funkin.game.Main.stateName = className.substring(className.lastIndexOf('.') + 1);
 		GlobalScript.instance.callOnScripts('onClosePost');
+
 		super.close();
 	}
 }

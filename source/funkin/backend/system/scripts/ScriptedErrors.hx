@@ -2,17 +2,17 @@ package funkin.backend.system.scripts;
 
 import hscript.Expr;
 
-typedef ErrColorCodes = {
+typedef ErrorDataType = {
 	var error:String;
 	var color:Int;
 }
 
-abstract ErrorEnumerator(ErrColorCodes) from ErrColorCodes to ErrColorCodes {// i aint changing the name ;3c
-	public static var WARN:ErrorEnumerator = new ErrorEnumerator({error: "WARNING", color: FlxColor.YELLOW});
-	public static var ERROR:ErrorEnumerator = new ErrorEnumerator({error: "ERROR", color: FlxColor.RED});
-	public static var FATAL:ErrorEnumerator = new ErrorEnumerator({error: "FATAL", color: 0xFFBB0000});// maybe into a json?
+abstract ErrorAbstract(ErrorDataType) from ErrorDataType to ErrorDataType {// i aint changing the name ;3c
+	public static var WARN:ErrorAbstract = new ErrorAbstract({error: "WARNING", color: FlxColor.YELLOW});
+	public static var ERROR:ErrorAbstract = new ErrorAbstract({error: "ERROR", color: FlxColor.RED});
+	public static var FATAL:ErrorAbstract = new ErrorAbstract({error: "FATAL", color: 0xFFBB0000});// maybe into a json?
 
-	public inline function new(data:ErrColorCodes)
+	public inline function new(data:ErrorDataType):ErrorAbstract
 		this = data;
 
 	public inline function getError():String return this.error;
@@ -45,11 +45,11 @@ class ScriptedErrors
 		#end
 	}
 	
-	public static function warn(x, ?pos:haxe.PosInfos):Void err_return(ErrorEnumerator.WARN, x, pos);
-	public static function error(x, ?pos:haxe.PosInfos):Void  err_return(ErrorEnumerator.ERROR, x, pos);
-	public static function fatal(x, ?pos:haxe.PosInfos):Void err_return(ErrorEnumerator.FATAL, x, pos);
+	public static function warn(x, ?pos:haxe.PosInfos):Void err_return(ErrorAbstract.WARN, x, pos);
+	public static function error(x, ?pos:haxe.PosInfos):Void  err_return(ErrorAbstract.ERROR, x, pos);
+	public static function fatal(x, ?pos:haxe.PosInfos):Void err_return(ErrorAbstract.FATAL, x, pos);
 
-	private static function err_return(type:ErrorEnumerator, ?x:String, ?pos:haxe.PosInfos)
+	private static function err_return(type:ErrorAbstract, ?x:String, ?pos:haxe.PosInfos)
 	{
 		final hehe = formatError(x, pos);
 		//HScriptUtils.onError(x);
@@ -59,22 +59,15 @@ class ScriptedErrors
 	}
 
 	static function formatError(x, ?pos:haxe.PosInfos):String
-	{
+	{	
 		final newPos:HScriptInfos = cast pos;
-		if (newPos.showLine == null)
-			newPos.showLine = true;
+		if (newPos.showLine == null) newPos.showLine = true;
 
 		var msgInfo:String = (newPos.funcName != null ? '(${newPos.funcName}) - ' : '') + '${newPos.fileName}:';
-		#if LUA_ALLOWED
-		if (newPos.isLua == true)
-		{
-			msgInfo += 'HScript:';
-			newPos.showLine = false;
-		}
-		#end
-		if (newPos.showLine == true)
-			msgInfo += '${newPos.lineNumber}:';
+		#if LUA_ALLOWED if (newPos.isLua == true) { msgInfo += 'HScript:'; newPos.showLine = false; } #end
+		if (newPos.showLine == true) msgInfo += '${newPos.lineNumber}:';
 		msgInfo += ' $x';
+
 		return msgInfo;
 	}
 }

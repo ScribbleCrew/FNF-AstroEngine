@@ -813,7 +813,7 @@ class PlayState extends MusicBeatState
 		
 		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
 		// "SCRIPTS FOLDER" SCRIPTS
-		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'scripts/songs'))
+		for (folder in Mods.directoriesWithFile(Paths.getSharedPath(), 'scripts/songs/'))
 			for (file in FileSystem.readDirectory(folder))
 			{
 				#if LUA_ALLOWED
@@ -1167,7 +1167,7 @@ class PlayState extends MusicBeatState
 		// Lua
 		#if LUA_ALLOWED
 		var doPush:Bool = false;
-		var luaFile:String = 'characters/$name.lua';
+		var luaFile:String = 'scripts/characters/$name.lua';
 		#if MODS_ALLOWED
 		var replacePath:String = Paths.modFolders(luaFile);
 		if (FileSystem.exists(replacePath))
@@ -1205,7 +1205,7 @@ class PlayState extends MusicBeatState
 		// HScript
 		#if HSCRIPT_ALLOWED
 		var doPush:Bool = false;
-		var scriptFile:String = 'scripts/characters/' + name + '.hx';
+		var scriptFile:String = 'scripts/characters/$name.hx';
 		#if MODS_ALLOWED
 		var replacePath:String = Paths.modFolders(scriptFile);
 		if (FileSystem.exists(replacePath))
@@ -1231,9 +1231,6 @@ class PlayState extends MusicBeatState
 		}
 		#end
 	}
-
-	public function getLuaObject(tag:String, text:Bool = true):FlxSprite
-		return variables.get(tag);
 
 	function startCharacterPos(char:Character, ?gfCheck:Bool = false)
 	{

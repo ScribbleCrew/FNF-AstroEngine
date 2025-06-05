@@ -12,11 +12,11 @@ class RuleScriptInterpreter extends RuleScriptInterp
 	* The Parent Instance.
 	* So we don't need to do `FlxG.state.<VAR>` to access state variables.
 	*/
-	public var parent(default, set):Dynamic = [];
-	@:dox(hide) @:noCompletion function set_parent(instance:Dynamic):Dynamic
+	public var parent(default, set):Array<String> = [];
+	@:dox(hide) @:noCompletion function set_parent(instance:Dynamic):Array<String>
 	{
 		parent = instance;
-		_instanceFields = parent == null ? [] : Type.getInstanceFields(Type.getClass(instance));
+		_instanceFields = (parent == null) ? [] : Type.getInstanceFields(Type.getClass(instance));
 		return instance;
 	}
 

@@ -37,6 +37,8 @@ class Controls
 
 	// Held buttons (directions)
 	public var UI_UP(get, never):Bool;
+	private function get_UI_UP() return pressed('ui_up');
+
 	public var UI_DOWN(get, never):Bool;
 	public var UI_LEFT(get, never):Bool;
 	public var UI_RIGHT(get, never):Bool;
@@ -44,7 +46,7 @@ class Controls
 	public var NOTE_DOWN(get, never):Bool;
 	public var NOTE_LEFT(get, never):Bool;
 	public var NOTE_RIGHT(get, never):Bool;
-	private function get_UI_UP() return pressed('ui_up');
+
 	private function get_UI_DOWN() return pressed('ui_down');
 	private function get_UI_LEFT() return pressed('ui_left');
 	private function get_UI_RIGHT() return pressed('ui_right');

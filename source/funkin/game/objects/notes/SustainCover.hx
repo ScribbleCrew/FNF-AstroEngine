@@ -17,6 +17,7 @@ typedef PrefixedType =
 	var indices:Array<Int>;
 	var offset:TwoDimensionalPoint;
 	var loop:Bool;
+	var antialiasing:Bool;
 }
 
 typedef SustainCoverAnim =
@@ -28,6 +29,7 @@ typedef SustainCoverAnim =
 typedef SustainCoverData =
 {
 	@:optional var version:String;
+	
 	var scale:Float;
 	var allowRGB:Bool;
 	var allowPixel:Bool;
@@ -185,6 +187,8 @@ class SustainCover extends FlxSprite
 						animation.addByIndices(part, prefixStr, prefix.indices, "", prefix.fps, prefix.loop);
 					else
 						animation.addByPrefix(part, prefixStr, prefix.fps, prefix.loop);
+
+					antialiasing = prefix.antialiasing ?? true;
 				}
 			}
 		}

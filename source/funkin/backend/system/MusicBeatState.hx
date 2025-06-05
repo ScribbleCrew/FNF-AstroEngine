@@ -5,7 +5,7 @@ import funkin.backend.Conductor;
 import flixel.addons.transition.FlxTransitionableState;
 
 @:access(funkin.backend.ShaderBackend.update)
-/*abstract*/ class MusicBeatState extends FlxState//my poor abstract state
+class MusicBeatState extends FlxState  implements IBeat
 {
 	/**
 	 * Group which contains all shader instances which
@@ -270,6 +270,9 @@ import flixel.addons.transition.FlxTransitionableState;
 		FlxTransitionableState.skipNextTransIn = false;
 	}
 
+	public function getLuaObject(tag:String, text:Bool = true):FlxSprite
+		return variables.get(tag);
+	
 	/**
 	 *	Gets the current state using a cast with the type of `MusicBeatState`.
 	 */
