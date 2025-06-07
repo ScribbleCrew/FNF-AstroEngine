@@ -1280,9 +1280,9 @@ class FunkinLua implements IScript
 
 		Lua_helper.add_callback(lua, "setScrollFactor", function(obj:String, scrollX:Float, scrollY:Float)
 		{
-			if (game.getLuaObject(obj, false) != null)
+			if (game.getLuaObject(obj) != null)
 			{
-				game.getLuaObject(obj, false).scrollFactor.set(scrollX, scrollY);
+				game.getLuaObject(obj).scrollFactor.set(scrollX, scrollY);
 				return;
 			}
 
@@ -1879,7 +1879,11 @@ class FunkinLua implements IScript
 		Lua_helper.add_callback(lua, "debugPrint",
 			function(text:Dynamic = '', color:String = 'WHITE') PlayState.instance.addTextToDebug(text, CoolUtil.colorFromString(color)));
 
-		Lua_helper.add_callback(lua, "print", function(text:Dynamic = '') Logs.prefixedTrace(text, 'Funkin Lua', ORANGE));
+		function __trace(_:String) : Void
+			Logs.prefixedTrace(_, 'LuaJIT', ORANGE);
+
+		Lua_helper.add_callback(lua, "trace", __trace);
+		Lua_helper.add_callback(lua, "print", __trace);
 
 		addLocalCallback("close", function()
 		{

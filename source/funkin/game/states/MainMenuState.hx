@@ -120,7 +120,7 @@ class MainMenuState extends MusicBeatState
 		// 	name: 'Friday Night Funkin\' v${Application.current.meta.get('version')}',
 		// 	offset: new FlxPoint(0, 0)
 		// },
-		#if GIT_ALLOWED 
+		#if (GIT_ALLOWED) 
 		,{
 			name: 'Git Commit: ${GitMacro.commitNumber} (${GitMacro.commitHash})',
 			offset: new FlxPoint(0, 0)

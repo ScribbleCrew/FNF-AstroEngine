@@ -1,5 +1,5 @@
 package funkin.backend;
-
+import funkin.backend.utils.ObjectUtils;
 import haxe.Json;
 
 typedef ModsList = {

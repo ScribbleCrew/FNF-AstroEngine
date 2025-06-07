@@ -90,7 +90,7 @@
 	<define name="DEBUG_SERVER_ALLOWED" if="debug desktop"/>
 
 	<!-- Checks if "git" is allowed -->
-	<define name="GIT_ALLOWED"/>
+	<define name="GIT_ALLOWED" if="debug"/>
 
 	<!-- Enable global script -->
 	<define name="GLOBAL_SCRIPT" if="HSCRIPT_ALLOWED"/>

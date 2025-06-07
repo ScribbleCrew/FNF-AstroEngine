@@ -122,7 +122,13 @@ class GlobalScript
 
 				// Execute Lua/HScript scripts if flag concurrent flag is enabled.
 				#if LUA_ALLOWED if (checkScriptExtensions(_fileName, "lua")) new FunkinLua(convertedScriptPath).execute(scriptArgs); #end
-				#if HSCRIPT_ALLOWED if (checkScriptExtensions(_fileName, "haxe")) new HScript(null, convertedScriptPath).run(scriptArgs); #end
+				#if HSCRIPT_ALLOWED if (checkScriptExtensions(_fileName, "haxe"))
+				{
+					final _class = new HScript(null, convertedScriptPath);
+					_class.parent = (substate ? SUB : STATE); // yay enums
+					_class.run(scriptArgs);
+				}; 
+				#end
 			}
 		}
 	}
@@ -286,7 +292,7 @@ class GlobalScript
 		catch (error:hscript.Expr.Error)
 		{
 			final filePosInfos:HScriptInfos = cast {_fileName: filePath, showLine: false};
-			ScriptedErrors.error(ScriptedErrors.errorToString(error, false), filePosInfos);
+			ScriptedErrors.error(ScriptUtil.errorToString(error, false), filePosInfos);
 
 			hscriptInstance = cast(HScript.instances.get(filePath), HScript);
 			if (hscriptInstance != null) hscriptInstance.destroy(); 

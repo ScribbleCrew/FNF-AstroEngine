@@ -6,31 +6,31 @@ package funkin.backend.system.scripts;
 */
 class RuleScriptInterpreter extends RuleScriptInterp
 {
-	@:dox(hide) private var _instanceFields:Array<String>;
-
-	/**
-	* The Parent Instance.
-	* So we don't need to do `FlxG.state.<VAR>` to access state variables.
-	*/
-	public var parent(default, set):Array<String> = [];
-	@:dox(hide) @:noCompletion function set_parent(instance:Dynamic):Array<String>
-	{
-		parent = instance;
-		_instanceFields = (parent == null) ? [] : Type.getInstanceFields(Type.getClass(instance));
-		return instance;
-	}
-
 	@:dox(hide) override function resolve(id:String):Dynamic
 	{
-		// local variables first
-		if (locals.exists(id)) return locals.get(id).r;
-		// set variables seconds
-		if (variables.exists(id)) return variables.get(id);
-		// import variables third
-		if (imports.exists(id)) return imports.get(id);
-		// parent variables fourth.
-		if (parent != null && _instanceFields.contains(id)) return Reflect.getProperty(parent, id);
+		// THIS & SUPER KEYWORDS
+		if (id == 'this') return this;
+		if (id == 'super' && superInstance != null) return superInstance;
 
+		// LOCALS
+		final l:Dynamic = locals.get(id);
+		if (l != null) return getScriptProp(l.r);
+
+		// VARIABLES
+		var v:Dynamic = null;
+		v = getScriptProp(variables.get(id));
+		if (v == null && !variables.exists(id))
+			v = Reflect.getProperty(superInstance, id) ?? error(EUnknownVariable(id));
+		return v;
+
+		// IMPORTS
+		var i:Dynamic = null;
+		i = getScriptProp(imports.get(id));
+		if(i == null && !imports.get(id))
+			i = Reflect.getProperty(superInstance, id) ?? error(EUnknownVariable(id));
+		return i;
+
+		// UNKNOWN VARIABLE>>>
 		error(EUnknownVariable(id));
 
 		return null;

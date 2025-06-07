@@ -59,11 +59,13 @@ class ObjectUtils
 	}
 
 	/**
-	* A better way of making a graphic.	
-	*/
-	public static inline function makeSolid(obj:FlxSprite, width : Float, height : Float, color : FlxColor) : flixel.FlxSprite{
-		obj.makeGraphic(1,1,color);
-		obj.scale.set(width, height);
+	 * Optim
+	 */
+	public static function makeSolid<Z:FlxSprite>(obj:Z, width:Float, height:Float, color:FlxColor = FlxColor.WHITE):Z
+	{
+		obj.makeGraphic(1, 1, color);
+		obj.setGraphicSize(width, height);
+		obj.updateHitbox();
 		return obj;
 	}
 }

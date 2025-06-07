@@ -1,11 +1,10 @@
 package funkin.backend.system;
 
-import haxe.rtti.Meta;
-import funkin.backend.Conductor;
+import funkin.backend.Conductor.BPMChangeEvent as BPM_EVENT;
 import flixel.addons.transition.FlxTransitionableState;
 
 @:access(funkin.backend.ShaderBackend.update)
-class MusicBeatState extends FlxState  implements IBeat
+class MusicBeatState extends FlxState implements IBeat
 {
 	/**
 	 * Group which contains all shader instances which
@@ -132,6 +131,8 @@ class MusicBeatState extends FlxState  implements IBeat
 		if (!_isCameraLoaded)
 			setupCamera();
 
+		#if !SOFTCODED_STATES super.create(); #end
+
 		// transition stuff (ignore this).
 		if (!skipNextTransOut)
 			openSubState(new FunkinFadeTransition(0.5, true));
@@ -233,9 +234,8 @@ class MusicBeatState extends FlxState  implements IBeat
 	function updateCurStep():Void
 	{
 		// saving vars
-		final lastChange:BPMChangeEvent = Conductor.getBPMFromSeconds(Conductor.songPosition);
-		final curStepChange:Float = ((Conductor.songPosition - funkin.backend.utils.ClientPrefs.data.noteOffset)
-			- lastChange.songTime) / lastChange.stepCrochet;
+		final lastChange:BPM_EVENT = Conductor.getBPMFromSeconds(Conductor.songPosition);
+		final curStepChange:Float = ((Conductor.songPosition - ClientPrefs.data.noteOffset) - lastChange.songTime) / lastChange.stepCrochet;
 
 		// update curstep.
 		curDecStep = lastChange.stepTime + curStepChange;
@@ -270,7 +270,11 @@ class MusicBeatState extends FlxState  implements IBeat
 		FlxTransitionableState.skipNextTransIn = false;
 	}
 
-	public function getLuaObject(tag:String, text:Bool = true):FlxSprite
+	/**
+	* Requires a lua object from the variables map.	
+	* @param tag The object's tag.
+	*/
+	public function getLuaObject(tag:String):FlxSprite
 		return variables.get(tag);
 	
 	/**
