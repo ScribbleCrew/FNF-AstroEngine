@@ -39,6 +39,11 @@ class CampaignUI extends FlxSprite
 		shouldReact = true;
 	}
 
+	@:dox(hide) override function destroy() : Void {
+		_defaultSize = FlxDestroyUtil.put(_defaultSize);
+		super.destroy();
+	}
+
 	/**
 	 * Bind a event to a specific map value.
 	 */

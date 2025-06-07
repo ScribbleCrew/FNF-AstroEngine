@@ -110,7 +110,7 @@ class PlayState extends MusicBeatState
 	/**
 	 * Default character positions.
 	 */
-	private var defaultCharacterPositions:Map<String, FlxPoint> = [
+	private var defaultCharacterPositions:Map<String, FlxPoint> = [// put these leater
 		"BF" => new FlxPoint(770, 100),
 		"DAD" => new FlxPoint(100, 100),
 		"GF" => new FlxPoint(400, 130)

@@ -840,5 +840,10 @@ class ModsMenuState extends MusicBeatState
 		final curMod:ModItem = modsGroup.members[curSelectedMod];
 		MusicBeatState.switchState(new ModsMenuState(curMod != null ? curMod.folder : null));
 	}
+
+	@:dox(hide) override function destroy() : Void {
+		mouseOffsets = FlxDestroyUtil.put(mouseOffsets);
+		super.destroy();
+	}
 }
 #end

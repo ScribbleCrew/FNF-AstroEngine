@@ -40,7 +40,7 @@ class MallEvil extends BaseStage
 		});
 		FlxG.sound.play(Paths.sound('Lights_Turn_On'));
 		FlxG.camera.zoom = 1.5;
-		FlxG.camera.focusOn(new FlxPoint(400, -2050));
+		FlxG.camera.focusOn(FlxPoint.weak(400, -2050)); // was new FlxPoint
 
 		new FlxTimer().start(0.8, function(tmr:FlxTimer)
 		{

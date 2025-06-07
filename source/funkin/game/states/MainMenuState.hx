@@ -352,6 +352,14 @@ class MainMenuState extends MusicBeatState
 		menuItems.forEach(function(spr:FlxSprite) spr.screenCenter(X));
 	}
 
+	@:dox(hide) override function destroy() : Void {
+		for (i in 0...engineVersions.length)// hehe
+			if(engineVersions[i].offset != null)
+				engineVersions[i].offset.put();
+
+		super.destroy();
+	}
+
 	function onStateChange():Void
 	{
 		if (menuButtons[curSelected].link != null)

@@ -1,6 +1,8 @@
 # ```TODO```
 
-* .put on all flxpos (credits title uhh idk)
+* Custom HUD Classes support.
+* Fix titlestate switch state anim glitch thingy
+* .put on all `FlxPoint` (credits title uhh idk)
 * Rewrite TitleState -- DOING 3/30/2025
 * checkbox colors maybe turn into xml. // (background, color2, color3) idk names.
 * Document PlayState & Paths (again).
