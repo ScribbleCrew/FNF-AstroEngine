@@ -2,7 +2,7 @@ name: Linux
 
 on:
   push:
-    branches: [main, experimental, rulescript-implementation]
+    branches: [main, experimental]
     paths:
       - 'assets/**'
       - 'source/**'

@@ -2,7 +2,7 @@ name: macOS
 
 on:
   push:
-    branches: [main, experimental, rulescript-implementation]
+    branches: [main, experimental]
     paths:
       - 'assets/**'
       - 'source/**'
