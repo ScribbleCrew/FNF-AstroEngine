@@ -1,5 +1,5 @@
 package funkin.game.objects.options;
-
+import flixel.addons.effects.FlxSkewedSprite;
 typedef Keybind = {
 	keyboard:String,
 	gamepad:String

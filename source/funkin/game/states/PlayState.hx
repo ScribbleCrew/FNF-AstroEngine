@@ -783,9 +783,9 @@ class PlayState extends MusicBeatState
 			case 'philly':
 				new Philly(); // Week 3
 			case 'limo':
-				new Limo(); // Week 4
+			//	new Limo(); // Week 4
 			case 'mall':
-				new Mall(); // Week 5 - Cocoa, Eggnog
+		//		new Mall(); // Week 5 - Cocoa, Eggnog
 			case 'mallEvil':
 				new MallEvil(); // Week 5 - Winter Horrorland
 			case 'school':

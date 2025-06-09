@@ -10,7 +10,8 @@ class Config
 
 	static final ALLOWED_CUSTOM_CLASSES:Array<String> = [// IMPORTANT: ADD NEEDED CLASSES TO THIS...
 		"flixel.FlxSprite",
-		"funkin.game.objects.AchievementPopup"
+		"funkin.game.objects.AchievementPopup",
+		"funkin.game.objects.BGSprite"
 	];
 
 	static final DISALLOW_CUSTOM_CLASSES:Array<String> = [

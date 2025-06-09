@@ -87,7 +87,8 @@ class HScript extends RuleScript implements IScript
 	}
 
 	public var defaultVariables(get, never):Map<String, Dynamic>;
- 	function get_defaultVariables():Map<String, Dynamic>
+
+	function get_defaultVariables():Map<String, Dynamic>
 	{
 		#if SOFTCODED_STATES
 		function closeInstanceSubstate():Void // for custom substates ;3
@@ -132,6 +133,8 @@ class HScript extends RuleScript implements IScript
 			'Countdown' => funkin.backend.base.BaseStage.Countdown,
 			'PlayState' => PlayState,
 			'Paths' => Paths,
+			'CoolUtil' => CoolUtil,
+			'BGSprite' => BGSprite,
 			'Conductor' => Conductor,
 			'ClientPrefs' => ClientPrefs,
 			'WindowUtil' => funkin.backend.utils.native.WindowUtil,
@@ -318,9 +321,23 @@ class HScript extends RuleScript implements IScript
 			},
 			#end
 
+			// PLAYSTATE STUFF
+			'setDefaultGF' => (name:String) -> {
+				if (PlayState.instance == null)
+				{
+					FlxG.log.warn('HScript: {addHxObject} isn\'t allowed in current state');
+					return null;
+				}
+				var gfVersion:String = PlayState.SONG.gfVersion;
+				if (gfVersion == null || gfVersion.length < 1)
+				{
+					gfVersion = name;
+					PlayState.SONG.gfVersion = gfVersion;
+				}
+			},
 			'addHxObject' => (obj:FlxObject, front:Bool = false) ->
 			{ // stolen from FunkinLua
-				if (PlayState.instance != null)
+				if (PlayState.instance == null)
 				{
 					FlxG.log.warn('HScript: {addHxObject} isn\'t allowed in current state');
 					return null;
@@ -339,6 +356,8 @@ class HScript extends RuleScript implements IScript
 				}
 				return true;
 			},
+			//////////////////////////////////////////////////////
+			
 			'addHaxeLibrary' => (libName:String, ?libPackage:String = '') ->
 			{
 				try
@@ -356,7 +375,7 @@ class HScript extends RuleScript implements IScript
 
 			'parentLua' => (#if LUA_ALLOWED parentLua #else null #end),
 
-			//'this' => this, // now handled by interp --orbl
+			// 'this' => this, // now handled by interp --orbl
 			// 'game' => FlxG.state, now handled by interp
 			'controls' => Controls.instance,
 
@@ -376,10 +395,12 @@ class HScript extends RuleScript implements IScript
 	 * Script parent...	
 	 */
 	public var parent(default, set):ParentChoices;
+
 	@:dox(hide) function set_parent(val:ParentChoices):Dynamic
 	{
 		final _interp:RuleScriptInterpreter = Std.isOfType(interp, RuleScriptInterpreter) ? cast interp : null;
-		if (_interp == null) return null; // bruh,,, i fucking hate types 🥺🙏
+		if (_interp == null)
+			return null; // bruh,,, i fucking hate types 🥺🙏
 		this.parent = val;
 		return _interp.superInstance = ((val == STATE) ? FlxG.state : FlxG.state.subState);
 	}
@@ -445,7 +466,7 @@ class HScript extends RuleScript implements IScript
 		super(interp, new HxParser());
 		getParser(HxParser).allowAll();
 		errorHandler = HScriptUtils.onError;
-		interp.superInstance = FlxG.state;// fallback :3
+		interp.superInstance = FlxG.state; // fallback :3
 
 		if (variables.exists('main'))
 			variables.get('main')();
