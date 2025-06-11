@@ -1,5 +1,6 @@
 # ```TODO```
 
+* Make a better error handler w pos info
 * Create HScript context levels e.g STATE, STAGE (Same Context as SONG), SONG (Same Context as STAGE)
 * Custom HUD Classes support.
 * Fix titlestate switch state anim glitch thingy

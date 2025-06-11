@@ -1,7 +1,6 @@
 package stages;
 
 // TODO: optim
-
 import objects.MallCrowd;
 import flixel.util.FlxColor;
 
@@ -10,12 +9,11 @@ using funkin.backend.utils.ObjectUtils;
 var upperBoppers:BGSprite;
 var bottomBoppers:MallCrowd;
 var santa:BGSprite;
+var lightsOffSound = null;
 
-var lights_off_sound = null;
-
-function onCreate() : Void
+function onCreate():Void
 {
-	var bg:BGSprite = new BGSprite('christmas/bgWalls', -1000, -500, 0.2, 0.2);
+	final bg:BGSprite = new BGSprite('christmas/bgWalls', -1000, -500, 0.2, 0.2);
 	bg.setGraphicSize(Std.int(bg.width * 0.8));
 	bg.updateHitbox();
 	addHxObject(bg);
@@ -27,7 +25,7 @@ function onCreate() : Void
 		upperBoppers.updateHitbox();
 		addHxObject(upperBoppers);
 
-		var bgEscalator:BGSprite = new BGSprite('christmas/bgEscalator', -1100, -600, 0.3, 0.3);
+		final bgEscalator:BGSprite = new BGSprite('christmas/bgEscalator', -1100, -600, 0.3, 0.3);
 		bgEscalator.setGraphicSize(Std.int(bgEscalator.width * 0.9));
 		bgEscalator.updateHitbox();
 		addHxObject(bgEscalator);
@@ -37,20 +35,21 @@ function onCreate() : Void
 	addHxObject(bottomBoppers = new MallCrowd(-300, 140));
 	addHxObject(new BGSprite('christmas/fgSnow', -600, 700));
 	addHxObject(santa = new BGSprite('christmas/santa', -840, 150, 1, 1, ['santa idle in fear']));
-    
-	lights_off_sound = Paths.sound('Lights_Shut_off');// preloads
+
+	lightsOffSound = Paths.sound('Lights_Shut_off'); // preloads
 	setDefaultGF('gf-christmas');
 
-	if (PlayState.isStoryMode && !PlayState.seenCutscene) endCallback = eggnogEndCutscene;
+	if (PlayState.isStoryMode && !PlayState.seenCutscene)
+		endCallback = eggnogEndCutscene;
 }
 
-function onCountdownTick(count, num:Int)
+function onCountdownTick(count, num:Int):Void
 	everyoneDance();
 
-function onBeatHit()
+function onBeatHit():Void
 	everyoneDance();
 
-function onEventCalled(eventName:String, value1:String, value2:String, flValue1:Null<Float>, flValue2:Null<Float>, strumTime:Float) : Void
+function onEventCalled(eventName:String, value1:String, value2:String, flValue1:Null<Float>, flValue2:Null<Float>, strumTime:Float):Void
 {
 	switch (eventName)
 	{
@@ -65,15 +64,16 @@ function onEventCalled(eventName:String, value1:String, value2:String, flValue1:
 	}
 }
 
-function everyoneDance() : Void
+function everyoneDance():Void
 {
-	if (!ClientPrefs.data.lowQuality) upperBoppers.dance(true);
+	if (!ClientPrefs.data.lowQuality)
+		upperBoppers.dance(true);
 
 	bottomBoppers.dance(true);
 	santa.dance(true);
 }
 
-function eggnogEndCutscene() : Void
+function eggnogEndCutscene():Void
 {
 	final nextSong = PlayState.storyPlaylist[1];
 
@@ -85,7 +85,7 @@ function eggnogEndCutscene() : Void
 
 	if (Paths.formatToSongPath(nextSong) == 'winter-horrorland')
 	{
-		FlxG.sound.play(lights_off_sound ?? Paths.sound('Lights_Shut_off')); // hehe
+		FlxG.sound.play(lightsOffSound ?? Paths.sound('Lights_Shut_off')); // hehe
 
 		final blackShit:FlxSprite = new FlxSprite(-FlxG.width * FlxG.camera.zoom, -FlxG.height * FlxG.camera.zoom);
 		blackShit.makeSolid(FlxG.width * 3, FlxG.height * 3, FlxColor.BLACK);

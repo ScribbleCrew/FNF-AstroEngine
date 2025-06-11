@@ -112,6 +112,7 @@ class HScript extends RuleScript implements IScript
 			'FlxTimer' => flixel.util.FlxTimer,
 			'FlxTween' => flixel.tweens.FlxTween,
 			'FlxEase' => flixel.tweens.FlxEase,
+			'FlxGroup' => FlxTypedGroup,
 			#if (!flash && sys) 'FlxRuntimeShader' => flixel.addons.display.FlxRuntimeShader, #end
 
 			// OpenFL-Specific Stuff
@@ -458,6 +459,7 @@ class HScript extends RuleScript implements IScript
 				rulescript.types.Typedefs.register(apply, scriptedClassRef);
 			}
 		}
+		rulescript.types.Typedefs.register('flixel.group.FlxGroup', FlxTypedGroup); // fix...
 
 		ScriptedTypeUtil.resolveModule = HScriptUtils.resolveModule;
 		RuleScript.resolveScript = ScriptedTypeUtil.resolveScript;

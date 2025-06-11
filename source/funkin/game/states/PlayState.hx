@@ -781,13 +781,13 @@ class PlayState extends MusicBeatState
 			case 'spooky':
 				new Spooky(); // Week 2
 			case 'philly':
-				new Philly(); // Week 3
+				//new Philly(); // Week 3
 			case 'limo':
 			//	new Limo(); // Week 4
 			case 'mall':
 		//		new Mall(); // Week 5 - Cocoa, Eggnog
 			case 'mallEvil':
-				new MallEvil(); // Week 5 - Winter Horrorland
+			//	new MallEvil(); // Week 5 - Winter Horrorland
 			case 'school':
 				new School(); // Week 6 - Senpai, Roses
 			case 'schoolEvil':
@@ -1932,6 +1932,7 @@ class PlayState extends MusicBeatState
 
 	@:dox(hide) override function openSubState(SubState:flixel.FlxSubState) : Void
 	{
+		GlobalScript.instance.callOnScripts('onOpenSubState', [SubState]);
 		stageAccess(function(stage:BaseStage) stage.openSubState(SubState));
 
 		if (paused)
@@ -1953,6 +1954,7 @@ class PlayState extends MusicBeatState
 	public var canResync:Bool = true;
 	@:dox(hide) override function closeSubState()
 	{
+		GlobalScript.instance.callOnScripts('onCloseSubState', []);
 		stageAccess(function(stage:BaseStage) stage.closeSubState());
 
 		if (paused)

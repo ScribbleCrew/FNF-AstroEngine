@@ -78,8 +78,7 @@ function titleTween():Void
 function makeSprites():Void
 {
 	// wahahah
-	background = new FlxSprite().makeSolid(1, 1, FlxColor.WHITE);
-	background.scale.set(FlxG.width, FlxG.height);
+	background = new FlxSprite().makeSolid(FlxG.width, FlxG.height, FlxColor.WHITE);
 	background.screenCenter();
 	add(background);
 

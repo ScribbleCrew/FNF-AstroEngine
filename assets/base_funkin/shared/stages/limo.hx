@@ -1,5 +1,7 @@
 package stages;
 
+import funkin.backend.Achievements;
+import flixel.util.FlxTimer;
 import objects.BackgroundDancer;
 
 enum HenchmenKillState
