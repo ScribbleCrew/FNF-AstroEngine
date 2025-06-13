@@ -1,10 +1,11 @@
 package funkin.backend.system.scripts;
 
-import hscript.Expr;
-import rulescript.types.ScriptedTypeUtil;
 #if LUA_ALLOWED import funkin.backend.system.scripts.FunkinLua; #end
 
 #if HSCRIPT_ALLOWED
+import hscript.Expr;
+import rulescript.types.ScriptedTypeUtil;
+
 enum ScriptContext
 {
 	/**
@@ -437,7 +438,7 @@ class HScript extends RuleScript implements IScript
 		file ??= '';
 		filePath = file;
 		this.context = context == null ? ScriptContext.MAIN : context;
-		
+
 		if (filePath != null && filePath.length > 0)
 		{
 			this.origin = filePath;
