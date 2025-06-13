@@ -4,7 +4,7 @@ package funkin.backend.system.scripts;
 /**
 * Modifed Interp to allow scripts ot access class vairables without using FlxG.state or other lesser methods.	
 */
-class RuleScriptInterpreter extends RuleScriptInterp
+class RuleScriptInterpreter extends RuleScriptInterp // USE BYTECODEINTERP INSTEAD...
 {
 	@:dox(hide) override function resolve(id:String):Dynamic
 	{
