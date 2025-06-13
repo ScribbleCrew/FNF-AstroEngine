@@ -12,7 +12,7 @@ import flixel.util.FlxTimer;
 import funkin.game.states.PlayState;
 
 
-
+// rewrite...
 class DialogueBox extends FlxSpriteGroup
 {
 	var box:FlxSprite;
@@ -50,7 +50,7 @@ class DialogueBox extends FlxSpriteGroup
 				FlxG.sound.music.fadeIn(1, 0, 0.8);
 		}
 
-		bgFade = new FlxSprite(-200, -200).makeGraphic(Std.int(FlxG.width * 1.3), Std.int(FlxG.height * 1.3), 0xFFB3DFd8);
+		bgFade = new FlxSprite(-200, -200).makeSolid(Std.int(FlxG.width * 1.3), Std.int(FlxG.height * 1.3), 0xFFB3DFd8);
 		bgFade.scrollFactor.set();
 		bgFade.alpha = 0;
 		add(bgFade);
@@ -63,7 +63,8 @@ class DialogueBox extends FlxSpriteGroup
 		}, 5);
 
 		box = new FlxSprite(-20, 45);
-		
+		box.antialiasing = false;
+
 		var hasDialog = false;
 		switch (PlayState.SONG.song.toLowerCase())
 		{
@@ -102,6 +103,7 @@ class DialogueBox extends FlxSpriteGroup
 		portraitLeft.setGraphicSize(Std.int(portraitLeft.width * PlayState.daPixelZoom * 0.9));
 		portraitLeft.updateHitbox();
 		portraitLeft.scrollFactor.set();
+		portraitLeft.antialiasing = false;
 		add(portraitLeft);
 		portraitLeft.visible = false;
 
@@ -111,6 +113,7 @@ class DialogueBox extends FlxSpriteGroup
 		portraitRight.setGraphicSize(Std.int(portraitRight.width * PlayState.daPixelZoom * 0.9));
 		portraitRight.updateHitbox();
 		portraitRight.scrollFactor.set();
+		portraitRight.antialiasing = false;
 		add(portraitRight);
 		portraitRight.visible = false;
 		
@@ -126,6 +129,7 @@ class DialogueBox extends FlxSpriteGroup
 		handSelect.setGraphicSize(Std.int(handSelect.width * PlayState.daPixelZoom * 0.9));
 		handSelect.updateHitbox();
 		handSelect.visible = false;
+		handSelect.antialiasing = false;
 		add(handSelect);
 
 

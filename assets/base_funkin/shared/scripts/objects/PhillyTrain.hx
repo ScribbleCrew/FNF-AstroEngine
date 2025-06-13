@@ -1,4 +1,4 @@
-package objects.philly;
+package objects;
 
 import flixel.sound.FlxSound;
 import flixel.FlxSprite;

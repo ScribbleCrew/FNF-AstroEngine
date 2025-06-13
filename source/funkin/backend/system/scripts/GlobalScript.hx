@@ -137,8 +137,10 @@ class GlobalScript
 	 * Call on scripts (HScript, Lua)
 	 */
 	public function callOnScripts(functionName:String, args:Array<Dynamic> = null, ignoreStops = false, exclusions:Array<String> = null,
-			excludeValues:Array<Dynamic> = null):Dynamic
+			excludeValues:Array<Dynamic> = null, ?context:HScript.ScriptContext = MAIN):Dynamic
 	{
+		// !! context hscript only... !!
+
 		// Null checks.
 		args ??= [];
 		exclusions ??= [];
@@ -148,7 +150,7 @@ class GlobalScript
 		var scriptCall:Dynamic = #if LUA_ALLOWED callOnLuas(functionName, args, ignoreStops, exclusions, excludeValues) #else null #end;
 		#if HSCRIPT_ALLOWED
 		if (scriptCall == null || excludeValues.contains(scriptCall))
-			scriptCall = callOnHScript(functionName, args, ignoreStops, exclusions, excludeValues);
+			scriptCall = callOnHScript(functionName, args, ignoreStops, exclusions, excludeValues, context);
 		#end
 
 		return scriptCall;
@@ -312,7 +314,7 @@ class GlobalScript
 	 * @param exclusions Exclusions.
 	 */
 	public function callOnHScript(functionName:String, args:Array<Dynamic> = null, ?ignoreStops:Bool = false, exclusions:Array<String> = null,
-			excludeValues:Array<Dynamic> = null):Dynamic
+			excludeValues:Array<Dynamic> = null, ?context: HScript.ScriptContext):Dynamic
 	{
 		var returnVal:String = Function_Continue;
 
@@ -331,7 +333,7 @@ class GlobalScript
 		for (script in uhh)
 		{
 			@:privateAccess
-			if (script == null || !script.exists(functionName) || exclusions.contains(script.origin))
+			if (script == null || !script.exists(functionName) || exclusions.contains(script.origin) || (script.context != context || script.context != MAIN))
 				continue;
 
 			try
@@ -358,14 +360,14 @@ class GlobalScript
 		return returnVal;
 	}
 
-	public function setOnHScript(variable:String, arg:Dynamic, exclusions:Array<String> = null)
+	public function setOnHScript(variable:String, arg:Dynamic, exclusions:Array<String> = null, ?context:HScript.ScriptContext = MAIN)
 	{
 		#if HSCRIPT_ALLOWED
 		exclusions ??= [];
 		final uhh:Array<HScript> = hscriptInstances.safeGet(Main.stateName, []);
 		for (script in uhh)
 		{
-			if (exclusions.contains(script.origin))
+			if (exclusions.contains(script.origin) || (script.context != context || script.context != MAIN))
 				continue;
 
 			// Push to exclude list.

@@ -1,5 +1,5 @@
 song specific scripts
-    - scripts/songs/<SONG_NAME>/<SCRIPT>/
+    - scripts/songs/<SONG_NAME>/<SCRIPT>.<hx/lua>/
 
 non song specific scripts
-    - scripts/songs/<SCRIPT>/
+    - scripts/songs/<SCRIPT>.<hx/lua>/

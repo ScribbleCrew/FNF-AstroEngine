@@ -1,53 +1,51 @@
+// TODO: optim
+
 package stages;
 
-import funkin.backend.Achievements;
 import flixel.util.FlxTimer;
 import objects.BackgroundDancer;
+import funkin.backend.Achievements;
 
-enum HenchmenKillState
-{
-	WAIT;
-	KILLING;
-	SPEEDING_OFFSCREEN;
-	SPEEDING;
-	STOPPING;
+final HenchmenKillState = { // enum alternative
+	WAIT: 0,
+	KILLING: 1,
+	SPEEDING_OFFSCREEN: 2,
+	SPEEDING: 3,
+	STOPPING: 4
 }
 
-var grpLimoDancers:FlxTypedGroup<BackgroundDancer>;
 var fastCar:BGSprite;
+var dancersDiff:Float = 320;
 var fastCarCanDrive:Bool = true;
+var limoKillingState = HenchmenKillState.WAIT;
 
-// event
-var limoKillingState:HenchmenKillState = WAIT;
+var carTimer:FlxTimer;
+
+var grpLimoDancers:FlxGroup;
+var grpLimoParticles:FlxGroup;
+
 var limoMetalPole:BGSprite;
 var limoLight:BGSprite;
 var limoCorpse:BGSprite;
 var limoCorpseTwo:BGSprite;
 var bgLimo:BGSprite;
-var grpLimoParticles:FlxTypedGroup<BGSprite>;
-var dancersDiff:Float = 320;
 
-function create()
+
+function onCreate()
 {
-	var skyBG:BGSprite = new BGSprite('limo/limoSunset', -120, -50, 0.1, 0.1);
-	add(skyBG);
+	addHxObject(new BGSprite('limo/limoSunset', -120, -50, 0.1, 0.1));
 
 	if (!ClientPrefs.data.lowQuality)
 	{
-		limoMetalPole = new BGSprite('gore/metalPole', -500, 220, 0.4, 0.4);
-		add(limoMetalPole);
-
-		bgLimo = new BGSprite('limo/bgLimo', -150, 480, 0.4, 0.4, ['background limo pink'], true);
-		add(bgLimo);
-
-		limoCorpse = new BGSprite('gore/noooooo', -500, limoMetalPole.y - 130, 0.4, 0.4, ['Henchmen on rail'], true);
-		add(limoCorpse);
+		addHxObject(limoMetalPole = new BGSprite('gore/metalPole', -500, 220, 0.4, 0.4));
+		addHxObject(bgLimo = new BGSprite('limo/bgLimo', -150, 480, 0.4, 0.4, ['background limo pink'], true));
+		addHxObject(limoCorpse = new BGSprite('gore/noooooo', -500, limoMetalPole.y - 130, 0.4, 0.4, ['Henchmen on rail'], true));
 
 		limoCorpseTwo = new BGSprite('gore/noooooo', -500, limoMetalPole.y, 0.4, 0.4, ['henchmen death'], true);
-		add(limoCorpseTwo);
+		addHxObject(limoCorpseTwo);
 
-		grpLimoDancers = new FlxTypedGroup<BackgroundDancer>();
-		add(grpLimoDancers);
+		grpLimoDancers = new FlxGroup();
+		addBehindGF(grpLimoDancers);
 
 		for (i in 0...5)
 		{
@@ -57,10 +55,10 @@ function create()
 		}
 
 		limoLight = new BGSprite('gore/coldHeartKiller', limoMetalPole.x - 180, limoMetalPole.y - 80, 0.4, 0.4);
-		add(limoLight);
+		addHxObject(limoLight);
 
-		grpLimoParticles = new FlxTypedGroup<BGSprite>();
-		add(grpLimoParticles);
+		grpLimoParticles = new FlxGroup();
+		addHxObject(grpLimoParticles);
 
 		// PRECACHE BLOOD
 		var particle:BGSprite = new BGSprite('gore/stupidBlood', -400, -400, 0.4, 0.4, ['blood'], false);
@@ -77,18 +75,16 @@ function create()
 	fastCar.active = true;
 }
 
-function createPost()
+function onCreatePost():Void
 {
 	resetFastCar();
 	addBehindGF(fastCar);
-
-	var limo:BGSprite = new BGSprite('limo/limoDrive', -120, 550, 1, 1, ['Limo stage'], true);
-	addBehindGF(limo); // Shitty layering but whatev it works LOL
+	addBehindGF(new BGSprite('limo/limoDrive', -120, 550, 1, 1, ['Limo stage'], true)); // Shitty layering but whatev it works LOL
 }
 
 var limoSpeed:Float = 0;
 
-function update(elapsed:Float)
+function onUpdate(elapsed:Float)
 {
 	if (!ClientPrefs.data.lowQuality)
 	{
@@ -104,7 +100,7 @@ function update(elapsed:Float)
 
 		switch (limoKillingState)
 		{
-			case KILLING:
+			case HenchmenKillState.KILLING:
 				limoMetalPole.x += 5000 * elapsed;
 				limoLight.x = limoMetalPole.x - 180;
 				limoCorpse.x = limoLight.x - 50;
@@ -149,19 +145,19 @@ function update(elapsed:Float)
 				{
 					resetLimoKill();
 					limoSpeed = 800;
-					limoKillingState = SPEEDING_OFFSCREEN;
+					limoKillingState = HenchmenKillState.SPEEDING_OFFSCREEN;
 				}
 
-			case SPEEDING_OFFSCREEN:
+			case HenchmenKillState.SPEEDING_OFFSCREEN:
 				limoSpeed -= 4000 * elapsed;
 				bgLimo.x -= limoSpeed * elapsed;
 				if (bgLimo.x > FlxG.width * 1.5)
 				{
 					limoSpeed = 3000;
-					limoKillingState = SPEEDING;
+					limoKillingState = HenchmenKillState.SPEEDING;
 				}
 
-			case SPEEDING:
+			case HenchmenKillState.SPEEDING:
 				limoSpeed -= 2000 * elapsed;
 				if (limoSpeed < 1000)
 					limoSpeed = 1000;
@@ -169,17 +165,17 @@ function update(elapsed:Float)
 				bgLimo.x -= limoSpeed * elapsed;
 				if (bgLimo.x < -275)
 				{
-					limoKillingState = STOPPING;
+					limoKillingState = HenchmenKillState.STOPPING;
 					limoSpeed = 800;
 				}
 				dancersParenting();
 
-			case STOPPING:
+			case HenchmenKillState.STOPPING:
 				bgLimo.x = FlxMath.lerp(-150, bgLimo.x, Math.exp(-elapsed * 9));
 				if (Math.round(bgLimo.x) == -150)
 				{
 					bgLimo.x = -150;
-					limoKillingState = WAIT;
+					limoKillingState = HenchmenKillState.WAIT;
 				}
 				dancersParenting();
 
@@ -188,7 +184,7 @@ function update(elapsed:Float)
 	}
 }
 
-function beatHit()
+function onBeatHit()
 {
 	if (!ClientPrefs.data.lowQuality)
 	{
@@ -203,7 +199,7 @@ function beatHit()
 }
 
 // Substates for pausing/resuming tweens and timers
-function closeSubState()
+function onCloseSubState()
 {
 	if (paused)
 	{
@@ -212,7 +208,7 @@ function closeSubState()
 	}
 }
 
-function openSubState(SubState:flixel.FlxSubState)
+function onOpenSubState(SubState:flixel.FlxSubState)
 {
 	if (paused)
 	{
@@ -221,7 +217,7 @@ function openSubState(SubState:flixel.FlxSubState)
 	}
 }
 
-function eventCalled(eventName:String, value1:String, value2:String, flValue1:Null<Float>, flValue2:Null<Float>, strumTime:Float)
+function onEventCalled(eventName:String, value1:String, value2:String, flValue1:Null<Float>, flValue2:Null<Float>, strumTime:Float)
 {
 	switch (eventName)
 	{
@@ -230,13 +226,11 @@ function eventCalled(eventName:String, value1:String, value2:String, flValue1:Nu
 	}
 }
 
-function dancersParenting()
+function dancersParenting():Void
 {
 	var dancers:Array<BackgroundDancer> = grpLimoDancers.members;
 	for (i in 0...dancers.length)
-	{
 		dancers[i].x = (370 * i) + dancersDiff + bgLimo.x;
-	}
 }
 
 function resetLimoKill():Void
@@ -259,11 +253,8 @@ function resetFastCar():Void
 	fastCarCanDrive = true;
 }
 
-var carTimer:FlxTimer;
-
-function fastCarDrive()
+function fastCarDrive():Void
 {
-	// trace('Car drive');
 	FlxG.sound.play(Paths.randomSound('carPass', 0, 1), 0.7);
 
 	fastCar.velocity.x = (FlxG.random.int(170, 220) / FlxG.elapsed) * 3;
@@ -279,18 +270,18 @@ function killHenchmen():Void
 {
 	if (!ClientPrefs.data.lowQuality)
 	{
-		if (limoKillingState == WAIT)
+		if (limoKillingState == HenchmenKillState.WAIT)
 		{
 			limoMetalPole.x = -400;
 			limoMetalPole.visible = true;
 			limoLight.visible = true;
 			limoCorpse.visible = false;
 			limoCorpseTwo.visible = false;
-			limoKillingState = KILLING;
+			limoKillingState = HenchmenKillState.KILLING;
 
 			#if ACHIEVEMENTS_ALLOWED
-			final kills = Achievements.addScore("roadkill_enthusiast");
-			FlxG.log.add('Henchmen kills: $kills');
+			final kills:Int = Achievements.addScore("roadkill_enthusiast");
+			FlxG.log.add('Henchmen kills: ' + kills);
 			#end
 		}
 	}

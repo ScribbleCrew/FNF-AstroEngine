@@ -1,5 +1,6 @@
 package funkin.backend.system;
 
+import funkin.backend.system.scripts.HScript.ScriptContext;
 import funkin.backend.Conductor.BPMChangeEvent as BPM_EVENT;
 import flixel.addons.transition.FlxTransitionableState;
 
@@ -124,8 +125,8 @@ class MusicBeatState extends FlxState implements IBeat
 		// not MusicBeatState, it's whatever is extending from it, since this is an abstract class.
 		GlobalScript.instance.executeClassScripts(scriptName, scriptArgs);
 		super.create();
-		GlobalScript.instance.callOnScripts('onCreatePost', []); // gwa gwa lua
-		GlobalScript.instance.callOnScripts('createPost', []);
+		GlobalScript.instance.callOnScripts('onCreatePost', [], ScriptContext.STATE); // gwa gwa lua
+		GlobalScript.instance.callOnScripts('createPost', [], ScriptContext.STATE);
 		#end
 
 		if (!_isCameraLoaded)

@@ -530,7 +530,7 @@ class PlayState extends MusicBeatState
 	/**
 	 * Pixel assets zoom.
 	 */
-	public static inline final daPixelZoom:Float = 6;
+	public static final daPixelZoom:Float = 6; // DON'T INLINE
 
 	/**
 	 * Sing animations.
@@ -789,7 +789,7 @@ class PlayState extends MusicBeatState
 			case 'mallEvil':
 			//	new MallEvil(); // Week 5 - Winter Horrorland
 			case 'school':
-				new School(); // Week 6 - Senpai, Roses
+				//new School(); // Week 6 - Senpai, Roses
 			case 'schoolEvil':
 				new SchoolEvil(); // Week 6 - Thorns
 			case 'tank':
@@ -2087,7 +2087,7 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float):Void
 	{	
-		GlobalScript.instance.callOnScripts('onUpdate', [elapsed]);
+		//GlobalScript.instance.callOnScripts('onUpdate', [elapsed]);
 
 		if(ui?.update!=null) ui.update(elapsed);
 
@@ -2274,7 +2274,7 @@ class PlayState extends MusicBeatState
 		GlobalScript.instance.setOnScripts('cameraX', camFollow.x);
 		GlobalScript.instance.setOnScripts('cameraY', camFollow.y);
 		GlobalScript.instance.setOnScripts('botPlay', cpuControlled);
-		GlobalScript.instance.callOnScripts('onUpdatePost', [elapsed]);
+	//	GlobalScript.instance.callOnScripts('onUpdatePost', [elapsed]);
 	}
 	
 	/**

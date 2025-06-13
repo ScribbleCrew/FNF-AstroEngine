@@ -5,6 +5,19 @@ import rulescript.types.ScriptedTypeUtil;
 #if LUA_ALLOWED import funkin.backend.system.scripts.FunkinLua; #end
 
 #if HSCRIPT_ALLOWED
+enum ScriptContext
+{
+	/**
+	 * The script is being executed in the main game.
+	 */
+	MAIN;
+
+	/**
+	 * The script is being executed in a custom state.
+	 */
+	STATE;
+}
+
 /**
  * Enum choices when setting/changing the scripts parent class/state.
  */
@@ -77,6 +90,11 @@ class HScript extends RuleScript implements IScript
 	public var origin:String;
 
 	/**
+	 * The script context.
+	 */
+	public var context:ScriptContext;
+
+	/**
 	 * The function which executes the code given.
 	 */
 	@:dox(show) override function execute(code:EitherType<String, Expr>):Dynamic
@@ -87,7 +105,6 @@ class HScript extends RuleScript implements IScript
 	}
 
 	public var defaultVariables(get, never):Map<String, Dynamic>;
-
 	function get_defaultVariables():Map<String, Dynamic>
 	{
 		#if SOFTCODED_STATES
@@ -323,7 +340,8 @@ class HScript extends RuleScript implements IScript
 			#end
 
 			// PLAYSTATE STUFF
-			'setDefaultGF' => (name:String) -> {
+			'setDefaultGF' => (name:String) ->
+			{
 				if (PlayState.instance == null)
 				{
 					FlxG.log.warn('HScript: {addHxObject} isn\'t allowed in current state');
@@ -358,7 +376,7 @@ class HScript extends RuleScript implements IScript
 				return true;
 			},
 			//////////////////////////////////////////////////////
-			
+
 			'addHaxeLibrary' => (libName:String, ?libPackage:String = '') ->
 			{
 				try
@@ -414,11 +432,12 @@ class HScript extends RuleScript implements IScript
 	 * @param varsToBring Variables to bring. (optional)
 	 * @param manualRun If the script should manually run. (optional)
 	 */
-	@:dox(show) override public function new(?parent:Dynamic, ?file:String, ?varsToBring:Any = null, ?manualRun:Bool = false)
+	@:dox(show) override public function new(?parent:Dynamic, ?file:String, ?varsToBring:Any = null, ?manualRun:Bool = false, ?context:ScriptContext) : Void
 	{
 		file ??= '';
-
 		filePath = file;
+		this.context = context == null ? ScriptContext.MAIN : context;
+		
 		if (filePath != null && filePath.length > 0)
 		{
 			this.origin = filePath;
@@ -471,7 +490,7 @@ class HScript extends RuleScript implements IScript
 		interp.superInstance = FlxG.state; // fallback :3
 
 		if (variables.exists('main'))
-			variables.get('main')();
+			variables.get('main')(); // KEEP UNLESS BREAK SCRIPTS // USED SOMETIMES IN STAGE SCRIPTS -orbl
 
 		#if LUA_ALLOWED
 		parentLua = parent;

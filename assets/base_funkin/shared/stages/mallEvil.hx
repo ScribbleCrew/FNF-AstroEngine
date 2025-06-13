@@ -1,22 +1,31 @@
 package stages;
-import flixel.util.FlxColor;
+
 import flixel.math.FlxPoint;
-function create():Void
+import flixel.util.FlxColor;
+
+function main():Void
+{
+	Paths.sound('Lights_Turn_On'); // preload
+	setDefaultGF('gf-christmas');
+}
+
+function onCreate():Void
 {
 	var bg:BGSprite = new BGSprite('christmas/evilBG', -400, -500, 0.2, 0.2);
 	bg.setGraphicSize(Std.int(bg.width * 0.8));
 	bg.updateHitbox();
 	add(bg);
 
-	var evilTree:BGSprite = new BGSprite('christmas/evilTree', 300, -300, 0.2, 0.2);
-	add(evilTree);
-
-	var evilSnow:BGSprite = new BGSprite('christmas/evilSnow', -200, 700);
-	add(evilSnow);
-	setDefaultGF('gf-christmas');
+	add(new BGSprite('christmas/evilTree', 300, -300, 0.2, 0.2));
+	add(new BGSprite('christmas/evilSnow', -200, 700));
 
 	// Winter Horrorland cutscene
-	if ((isStoryMode && !seenCutscene) && songName == 'winter-horrowland')
+	setupCallback();
+}
+
+function setupCallback():Void
+{
+	if ((isStoryMode && !seenCutscene) && songName == 'winter-horrorland')
 		startCallback = winterHorrorlandCutscene;
 }
 
@@ -37,7 +46,7 @@ function winterHorrorlandCutscene():Void
 	});
 	FlxG.sound.play(Paths.sound('Lights_Turn_On'));
 	FlxG.camera.zoom = 1.5;
-	FlxG.camera.focusOn(FlxPoint.weak(400, -2050)); // was new FlxPoint
+	FlxG.camera.focusOn(FlxPoint.weak(400, -2050));
 
 	new FlxTimer().start(0.8, function(tmr:FlxTimer)
 	{

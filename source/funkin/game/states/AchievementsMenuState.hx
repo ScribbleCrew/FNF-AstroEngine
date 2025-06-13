@@ -4,6 +4,7 @@ package funkin.game.states;
 import funkin.backend.Achievements.Achievement;
 import flixel.FlxObject;
 import flixel.util.FlxSort;
+import funkin.backend.Achievements;
 
 class AchievementsMenuState extends MusicBeatState
 {

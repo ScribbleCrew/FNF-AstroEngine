@@ -1,8 +1,8 @@
 package stages;
 // TODO: optim
-import objects.philly.GlowGradient; // as GlowGradient;
-import objects.philly.GlowParticle;
-import objects.philly.Train;
+import objects.PhillyGlow.GlowGradient as GlowGradient;
+import objects.PhillyGlow.GlowParticle as GlowParticle;
+import objects.PhillyTrain as Train;
 
 var curLight:Int = -1;
 final phillyLightsColors:Array<FlxColor> = [0xFF31A2FD, 0xFF31FD8C, 0xFFFB33F5, 0xFFFD4531, 0xFFFBA633];
