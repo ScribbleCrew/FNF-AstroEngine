@@ -19,6 +19,7 @@ import flixel.text.FlxText;
 import flixel.math.FlxMath;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
+import funkin.game.states.AchievementsMenuState;
 import flixel.util.FlxColor;
 import lime.app.Application;
 import flixel.input.keyboard.FlxKey;
@@ -27,6 +28,11 @@ import funkin.backend.system.MusicBeatSubstate;
 import funkin.backend.system.MusicBeatState;
 import flixel.input.mouse.FlxMouseEvent;
 import funkin.game.states.*;
+import funkin.game.states.StoryMenuState;
+import funkin.game.states.FreeplayState;
+import funkin.game.states.AchievementsMenuState;
+import funkin.game.states.OptionsState;
+import funkin.game.states.CreditsState;
 
 private typedef MenuVersionStructure =
 {
@@ -39,7 +45,7 @@ private typedef MenuItemsStructure =
 	var name:Null<String>;
 	@:optional var state:EitherTwo<flixel.FlxSubState, flixel.FlxState>;
 	@:optional var link:Null<String>;
-	@:optional var onChange:Void -> Void;
+	@:optional var onChange:Void->Void;
 	@:optional var preloaded:Null<Bool>;
 }
 
@@ -63,78 +69,45 @@ class MainMenuState extends MusicBeatState
 	var debugKeys:Array<FlxKey>;
 
 	// Items
-	final menuButtons:Array<MenuItemsStructure> = [
-		{
-			name: 'story mode',
-			state: new StoryMenuState()
-		},
+	var menuButtons:Array<MenuItemsStructure> = [
+		/* handled by a state script */
 		{
 			name: 'freeplay',
-			state: new FreeplayState()
-		},
-		/*#if MODS_ALLOWED
-		{
-			preloaded: true,
-			name: 'mods',
-			state: new ModsMenuState()
-		},
-		#end */
-		#if ACHIEVEMENTS_ALLOWED
-		{
-			name: 'awards',
-			state: new AchievementsMenuState()
-		},
-		#end
-		/*#if !switch
-		{ // idon'trllywantdisherelol i'm not even trying to being selfish
-			name: 'donate',
-			link: 'https://ninja-muffin24.itch.io/funkin'
-		},
-		#end */
-		{
-			preloaded: true,
-			name: 'options',
-			state: new OptionsState(),
-			onChange: ()->{
-				if (PlayState.SONG != null)
-				{
-					PlayState.SONG.arrowSkin = null;
-					PlayState.SONG.splashSkin = null;
-					PlayState.stageUI = 'normal';
-				}
-			}
-		},
-		{
-			name: 'credits',
-			state: new CreditsState()
+			state: new funkin.game.states.FreeplayState()
 		}
-	];
+	]; // i love modablity so muchh
 
 	// Version
 	final engineVersions:Array<MenuVersionStructure> = [
 		{
-			name: 'Astro Engine v${EngineData.VERSION}'#if debug + ",ASTRO_N64"#end,
+			name: 'Astro Engine v${EngineData.VERSION}'
+			#if debug
+			+ ",ASTRO_N64"
+			#end
+			,
+			offset: new FlxPoint(0, 0)
+		},
+		{
+			name: 'Friday Night Funkin\' v${Application.current.meta.get('version')}',
 			offset: new FlxPoint(0, 0)
 		}
-		// {
-		// 	name: 'Friday Night Funkin\' v${Application.current.meta.get('version')}',
-		// 	offset: new FlxPoint(0, 0)
-		// },
-		#if (GIT_ALLOWED) 
-		,{
+		#if (GIT_ALLOWED)
+		, {
 			name: 'Git Commit: ${GitMacro.commitNumber} (${GitMacro.commitHash})',
 			offset: new FlxPoint(0, 0)
 		}
 		#end
 		#if MODS_ALLOWED
-		,{
+		, {
 			name: '[TAB] Open Mods Menu',
 			offset: new FlxPoint(0, 0)
 		}
 		#end
 	];
 
-	override function create()
+	var bg:FlxSprite;
+
+	@:dox(hide) override function create():Void
 	{
 		#if MODS_ALLOWED
 		Mods.pushGlobalMods();
@@ -166,10 +139,10 @@ class MainMenuState extends MusicBeatState
 		// Background
 		var bgColor:FlxColor = EngineData.MENU_COLOR;
 		var yScroll:Float = Math.max(0.25 - (0.05 * (menuButtons.length - 4)), 0.1);
-		var bg:FlxSprite = new FlxSprite(-80).loadGraphic(Paths.image('menuBG'));
+		bg = new FlxSprite(-80).loadGraphic(Paths.image('menuBG'));
 		bg.scrollFactor.set(0, yScroll);
 		bg.setGraphicSize(Std.int(bg.width * 1.175));
-		//bg.color = bgColor;
+		// bg.color = bgColor;
 		bg.updateHitbox();
 		bg.screenCenter();
 		bg.antialiasing = ClientPrefs.data.antialiasing;
@@ -184,7 +157,7 @@ class MainMenuState extends MusicBeatState
 			bgFlashing.screenCenter();
 			bgFlashing.visible = false;
 			bgFlashing.antialiasing = ClientPrefs.data.antialiasing;
-			//bgFlashing.color = bgColor.getDarkened(.4);
+			// bgFlashing.color = bgColor.getDarkened(.4);
 			bgFlashing.color = 0xFFfd719b;
 			add(bgFlashing);
 		}
@@ -194,6 +167,33 @@ class MainMenuState extends MusicBeatState
 		add(menuItems);
 		versionTextGroup = new FlxTypedGroup();
 		add(versionTextGroup);
+
+		// Achievement Check
+		#if ACHIEVEMENTS_ALLOWED
+		// Unlocks "Freaky on a Friday Night" achievement if it's a Friday and between 18:00 PM and 23:59 PM
+		final leDate = Date.now();
+		if (leDate.getDay() == 5 && leDate.getHours() >= 18)
+			Achievements.unlock('friday_night_play');
+
+		#if MODS_ALLOWED Achievements.reloadList(); #end
+		#end
+
+		super.create();
+
+		this.load();
+
+		// Camera Follow
+		FlxG.camera.follow(camFollow, null, 0.15);
+	}
+
+	/**
+	 * Load buttons and version info stuffz.	
+	 */
+	function load():Void
+	{
+		final sFactor : Float = Math.max(0.25 - (0.05 * (menuButtons.length - 4)), 0.1);
+		if (bg != null) bg.scrollFactor.set(0, sFactor);
+		if (bgFlashing != null) bgFlashing.scrollFactor.set(0, sFactor);
 
 		// Items Loop
 		for (i in 0...menuButtons.length)
@@ -217,28 +217,6 @@ class MainMenuState extends MusicBeatState
 		}
 
 		// Version Loop
-		versionInfo();
-		changeItem();
-
-		// Achievement Check
-		#if ACHIEVEMENTS_ALLOWED
-		// Unlocks "Freaky on a Friday Night" achievement if it's a Friday and between 18:00 PM and 23:59 PM
-		final leDate = Date.now();
-		if (leDate.getDay() == 5 && leDate.getHours() >= 18)
-			Achievements.unlock('friday_night_play');
-
-		#if MODS_ALLOWED
-		Achievements.reloadList();
-		#end
-		#end
-
-		super.create();
-
-		// Camera Follow
-		FlxG.camera.follow(camFollow, null, 0.15);
-	}
-
-	function versionInfo() {
 		engineVersions.reverse();
 		for (i in 0...engineVersions.length)
 		{
@@ -249,20 +227,22 @@ class MainMenuState extends MusicBeatState
 			engineVersion.scrollFactor.set();
 			versionTextGroup.add(engineVersion);
 		}
+
+		changeItem();
 	}
 
 	var selectedSomethin:Bool = false;
 	var timeNotMoving:Float = 0;
-	override function update(elapsed:Float)
+
+	@:dox(hide) override function update(elapsed:Float):Void
 	{
-		if(FlxG.sound.music == null)
+		if (FlxG.sound.music == null)
 			FlxG.sound.playMusic(Paths.music('freakyMenu'));
 		if (FlxG.sound.music.volume < 0.8)
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 
-			if (funkin.game.states.FreeplayState.vocals != null)
-				funkin.game.states.FreeplayState.vocals.volume += 0.5 * elapsed;
+			if (FreeplayState.vocals != null) FreeplayState.vocals.volume += 0.5 * elapsed;
 		}
 		if (!selectedSomethin)
 		{
@@ -282,6 +262,8 @@ class MainMenuState extends MusicBeatState
 				for (i in 0...menuButtons.length)
 				{
 					var memb:FlxSprite = menuItems.members[i];
+					if (memb == null || Math.isNaN(memb.ID))
+						continue;
 					if (FlxG.mouse.overlaps(memb))
 					{
 						var distance:Float = Math.sqrt(Math.pow(memb.getGraphicMidpoint().x - FlxG.mouse.screenX, 2)
@@ -292,7 +274,7 @@ class MainMenuState extends MusicBeatState
 							distItem = i;
 							allowMouse = true;
 						}
-						if(FlxG.mouse.justPressed)
+						if (FlxG.mouse.justPressed)
 							onStateChange();
 					}
 				}
@@ -310,7 +292,7 @@ class MainMenuState extends MusicBeatState
 					FlxG.mouse.visible = false;
 			}
 
-			if(FlxG.keys.justPressed.TAB)
+			if (FlxG.keys.justPressed.TAB)
 				LoadingState.loadAndSwitchState(new ModsMenuState());
 
 			if (controls.UI_UP_P)
@@ -352,9 +334,10 @@ class MainMenuState extends MusicBeatState
 		menuItems.forEach(function(spr:FlxSprite) spr.screenCenter(X));
 	}
 
-	@:dox(hide) override function destroy() : Void {
-		for (i in 0...engineVersions.length)// hehe
-			if(engineVersions[i].offset != null)
+	@:dox(hide) override function destroy():Void
+	{
+		for (i in 0...engineVersions.length) // hehe
+			if (engineVersions[i].offset != null)
 				engineVersions[i].offset.put();
 
 		super.destroy();
@@ -362,11 +345,15 @@ class MainMenuState extends MusicBeatState
 
 	function onStateChange():Void
 	{
-		if (menuButtons[curSelected].link != null)
-			CoolUtil.browserLoad(menuButtons[curSelected].link);
+		final cur = menuButtons[curSelected];
+		if (cur == null)
+			return;
+		if (cur.link != null)
+			CoolUtil.browserLoad(cur.link);
 		else
-		{	
-			if(selectedSomethin)return;
+		{
+			if (selectedSomethin)
+				return;
 			selectedSomethin = true;
 			FlxG.sound.play(Paths.sound('confirmMenu'));
 
@@ -386,25 +373,30 @@ class MainMenuState extends MusicBeatState
 				{
 					FlxFlicker.flicker(spr, 1, 0.06, false, false, function(flick:FlxFlicker)
 					{
-						final chosenState:EitherTwo<FlxState, FlxSubState> = menuButtons[curSelected].state;
-						
-						if (Std.is(chosenState, FlxState))
-							(menuButtons[curSelected].preloaded ?? false) ? MusicBeatState.switchState(chosenState) :  LoadingState.loadAndSwitchState(chosenState);
-						else if(Std.is(chosenState, FlxSubState))
-							openSubState(chosenState);
-						else {
-							selectedSomethin = false;
-							return;
-						}
+						final chosenState:EitherTwo<FlxState, FlxSubState> = cur.state;
 
-						if(menuButtons[curSelected].onChange != null) menuButtons[curSelected].onChange();
+						if (Std.is(chosenState, FlxState))
+							(menuButtons[curSelected].preloaded ?? false)
+						?MusicBeatState.switchState
+						(chosenState) : LoadingState.loadAndSwitchState
+						(chosenState);
+					else if (Std.is(chosenState, FlxSubState))
+						openSubState(chosenState);
+					else
+					{
+						selectedSomethin = false;
+						return;
+					}
+
+						if (cur.onChange != null)
+							cur.onChange();
 					});
 				}
 			});
 		}
 	}
 
-	function changeItem(huh:Int = 0)
+	function changeItem(huh:Int = 0):Void
 	{
 		curSelected += huh;
 
@@ -413,7 +405,7 @@ class MainMenuState extends MusicBeatState
 		if (curSelected < 0)
 			curSelected = menuItems.length - 1;
 
-		menuItems.forEach(function(spr:FlxSprite)
+		menuItems.forEach((spr:FlxSprite) ->
 		{
 			spr.animation.play('idle');
 			spr.updateHitbox();
@@ -421,10 +413,8 @@ class MainMenuState extends MusicBeatState
 			if (spr.ID == curSelected)
 			{
 				final add:Float = (menuItems.length > 4) ? menuItems.length * 8 : 0;
-
 				if (spr.animation.curAnim.name != 'selected')
 					spr.animation.play('selected');
-
 				camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y - add);
 				spr.centerOffsets();
 			}

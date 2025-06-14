@@ -3,10 +3,10 @@ package stages;
 import flixel.util.FlxColor;
 import openfl.display.BlendMode;
 
+using funkin.backend.utils.ObjectUtils;
+
 var halloweenBG:BGSprite;
 var halloweenWhite:BGSprite;
-
-using funkin.backend.utils.ObjectUtils;
 
 function main():Void
 {
@@ -59,20 +59,9 @@ function lightningStrikeShit():Void
 	lightningStrikeBeat = curBeat;
 	lightningOffset = FlxG.random.int(8, 24);
 
-	if (boyfriend.animOffsets.exists('scared'))
-	{
-		boyfriend.playAnim('scared', true);
-	}
-
-	if (dad.animOffsets.exists('scared'))
-	{
-		dad.playAnim('scared', true);
-	}
-
-	if (gf != null && gf.animOffsets.exists('scared'))
-	{
-		gf.playAnim('scared', true);
-	}
+	if (boyfriend.animOffsets.exists('scared')) boyfriend.playAnim('scared', true);
+	if (dad.animOffsets.exists('scared')) dad.playAnim('scared', true);
+	if (gf != null && gf.animOffsets.exists('scared')) gf.playAnim('scared', true);
 
 	if (ClientPrefs.data.camZooms)
 	{
@@ -94,7 +83,7 @@ function lightningStrikeShit():Void
 	}
 }
 
-function monsterCutscene()
+function monsterCutscene() : Void
 {
 	inCutscene = true;
 	camHUD.visible = false;

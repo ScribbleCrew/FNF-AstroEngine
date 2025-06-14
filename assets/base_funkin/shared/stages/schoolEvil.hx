@@ -4,6 +4,11 @@ import funkin.game.states.substates.GameOverSubstate;
 import flixel.addons.effects.FlxTrail;
 import openfl.utils.Assets as FLAssets;
 import flixel.util.FlxColor;
+import sys.FileSystem;
+
+using funkin.backend.utils.ObjectUtils;
+
+import funkin.game.objects.DialogueBox;
 
 function onCreate()
 {
@@ -38,11 +43,6 @@ function onCreate()
 		initDoof();
 		startCallback = schoolIntro;
 	}
-}
-
-function onCreatePost()
-{
-	// addBehindDad(new FlxTrail(dad, null, 4, 24, 0.3, 0.069)); // make into char script...
 }
 
 // Ghouls event
@@ -88,7 +88,7 @@ var doof:DialogueBox = null;
 
 function initDoof()
 {
-	var file:String = Paths.txt(songName + '/' + songName + 'Dialogue'); // Checks for vanilla/Senpai dialogue
+	var file:String = Paths.txt('songs/' + songName + '/' + songName + 'Dialogue'); // Checks for vanilla/Senpai dialogue
 	#if MODS_ALLOWED
 	if (!FileSystem.exists(file))
 	#else
@@ -100,7 +100,7 @@ function initDoof()
 	}
 
 	doof = new DialogueBox(false, CoolUtil.coolTextFile(file));
-	doof.cameras = [camHUD];
+	doof.cameras = [camOther];
 	doof.scrollFactor.set();
 	doof.finishThing = startCountdown;
 	doof.nextDialogueThing = PlayState.instance.startNextDialogue;
@@ -110,9 +110,9 @@ function initDoof()
 function schoolIntro():Void
 {
 	inCutscene = true;
-	var red:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, 0xFFff1b31);
+	var red:FlxSprite = new FlxSprite(-100, -100).makeSolid(FlxG.width * 2, FlxG.height * 2, 0xFFff1b31);
 	red.scrollFactor.set();
-	addHxObject(red);
+	addHxObject(red, true);
 
 	var senpaiEvil:FlxSprite = new FlxSprite();
 	senpaiEvil.frames = Paths.getSparrowAtlas('weeb/senpaiCrazy');
@@ -121,6 +121,7 @@ function schoolIntro():Void
 	senpaiEvil.scrollFactor.set();
 	senpaiEvil.updateHitbox();
 	senpaiEvil.screenCenter();
+	senpaiEvil.antialiasing = false;
 	senpaiEvil.x += 300;
 	camHUD.visible = false;
 
@@ -128,7 +129,7 @@ function schoolIntro():Void
 	{
 		if (doof != null)
 		{
-			addHxObject(senpaiEvil);
+			addHxObject(senpaiEvil, true);
 			senpaiEvil.alpha = 0;
 			new FlxTimer().start(0.3, function(swagTimer:FlxTimer)
 			{
@@ -148,7 +149,7 @@ function schoolIntro():Void
 						red.destroy();
 						FlxG.camera.fade(FlxColor.WHITE, 0.01, true, function()
 						{
-							addHxObject(doof);
+							addHxObject(doof, true);
 							camHUD.visible = true;
 						}, true);
 					});

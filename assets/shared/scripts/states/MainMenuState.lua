@@ -1,12 +1,12 @@
 -- You can do anything you would usually do on a normal lua script.
 function onCreate()
-    print('{'..scriptName..'}: LUA');
+    print('ON CREATE');
 end
 
 function onBeatHit()
-    print('{'..scriptName..'}: beat')
+    print('ON BEAT HIT')
 end
 
 function onDestroy()
-    print('{'..scriptName..'}: destroyed')
+    print('ON DESTROY')
 end
