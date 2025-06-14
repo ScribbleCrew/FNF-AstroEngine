@@ -5,7 +5,8 @@ class GlowGradient extends FlxSprite
 	public var originalY:Float;
 	public var originalHeight:Int = 400;
 	public var intendedAlpha:Float = 1;
-	public function new(x:Float, y:Float)
+
+	public function new(x:Float, y:Float):Void
 	{
 		super(x, y);
 		originalY = y;
@@ -17,10 +18,10 @@ class GlowGradient extends FlxSprite
 		updateHitbox();
 	}
 
-	override function update(elapsed:Float)
+	override function update(elapsed:Float):Void
 	{
 		var newHeight:Int = Math.round(height - 1000 * elapsed);
-		if(newHeight > 0)
+		if (newHeight > 0)
 		{
 			alpha = intendedAlpha;
 			setGraphicSize(2000, newHeight);
@@ -36,7 +37,7 @@ class GlowGradient extends FlxSprite
 		super.update(elapsed);
 	}
 
-	public function bop()
+	public function bop():VOid
 	{
 		setGraphicSize(2000, originalHeight);
 		updateHitbox();

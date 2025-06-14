@@ -1,11 +1,13 @@
 package objects.philly;
 
+import flixel.util.FlxColor;
 class GlowParticle extends FlxSprite
 {
 	var lifeTime:Float = 0;
 	var decay:Float = 0;
 	var originalScale:Float = 1;
-	public function new(x:Float, y:Float, color:FlxColor)
+
+	public function new(x:Float, y:Float, color:FlxColor) : Void
 	{
 		super(x, y);
 		this.color = color;
