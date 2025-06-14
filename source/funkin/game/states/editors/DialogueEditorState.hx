@@ -12,6 +12,8 @@ import flixel.util.FlxColor;
 import flixel.sound.FlxSound;
 import flixel.ui.FlxButton;
 import openfl.net.FileReference;
+import funkin.game.objects.DialogueBox;
+import funkin.game.objects.DialogueBox;
 import funkin.game.objects.DialogueBoxBubbly;
 import openfl.events.Event;
 import openfl.events.IOErrorEvent;

@@ -1,4 +1,5 @@
 package stages;
+
 // TODO: optim
 import objects.PhillyGlow.GlowGradient as GlowGradient;
 import objects.PhillyGlow.GlowParticle as GlowParticle;

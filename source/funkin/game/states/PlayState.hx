@@ -791,7 +791,7 @@ class PlayState extends MusicBeatState
 			case 'school':
 				//new School(); // Week 6 - Senpai, Roses
 			case 'schoolEvil':
-				new SchoolEvil(); // Week 6 - Thorns
+				//new SchoolEvil(); // Week 6 - Thorns
 			case 'tank':
 				new Tank(); // Week 7 - Ugh, Guns, Stress
 			case 'phillyStreets':
