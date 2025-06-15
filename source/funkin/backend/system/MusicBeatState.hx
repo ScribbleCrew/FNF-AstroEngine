@@ -73,7 +73,7 @@ class MusicBeatState extends FlxState implements IBeat
 	 * Returns the variables from the current state.
 	 * @returns MusicBeatState variables.
 	 */
-	public inline static function getVariables():Map<String, Dynamic>
+	public static function getVariables():Map<String, Dynamic>
 		return getState().variables;
 
 	/**

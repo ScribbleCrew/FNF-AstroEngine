@@ -260,9 +260,15 @@
 	<!-- HScript Pos -->
 	<haxedef name="hscriptPos" if="HSCRIPT_ALLOWED" />
 
-	<!-- dce fix -->
-	<haxeflag name="--macro" value="rulescript.macro.RuleScriptedMacro.init()" />
+	<haxeflag name="--macro" value="include('funkin')"  if="LUA_ALLOWED || HSCRIPT_ALLOWED"/>
+	<haxeflag 
+		name="--macro" 
+		value="include('flixel', true, ['flixel.addons.editors.spine.*', 'flixel.addons.nape.*', 'flixel.system.macros.*', 'flixel.addons.tile.FlxRayCastTilemap' ])" 
+		if="LUA_ALLOWED || HSCRIPT_ALLOWED" 
+	/>
 	
+	<haxeflag name="--macro" value="rulescript.macro.RuleScriptedMacro.init()" if="HSCRIPT_ALLOWED"/>
+
 	<!-- Fixes HXCPP NOT FOUND ERRORS -->
 	<haxedef name="NO_PRECOMPILED_HEADERS" if="linux" />
 </project>

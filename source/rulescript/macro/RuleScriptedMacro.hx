@@ -22,7 +22,7 @@ class RuleScriptedMacro
 		if (Context.defined("display") || !Context.defined("CUSTOM_CLASSES"))
 			return;
 		for (v in Config.ALLOWED_CUSTOM_CLASSES)
-			if (!v.endsWith(Config.CUSTOM_CLASSES_SHADOW_SUFFIX))
+			if (!v.endsWith(Config.CUSTOM_CLASSES_SHADOW_SUFFIX) || v.contains(Config.CUSTOM_CLASSES_SHADOW_SUFFIX))
 				Compiler.addGlobalMetadata(v, '@:build(rulescript.macro.RuleScriptedMacro.build())');
 	}
 
@@ -43,8 +43,8 @@ class RuleScriptedMacro
 
 		if (cl.isAbstract || cl.isExtern || cl.isInterface || cl.isFinal)
 			return null;
-
-		if (cl.name.endsWith("_Impl_") || cl.name.endsWith(Config.CUSTOM_CLASSES_SHADOW_SUFFIX) || modifiedClasses.contains(cl.name))
+		if(cl.name.endsWith(Config.CUSTOM_CLASSES_SHADOW_SUFFIX) || cl.name.contains(Config.CUSTOM_CLASSES_SHADOW_SUFFIX)) return null;
+		if (cl.name.endsWith("_Impl_") || modifiedClasses.contains(cl.name))
 			return null;
 		if (cl.params.length > 0)
 			return null;

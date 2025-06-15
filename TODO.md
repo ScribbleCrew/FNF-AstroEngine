@@ -1,8 +1,10 @@
 # ```TODO```
 
+* rewrite rulescripted class macro
+* add Screenshot plugin
 * Make the stages into custom classes and make them extend from the BaseStage class
 * Fix countdown sound being incorrect (PIXEL SOMETIMES PLAYING ON NON PIXEL STAGES)
-* Make a better error handler w pos info
+* Make a better hscript error handler w pos info
 * Create HScript context levels e.g STATE, STAGE (Same Context as SONG), SONG (Same Context as STAGE)
 * Custom HUD Classes support.
 * Fix titlestate switch state anim glitch thingy

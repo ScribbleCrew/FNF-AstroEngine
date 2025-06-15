@@ -1,4 +1,4 @@
-package game.objects;
+package funkin.game.objects;
 
 import flixel.graphics.frames.FlxBitmapFont;
 import funkin.game.objects.shaders.RGBPalette;

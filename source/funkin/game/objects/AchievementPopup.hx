@@ -7,6 +7,7 @@ import flash.display.BitmapData;
 import openfl.Lib;
 
 
+@:noCustomClass
 class AchievementPopup extends openfl.display.Sprite {
 	public var onFinish:Void->Void = null;
 	var alphaTween:FlxTween;

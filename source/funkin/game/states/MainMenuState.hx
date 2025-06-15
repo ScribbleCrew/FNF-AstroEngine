@@ -28,11 +28,7 @@ import funkin.backend.system.MusicBeatSubstate;
 import funkin.backend.system.MusicBeatState;
 import flixel.input.mouse.FlxMouseEvent;
 import funkin.game.states.*;
-import funkin.game.states.StoryMenuState;
-import funkin.game.states.FreeplayState;
-import funkin.game.states.AchievementsMenuState;
-import funkin.game.states.OptionsState;
-import funkin.game.states.CreditsState;
+
 
 private typedef MenuVersionStructure =
 {

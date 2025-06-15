@@ -1,5 +1,6 @@
 package funkin.game.objects;
 
+@:noCustomClass
 class TitleIntroGroup extends FlxTypedSpriteGroup<flixel.FlxSprite>
 {	
 	//public var newsgroundSprite:FlxSprite;

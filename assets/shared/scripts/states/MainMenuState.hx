@@ -2,7 +2,7 @@ package states;
 
 function create():Void
 {
-	this.menuButtons = [
+	menuButtons = [
 		{
 			name: 'story mode',
 			state: new funkin.game.states.StoryMenuState()

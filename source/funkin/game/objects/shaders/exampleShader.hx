@@ -2,7 +2,7 @@ package funkin.game.objects.shaders;
 
 import flixel.system.FlxAssets.FlxShader;
 
-class OverlayShader extends ShaderBackend
+class ExampleShader extends ShaderBackend
 {
 	@:glFragmentSource('')
 	

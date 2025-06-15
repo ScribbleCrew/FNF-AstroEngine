@@ -10,8 +10,17 @@ class Config
 
 	static final ALLOWED_CUSTOM_CLASSES:Array<String> = [// IMPORTANT: ADD NEEDED CLASSES TO THIS...
 		"flixel.FlxSprite",
-		"funkin.game.objects.AchievementPopup",
-		"funkin.game.objects.BGSprite"
+		"flixel.text.FlxText",
+
+		"funkin.game.objects.BGSprite",
+		"funkin.game.objects.AttachedSprite",
+		"funkin.game.objects.Bar",
+		"funkin.game.objects.HealthIcon",
+		"funkin.game.objects.MenuItem",
+
+		// STATE SYSTEMS
+		"funkin.backend.system.MusicBeatState",
+		"funkin.backend.system.MusicBeatSubState",
 	];
 
 	static final DISALLOW_CUSTOM_CLASSES:Array<String> = [
@@ -21,9 +30,9 @@ class Config
 		"flixel.addons.display.FlxZoomCamera",
 		"flixel.system",
 		"flixel.tweens",
-	//	"flixel.system.macros",
+		"flixel.system.macros",
 		"flixel.input",
-		"funkin.game.objects.AchievementPopup"
-		//"flixel.system.macros.FlxMacroUtil"
+		//"funkin.game.objects.AchievementPopup"
+		"flixel.system.macros.FlxMacroUtil"
 	];
 }
