@@ -1,5 +1,6 @@
 package funkin.game.states;
 
+import flixel.system.FlxAssets;
 import flixel.FlxState;
 import flixel.FlxSubState;
 import funkin.backend.CoolUtil;
@@ -28,7 +29,6 @@ import funkin.backend.system.MusicBeatSubstate;
 import funkin.backend.system.MusicBeatState;
 import flixel.input.mouse.FlxMouseEvent;
 import funkin.game.states.*;
-
 
 private typedef MenuVersionStructure =
 {
@@ -187,9 +187,23 @@ class MainMenuState extends MusicBeatState
 	 */
 	function load():Void
 	{
-		final sFactor : Float = Math.max(0.25 - (0.05 * (menuButtons.length - 4)), 0.1);
-		if (bg != null) bg.scrollFactor.set(0, sFactor);
-		if (bgFlashing != null) bgFlashing.scrollFactor.set(0, sFactor);
+		final sFactor:Float = Math.max(0.25 - (0.05 * (menuButtons.length - 4)), 0.1);
+		if (bg != null)
+			bg.scrollFactor.set(0, sFactor);
+		if (bgFlashing != null)
+			bgFlashing.scrollFactor.set(0, sFactor);
+
+		if (menuButtons.length < 1)
+		{
+			FlxG.sound.play(FlxAssets.getSound('flixel/sounds/beep'));
+			if (bg != null)
+				bg.scrollFactor.set();
+			if (bgFlashing != null)
+				bgFlashing.scrollFactor.set();
+			FlxG.camera.follow(null);
+			FlxG.log.warn('No menu buttons found! Please add some buttons to `menuButtons`[].');
+			return;
+		}
 
 		// Items Loop
 		for (i in 0...menuButtons.length)
@@ -238,7 +252,8 @@ class MainMenuState extends MusicBeatState
 		{
 			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 
-			if (FreeplayState.vocals != null) FreeplayState.vocals.volume += 0.5 * elapsed;
+			if (FreeplayState.vocals != null)
+				FreeplayState.vocals.volume += 0.5 * elapsed;
 		}
 		if (!selectedSomethin)
 		{
