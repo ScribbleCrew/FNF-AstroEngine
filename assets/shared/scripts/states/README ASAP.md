@@ -35,7 +35,6 @@
     Haxe (HScript):
         - *.hx
         - *.hxc
-        - *.hxp
         - *.hscript
 
     Lua:

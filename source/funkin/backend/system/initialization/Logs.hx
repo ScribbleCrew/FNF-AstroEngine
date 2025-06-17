@@ -8,7 +8,7 @@ import funkin.backend.utils.native.Terminal.TColor;
  * Modified trace because it just makes sense.
  * Also has a customizable prefix, for example: [System]: \<blah blah blah\>
  */
-@:dce class Logs // needs rework ... - ???/???/??? | IT'S BEEN REWORKED :) - 02/15/25
+@:dce final class Logs // needs rework ... - ???/???/??? | IT'S BEEN REWORKED :) - 02/15/25 // NEEDS ANOTHE REWORK...
 {
 	/**
 	 * `haxe`'s default trace function, stored as a variable for later use.
@@ -23,7 +23,7 @@ import funkin.backend.utils.native.Terminal.TColor;
 	 * gotta love threading <3.
 	 * fr.
 	 */
-	@:dox(hide) @:noCompletion static var mutex:Mutex = new Mutex();
+	@:dox(hide) @:noCompletion static var _mutex:Mutex = new Mutex();
 	#end
 
 	/**
@@ -57,12 +57,12 @@ import funkin.backend.utils.native.Terminal.TColor;
 	 */
 	public static function prefixedTrace(x:Dynamic, ?customPrefix:String, ?color:TColor, ?infos:PosInfos):Void
 	{
-		#if THREADING_ALLOWED mutex.acquire(); #end // it looks ugly, ik...
+		#if THREADING_ALLOWED _mutex.acquire(); #end // it looks ugly, ik...
 		final prevPrefix:String = prefix;
-		prefix = customPrefix ??="invalid prefix";
+		prefix = customPrefix ??="null prefix";
 		print(x, color, infos);
 		prefix = prevPrefix;
-		#if THREADING_ALLOWED mutex.release(); #end
+		#if THREADING_ALLOWED _mutex.release(); #end
 	}
 
 	/**

@@ -1980,6 +1980,7 @@ class PlayState extends MusicBeatState
 
 	@:dox(hide) override public function onFocus():Void
 	{
+		super.onFocus();
 		if (!paused)
 		{
 			if (health > 0)
@@ -1994,12 +1995,12 @@ class PlayState extends MusicBeatState
 				videoCutscene.resume();
 			#end
 		}
-
-		super.onFocus();
 	}
 
 	@:dox(hide) override public function onFocusLost():Void
 	{
+		super.onFocusLost();
+
 		#if desktop
 		if (!paused)
 		{
@@ -2008,8 +2009,6 @@ class PlayState extends MusicBeatState
 			#if VIDEOS_ALLOWED if (videoCutscene != null) videoCutscene.pause(); #end
 		}
 		#end
-
-		super.onFocusLost();
 	}
 
 	/**
