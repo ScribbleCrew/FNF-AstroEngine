@@ -954,10 +954,9 @@ class PlayState extends MusicBeatState
 		noteTypes = null;
 		eventsPushed = null;
 
-		if (eventNotes.length > 1)
+		if (eventNotes.length > 0)
 		{
-			for (event in eventNotes)
-				event.strumTime -= eventNoteEarlyTrigger(event);
+			for (event in eventNotes) event.strumTime -= eventEarlyTrigger(event);
 			eventNotes.sort(ObjectUtils.sortByTime);
 		}
 
@@ -1472,15 +1471,17 @@ class PlayState extends MusicBeatState
 		}
 		return true;
 	}
-	public function addBehindGF(obj:FlxBasic)
+
+	// SCRIPTING STUFF START
+	public function addBehindGF(obj:FlxBasic) : Void
 		insert(members.indexOf(gfGroup), obj);
 
-	public function addBehindBF(obj:FlxBasic)
+	public function addBehindBF(obj:FlxBasic) : Void
 		insert(members.indexOf(boyfriendGroup), obj);
 
-	public function addBehindDad(obj:FlxBasic)
+	public function addBehindDad(obj:FlxBasic) : Void
 		insert(members.indexOf(dadGroup), obj);
-	
+	// SCRIPTED STUFF END
 
 	public function clearNotesBefore(time:Float)
 	{
@@ -1867,7 +1868,7 @@ class PlayState extends MusicBeatState
 		stageAccess(function(stage:BaseStage) stage.eventPushedUnique(event));
 	}
 
-	function eventNoteEarlyTrigger(event:EventNote):Float
+	function eventEarlyTrigger(event:EventNote):Float
 	{
 		var returnedValue:Null<Float> = GlobalScript.instance.callOnScripts('eventEarlyTrigger', [event.event, event.value1, event.value2, event.strumTime], [], [0]);
 		if (returnedValue != null && returnedValue != 0 && returnedValue != cast(ScriptUtil.Function_Continue, Null<Float>))
@@ -2443,7 +2444,7 @@ class PlayState extends MusicBeatState
 		if (Math.isNaN(flValue2))
 			flValue2 = null;
 
-		switch (eventName)
+		switch (eventName) // Make these into hardcoded event files
 		{
 			case 'Hey!':
 				var value:Int = 2;
@@ -2774,7 +2775,7 @@ class PlayState extends MusicBeatState
 			camFollow.y += boyfriend.cameraPosition[1] + boyfriendCameraOffset[1];
 
 			if (songName == 'tutorial' && cameraTwn == null && FlxG.camera.zoom != 1)
-			{
+			{ // SOFTMOD SOMEHOW :3
 				cameraTwn = FlxTween.tween(FlxG.camera, {zoom: 1}, (Conductor.stepCrochet * 4 / 1000), {
 					ease: FlxEase.elasticInOut,
 					onComplete: function(twn:FlxTween) cameraTwn = null
@@ -2823,18 +2824,13 @@ class PlayState extends MusicBeatState
 			if (doDeathCheck()) return false;
 		}
 
-		ui.timeBar.visible = false;
-		ui.timeTxt.visible = false;
-		canPause = false;
 		endingSong = true;
-		camZooming = false;
-		inCutscene = false;
-		updateTime = false;
-
+		ui.timeBar.visible = ui.timeTxt.visible = canPause = camZooming = inCutscene = updateTime = seenCutscene = false;
 		deathCounter = 0;
-		seenCutscene = false;
 
-		#if ACHIEVEMENTS_ALLOWED checkForAchievement([WeekData.getWeekFileName() + '_nomiss', 'ur_bad', 'ur_good', 'hype', 'two_keys', 'toastie', 'debugger']); #end
+		#if ACHIEVEMENTS_ALLOWED 
+		checkForAchievement([WeekData.getWeekFileName() + '_nomiss', 'ur_bad', 'ur_good', 'hype', 'two_keys', 'toastie', 'debugger']); 
+		#end
 
 		if (GlobalScript.instance.callOnScripts('onEndSong', [], false) != ScriptUtil.Function_Stop && !transitioning)
 		{
