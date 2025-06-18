@@ -79,39 +79,158 @@ using StringTools;
 	 */
 	static final EXCLUDE_ASSETS_NATIVE:Array<String> = ["*.mp3"];
 
-	// COMPILER FLAGS
+	//				    //
+	//  COMPILER FLAGS  //
+	//				   //
+
+	/**
+	 * -DBASE_GAME_FILES
+	 */
 	static final FLAG_BASE_GAME_FILES:ComplierFlag = "BASE_GAME_FILES";
+
+	/**
+	 * -DSHOW_LOADING_SCREEN
+	 */
 	static final FLAG_SHOW_LOADING_SCREEN:ComplierFlag = "SHOW_LOADING_SCREEN";
+
+	/**
+	 * -DWATERMARK
+	 */
 	static final FLAG_WATERMARK:ComplierFlag = "WATERMARK";
+
+	/**
+	 * -DASTRO_WATERMARKS
+	 */
 	static final FLAG_ASTRO_WATERMARKS:ComplierFlag = "ASTRO_WATERMARKS";
+
+	/**
+	 * -DWINDOW_CUSTOMIZATION
+	 */
 	static final FLAG_WINDOW_CUSTOMIZATION:ComplierFlag = "WINDOW_CUSTOMIZATION";
+
+	/**
+	 * -DSHADERS_ALLOWED
+	 */
 	static final FLAG_SHADERS_ALLOWED:ComplierFlag = "SHADERS_ALLOWED";
+
+	/**
+	 * -DMODS_ALLOWED
+	 */
 	static final FLAG_MODS_ALLOWED:ComplierFlag = "MODS_ALLOWED";
+
+	/**
+	 * -DLUA_ALLOWED
+	 */
 	static final FLAG_LUA_ALLOWED:ComplierFlag = "LUA_ALLOWED";
+
+	/**
+	 * -DHSCRIPT_ALLOWED
+	 */
 	static final FLAG_HSCRIPT_ALLOWED:ComplierFlag = "HSCRIPT_ALLOWED";
+
+	/**
+	 * -DTHREADING_ALLOWED
+	 */
 	static final FLAG_THREADING_ALLOWED:ComplierFlag = "THREADING_ALLOWED";
+
+	/**
+	 * -DCUSTOM_FPS_ALLOWED
+	 */
 	static final FLAG_CUSTOM_FPS_ALLOWED:ComplierFlag = "CUSTOM_FPS_ALLOWED";
+
+	/**
+	 * -DTITLE_SCREEN_XML
+	 */
 	static final FLAG_TITLE_SCREEN_XML:ComplierFlag = "TITLE_SCREEN_XML";
+
+	/**
+	 * -DMULTITHREADED_LOADING
+	 */
 	static final FLAG_MULTITHREADED_LOADING:ComplierFlag = "MULTITHREADED_LOADING";
+
+	/**
+	 * -DSOFTCODED_STATES
+	 */
 	static final FLAG_SOFTCODED_STATES:ComplierFlag = "SOFTCODED_STATES";
+
+	/**
+	 * -DFLXANIMATE_ALLOWED
+	 */
 	static final FLAG_FLXANIMATE_ALLOWED:ComplierFlag = "FLXANIMATE_ALLOWED";
+
+	/**
+	 * -DDISCORD_ALLOWED
+	 */
 	static final FLAG_DISCORD_ALLOWED:ComplierFlag = "DISCORD_ALLOWED";
 
+	/**
+	 * -DDISCORD_DISABLE_IO_THREAD
+	 */
 	static final FLAG_DISCORD_DISABLE_IO_THREAD:ComplierFlag = "DISCORD_DISABLE_IO_THREAD";
+
+	/**
+	 * -DACHIEVEMENTS_ALLOWED
+	 */
 	static final FLAG_ACHIEVEMENTS_ALLOWED:ComplierFlag = "ACHIEVEMENTS_ALLOWED";
+
+	/**
+	 * -DMODIFIED_LOGS
+	 */
 	static final FLAG_MODIFIED_LOGS:ComplierFlag = "MODIFIED_LOGS";
+
+	/**
+	 * -DALLOW_DPI_FIX
+	 */
 	static final FLAG_ALLOW_DPI_FIX:ComplierFlag = "ALLOW_DPI_FIX";
+
+	/**
+	 * -DDEBUG_SERVER_ALLOWED
+	 */
 	static final FLAG_DEBUG_SERVER_ALLOWED:ComplierFlag = "DEBUG_SERVER_ALLOWED";
+
+	/**
+	 * -DGIT_ALLOWED
+	 */
 	static final FLAG_GIT_ALLOWED:ComplierFlag = "GIT_ALLOWED";
+
+	/**
+	 * -DGLOBAL_SCRIPT
+	 */
 	static final FLAG_GLOBAL_SCRIPT:ComplierFlag = "GLOBAL_SCRIPT";
+
+	/**
+	 * -DCUSTOM_CLASSES
+	 */
 	static final FLAG_CUSTOM_CLASSES:ComplierFlag = "CUSTOM_CLASSES";
 
+	/**
+	 * -DFUNKIN_SOUNDTRAY
+	 */
 	static final FLAG_FUNKIN_SOUNDTRAY:ComplierFlag = "FUNKIN_SOUNDTRAY";
+
+	/**
+	 * -DVIDEOS_ALLOWED
+	 */
 	static final FLAG_VIDEOS_ALLOWED:ComplierFlag = "VIDEOS_ALLOWED";
+
+	/**
+	 * -DCRASH_HANDLER
+	 */
 	static final FLAG_CRASH_HANDLER:ComplierFlag = "CRASH_HANDLER";
+
+	/**
+	 * -DCHECK_FOR_UPDATES
+	 */
 	static final FLAG_CHECK_FOR_UPDATES:ComplierFlag = "CHECK_FOR_UPDATES";
+
+	/**
+	 * -DEMBED_ASSETS
+	 */
 	static final FLAG_EMBED_ASSETS:ComplierFlag = "EMBED_ASSETS";
 
+	/**
+	 * -DofficialBuild
+	 */
 	static final FLAG_OFFICIAL_BUILD:ComplierFlag = "officialBuild";
 
 	public function new()
@@ -123,9 +242,10 @@ using StringTools;
 		configureCompileMacros();
 
 		// Output Directory
-		final buildDir:String = 'export/${(isDebug ? 'debug' : is32Bit ? '32bits' : 'release')}/';
+		final buildDir:String = 'export/${(isDebug ? 'debug' : 'release') + (is32Bit ? '-32bits' : '')}/';
+		this.app.path = buildDir;
+
 		info('Output directory: $buildDir');
-		app.path = buildDir;
 
 		// Haxe Libraries
 		configureHaxelibs();
@@ -167,8 +287,10 @@ using StringTools;
 		addAsset("art/icons/iconOG.png", "iconOG.png", false); // maybe...
 		addAsset("art/readme.txt", "do NOT readme.txt", "art", false);
 
-		addAsset("alsoft.txt", 'plugins/alsoft.${isWindows ? 'ini' : 'conf'}', false);
-		addAssetPath("assets/fonts", null, null, ["*"], exclude, shouldEmbed);// was false...
+		if (isDesktop)
+			@:nullSafety(Off) addAsset("alsoft.txt", '${isMac ? 'Resources/' : ''}plugins/alsoft.${isWindows ? 'ini' : 'conf'}', false);
+
+		addAssetPath("assets/fonts", null, null, ["*"], exclude, shouldEmbed); // was false...
 	}
 
 	function configureApp()
@@ -202,7 +324,7 @@ using StringTools;
 
 		this.window.hardware = true;
 		this.window.vsync = false;
-		
+
 		// force / allow high DPI
 		this.window.allowHighDPI = true;
 
@@ -231,6 +353,7 @@ using StringTools;
 		// !!! DON'T EVER USE THIS, IT ISN@T SUPPORTED, !!!
 		// !!! I DON@T THINK I@LL EVER TAKE TIME OUTOF MY LIFE TO FIX THIS BUT EHHH. !!!
 		// !!! love from orbl/p (y'all weird)... !!!
+		// !!! NEVER USE THIS !!!
 		FLAG_EMBED_ASSETS.apply(this, false); // SHOULD BE FALSE BUT EHH...
 
 		FLAG_WATERMARK.apply(this, false);
@@ -254,7 +377,7 @@ using StringTools;
 		FLAG_SOFTCODED_STATES.apply(this, FLAG_LUA_ALLOWED.isEnabled(this) || FLAG_HSCRIPT_ALLOWED.isEnabled(this));
 		FLAG_FLXANIMATE_ALLOWED.apply(this, true);
 
-		FLAG_DISCORD_ALLOWED.apply(this, isDesktop && !isWeb && !isFlash); // does this even work on flash platforms?
+		FLAG_DISCORD_ALLOWED.apply(this, isDesktop && !isWeb);
 		FLAG_DISCORD_DISABLE_IO_THREAD.apply(this, FLAG_DISCORD_ALLOWED.isEnabled(this));
 
 		FLAG_ACHIEVEMENTS_ALLOWED.apply(this, true);
@@ -267,8 +390,11 @@ using StringTools;
 		FLAG_CUSTOM_CLASSES.apply(this, FLAG_HSCRIPT_ALLOWED.isEnabled(this));
 
 		FLAG_FUNKIN_SOUNDTRAY.apply(this, true);
+
+		// Remove "officialBuild" to use videos on source mod
 		FLAG_VIDEOS_ALLOWED.apply(this, (isWindows || isLinux || isAndroid) && FLAG_OFFICIAL_BUILD.isEnabled(this));
 
+		// Crash handler
 		FLAG_CRASH_HANDLER.apply(this, isDesktop && isRelease);
 
 		FLAG_CHECK_FOR_UPDATES.apply(this, isDesktop && FLAG_OFFICIAL_BUILD.isEnabled(this));
@@ -417,7 +543,7 @@ using StringTools;
 
 	inline function get_isWindows():Null<Bool>
 	{
-		return hasDefine('windows');
+		return this.target == Platform.WINDOWS; // hasDefine('windows');
 	}
 
 	/**
@@ -426,9 +552,7 @@ using StringTools;
 	@:isVar public var isMac(get, never):Null<Bool>;
 
 	inline function get_isMac():Null<Bool>
-	{
-		return hasDefine('macos') || hasDefine('mac');
-	}
+		return this.target == Platform.MAC;
 
 	/**
 	 * Linux Platform Detection	
@@ -436,9 +560,7 @@ using StringTools;
 	@:isVar public var isLinux(get, never):Null<Bool>;
 
 	inline function get_isLinux():Null<Bool>
-	{
-		return hasDefine('linux');
-	}
+		return this.target == Platform.LINUX;
 
 	/**
 	 * Android Platform Detection	
@@ -471,49 +593,60 @@ using StringTools;
 	}
 
 	// === Runtime Targets ===
+
+	/**
+	 * Hashlink runtime target.	
+	 */
 	@:isVar public var isHashLink(get, never):Null<Bool>;
 
 	inline function get_isHashLink():Null<Bool>
-	{
-		return hasDefine('hashlink');
-	}
+		return this.targetFlags.exists("hl");
 
+	/**
+	 * Neko runtime target.	
+	 */
 	@:isVar public var isNeko(get, never):Null<Bool>;
 
 	inline function get_isNeko():Null<Bool>
-	{
-		return hasDefine('neko');
-	}
+		return this.targetFlags.exists("neko");
 
+	/**
+	 * Java runtime target.	
+	 */
 	@:isVar public var isJava(get, never):Null<Bool>;
 
 	inline function get_isJava():Null<Bool>
-	{
-		return hasDefine('java');
-	}
+		return this.targetFlags.exists("java");
 
+	/**
+	 * NodeJS runtime target.	
+	 */
 	@:isVar public var isNodeJS(get, never):Null<Bool>;
 
 	inline function get_isNodeJS():Null<Bool>
-	{
-		return hasDefine('nodejs');
-	}
+		return this.targetFlags.exists("nodejs");
 
+	/**
+	 * Display runtime target.	
+	 */
 	@:isVar public var isDisplay(get, never):Null<Bool>;
 
 	inline function get_isDisplay():Null<Bool>
-	{
-		return hasDefine('display');
-	}
+		return this.command == "display";
 
+	/**
+	 * Flash runtime target.	
+	 */
 	@:isVar public var isFlash(get, never):Null<Bool>;
 
 	inline function get_isFlash():Null<Bool>
-	{
-		return hasDefine('flash');
-	}
+		return this.command == 'flash';
 
 	// === Build Flags ===
+
+	/**
+	 * Debug build flag.	
+	 */
 	@:isVar public var isDebug(get, never):Null<Bool>;
 
 	inline function get_isDebug():Null<Bool>
@@ -521,6 +654,9 @@ using StringTools;
 		return this.debug;
 	}
 
+	/**
+	 * Release build flag.	
+	 */
 	@:isVar public var isRelease(get, never):Null<Bool>;
 
 	inline function get_isRelease():Null<Bool>
@@ -528,44 +664,62 @@ using StringTools;
 		return !isDebug;
 	}
 
+	/**
+	 * Display an error message. this should end the building process...	
+	 */
 	inline public function error(message:String):Void
-	{
 		trace('[ERROR] $message'); // doesn't matter if its display ;p
-	}
 
 	/**
 	 * Display an info message. This should not interfere with the build process.
 	 */
 	public inline function info(message:String):Void
-	{
 		if (command != 'display')
-			trace('[INFO] $message'); // i love string interpolation
-		// trace('[INFO] $message');
-	}
+			trace('[INFO] $message');
 
 	// === Haxe Defines ===
 	public function getHaxedef(name:String):Null<Dynamic>
-	{
 		return this.haxedefs.get(name);
-	}
 
 	public function setHaxedef(name:String, ?value:String):Void
-	{
-		if (value == null)
-			value = "";
-
-		this.haxedefs.set(name, value);
-	}
+		this.haxedefs.set(name, value ?? "");
 
 	public function unsetHaxedef(name:String):Void
-	{
 		this.haxedefs.remove(name);
+
+	/**
+	 * Set's a define.
+	 * @param name The define key.
+	 * @param value The value of the define.
+	 */
+	inline public function setDefine(name:String, value:String = ''):Void
+	{
+		info('Set define "$name"${value == null ? '' : ' value of "$value"'}.');
+		this.defines.set(name, value);
+		this.haxedefs.set(name, value);
+		this.environment.set(name, value);
 	}
 
-	public function getDefine(name:String):Null<Dynamic>
-	{
+	/**
+	 * Get's information from a define.
+	 * @param name The define key.
+	 * @return The value of the define.
+	 */
+	inline public function getDefine(name:String):Null<Dynamic>
 		return this.defines.get(name);
-	}
+
+	/**
+	 * Unset's a define.
+	 * @param name The define key.
+	 */
+	inline public function unsetDefine(name:String):Void
+		if (hasDefine(name))
+		{
+			info('Unset define "$name".');
+			this.defines.remove(name);
+			this.haxedefs.remove(name);
+			this.environment.remove(name);
+		}
 
 	public function hasDefine(name:String):Bool
 	{
@@ -624,7 +778,8 @@ using StringTools;
 	public function addAsset(path:String, ?rename:String, ?library:String, embed:Bool = false):Void
 	{
 		final asset:Asset = new Asset(path, rename, null, embed, true);
-		@:nullSafety(Off) if (library != null) asset.library = library;
+		@:nullSafety(Off) if (library != null)
+			asset.library = library;
 		this.assets.push(asset);
 	}
 
@@ -637,7 +792,7 @@ using StringTools;
 	 * @param exclude An optional array to exclude specific asset names.
 	 * @param embed Whether to embed the assets in the executable.
 	 */
-	public function addAssetPath(path:String, ?rename:String, ?library:String, ?include:Array<String>, ?exclude:Array<String>, embed:Bool = false):Void
+		public function addAssetPath(path:String, ?rename:String, ?library:String, ?include:Array<String>, ?exclude:Array<String>, embed:Bool = false):Void
 	{
 		// Argument parsing.
 		if (path == "")
@@ -706,17 +861,13 @@ using StringTools;
 	 * A CLI command to run a command in the shell.
 	 */
 	public function buildCLICommand(cmd:String):CLICommand
-	{
 		return CommandHelper.fromSingleString(cmd);
-	}
 
 	/**
 	 * A CLI command to run a Haxe script via `--interp`.
 	 */
 	public function buildHaxeCLICommand(path:String):CLICommand
-	{
 		return CommandHelper.interpretHaxe(path);
-	}
 }
 
 // STOLEN FROM FUNKIN

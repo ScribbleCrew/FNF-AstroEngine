@@ -97,7 +97,7 @@ class TitleState extends MusicBeatState
 		if (ClientPrefs.data.checkForUpdates && !closedState)
 		{
 			Logs.prefixedTrace('Checking for update', 'Update Sync', CYAN);
-			final http:haxe.Http = new haxe.Http(GitMacro.toRawHubCDN("ScribbleCrew/FNF-AstroEngine/main/gitVersion.txt"));
+			final http:haxe.Http = new haxe.Http(GitMacro.toCDN("ScribbleCrew/FNF-AstroEngine/main/gitVersion.txt"));
 			http.onData = function(data:String)
 			{
 				updateVersion = data.split('\n')[0].trim();

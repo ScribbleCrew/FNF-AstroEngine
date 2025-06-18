@@ -1,5 +1,6 @@
 # ```TODO```
 
+* Add Tracy
 * rewrite rulescripted class macro
 * add Screenshot plugin
 * Make the stages into custom classes and make them extend from the BaseStage class
