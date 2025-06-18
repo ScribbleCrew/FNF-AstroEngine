@@ -2397,7 +2397,7 @@ class PlayState extends MusicBeatState
 				}
 
 				#if DISCORD_ALLOWED DiscordClient.changePresence("Game Over - " + detailsText, SONG.song + " (" + storyDifficultyText + ")", ui.iconP2.character); #end
-				#if desktop WindowUtil.title = ('%{GAME_TITLE} - Game Over - ${detailsText} - ${SONG.song}');#end
+				#if desktop WindowUtil.title = ('Game Over - ${detailsText} - ${SONG.song}');#end
 
 				return isDead = true;
 			}
