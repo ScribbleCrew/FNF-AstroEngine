@@ -4,7 +4,7 @@ import openfl.text.TextFormat;
 
 /**
  * A stupid class, which can help reduce with mod leaking, by adding -DWATERMARK to your compile
- * params or enable it in Project.xml, and you'll get a watermark that displays the user's pc username.
+ * params or enable it in Project.hxp, and you'll get a watermark that displays the user's pc username.
  * discord name, and something else I forgot...
  */
 class Watermark extends openfl.text.TextField

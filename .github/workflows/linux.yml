@@ -7,14 +7,14 @@ on:
       - 'assets/**'
       - 'source/**'
       - '.github/workflows/**'
-      - 'Project.xml'
+      - 'Project.hxp'
   pull_request:
     branches: [main, experimental]
     paths:
       - 'assets/**'
       - 'source/**'
       - '.github/workflows/**'
-      - 'Project.xml'
+      - 'Project.hxp'
 
   workflow_dispatch:
 
@@ -38,7 +38,7 @@ jobs:
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
       - name: Compile
-        run: haxelib run lime build Project.xml linux --app-version="4.0.0-${{ github.run_id}}"
+        run: haxelib run lime build Project.hxp linux --app-version="4.0.0-${{ github.run_id}}"
       - name: Uploading artifact (entire build)
         uses: actions/upload-artifact@v4
         with:
