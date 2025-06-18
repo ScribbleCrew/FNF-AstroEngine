@@ -168,7 +168,7 @@ using StringTools;
 		addAsset("art/readme.txt", "do NOT readme.txt", "art", false);
 
 		addAsset("alsoft.txt", 'plugins/alsoft.${isWindows ? 'ini' : 'conf'}', false);
-		addAssetPath("assets/fonts", null, ["*"], exclude, false);
+		addAssetPath("assets/fonts", null, ["*"], exclude, FLAG_EMBED_ASSETS);// was false...
 	}
 
 	function configureApp()
@@ -228,6 +228,11 @@ using StringTools;
 
 	function configureFlags()
 	{
+		// !!! DON'T EVER USE THIS, IT ISN@T SUPPORTED, !!!
+		// !!! I DON@T THINK I@LL EVER TAKE TIME OUTOF MY LIFE TO FIX THIS BUT EHHH. !!!
+		// !!! love from orbl/p (y'all weird)... !!!
+		FLAG_EMBED_ASSETS.apply(this, false); // SHOULD BE FALSE BUT EHH...
+
 		FLAG_WATERMARK.apply(this, false);
 
 		FLAG_BASE_GAME_FILES.apply(this, true);

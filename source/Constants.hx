@@ -1,4 +1,8 @@
-@:final class Constants
+/**
+* Constants because funny???	
+* Inlines can't be accessed in runtime?
+*/
+@:dce final class Constants
 {
 	/**
 	 * Note sustain size.	
@@ -26,8 +30,8 @@
 	public static inline final SOUND_EXT:String = #if web "mp3" #else "ogg" #end;
 
 	/**
-	* Image file extension.	
-	*/
+	 * Image file extension.	
+	 */
 	public static inline final IMAGE_EXT:String = ".png";
 
 	/**
@@ -41,9 +45,30 @@
 	public static inline final DEFAULT_CHARACTER:String = 'bf'; // if the character is missing.
 
 	/**
+	 * Show the event column in teh chart editor...	
+	 */
+	public static inline final SHOW_EVENT_COLUMN:Bool = true;
+
+	/**
+	 * Show many grid columns per player	.
+	 */
+	public static inline final GRID_COLUMNS_PER_PLAYER:Int = 4;
+
+	/**
+	 * The amount of players on the grid.	
+	 */
+	public static inline final GRID_PLAYERS:Int = 2;
+
+	/**
+	 * The grid's size expressed in pixels.	
+	 */
+	public static inline final GRID_SIZE:Int = 40;
+
+	/**
 	 * The default font.
 	 */
 	public static var DEFAULT_FONT(get, null):String;
+
 	@:dox(hide) @:noCompletion inline static function get_DEFAULT_FONT():String
 		return DEFAULT_FONT == null ? funkin.backend.utils.Paths.font("vcr.ttf") : DEFAULT_FONT;
 }

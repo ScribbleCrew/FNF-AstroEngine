@@ -22,7 +22,7 @@ class ChartingGridSprite extends FlxSprite
 		scrollFactor.x = 0;
 		active = false;
 
-		scale.set(ChartingState.GRID_SIZE, ChartingState.GRID_SIZE);
+		scale.set(Constants.GRID_SIZE, Constants.GRID_SIZE);
 		loadGrid(color1, color2);
 		updateHitbox();
 		recalcHeight();
@@ -52,7 +52,7 @@ class ChartingGridSprite extends FlxSprite
 	override function draw()
 	{
 		if(!visible || alpha == 0 || y - camera.scroll.y >= FlxG.height) return;
-		scale.y = ChartingState.GRID_SIZE * Math.min(1, rows);
+		scale.y = Constants.GRID_SIZE * Math.min(1, rows);
 		offset.y = -0.5 * (scale.y - 1);
 
 		super.draw();
@@ -65,12 +65,12 @@ class ChartingGridSprite extends FlxSprite
 		var initialY:Float = y;
 		for (i in 1...Math.ceil(rows))
 		{
-			y += ChartingState.GRID_SIZE + spacing;
+			y += Constants.GRID_SIZE + spacing;
 			if(y - camera.scroll.y >= FlxG.height)
 				break;
 
 			animation.play((i % 2 == 1) ? 'odd' : 'even', true);
-			scale.y = ChartingState.GRID_SIZE * Math.min(1, rows - i);
+			scale.y = Constants.GRID_SIZE * Math.min(1, rows - i);
 			offset.y = -0.5 * (scale.y - 1);
 			super.draw();
 		}
@@ -100,7 +100,7 @@ class ChartingGridSprite extends FlxSprite
 			if(column == 0)
 				stripe.x = this.x;
 			else 
-				stripe.x = this.x + ChartingState.GRID_SIZE * column - stripe.width/2;
+				stripe.x = this.x + Constants.GRID_SIZE * column - stripe.width/2;
 			stripe.draw();
 		}
 	}
@@ -129,7 +129,7 @@ class ChartingGridSprite extends FlxSprite
 
 	function recalcHeight()
 	{
-		height = ((ChartingState.GRID_SIZE + spacing) * rows) - spacing;
+		height = ((Constants.GRID_SIZE + spacing) * rows) - spacing;
 		updateStripes();
 	}
 }

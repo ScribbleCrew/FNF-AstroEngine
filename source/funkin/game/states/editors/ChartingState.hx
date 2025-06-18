@@ -96,10 +96,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 	];
 	
 	public static var keysArray:Array<String> = [ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT]; //Used for Vortex Editor
-	public static var SHOW_EVENT_COLUMN = true;
-	public static var GRID_COLUMNS_PER_PLAYER = 4;
-	public static var GRID_PLAYERS = 2;
-	public static var GRID_SIZE = 40;
+
 	final BACKUP_EXT = '.fnfBackup';
 
 	public var quantizations:Array<Int> = [
@@ -261,19 +258,19 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 
 		createGrids();
 
-		waveformSprite = new FlxSprite(gridBg.x + (SHOW_EVENT_COLUMN ? GRID_SIZE : 0), 0).makeGraphic(1, 1, 0x00FFFFFF);
+		waveformSprite = new FlxSprite(gridBg.x + (Constants.SHOW_EVENT_COLUMN ? Constants.GRID_SIZE : 0), 0).makeGraphic(1, 1, 0x00FFFFFF);
 		waveformSprite.scrollFactor.x = 0;
 		waveformSprite.visible = false;
 		add(waveformSprite);
 
 		dummyArrow = new FlxSprite().makeGraphic(1, 1, FlxColor.WHITE);
-		dummyArrow.setGraphicSize(GRID_SIZE, GRID_SIZE);
+		dummyArrow.setGraphicSize(Constants.GRID_SIZE, Constants.GRID_SIZE);
 		dummyArrow.updateHitbox();
 		dummyArrow.scrollFactor.x = 0;
 		add(dummyArrow);
 
-		vortexIndicator = new FlxSprite(gridBg.x - GRID_SIZE, FlxG.height/2).loadGraphic(Paths.image('editors/vortex_indicator'));
-		vortexIndicator.setGraphicSize(GRID_SIZE);
+		vortexIndicator = new FlxSprite(gridBg.x - Constants.GRID_SIZE, FlxG.height/2).loadGraphic(Paths.image('editors/vortex_indicator'));
+		vortexIndicator.setGraphicSize(Constants.GRID_SIZE);
 		vortexIndicator.updateHitbox();
 		vortexIndicator.scrollFactor.set();
 		vortexIndicator.active = false;
@@ -289,7 +286,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		eventLockOverlay.alpha = 0.6;
 		eventLockOverlay.visible = false;
 		eventLockOverlay.scrollFactor.x = 0;
-		eventLockOverlay.scale.x = GRID_SIZE;
+		eventLockOverlay.scale.x = Constants.GRID_SIZE;
 		eventLockOverlay.updateHitbox();
 		add(eventLockOverlay);
 
@@ -303,30 +300,30 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		var startX:Float = gridBg.x;
 		var startY:Float = FlxG.height/2;
 		vortexIndicator.visible = strumLineNotes.visible = strumLineNotes.active = vortexEnabled;
-		if(SHOW_EVENT_COLUMN) startX += GRID_SIZE;
+		if(Constants.SHOW_EVENT_COLUMN) startX += Constants.GRID_SIZE;
 
-		for (i in 0...Std.int(GRID_PLAYERS * GRID_COLUMNS_PER_PLAYER))
+		for (i in 0...Std.int(Constants.GRID_PLAYERS * Constants.GRID_COLUMNS_PER_PLAYER))
 		{
-			var note:StrumNote = new StrumNote(startX + (GRID_SIZE * i), startY, i % GRID_COLUMNS_PER_PLAYER, 0);
+			var note:StrumNote = new StrumNote(startX + (Constants.GRID_SIZE * i), startY, i % Constants.GRID_COLUMNS_PER_PLAYER, 0);
 			note.scrollFactor.set();
 			note.playAnim('static');
 			note.alpha = 0.4;
 			note.updateHitbox();
 			if(note.width > note.height)
-				note.setGraphicSize(GRID_SIZE);
+				note.setGraphicSize(Constants.GRID_SIZE);
 			else
-				note.setGraphicSize(0, GRID_SIZE);
+				note.setGraphicSize(0, Constants.GRID_SIZE);
 	
 			note.updateHitbox();
-			note.x += GRID_SIZE/2 - note.width/2;
-			note.y += GRID_SIZE/2 - note.height/2;
+			note.x += Constants.GRID_SIZE/2 - note.width/2;
+			note.y += Constants.GRID_SIZE/2 - note.height/2;
 			strumLineNotes.add(note);
 		}
 
 		var columns:Int = 0;
 		var iconX:Float = gridBg.x;
 		var iconY:Float = 50;
-		if(SHOW_EVENT_COLUMN)
+		if(Constants.SHOW_EVENT_COLUMN)
 		{
 			eventIcon = new FlxSprite(0, iconY).loadGraphic(Paths.image('editors/eventIcon'));
 			eventIcon.antialiasing = ClientPrefs.data.antialiasing;
@@ -335,8 +332,8 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 			eventIcon.updateHitbox();
 			eventIcon.scrollFactor.set();
 			add(eventIcon);
-			eventIcon.x = iconX + (GRID_SIZE * 0.5) - eventIcon.width/2;
-			iconX += GRID_SIZE;
+			eventIcon.x = iconX + (Constants.GRID_SIZE * 0.5) - eventIcon.width/2;
+			iconX += Constants.GRID_SIZE;
 
 			columns++;
 		}
@@ -348,10 +345,10 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		add(mustHitIndicator);
 
 		var gridStripes:Array<Int> = [];
-		for (i in 0...GRID_PLAYERS)
+		for (i in 0...Constants.GRID_PLAYERS)
 		{
 			if(columns > 0) gridStripes.push(columns);
-			columns += GRID_COLUMNS_PER_PLAYER;
+			columns += Constants.GRID_COLUMNS_PER_PLAYER;
 
 			var icon:HealthIcon = new HealthIcon();
 			icon.autoAdjustOffset = false;
@@ -364,8 +361,8 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 			add(icon);
 			icons.push(icon);
 			
-			icon.x = iconX + GRID_SIZE * (GRID_COLUMNS_PER_PLAYER/2) - icon.width/2;
-			iconX += GRID_SIZE * GRID_COLUMNS_PER_PLAYER;
+			icon.x = iconX + Constants.GRID_SIZE * (Constants.GRID_COLUMNS_PER_PLAYER/2) - icon.width/2;
+			iconX += Constants.GRID_SIZE * Constants.GRID_COLUMNS_PER_PLAYER;
 		}
 		prevGridBg.stripes = nextGridBg.stripes = gridBg.stripes = gridStripes;
 		
@@ -562,19 +559,19 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 			{
 				gridBg.loadGrid(gridColors[0], gridColors[1]);
 				gridBg.vortexLineEnabled = vortexEnabled;
-				gridBg.vortexLineSpace = GRID_SIZE * 4 * curZoom;
+				gridBg.vortexLineSpace = Constants.GRID_SIZE * 4 * curZoom;
 			}
 			if(prevGridBg != null)
 			{
 				prevGridBg.loadGrid(gridColorsOther[0], gridColorsOther[1]);
 				prevGridBg.vortexLineEnabled = vortexEnabled;
-				prevGridBg.vortexLineSpace = GRID_SIZE * 4 * curZoom;
+				prevGridBg.vortexLineSpace = Constants.GRID_SIZE * 4 * curZoom;
 			}
 			if(nextGridBg != null)
 			{
 				nextGridBg.loadGrid(gridColorsOther[0], gridColorsOther[1]);
 				nextGridBg.vortexLineEnabled = vortexEnabled;
-				nextGridBg.vortexLineSpace = GRID_SIZE * 4 * curZoom;
+				nextGridBg.vortexLineSpace = Constants.GRID_SIZE * 4 * curZoom;
 			}
 		}
 	}
@@ -1159,7 +1156,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 			ignoreClickForThisFrame = true;
 
 		var minX:Float = gridBg.x;
-		if(SHOW_EVENT_COLUMN && lockedEvents) minX += GRID_SIZE;
+		if(Constants.SHOW_EVENT_COLUMN && lockedEvents) minX += Constants.GRID_SIZE;
 
 		if(isMovingNotes && FlxG.mouse.justReleased)
 			stopMovingNotes();
@@ -1169,7 +1166,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 			var diffX:Float = FlxG.mouse.x - gridBg.x;
 			var diffY:Float = FlxG.mouse.y - gridBg.y;
 			if(!FlxG.keys.pressed.SHIFT)
-				diffY -= diffY % (GRID_SIZE / (curQuant/16));
+				diffY -= diffY % (Constants.GRID_SIZE / (curQuant/16));
 
 			if(nextGridBg.visible) diffY = Math.min(diffY, gridBg.height + nextGridBg.height);
 			else diffY = Math.min(diffY, gridBg.height);
@@ -1177,17 +1174,17 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 			if(prevGridBg.visible) diffY = Math.max(diffY, -prevGridBg.height);
 			else diffY = Math.max(diffY, 0);
 
-			var noteData:Int = Math.floor(diffX / GRID_SIZE);
+			var noteData:Int = Math.floor(diffX / Constants.GRID_SIZE);
 			dummyArrow.visible = !selectionBox.visible;
-			dummyArrow.x = gridBg.x + noteData * GRID_SIZE;
-			if(SHOW_EVENT_COLUMN)
+			dummyArrow.x = gridBg.x + noteData * Constants.GRID_SIZE;
+			if(Constants.SHOW_EVENT_COLUMN)
 				noteData--;
 
 			if(FlxG.keys.pressed.SHIFT || FlxG.mouse.y >= gridBg.y || !prevGridBg.visible)
 				dummyArrow.y = gridBg.y + diffY;
 			else
 			{
-				var t:Float = (diffY - (GRID_SIZE / (curQuant/16)));
+				var t:Float = (diffY - (Constants.GRID_SIZE / (curQuant/16)));
 				if(FlxG.mouse.y >= gridBg.y) t *= curZoom;
 				dummyArrow.y = gridBg.y + t;
 			}
@@ -1212,7 +1209,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 					}
 
 					var diff:Int = nData - movingNotesLastData;
-					var maxn:Int = (GRID_PLAYERS * GRID_COLUMNS_PER_PLAYER) - 1;
+					var maxn:Int = (Constants.GRID_PLAYERS * Constants.GRID_COLUMNS_PER_PLAYER) - 1;
 					movingNotesMinData += diff;
 					movingNotesMaxData += diff;
 					if(movingNotesMinData < 0)
@@ -1240,13 +1237,13 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 						if(note == null) continue;
 
 						note.chartY += diff;
-						var row:Float = (note.chartY / GRID_SIZE) * curZoom;
+						var row:Float = (note.chartY / Constants.GRID_SIZE) * curZoom;
 						while(curSecRow + 1 < cachedSectionRow.length && cachedSectionRow[curSecRow] <= row)
 						{
 							curSecRow++;
 						}
 
-						note.setStrumTime(Math.max(-5000, note.strumTime + (diff * cachedSectionCrochets[curSecRow] / 4) / GRID_SIZE * curZoom));
+						note.setStrumTime(Math.max(-5000, note.strumTime + (diff * cachedSectionCrochets[curSecRow] / 4) / Constants.GRID_SIZE * curZoom));
 						positionNoteYOnTime(note, curSecRow);
 						if(note.isEvent) cast (note, MetaNote.EventMetaNote).updateEventText();
 					}
@@ -1267,7 +1264,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 					var closeNotes:Array<MetaNote> = curRenderedNotes.members.filter(function(note:MetaNote)
 					{
 						var chartY:Float = FlxG.mouse.y - note.chartY;
-						return ((note.isEvent && noteData < 0) || note.songData[1] == noteData) && chartY >= 0 && chartY < GRID_SIZE;
+						return ((note.isEvent && noteData < 0) || note.songData[1] == noteData) && chartY >= 0 && chartY < Constants.GRID_SIZE;
 					});
 					closeNotes.sort(function(a:MetaNote, b:MetaNote) return Math.abs(a.strumTime - FlxG.mouse.y) < Math.abs(b.strumTime - FlxG.mouse.y) ? 1 : -1);
 
@@ -1309,7 +1306,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 					}
 					else if(!holdingAlt && FlxG.mouse.y >= gridBg.y && FlxG.mouse.y < gridBg.y + gridBg.height) // Add note
 					{
-						var strumTime:Float = (diffY / GRID_SIZE * Conductor.stepCrochet / curZoom) + cachedSectionTimes[curSec];
+						var strumTime:Float = (diffY / Constants.GRID_SIZE * Conductor.stepCrochet / curZoom) + cachedSectionTimes[curSec];
 						if(noteData >= 0)
 						{
 							trace('Added note at time: $strumTime');
@@ -1558,7 +1555,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		var secRows:Null<Float> = cast cachedSectionRow[curSec];
 		if(secStartTime == null || secCrochet == null || secRows == null) return;
 
-		scrollY = (((Conductor.songPosition - secStartTime) / secCrochet * GRID_SIZE * 4) + (secRows * GRID_SIZE)) * curZoom - FlxG.height/2;
+		scrollY = (((Conductor.songPosition - secStartTime) / secCrochet * Constants.GRID_SIZE * 4) + (secRows * Constants.GRID_SIZE)) * curZoom - FlxG.height/2;
 	}
 
 	function updateSelectionBox()
@@ -1695,7 +1692,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 			destroyed = true;
 		}
 
-		var columnCount:Int = (GRID_COLUMNS_PER_PLAYER * GRID_PLAYERS) + (SHOW_EVENT_COLUMN ? 1 : 0);
+		var columnCount:Int = (Constants.GRID_COLUMNS_PER_PLAYER * Constants.GRID_PLAYERS) + (Constants.SHOW_EVENT_COLUMN ? 1 : 0);
 		gridBg = new ChartingGridSprite(columnCount, gridColors[0], gridColors[1]);
 		gridBg.screenCenter(X);
 
@@ -1900,8 +1897,8 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		var section = PlayState.SONG.notes[secNum];
 
 		var daStrumTime:Float = note[0];
-		var daNoteData:Int = Std.int(note[1] % GRID_COLUMNS_PER_PLAYER);
-		var gottaHitNote:Bool = (note[1] < GRID_COLUMNS_PER_PLAYER);
+		var daNoteData:Int = Std.int(note[1] % Constants.GRID_COLUMNS_PER_PLAYER);
+		var gottaHitNote:Bool = (note[1] < Constants.GRID_COLUMNS_PER_PLAYER);
 
 		var swagNote:MetaNote = new MetaNote(daStrumTime, daNoteData, note);
 		swagNote.mustPress = gottaHitNote;
@@ -1914,9 +1911,9 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 
 		swagNote.updateHitbox();
 		if(swagNote.width > swagNote.height)
-			swagNote.setGraphicSize(GRID_SIZE);
+			swagNote.setGraphicSize(Constants.GRID_SIZE);
 		else
-			swagNote.setGraphicSize(0, GRID_SIZE);
+			swagNote.setGraphicSize(0, Constants.GRID_SIZE);
 
 		swagNote.updateHitbox();
 		swagNote.active = false;
@@ -2067,7 +2064,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		var hei:Float = 0;
 		if(curSec > 0)
 		{
-			prevGridBg.y = cachedSectionRow[curSec-1] * GRID_SIZE * curZoom;
+			prevGridBg.y = cachedSectionRow[curSec-1] * Constants.GRID_SIZE * curZoom;
 			prevGridBg.rows = Math.round(4 * PlayState.SONG.notes[curSec-1].sectionBeats * curZoom);
 			prevGridBg.visible = showPreviousSection;
 			hei += prevGridBg.height;
@@ -2077,14 +2074,14 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 
 		if(curSec < PlayState.SONG.notes.length - 1)
 		{
-			nextGridBg.y = cachedSectionRow[curSec+1] * GRID_SIZE * curZoom;
+			nextGridBg.y = cachedSectionRow[curSec+1] * Constants.GRID_SIZE * curZoom;
 			nextGridBg.rows = Math.round(4 * PlayState.SONG.notes[curSec+1].sectionBeats * curZoom);
 			nextGridBg.visible = showNextSection;
 			hei += nextGridBg.height;
 		}
 		else nextGridBg.visible = false;
 
-		gridBg.y = cachedSectionRow[curSec] * GRID_SIZE * curZoom;
+		gridBg.y = cachedSectionRow[curSec] * Constants.GRID_SIZE * curZoom;
 		gridBg.rows = Math.round(4 * PlayState.SONG.notes[curSec].sectionBeats * curZoom);
 		hei += gridBg.height;
 
@@ -2112,7 +2109,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 			else susLengthStepper.min = 0;
 		}
 		prevGridBg.vortexLineEnabled = gridBg.vortexLineEnabled = nextGridBg.vortexLineEnabled = vortexEnabled;
-		prevGridBg.vortexLineSpace = gridBg.vortexLineSpace = nextGridBg.vortexLineSpace = GRID_SIZE * 4 * curZoom;
+		prevGridBg.vortexLineSpace = gridBg.vortexLineSpace = nextGridBg.vortexLineSpace = Constants.GRID_SIZE * 4 * curZoom;
 		updateWaveform();
 	}
 
@@ -2143,7 +2140,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 			}
 		}
 
-		if(SHOW_EVENT_COLUMN)
+		if(Constants.SHOW_EVENT_COLUMN)
 		{
 			for (num => event in events)
 			{
@@ -2178,7 +2175,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 					if(note.hasSustain) note.updateSustainToZoom(cachedSectionCrochets[curSec] / 4, curZoom);
 				}
 
-				if(SHOW_EVENT_COLUMN)
+				if(Constants.SHOW_EVENT_COLUMN)
 				{
 					for(event in events.filter(otherSecFilter))
 					{
@@ -2211,10 +2208,10 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 	{
 		if(data == null) data = note.songData[1];
 
-		var noteX:Float = gridBg.x + (GRID_SIZE - note.width) / 2;
-		if(SHOW_EVENT_COLUMN) noteX += GRID_SIZE;
+		var noteX:Float = gridBg.x + (Constants.GRID_SIZE - note.width) / 2;
+		if(Constants.SHOW_EVENT_COLUMN) noteX += Constants.GRID_SIZE;
 
-		noteX += GRID_SIZE * data;
+		noteX += Constants.GRID_SIZE * data;
 		note.x = noteX;
 		//trace(gridBg.x, noteX);
 	}
@@ -2222,10 +2219,10 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 	function positionNoteYOnTime(note:MetaNote, section:Int)
 	{
 		var time:Float = note.strumTime - cachedSectionTimes[section];
-		var noteY:Float = (time / cachedSectionCrochets[section]) * GRID_SIZE * 4 * curZoom;
-		noteY += cachedSectionRow[section] * GRID_SIZE * curZoom;
+		var noteY:Float = (time / cachedSectionCrochets[section]) * Constants.GRID_SIZE * 4 * curZoom;
+		noteY += cachedSectionRow[section] * Constants.GRID_SIZE * curZoom;
 		noteY = Math.max(noteY, -150);
-		note.y = noteY + (GRID_SIZE/2 - note.height/2) * curZoom;
+		note.y = noteY + (Constants.GRID_SIZE/2 - note.height/2) * curZoom;
 		note.chartY = noteY;
 		//trace(gridBg.y, noteY);
 	}
@@ -2233,7 +2230,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 	var characterData:Dynamic = {};
 	function updateJsonData():Void
 	{
-		for (i in 1...GRID_PLAYERS+1)
+		for (i in 1...Constants.GRID_PLAYERS+1)
 		{
 			//trace('adding iconP$i');
 			var data:CharacterFile = loadCharacterFile(Reflect.field(PlayState.SONG, 'player$i'));
@@ -2250,7 +2247,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		var isGfSection:Bool = (curSecData != null && curSecData.gfSection == true);
 		if(_lastGfSection == isGfSection && _lastSec == curSec && !ignoreCheck) return; //optimization
 
-		for (i in 0...GRID_PLAYERS)
+		for (i in 0...Constants.GRID_PLAYERS)
 		{
 			var icon:HealthIcon = icons[i];
 			//trace('changing iconP${icon.ID}');
@@ -2419,9 +2416,9 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 						note.reloadNote(note.texture);
 		
 						if(note.width > note.height)
-							note.setGraphicSize(GRID_SIZE);
+							note.setGraphicSize(Constants.GRID_SIZE);
 						else
-							note.setGraphicSize(0, GRID_SIZE);
+							note.setGraphicSize(0, Constants.GRID_SIZE);
 		
 						note.updateHitbox();
 					}
@@ -2885,12 +2882,12 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		objY += 40;
 		var swapSectionButton:FlxUIButton = new FlxUIButton(objX, objY, 'Swap Section', function()
 		{
-			var maxData:Int = GRID_COLUMNS_PER_PLAYER * GRID_PLAYERS;
+			var maxData:Int = Constants.GRID_COLUMNS_PER_PLAYER * Constants.GRID_PLAYERS;
 			for (note in curRenderedNotes)
 			{
 				if(note != null && !note.isEvent)
 				{
-					var data:Int = note.songData[1] + GRID_COLUMNS_PER_PLAYER;
+					var data:Int = note.songData[1] + Constants.GRID_COLUMNS_PER_PLAYER;
 					if(data >= maxData) data -= maxData;
 					note.changeNoteData(data);
 					positionNoteXByData(note);
@@ -2908,13 +2905,13 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 				//First figure out if there are notes on more than one player's sides to cancel operation early
 				if(side > -1)
 				{
-					if(Math.floor(note.songData[1] / GRID_COLUMNS_PER_PLAYER) != side)
+					if(Math.floor(note.songData[1] / Constants.GRID_COLUMNS_PER_PLAYER) != side)
 					{
 						showOutput('You cannot press this button with notes on more than one side.');
 						return;
 					}
 				}
-				else side = Math.floor(note.songData[1] / GRID_COLUMNS_PER_PLAYER);
+				else side = Math.floor(note.songData[1] / Constants.GRID_COLUMNS_PER_PLAYER);
 			}
 
 			var pushedNotes:Array<MetaNote> = [];
@@ -2922,12 +2919,12 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 			{
 				if(note == null || note.isEvent) continue;
 
-				for (i in 0...GRID_PLAYERS)
+				for (i in 0...Constants.GRID_PLAYERS)
 				{
 					if(i == side) continue;
 
 					var songDataCopy:Array<Dynamic> = note.songData.copy();
-					songDataCopy[1] = note.noteData + i * GRID_COLUMNS_PER_PLAYER;
+					songDataCopy[1] = note.noteData + i * Constants.GRID_COLUMNS_PER_PLAYER;
 					var newNote = createNote(songDataCopy);
 					notes.push(newNote);
 					pushedNotes.push(newNote);
@@ -2940,13 +2937,13 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		});
 		var mirrorNotesButton:FlxUIButton = new FlxUIButton(objX + 200, objY, 'Mirror Notes', function()
 		{
-			var maxData:Int = GRID_COLUMNS_PER_PLAYER * GRID_PLAYERS;
+			var maxData:Int = Constants.GRID_COLUMNS_PER_PLAYER * Constants.GRID_PLAYERS;
 			for (note in curRenderedNotes)
 			{
 				if(note == null || note.isEvent) continue;
 
 				var data:Int = Std.int(note.songData[1]);
-				note.changeNoteData((Math.floor(data / GRID_COLUMNS_PER_PLAYER) * GRID_COLUMNS_PER_PLAYER) + GRID_COLUMNS_PER_PLAYER - note.noteData - 1);
+				note.changeNoteData((Math.floor(data / Constants.GRID_COLUMNS_PER_PLAYER) * Constants.GRID_COLUMNS_PER_PLAYER) + Constants.GRID_COLUMNS_PER_PLAYER - note.noteData - 1);
 				positionNoteXByData(note);
 			}
 			softReloadNotes(true);
@@ -3375,7 +3372,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		btn.text.alignment = LEFT;
 		tab_group.add(btn);
 
-		if(SHOW_EVENT_COLUMN)
+		if(Constants.SHOW_EVENT_COLUMN)
 		{
 			btnY += 20;
 			var btn:FlxUIButton = new FlxUIButton(btnX, btnY, '  Open Events...', function()
@@ -3491,7 +3488,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		btn.text.alignment = LEFT;
 		tab_group.add(btn);
 
-		if(SHOW_EVENT_COLUMN)
+		if(Constants.SHOW_EVENT_COLUMN)
 		{
 			btnY += 20;
 			var btn:FlxUIButton = new FlxUIButton(btnX, btnY, '  Save Events...', function()
@@ -3977,7 +3974,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		btn.text.alignment = LEFT;
 		tab_group.add(btn);
 
-		if(SHOW_EVENT_COLUMN)
+		if(Constants.SHOW_EVENT_COLUMN)
 		{
 			btnY++;
 			btnY += 20;
@@ -4081,7 +4078,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		btn.text.alignment = LEFT;
 		tab_group.add(btn);
 
-		if(SHOW_EVENT_COLUMN)
+		if(Constants.SHOW_EVENT_COLUMN)
 		{
 			btnY += 20;
 			var btn:FlxUIButton = new FlxUIButton(btnX, btnY, '  Clear All Events', function()
@@ -4894,7 +4891,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 
 		waveformSprite.visible = true;
 		waveformSprite.y = gridBg.y;
-		var width:Int = Std.int(GRID_SIZE * GRID_COLUMNS_PER_PLAYER * GRID_PLAYERS);
+		var width:Int = Std.int(Constants.GRID_SIZE * Constants.GRID_COLUMNS_PER_PLAYER * Constants.GRID_PLAYERS);
 		var height:Int = Std.int(gridBg.height);
 		if(Std.int(waveformSprite.height) != height && waveformSprite.pixels != null)
 		{
@@ -4929,7 +4926,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		}
 
 		// Draws
-		var gSize:Int = Std.int(GRID_SIZE * 8);
+		var gSize:Int = Std.int(Constants.GRID_SIZE * 8);
 		var hSize:Int = Std.int(gSize / 2);
 		var size:Float = 1;
 
