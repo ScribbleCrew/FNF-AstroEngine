@@ -168,7 +168,7 @@ using StringTools;
 		addAsset("art/readme.txt", "do NOT readme.txt", "art", false);
 
 		addAsset("alsoft.txt", 'plugins/alsoft.${isWindows ? 'ini' : 'conf'}', false);
-		addAssetPath("assets/fonts", null, ["*"], exclude, FLAG_EMBED_ASSETS);// was false...
+		addAssetPath("assets/fonts", null, null, ["*"], exclude, shouldEmbed);// was false...
 	}
 
 	function configureApp()
