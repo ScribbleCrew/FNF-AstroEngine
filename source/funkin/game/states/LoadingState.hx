@@ -311,6 +311,10 @@ class LoadingState extends MusicBeatState
 				noteSplash += NoteSplash.getSplashSkinPostfix();
 			AssetsToPrepare.get('images').push(noteSplash);
 
+			// LOAD SUSTAIN SPLASHES
+			// !!! ISN'T FINISHED, JUST LOADS THE DEFAULT ONE !!!
+			AssetsToPrepare.get('images').push('holdCovers/holdCover');
+
 			try
 			{
 				var path:String = Paths.json('$folder/preload');

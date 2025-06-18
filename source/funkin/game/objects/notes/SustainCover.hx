@@ -50,6 +50,11 @@ class SustainCover extends FlxSprite
 	public static var frameRate:Int;
 
 	/**
+	* Default Sustain Splash Asset.	
+	*/
+	public static var defaultSustainSplash:String = 'holdCovers/holdCover'; 
+
+	/**
 	 * Strum note.	
 	 */
 	public var strumNote:StrumNote;
@@ -84,7 +89,7 @@ class SustainCover extends FlxSprite
 
 		// setup shitz
 		animation = new AnimationController(this);
-		frames = Paths.getSparrowAtlas('holdCovers/holdCover$dataPrefix');
+		frames = Paths.getSparrowAtlas('$defaultSustainSplash$dataPrefix');
 		x = -50000;
 	}
 
