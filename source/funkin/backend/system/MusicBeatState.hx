@@ -125,8 +125,8 @@ class MusicBeatState extends FlxState implements IBeat
 		// not MusicBeatState, it's whatever is extending from it, since this is an abstract class.
 		GlobalScript.instance.executeClassScripts(scriptName, scriptArgs);
 		super.create();
-		GlobalScript.instance.callOnScripts('onCreatePost', [], ScriptContext.STATE); // gwa gwa lua
-		GlobalScript.instance.callOnScripts('createPost', [], ScriptContext.STATE);
+		GlobalScript.instance.call('onCreatePost', [], ScriptContext.STATE); // gwa gwa lua
+		GlobalScript.instance.call('createPost', [], ScriptContext.STATE);
 		#end
 
 		if (!_isCameraLoaded)
@@ -301,9 +301,9 @@ class MusicBeatState extends FlxState implements IBeat
 		if (curStep % 4 == 0)
 			beatHit();
 
-		GlobalScript.instance.setOnScripts('curStep', curStep);//oops i forgor
-		GlobalScript.instance.callOnScripts('onStepHit', []);
-		GlobalScript.instance.callOnScripts('stepHit', []);
+		GlobalScript.instance.set('curStep', curStep);//oops i forgor
+		GlobalScript.instance.call('onStepHit', []);
+		GlobalScript.instance.call('stepHit', []);
 	}
 
 	/**
@@ -320,9 +320,9 @@ class MusicBeatState extends FlxState implements IBeat
 		});
 
 		// softmoddin'
-		GlobalScript.instance.setOnScripts('curBeat', curBeat); // DAWGG?????
-		GlobalScript.instance.callOnScripts('onBeatHit', []);
-		GlobalScript.instance.callOnScripts('beatHit', []);
+		GlobalScript.instance.set('curBeat', curBeat); // DAWGG?????
+		GlobalScript.instance.call('onBeatHit', []);
+		GlobalScript.instance.call('beatHit', []);
 	}
 
 	/**
@@ -338,9 +338,9 @@ class MusicBeatState extends FlxState implements IBeat
 		});
 
 		// softmoddin'
-		GlobalScript.instance.setOnScripts('curSection', curSection);
-		GlobalScript.instance.callOnScripts('onSectionHit', []);
-		GlobalScript.instance.callOnScripts('sectionHit', []);
+		GlobalScript.instance.set('curSection', curSection);
+		GlobalScript.instance.call('onSectionHit', []);
+		GlobalScript.instance.call('sectionHit', []);
 	}
 
 	@:dox(hide) function _updateShaders(elapsed:Float):Void
@@ -382,11 +382,11 @@ class MusicBeatState extends FlxState implements IBeat
 
 		// Softmoddin'
 		stageAccess((stage:BaseStage) -> stage.update(elapsed));
-		GlobalScript.instance.callOnScripts('onUpdate', [elapsed]); // gwa
-		GlobalScript.instance.callOnScripts('update', [elapsed]); // gwa
+		GlobalScript.instance.call('onUpdate', [elapsed]); // gwa
+		GlobalScript.instance.call('update', [elapsed]); // gwa
 		super.update(elapsed);
-		GlobalScript.instance.callOnScripts('onUpdatePost', [elapsed]);
-		GlobalScript.instance.callOnScripts('updatePost', [elapsed]);
+		GlobalScript.instance.call('onUpdatePost', [elapsed]);
+		GlobalScript.instance.call('updatePost', [elapsed]);
 	}
 
 	@:dox(hide) override function destroy():Void

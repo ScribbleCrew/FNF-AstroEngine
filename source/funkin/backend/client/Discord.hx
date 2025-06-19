@@ -78,7 +78,7 @@ class DiscordClient
 	public static function prepare():Void
 	{
 		if (!isInitialized && ClientPrefs.data.discordRPC) initialize();
-		Application.current.window.onClose.add(function() if (isInitialized) shutdown());
+		Application.current.window.onClose.add(() -> if (isInitialized) shutdown());
 	}
 
 	public dynamic static function shutdown():Void

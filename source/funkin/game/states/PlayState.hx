@@ -228,7 +228,7 @@ class PlayState extends MusicBeatState
 			#if VIDEOS_ALLOWED
 			if(videoCutscene != null && videoCutscene.videoSprite != null) videoCutscene.videoSprite.bitmap.rate = value;
 			#end
-			GlobalScript.instance.setOnScripts('playbackRate', playbackRate);
+			GlobalScript.instance.set('playbackRate', playbackRate);
 			#else
 			playbackRate = 1.0; // ensuring -Crow
 			#end
@@ -990,7 +990,7 @@ class PlayState extends MusicBeatState
 		#if desktop WindowUtil.title = ('%{GAME_TITLE} - $detailsText'); #end
 
 		stageAccess(function(stage:BaseStage) stage.createPost());
-		GlobalScript.instance.callOnScripts('onCreatePost', []);
+		GlobalScript.instance.call('onCreatePost', []);
 
 		if(ui == null){
 			switch (ClientPrefs.data.interfaceType) // turn into scripts
@@ -1365,13 +1365,13 @@ class PlayState extends MusicBeatState
 	{
 		if (startedCountdown)
 		{
-			GlobalScript.instance.callOnScripts('onStartCountdown');
+			GlobalScript.instance.call('onStartCountdown');
 			return false;
 		}
 
 		seenCutscene = true;
 		inCutscene = false;
-		var ret:Dynamic = GlobalScript.instance.callOnScripts('onStartCountdown', null, true);
+		var ret:Dynamic = GlobalScript.instance.call('onStartCountdown', null, true);
 		if (ret != ScriptUtil.Function_Stop)
 		{
 			if (skipCountdown || startOnTime > 0)
@@ -1382,20 +1382,20 @@ class PlayState extends MusicBeatState
 			generateStaticArrows(1);
 			for (i in 0...playerStrums.length)
 			{
-				GlobalScript.instance.setOnScripts('defaultPlayerStrumX' + i, playerStrums.members[i].x);
-				GlobalScript.instance.setOnScripts('defaultPlayerStrumY' + i, playerStrums.members[i].y);
+				GlobalScript.instance.set('defaultPlayerStrumX' + i, playerStrums.members[i].x);
+				GlobalScript.instance.set('defaultPlayerStrumY' + i, playerStrums.members[i].y);
 			}
 			for (i in 0...opponentStrums.length)
 			{
-				GlobalScript.instance.setOnScripts('defaultOpponentStrumX' + i, opponentStrums.members[i].x);
-				GlobalScript.instance.setOnScripts('defaultOpponentStrumY' + i, opponentStrums.members[i].y);
+				GlobalScript.instance.set('defaultOpponentStrumX' + i, opponentStrums.members[i].x);
+				GlobalScript.instance.set('defaultOpponentStrumY' + i, opponentStrums.members[i].y);
 				// if(ClientPrefs.data.middleScroll) opponentStrums.members[i].visible = false;
 			}
 
 			startedCountdown = true;
 			Conductor.songPosition = -Conductor.crochet * 5 + Conductor.offset;
-			GlobalScript.instance.setOnScripts('startedCountdown', true);
-			GlobalScript.instance.callOnScripts('onCountdownStarted');
+			GlobalScript.instance.set('startedCountdown', true);
+			GlobalScript.instance.call('onCountdownStarted');
 
 			var swagCounter:Int = 0;
 			if (startOnTime > 0)
@@ -1534,7 +1534,7 @@ class PlayState extends MusicBeatState
 					scoreTxtTween = FlxTween.tween(ui.scoreText.scale, {x: 1, y: 1}, 0.2, {onComplete: (_) -> scoreTxtTween = null});
 				}
 			}
-		GlobalScript.instance.callOnScripts('onUpdateScore', [miss]);
+		GlobalScript.instance.call('onUpdateScore', [miss]);
 	}
 
 	public function setSongTime(time:Float):Void
@@ -1572,13 +1572,13 @@ class PlayState extends MusicBeatState
 	{
 		dialogueCount++;
 		trace('Next Dialogue');
-		GlobalScript.instance.callOnScripts('onNextDialogue', [dialogueCount]);
+		GlobalScript.instance.call('onNextDialogue', [dialogueCount]);
 	}
 
 	public function skipDialogue():Void
 	{
 		trace('Skipped Dialogue');
-		GlobalScript.instance.callOnScripts('onSkipDialogue', [dialogueCount]);
+		GlobalScript.instance.call('onSkipDialogue', [dialogueCount]);
 	}
 
 	function startSong():Void
@@ -1617,8 +1617,8 @@ class PlayState extends MusicBeatState
 		});
 
 		// globalscrpt
-		GlobalScript.instance.setOnScripts('songLength', songLength);
-		GlobalScript.instance.callOnScripts('onSongStart', []);
+		GlobalScript.instance.set('songLength', songLength);
+		GlobalScript.instance.call('onSongStart', []);
 
 		
 		#if DISCORD_ALLOWED
@@ -1822,7 +1822,7 @@ class PlayState extends MusicBeatState
 		};
 		eventNotes.push(subEvent);
 		eventPushed(subEvent);
-		GlobalScript.instance.callOnScripts('onEventPushed', [
+		GlobalScript.instance.call('onEventPushed', [
 			subEvent.event,
 			subEvent.value1 != null ? subEvent.value1 : '',
 			subEvent.value2 != null ? subEvent.value2 : '',
@@ -1870,7 +1870,7 @@ class PlayState extends MusicBeatState
 
 	function eventEarlyTrigger(event:EventNote):Float
 	{
-		var returnedValue:Null<Float> = GlobalScript.instance.callOnScripts('eventEarlyTrigger', [event.event, event.value1, event.value2, event.strumTime], [], [0]);
+		var returnedValue:Null<Float> = GlobalScript.instance.call('eventEarlyTrigger', [event.event, event.value1, event.value2, event.strumTime], [], [0]);
 		if (returnedValue != null && returnedValue != 0 && returnedValue != cast(ScriptUtil.Function_Continue, Null<Float>))
 			return returnedValue;
 
@@ -1933,7 +1933,7 @@ class PlayState extends MusicBeatState
 
 	@:dox(hide) override function openSubState(SubState:flixel.FlxSubState) : Void
 	{
-		GlobalScript.instance.callOnScripts('onOpenSubState', [SubState]);
+		GlobalScript.instance.call('onOpenSubState', [SubState]);
 		stageAccess(function(stage:BaseStage) stage.openSubState(SubState));
 
 		if (paused)
@@ -1955,7 +1955,7 @@ class PlayState extends MusicBeatState
 	public var canResync:Bool = true;
 	@:dox(hide) override function closeSubState()
 	{
-		GlobalScript.instance.callOnScripts('onCloseSubState', []);
+		GlobalScript.instance.call('onCloseSubState', []);
 		stageAccess(function(stage:BaseStage) stage.closeSubState());
 
 		if (paused)
@@ -1971,7 +1971,7 @@ class PlayState extends MusicBeatState
 			#end
 
 			paused = false;
-			GlobalScript.instance.callOnScripts('onResume');
+			GlobalScript.instance.call('onResume');
 			resetRPC(startTimer != null && startTimer.finished);
 			#if desktop WindowUtil.title = '%{GAME_TITLE} - $detailsText - ${SONG.song} (${storyDifficultyText})'; #end
 		}
@@ -2087,7 +2087,7 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float):Void
 	{	
-		//GlobalScript.instance.callOnScripts('onUpdate', [elapsed]);
+		//GlobalScript.instance.call('onUpdate', [elapsed]);
 
 		if(ui?.update!=null) ui.update(elapsed);
 
@@ -2112,12 +2112,12 @@ class PlayState extends MusicBeatState
 
 		super.update(elapsed);
 
-		GlobalScript.instance.setOnScripts('curDecStep', curDecStep);
-		GlobalScript.instance.setOnScripts('curDecBeat', curDecBeat);
+		GlobalScript.instance.set('curDecStep', curDecStep);
+		GlobalScript.instance.set('curDecBeat', curDecBeat);
 
 		if (controls.PAUSE && startedCountdown && canPause)
 		{
-			final onPauseScrips:Dynamic = GlobalScript.instance.callOnScripts('onPause', [], false);
+			final onPauseScrips:Dynamic = GlobalScript.instance.call('onPause', [], false);
 			if (onPauseScrips != ScriptUtil.Function_Stop)
 				openPauseMenu();
 		}
@@ -2185,7 +2185,7 @@ class PlayState extends MusicBeatState
 				var dunceNote:Note = unspawnNotes[0];
 				notes.insert(0, dunceNote);
 				dunceNote.spawned = true;
-				GlobalScript.instance.callOnScripts('onSpawnNote', [
+				GlobalScript.instance.call('onSpawnNote', [
 					notes.members.indexOf(dunceNote),
 					dunceNote.noteData,
 					dunceNote.noteType,
@@ -2271,10 +2271,10 @@ class PlayState extends MusicBeatState
 		}
 		#end
 
-		GlobalScript.instance.setOnScripts('cameraX', camFollow.x);
-		GlobalScript.instance.setOnScripts('cameraY', camFollow.y);
-		GlobalScript.instance.setOnScripts('botPlay', cpuControlled);
-	//	GlobalScript.instance.callOnScripts('onUpdatePost', [elapsed]);
+		GlobalScript.instance.set('cameraX', camFollow.x);
+		GlobalScript.instance.set('cameraY', camFollow.y);
+		GlobalScript.instance.set('botPlay', cpuControlled);
+	//	GlobalScript.instance.call('onUpdatePost', [elapsed]);
 	}
 	
 	/**
@@ -2356,7 +2356,7 @@ class PlayState extends MusicBeatState
 	{
 		if (((skipHealthCheck && instakillOnMiss) || health <= 0) && !practiceMode && !isDead && gameOverTimer == null)
 		{
-			var ret:Dynamic = GlobalScript.instance.callOnScripts('onGameOver', [], false);
+			var ret:Dynamic = GlobalScript.instance.call('onGameOver', [], false);
 			if (ret != ScriptUtil.Function_Stop)
 			{
 				FlxG.animationTimeScale = 1;
@@ -2617,7 +2617,7 @@ class PlayState extends MusicBeatState
 							boyfriend.alpha = lastAlpha;
 							ui.iconP1.changeIcon(boyfriend.healthIcon);
 						}
-						GlobalScript.instance.setOnScripts('boyfriendName', boyfriend.curCharacter);
+						GlobalScript.instance.set('boyfriendName', boyfriend.curCharacter);
 
 					case 1:
 						if (dad.curCharacter != value2)
@@ -2645,7 +2645,7 @@ class PlayState extends MusicBeatState
 							dad.alpha = lastAlpha;
 							ui.iconP2.changeIcon(dad.healthIcon);
 						}
-						GlobalScript.instance.setOnScripts('dadName', dad.curCharacter);
+						GlobalScript.instance.set('dadName', dad.curCharacter);
 
 					case 2:
 						if (gf != null)
@@ -2662,7 +2662,7 @@ class PlayState extends MusicBeatState
 								gf = gfMap.get(value2);
 								gf.alpha = lastAlpha;
 							}
-							GlobalScript.instance.setOnScripts('gfName', gf.curCharacter);
+							GlobalScript.instance.set('gfName', gf.curCharacter);
 						}
 				}
 				ui.reloadHealthBarColors();
@@ -2724,7 +2724,7 @@ class PlayState extends MusicBeatState
 		}
 		stageAccess(function(stage:BaseStage) stage.eventCalled(eventName, value1, value2, flValue1, flValue2, strumTime));
 
-		GlobalScript.instance.callOnScripts('onEvent', [eventName, value1, value2]);
+		GlobalScript.instance.call('onEvent', [eventName, value1, value2]);
 	}
 
 	public function moveCameraSection(?sec:Null<Int>):Void {
@@ -2736,16 +2736,16 @@ class PlayState extends MusicBeatState
 		if (gf != null && SONG.notes[sec].gfSection)
 		{
 			moveCameraToGirlfriend();
-			GlobalScript.instance.callOnScripts('onMoveCamera', ['gf']);
+			GlobalScript.instance.call('onMoveCamera', ['gf']);
 			return;
 		}
 
 		var isDad:Bool = (SONG.notes[sec].mustHitSection != true);
 		moveCamera(isDad);
 		if (isDad)
-			GlobalScript.instance.callOnScripts('onMoveCamera', ['dad']);
+			GlobalScript.instance.call('onMoveCamera', ['dad']);
 		else
-			GlobalScript.instance.callOnScripts('onMoveCamera', ['boyfriend']);
+			GlobalScript.instance.call('onMoveCamera', ['boyfriend']);
 	}
 	
 	public function moveCameraToGirlfriend():Void
@@ -2832,7 +2832,7 @@ class PlayState extends MusicBeatState
 		checkForAchievement([WeekData.getWeekFileName() + '_nomiss', 'ur_bad', 'ur_good', 'hype', 'two_keys', 'toastie', 'debugger']); 
 		#end
 
-		if (GlobalScript.instance.callOnScripts('onEndSong', [], false) != ScriptUtil.Function_Stop && !transitioning)
+		if (GlobalScript.instance.call('onEndSong', [], false) != ScriptUtil.Function_Stop && !transitioning)
 		{
 			#if !switch
 			Highscore.saveScore(SONG.song, songScore, storyDifficulty, Math.isNaN(ratingPercent) ? 0 : ratingPercent);
@@ -3143,7 +3143,7 @@ class PlayState extends MusicBeatState
 		if (cpuControlled || paused || inCutscene || key < 0 || key >= playerStrums.length || !generatedMusic || endingSong || boyfriend.stunned)
 			return;
 
-		var ret:Dynamic = GlobalScript.instance.callOnScripts('onKeyPressPre', [key]);
+		var ret:Dynamic = GlobalScript.instance.call('onKeyPressPre', [key]);
 		if (ret == ScriptUtil.Function_Stop)
 			return;
 
@@ -3185,7 +3185,7 @@ class PlayState extends MusicBeatState
 		else
 		{
 			if (ClientPrefs.data.ghostTapping)
-				GlobalScript.instance.callOnScripts('onGhostTap', [key]);
+				GlobalScript.instance.call('onGhostTap', [key]);
 			else
 				noteMissPress(key);
 		}
@@ -3204,7 +3204,7 @@ class PlayState extends MusicBeatState
 			spr.playAnim('pressed');
 			spr.resetAnim = 0;
 		}
-		GlobalScript.instance.callOnScripts('onKeyPress', [key]);
+		GlobalScript.instance.call('onKeyPress', [key]);
 	}
 
 	public static function sortHitNotes(a:Note, b:Note):Int
@@ -3230,7 +3230,7 @@ class PlayState extends MusicBeatState
 		if (cpuControlled || !startedCountdown || paused || key < 0 || key >= playerStrums.length)
 			return;
 
-		var ret:Dynamic = GlobalScript.instance.callOnScripts('onKeyReleasePre', [key]);
+		var ret:Dynamic = GlobalScript.instance.call('onKeyReleasePre', [key]);
 		if (ret == ScriptUtil.Function_Stop)
 			return;
 
@@ -3240,7 +3240,7 @@ class PlayState extends MusicBeatState
 			spr.playAnim('static');
 			spr.resetAnim = 0;
 		}
-		GlobalScript.instance.callOnScripts('onKeyRelease', [key]);
+		GlobalScript.instance.call('onKeyRelease', [key]);
 	}
 
 	public static function getKeyFromEvent(arr:Array<String>, key:FlxKey):Int
@@ -3368,7 +3368,7 @@ class PlayState extends MusicBeatState
 		}
 
 		stageAccess(function(stage:BaseStage) stage.noteMiss(daNote));
-		GlobalScript.instance.callOnScripts('noteMiss', [
+		GlobalScript.instance.call('noteMiss', [
 			notes.members.indexOf(daNote),
 			daNote.noteData,
 			daNote.noteType,
@@ -3411,7 +3411,7 @@ class PlayState extends MusicBeatState
 			vocals.volume = 0;
 		}
 		stageAccess(function(stage:BaseStage) stage.noteMissPress(direction));
-		GlobalScript.instance.callOnScripts('noteMissPress', [direction]);
+		GlobalScript.instance.call('noteMissPress', [direction]);
 	}
 
 	function opponentNoteHit(note:Note):Void
@@ -3455,7 +3455,7 @@ class PlayState extends MusicBeatState
 			spawnNoteSplashOnNote(note);
 
 		stageAccess(function(stage:BaseStage) stage.opponentNoteHit(note));
-		GlobalScript.instance.callOnScripts('opponentNoteHit', [
+		GlobalScript.instance.call('opponentNoteHit', [
 			notes.members.indexOf(note),
 			Math.abs(note.noteData),
 			note.noteType,
@@ -3579,7 +3579,7 @@ class PlayState extends MusicBeatState
 			var leType:String = note.noteType;
 
 			stageAccess(function(stage:BaseStage) stage.goodNoteHit(note));
-			GlobalScript.instance.callOnScripts('goodNoteHit', [notes.members.indexOf(note), leData, leType, isSus]);
+			GlobalScript.instance.call('goodNoteHit', [notes.members.indexOf(note), leData, leType, isSus]);
 
 			spawnHoldSplashOnNote(note);
 			if (!note.isSustainNote)
@@ -3717,8 +3717,8 @@ class PlayState extends MusicBeatState
 			return;
 
 		_lastStepHit = curStep;
-		GlobalScript.instance.setOnScripts('curStep', curStep);
-		GlobalScript.instance.callOnScripts('onStepHit', []);
+		GlobalScript.instance.set('curStep', curStep);
+		GlobalScript.instance.call('onStepHit', []);
 	}
 
 	/**
@@ -3776,17 +3776,17 @@ class PlayState extends MusicBeatState
 			if (SONG.notes[curSection].changeBPM)
 			{
 				Conductor.bpm = SONG.notes[curSection].bpm;
-				GlobalScript.instance.setOnScripts('curBpm', Conductor.bpm);
-				GlobalScript.instance.setOnScripts('crochet', Conductor.crochet);
-				GlobalScript.instance.setOnScripts('stepCrochet', Conductor.stepCrochet);
+				GlobalScript.instance.set('curBpm', Conductor.bpm);
+				GlobalScript.instance.set('crochet', Conductor.crochet);
+				GlobalScript.instance.set('stepCrochet', Conductor.stepCrochet);
 			}
-			GlobalScript.instance.setOnScripts('mustHitSection', SONG.notes[curSection].mustHitSection);
-			GlobalScript.instance.setOnScripts('altAnim', SONG.notes[curSection].altAnim);
-			GlobalScript.instance.setOnScripts('gfSection', SONG.notes[curSection].gfSection);
+			GlobalScript.instance.set('mustHitSection', SONG.notes[curSection].mustHitSection);
+			GlobalScript.instance.set('altAnim', SONG.notes[curSection].altAnim);
+			GlobalScript.instance.set('gfSection', SONG.notes[curSection].gfSection);
 		}
 
-		GlobalScript.instance.setOnScripts('curSection', curSection);//oops
-		GlobalScript.instance.callOnScripts('onSectionHit', []);
+		GlobalScript.instance.set('curSection', curSection);//oops
+		GlobalScript.instance.call('onSectionHit', []);
 	}
 
 	/**
@@ -3831,11 +3831,11 @@ class PlayState extends MusicBeatState
 
 	public function RecalculateRating(badHit:Bool = false):Void
 	{
-		GlobalScript.instance.setOnScripts('score', songScore);
-		GlobalScript.instance.setOnScripts('misses', songMisses);
-		GlobalScript.instance.setOnScripts('hits', songHits);
+		GlobalScript.instance.set('score', songScore);
+		GlobalScript.instance.set('misses', songMisses);
+		GlobalScript.instance.set('hits', songHits);
 
-		var ret:Dynamic = GlobalScript.instance.callOnScripts('onRecalculateRating', [], false);
+		var ret:Dynamic = GlobalScript.instance.call('onRecalculateRating', [], false);
 		if (ret != ScriptUtil.Function_Stop)
 		{
 			if (totalPlayed < 1) // Prevent divide by 0
@@ -3866,9 +3866,9 @@ class PlayState extends MusicBeatState
 			fullComboFunction();
 		}
 		updateScore(badHit); // score will only update after rating is calculated, if it's a badHit, it shouldn't bounce -Ghost
-		GlobalScript.instance.setOnScripts('rating', ratingPercent);
-		GlobalScript.instance.setOnScripts('ratingName', ratingName);
-		GlobalScript.instance.setOnScripts('ratingFC', ratingFC);
+		GlobalScript.instance.set('rating', ratingPercent);
+		GlobalScript.instance.set('ratingName', ratingName);
+		GlobalScript.instance.set('ratingFC', ratingFC);
 	}
 
 	public dynamic function fullComboFunction()

@@ -378,7 +378,7 @@ class FunkinLua implements IScript
 				exclusions = [];
 			if (ignoreSelf && !exclusions.contains(scriptName))
 				exclusions.push(scriptName);
-			GlobalScript.instance.setOnScripts(varName, arg, exclusions);
+			GlobalScript.instance.set(varName, arg, exclusions);
 		});
 		#end
 
@@ -413,7 +413,7 @@ class FunkinLua implements IScript
 					excludeScripts = [];
 				if (ignoreSelf && !excludeScripts.contains(scriptName))
 					excludeScripts.push(scriptName);
-				GlobalScript.instance.callOnScripts(funcName, args, ignoreStops, excludeScripts, excludeValues);
+				GlobalScript.instance.call(funcName, args, ignoreStops, excludeScripts, excludeValues);
 				return true;
 			});
 		#end

@@ -110,8 +110,8 @@ class MusicBeatSubstate extends flixel.FlxSubState implements IBeat
 		// not MusicBeatState, it's whatever is extending from it, since this is an abstract class.
 		GlobalScript.instance.executeClassScripts(scriptName, scriptArgs, true);
 		super.create();
-		GlobalScript.instance.callOnScripts('onCreatePost', []); // gwa gwa lua
-		GlobalScript.instance.callOnScripts('createPost', []);
+		GlobalScript.instance.call('onCreatePost', []); // gwa gwa lua
+		GlobalScript.instance.call('createPost', []);
 		#end
 	}
 
@@ -144,9 +144,9 @@ class MusicBeatSubstate extends flixel.FlxSubState implements IBeat
 		if (curSection > lastSection)
 			sectionHit();
 
-		GlobalScript.instance.setOnScripts('curStep', curStep); // oops i forgor
-		GlobalScript.instance.callOnScripts('onStepHit', []);
-		GlobalScript.instance.callOnScripts('stepHit', []);
+		GlobalScript.instance.set('curStep', curStep); // oops i forgor
+		GlobalScript.instance.call('onStepHit', []);
+		GlobalScript.instance.call('stepHit', []);
 	}
 
 	/**
@@ -187,9 +187,9 @@ class MusicBeatSubstate extends flixel.FlxSubState implements IBeat
 	public function beatHit():Void
 	{/* Beat Hit */
 		// softmoddin'
-		GlobalScript.instance.setOnScripts('curBeat', curBeat); // DAWGG?????
-		GlobalScript.instance.callOnScripts('onBeatHit', []);
-		GlobalScript.instance.callOnScripts('beatHit', []);
+		GlobalScript.instance.set('curBeat', curBeat); // DAWGG?????
+		GlobalScript.instance.call('onBeatHit', []);
+		GlobalScript.instance.call('beatHit', []);
 	}
 
 	/**
@@ -198,9 +198,9 @@ class MusicBeatSubstate extends flixel.FlxSubState implements IBeat
 	public function sectionHit():Void
 	{/* Section Hit */
 		// softmoddin'
-		GlobalScript.instance.setOnScripts('curSection', curSection);
-		GlobalScript.instance.callOnScripts('onSectionHit', []);
-		GlobalScript.instance.callOnScripts('sectionHit', []);
+		GlobalScript.instance.set('curSection', curSection);
+		GlobalScript.instance.call('onSectionHit', []);
+		GlobalScript.instance.call('sectionHit', []);
 	}
 
 	@:dox(hide) override function update(elapsed:Float):Void
@@ -230,19 +230,19 @@ class MusicBeatSubstate extends flixel.FlxSubState implements IBeat
 			();
 		}
 
-		GlobalScript.instance.callOnScripts('onUpdate', [elapsed]); // gwa
-		GlobalScript.instance.callOnScripts('update', [elapsed]); // gwa
+		GlobalScript.instance.call('onUpdate', [elapsed]); // gwa
+		GlobalScript.instance.call('update', [elapsed]); // gwa
 		super.update(elapsed);
-		GlobalScript.instance.callOnScripts('onUpdatePost', [elapsed]);
-		GlobalScript.instance.callOnScripts('updatePost', [elapsed]);
+		GlobalScript.instance.call('onUpdatePost', [elapsed]);
+		GlobalScript.instance.call('updatePost', [elapsed]);
 	}
 
 	@:dox(hide) override function close():Void
 	{
-		GlobalScript.instance.callOnScripts('onClose');
+		GlobalScript.instance.call('onClose');
 		final className = Type.getClassName(Type.getClass(_parentState));
 		funkin.game.Main.stateName = className.substring(className.lastIndexOf('.') + 1);
-		GlobalScript.instance.callOnScripts('onClosePost');
+		GlobalScript.instance.call('onClosePost');
 
 		super.close();
 	}

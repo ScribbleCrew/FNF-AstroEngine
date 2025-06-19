@@ -694,7 +694,6 @@ using StringTools;
 	 */
 	inline public function setDefine(name:String, value:String = ''):Void
 	{
-		info('Set define "$name"${value == null ? '' : ' value of "$value"'}.');
 		this.defines.set(name, value);
 		this.haxedefs.set(name, value);
 		this.environment.set(name, value);
@@ -715,7 +714,6 @@ using StringTools;
 	inline public function unsetDefine(name:String):Void
 		if (hasDefine(name))
 		{
-			info('Unset define "$name".');
 			this.defines.remove(name);
 			this.haxedefs.remove(name);
 			this.environment.remove(name);
@@ -903,28 +901,20 @@ abstract ComplierFlag(String)
 
 		if (isEnabled(project))
 		{
-			// If this flag was already enabled, disable the inverse.
-			project.info('Enabling feature flag ${this}');
 			getInverse().disable(project, false);
 		}
 		else if (getInverse().isEnabled(project))
 		{
-			// If the inverse flag was already enabled, disable this flag.
-			project.info('Disabling feature flag ${this}');
 			disable(project, false);
 		}
 		else
 		{
 			if (enableByDefault)
 			{
-				// Enable this flag if it was unset, and disable the inverse.
-				project.info('Enabling feature flag ${this}');
 				enable(project, true);
 			}
 			else
 			{
-				// Disable this flag if it was unset, and enable the inverse.
-				project.info('Disabling feature flag ${this}');
 				disable(project, true);
 			}
 		}

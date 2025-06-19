@@ -93,8 +93,8 @@ class GameOverSubstate extends MusicBeatSubstate
 		FlxG.camera.follow(camFollow, LOCKON, 0.01);
 		add(camFollow);
 
-		GlobalScript.instance.setOnScripts('inGameOver', true);
-		GlobalScript.instance.callOnScripts('onGameOverStart', []);
+		GlobalScript.instance.set('inGameOver', true);
+		GlobalScript.instance.call('onGameOverStart', []);
 		FlxG.sound.music.loadEmbedded(Paths.music(loopSoundName));
 
 		if (characterName == 'pico-dead')
@@ -147,7 +147,7 @@ class GameOverSubstate extends MusicBeatSubstate
 	{
 		super.update(elapsed);
 
-		// GlobalScript.instance.callOnScripts('onUpdate', [elapsed]);
+		// GlobalScript.instance.call('onUpdate', [elapsed]);
 
 		var justPlayedLoop:Bool = false;
 		if (!boyfriend.isAnimationNull() && boyfriend.getAnimationName() == 'firstDeath' && boyfriend.isAnimationFinished())
@@ -180,7 +180,7 @@ class GameOverSubstate extends MusicBeatSubstate
 				PlayState.instance.leaveState();
 
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
-				GlobalScript.instance.callOnScripts('onGameOverConfirm', [false]);
+				GlobalScript.instance.call('onGameOverConfirm', [false]);
 			}
 			else if (justPlayedLoop)
 			{
@@ -210,7 +210,7 @@ class GameOverSubstate extends MusicBeatSubstate
 				Conductor.songPosition = FlxG.sound.music.time;
 			}
 		}
-		// GlobalScript.instance.callOnScripts('onUpdatePost', [elapsed]);
+		// GlobalScript.instance.call('onUpdatePost', [elapsed]);
 	}
 
 	var isEnding:Bool = false;
@@ -240,7 +240,7 @@ class GameOverSubstate extends MusicBeatSubstate
 			FlxG.sound.music.stop();
 			FlxG.sound.play(Paths.music(endSoundName));
 			new FlxTimer().start(0.7, function(tmr:FlxTimer) FlxG.camera.fade(FlxColor.BLACK, 2, false, () -> MusicBeatState.resetState()));
-			GlobalScript.instance.callOnScripts('onGameOverConfirm', [true]);
+			GlobalScript.instance.call('onGameOverConfirm', [true]);
 		}
 	}
 

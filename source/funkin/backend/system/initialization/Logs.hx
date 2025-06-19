@@ -41,12 +41,13 @@ import funkin.backend.utils.native.Terminal.TColor;
 	 * I'm in love with this functions, its very cute ;3
 	 */
 	public static function trace(v:Dynamic, ?color:TColor, ?infos:PosInfos):Void return print(v, color, infos);
+	public static function error(v:Dynamic, ?infos:PosInfos):Void return print(v, RED, infos, " 		ERROR		 ");
 	@:dox(hide) @:noCompletion public static function log(v:Dynamic, ?color:TColor, ?infos:PosInfos):Void return print(v, color, infos);
-	@:dox(hide) @:noCompletion public static function print(v:Dynamic, ?color:TColor, ?infos:PosInfos):Void
+	@:dox(hide) @:noCompletion public static function print(v:Dynamic, ?color:TColor, ?infos:PosInfos, ?prefix:String):Void
 	{
 		if (color != null)
 			Terminal.instance.fg(color);
-		__customTrace(v, infos); // oops :3
+		__customTrace(v, infos, prefix); // oops :3
 		if (color != null)
 			Terminal.instance.resetFg();
 	}
@@ -81,12 +82,12 @@ import funkin.backend.utils.native.Terminal.TColor;
 	 * Formats the output and returns a better one lol.
 	 * uses `haxe.PosInfos` to get file info (pretty obvious).
 	 */
-	@:noCompletion static inline function _formatOutput(v:Dynamic, ?infos:haxe.PosInfos):String
+	@:noCompletion static inline function _formatOutput(v:Dynamic, ?infos:haxe.PosInfos, ?prefix:String):String
 	{
 		if (infos != null && infos.customParams != null)
 			for (param in infos.customParams)
 				v += ", " + param;
-		return '[${prefix}]: $v : ${infos.fileName}:${infos.lineNumber}';
+		return '[${prefix ?? Logs.prefix}]: $v : ${infos.fileName}:${infos.lineNumber}';
 	}
 
 	/**
@@ -99,9 +100,9 @@ import funkin.backend.utils.native.Terminal.TColor;
 	 *    - Linux **(not tested)**
 	 *    - Macos **(not tested)**
 	 */
-	@:dox(hide) @:noCompletion static dynamic function __customTrace(v:Dynamic, ?infos:haxe.PosInfos):Void
+	@:dox(hide) @:noCompletion static dynamic function __customTrace(v:Dynamic, ?infos:haxe.PosInfos, ?prefix:String):Void
 	{
-		v = _formatOutput(v, infos);
+		v = _formatOutput(v, infos, prefix);
 		#if js
 		if (js.Syntax.typeof(untyped console) != "undefined" && (untyped console).log != null)
 			(untyped console).log(v);

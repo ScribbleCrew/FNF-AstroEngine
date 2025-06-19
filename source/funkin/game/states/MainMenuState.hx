@@ -243,7 +243,7 @@ class MainMenuState extends MusicBeatState
 
 	var selectedSomethin:Bool = false;
 	var timeNotMoving:Float = 0;
-
+	
 	@:dox(hide) override function update(elapsed:Float):Void
 	{
 		if (FlxG.sound.music == null)
@@ -306,6 +306,13 @@ class MainMenuState extends MusicBeatState
 			if (FlxG.keys.justPressed.TAB)
 				LoadingState.loadAndSwitchState(new ModsMenuState());
 
+			
+			/*
+			if(FlxG.keys.justPressed.F6) {
+				persistentUpdate = false;
+				openSubState(new EditorPickerSubstate());
+			} */
+
 			if (controls.UI_UP_P)
 			{
 				FlxG.sound.list.add(FlxG.sound.play(Paths.sound('scrollMenu')));
@@ -322,7 +329,7 @@ class MainMenuState extends MusicBeatState
 				changeItem(-FlxG.mouse.wheel);
 			}
 
-			if (controls.BACK)
+			if (controls.BACK && FlxG.state.subState == null)
 			{
 				selectedSomethin = true;
 				FlxG.sound.play(Paths.sound('cancelMenu'));

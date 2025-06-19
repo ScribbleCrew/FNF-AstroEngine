@@ -1,8 +1,10 @@
 package funkin.backend.system.scripts;
 
-import hscript.Printer;
 
-class GlobalScript
+/**
+* Global Script Class...	
+*/
+class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable
 {
 	/**
 	 * Global Script Instance.
@@ -17,13 +19,18 @@ class GlobalScript
 		try
 		{
 			instance = new GlobalScript(); // i aint making a constructor
-			#if LUA_ALLOWED extensions.set('lua', [".lua", ".funkinlua"]);#end
+			#if LUA_ALLOWED extensions.set('lua', [".lua", ".funkinlua"]); #end
 			#if HSCRIPT_ALLOWED extensions.set('haxe', [".hx", ".hxc", ".hscript" /* why would anyone need this... */]); /* funi extensions */ #end
-		
+
 			Logs.prefixedTrace('Successfully initialized', 'GlobalScript', GREEN);
 		}
 		catch (error:Dynamic)
 			Logs.prefixedTrace('Failed to initialized : $error', 'GlobalScript', RED);
+
+		Application.current.window.onClose.add(()-> {
+			if(instance != null)
+				instance.destroy();
+		});
 	}
 
 	#if HSCRIPT_ALLOWED
@@ -52,21 +59,23 @@ class GlobalScript
 	static final extensions:Map<String, Array<String>> = new Map<String, Array<String>>();
 
 	/**
-	* Checks if the script's file extension	is inside of the extensions map.
-	*/
+	 * Checks if the script's file extension	is inside of the extensions map.
+	 */
 	static function checkScriptExtensions(file:String, ?type:String):Bool
 	{
 		// Extension check loop
 		for (typeKey in extensions.keys())
 		{
 			// If 'type' is provided, check only that specific type
-			if (type != null && type != typeKey) continue;
+			if (type != null && type != typeKey)
+				continue;
 
 			// Check extensions for the current type
 			for (ext in extensions.get(typeKey))
 			{
 				// Check if the file ends with the extension
-				if (file.endsWith(ext)) return true;
+				if (file.endsWith(ext))
+					return true;
 			}
 		}
 
@@ -78,13 +87,23 @@ class GlobalScript
 	/**
 	 * Set vars on scripts.	
 	 */
-	public function setOnScripts(variable:String, arg:Dynamic, exclusions:Array<String> = null) : Void
+	public function set(variable:String, arg:Dynamic, exclusions:Array<String> = null):Void
 	{
 		exclusions ??= [];
-		#if LUA_ALLOWED setOnLuas(variable, arg, exclusions); #end
-		#if HSCRIPT_ALLOWED setOnHScript(variable, arg, exclusions); #end
+
+		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
+		try
+		{
+			#if LUA_ALLOWED setOnLuas(variable, arg, exclusions); #end
+			#if HSCRIPT_ALLOWED setOnHScript(variable, arg, exclusions); #end
+		}
+		catch (error:haxe.Exception)
+		{
+			Logs.prefixedTrace('{GlobalScript.set}: $error', 'ERROR', RED);
+		}
+		#end
 	}
-	
+
 	/**
 	 * Execute class scripts inside of mods/source.
 	 * Used inside The BeatStates.
@@ -96,19 +115,21 @@ class GlobalScript
 		final _className:String = customClass != null ? customClass : Type.getClassName(currentClass);
 
 		// Convert to lowercase for consistency
-		final __className:String = _className.substring(_className.lastIndexOf('.') + 1).toLowerCase(); 
-		
+		final __className:String = _className.substring(_className.lastIndexOf('.') + 1).toLowerCase();
+
 		// Loop through all mod folders containing scripts.
-		for (folderName in Mods.directoriesWithFile(Paths.getSharedPath(), substate ? 'scripts/states/substates/':'scripts/states/'))
+		for (folderName in Mods.directoriesWithFile(Paths.getSharedPath(), substate ? 'scripts/states/substates/' : 'scripts/states/'))
 		{
 			// Get all files inside the directory
 			for (_fileName in FileSystem.readDirectory(folderName))
 			{
 				// Skip files without valid extensions
-				if (!checkScriptExtensions(_fileName)) continue;
-				
+				if (!checkScriptExtensions(_fileName))
+					continue;
+
 				// Skips disabled scripts.
-				if(_fileName.startsWith("~")) continue;
+				if (_fileName.startsWith("~"))
+					continue;
 
 				// Combines the folder path with the file name.
 				final convertedScriptPath:String = folderName + _fileName;
@@ -118,25 +139,36 @@ class GlobalScript
 
 				// Ensure the Global Script (global.hx, or anything that starts with global) runs no matter
 				// the state, and scripts that are for specific states run when matching the state name.
-				if (convertedScriptName != __className && !convertedScriptName.contains("global")) continue;
+				if (convertedScriptName != __className && !convertedScriptName.contains("global"))
+					continue;
 
 				// Execute Lua/HScript scripts if flag concurrent flag is enabled.
-				#if LUA_ALLOWED if (checkScriptExtensions(_fileName, "lua")) new FunkinLua(convertedScriptPath).execute(scriptArgs); #end
-				#if HSCRIPT_ALLOWED if (checkScriptExtensions(_fileName, "haxe"))
+				#if LUA_ALLOWED
+				if (checkScriptExtensions(_fileName, "lua"))
+					new FunkinLua(convertedScriptPath).execute(scriptArgs);
+				#end
+				#if HSCRIPT_ALLOWED
+				if (checkScriptExtensions(_fileName, "haxe"))
 				{
 					final _class = new HScript(null, convertedScriptPath);
 					_class.parent = (substate ? SUB : STATE); // yay enums
 					_class.run(scriptArgs);
-				}; 
+				};
 				#end
 			}
 		}
 	}
-		
+
 	/**
 	 * Call on scripts (HScript, Lua)
+	 * @param functionName the event's name
+	 * @param args Event Arguments
+	 * @param ignoreStop ignore stop events
+	 * @param exclusions any call exclusions
+	 * @param excludeValues and values which could be excluded
+	 * @param context Script context, MAIN / State
 	 */
-	public function callOnScripts(functionName:String, args:Array<Dynamic> = null, ignoreStops = false, exclusions:Array<String> = null,
+	public function call(functionName:String, args:Array<Dynamic> = null, ignoreStops = false, exclusions:Array<String> = null,
 			excludeValues:Array<Dynamic> = null, ?context:HScript.ScriptContext = MAIN):Dynamic
 	{
 		// !! context hscript only... !!
@@ -219,9 +251,7 @@ class GlobalScript
 				continue;
 
 			var myValue:Dynamic = script.call(functionName, args);
-			if ((myValue == Function_StopLua || myValue == Function_StopAll)
-				&& !excludeValues.contains(myValue)
-				&& !ignoreStops)
+			if ((myValue == Function_StopLua || myValue == Function_StopAll) && !excludeValues.contains(myValue) && !ignoreStops)
 			{
 				returnVal = myValue;
 				break;
@@ -271,7 +301,7 @@ class GlobalScript
 			if (!HScript.instances.exists(scriptToLoad)) // make my own
 				return new HScript(null, scriptToLoad).run(null, customScriptGroup);
 
-	//	RuleScript.i
+		//	RuleScript.i
 
 		return null;
 	}
@@ -285,7 +315,7 @@ class GlobalScript
 			hscriptInstance = new HScript(null, filePath);
 			hscriptInstance.variables.get('onCreate')();
 			hscriptInstance.variables.get('create')();
-			//hscriptInstances.push(hscriptInstance);
+			// hscriptInstances.push(hscriptInstance);
 
 			Logs.prefixedTrace('successfully initialized HScript interp on "$filePath"', 'Global Script', GREEN);
 
@@ -297,12 +327,13 @@ class GlobalScript
 			ScriptedErrors.error(ScriptUtil.errorToString(error, false), filePosInfos);
 
 			hscriptInstance = cast(HScript.instances.get(filePath), HScript);
-			if (hscriptInstance != null) hscriptInstance.destroy(); 
+			if (hscriptInstance != null)
+				hscriptInstance.destroy();
 
 			return false;
 		}
 
-		return false;//unknown
+		return false; // unknown
 	}
 
 	/**
@@ -314,7 +345,7 @@ class GlobalScript
 	 * @param exclusions Exclusions.
 	 */
 	public function callOnHScript(functionName:String, args:Array<Dynamic> = null, ?ignoreStops:Bool = false, exclusions:Array<String> = null,
-			excludeValues:Array<Dynamic> = null, ?context: HScript.ScriptContext):Dynamic
+			excludeValues:Array<Dynamic> = null, ?context:HScript.ScriptContext):Dynamic
 	{
 		var returnVal:String = Function_Continue;
 
@@ -326,14 +357,18 @@ class GlobalScript
 		excludeValues.push(Function_Continue);
 
 		final uhh:Array<HScript> = hscriptInstances.safeGet(Main.stateName, []);
-		
+
 		final len:Int = uhh.length;
-		if (len < 1) return returnVal;
+		if (len < 1)
+			return returnVal;
 
 		for (script in uhh)
 		{
 			@:privateAccess
-			if (script == null || !script.exists(functionName) || exclusions.contains(script.origin) || (script.context != context || script.context != MAIN))
+			if (script == null
+				|| !script.exists(functionName)
+				|| exclusions.contains(script.origin)
+				|| (script.context != context || script.context != MAIN))
 				continue;
 
 			try
@@ -341,9 +376,7 @@ class GlobalScript
 				var callValue = script.call(functionName, args);
 				var myValue:Dynamic = callValue.returnValue;
 
-				if ((myValue == Function_StopHScript || myValue == Function_StopAll)
-					&& !excludeValues.contains(myValue)
-					&& !ignoreStops)
+				if ((myValue == Function_StopHScript || myValue == Function_StopAll) && !excludeValues.contains(myValue) && !ignoreStops)
 				{
 					returnVal = myValue;
 					break;
@@ -400,11 +433,11 @@ class GlobalScript
 			if (haxeScript != null)
 			{
 				final onDestory:Dynamic = haxeScript.variables.get('onDestroy');
-				if (onDestory != null && Reflect.isFunction(onDestory)) 
+				if (onDestory != null && Reflect.isFunction(onDestory))
 					onDestory();
 
 				final destory:Dynamic = haxeScript.variables.get('destroy');
-				if (destory != null && Reflect.isFunction(destory)) 
+				if (destory != null && Reflect.isFunction(destory))
 					destory();
 
 				haxeScript.destroy();
@@ -412,11 +445,12 @@ class GlobalScript
 		}
 		// reset hscript.
 		final stateName = Main.stateName;
-		if(GlobalScript.instance.hscriptInstances.exists(stateName))
+		if (GlobalScript.instance.hscriptInstances.exists(stateName))
 			GlobalScript.instance.hscriptInstances.set(stateName, []);
-	//	GlobalScript.instance.hscriptInstances = [];
 		#end
 	}
 
-	public function new():Void {}
+	public function new():Void
+	{
+	}
 }

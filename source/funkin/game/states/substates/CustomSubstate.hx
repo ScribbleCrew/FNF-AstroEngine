@@ -72,9 +72,9 @@ class CustomSubstate extends MusicBeatSubstate
 	{
 		instance = this;
 
-		GlobalScript.instance.callOnScripts('onCustomSubstateCreate', [name]);
+		GlobalScript.instance.call('onCustomSubstateCreate', [name]);
 		super.create();
-		GlobalScript.instance.callOnScripts('onCustomSubstateCreatePost', [name]);
+		GlobalScript.instance.call('onCustomSubstateCreatePost', [name]);
 	}
 
 	public function new(name:String):Void
@@ -86,14 +86,14 @@ class CustomSubstate extends MusicBeatSubstate
 
 	override function update(elapsed:Float):Void
 	{
-		GlobalScript.instance.callOnScripts('onCustomSubstateUpdate', [name, elapsed]);
+		GlobalScript.instance.call('onCustomSubstateUpdate', [name, elapsed]);
 		super.update(elapsed);
-		GlobalScript.instance.callOnScripts('onCustomSubstateUpdatePost', [name, elapsed]);
+		GlobalScript.instance.call('onCustomSubstateUpdatePost', [name, elapsed]);
 	}
 
 	override function destroy():Void
 	{
-		GlobalScript.instance.callOnScripts('onCustomSubstateDestroy', [name]);
+		GlobalScript.instance.call('onCustomSubstateDestroy', [name]);
 		name = 'unnamed';
 
 		#if HSCRIPT_ALLOWED
