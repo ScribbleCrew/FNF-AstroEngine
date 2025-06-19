@@ -41,7 +41,8 @@ import funkin.backend.utils.native.Terminal.TColor;
 	 * I'm in love with this functions, its very cute ;3
 	 */
 	public static function trace(v:Dynamic, ?color:TColor, ?infos:PosInfos):Void return print(v, color, infos);
-	public static function error(v:Dynamic, ?infos:PosInfos):Void return print(v, RED, infos, " 		ERROR		 ");
+	public static function error(v:Dynamic, ?infos:PosInfos):Void return print(v, RED, infos, "ERROR");
+	public static function info(v:Dynamic, ?infos:PosInfos):Void return print(v, BLUE, infos, "INFORMATION");
 	@:dox(hide) @:noCompletion public static function log(v:Dynamic, ?color:TColor, ?infos:PosInfos):Void return print(v, color, infos);
 	@:dox(hide) @:noCompletion public static function print(v:Dynamic, ?color:TColor, ?infos:PosInfos, ?prefix:String):Void
 	{
