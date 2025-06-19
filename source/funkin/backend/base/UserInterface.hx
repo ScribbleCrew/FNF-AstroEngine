@@ -1,6 +1,7 @@
 package funkin.backend.base;
 
 import flixel.util.FlxDestroyUtil.IFlxDestroyable;
+
 // messy code like always
 @:access(funkin.game.states.PlayState.updateTime)
 @:access(funkin.game.states.PlayState.songPercent)
@@ -10,7 +11,8 @@ abstract class UserInterface extends FlxBasic
 	/**
 	 * Current PlayState instance.	
 	 */
-	private var game(get, never):PlayState;
+	var game(get, never):PlayState;
+
 	@:dox(hide) @:noCompletion inline function get_game():PlayState
 		return PlayState.instance;
 
@@ -28,9 +30,17 @@ abstract class UserInterface extends FlxBasic
 	public var botplayTxt:FlxText;
 	public var scoreText:FlxText;
 
-	public function create():Void {}
-	public function createPost():Void {}
-	public function updateScore():Void{}
+	public function create():Void
+	{
+	}
+
+	public function createPost():Void
+	{
+	}
+
+	public function updateScore():Void
+	{
+	}
 
 	public function new():Void
 	{
@@ -44,7 +54,7 @@ abstract class UserInterface extends FlxBasic
 		{
 			super();
 			create();
-			game.uiGroup.forEach(_->_.alpha=0);//failsafe
+			game.uiGroup.forEach(_ -> _.alpha = 0); // failsafe
 			FlxG.log.add('Scorebar Created');
 			game.ui = this;
 			createPost();
@@ -138,10 +148,12 @@ abstract class UserInterface extends FlxBasic
 		timeTxt.borderSize = 2;
 		timeTxt.visible = showTime;
 
-		if (ClientPrefs.data.downScroll) timeTxt.y = FlxG.height - 44;
-		if (ClientPrefs.data.timeBarType == 'Song Name') timeTxt.text = PlayState.SONG.song;
+		if (ClientPrefs.data.downScroll)
+			timeTxt.y = FlxG.height - 44;
+		if (ClientPrefs.data.timeBarType == 'Song Name')
+			timeTxt.text = PlayState.SONG.song;
 
-		@:privateAccess{
+		@:privateAccess {
 			PlayState.instance.updateTime = showTime;
 
 			timeBar = new Bar(0, timeTxt.y + (timeTxt.height / 4), 'timeBar', function() return game.songPercent, 0, 1);
@@ -164,7 +176,7 @@ abstract class UserInterface extends FlxBasic
 		}
 	}
 
-	public function startSong() : Void
+	public function startSong():Void
 	{
 		FlxTween.tween(timeBar, {alpha: 1}, 0.5, {ease: FlxEase.circOut});
 		FlxTween.tween(timeTxt, {alpha: 1}, 0.5, {ease: FlxEase.circOut});
@@ -207,7 +219,8 @@ abstract class UserInterface extends FlxBasic
 		}
 	}
 
-	function findMultFromIcon(iconInstance:HealthIcon, elapsed:Float):Float {
+	function findMultFromIcon(iconInstance:HealthIcon, elapsed:Float):Float
+	{
 		return FlxMath.lerp(1, iconInstance.scale.x, MathsAddon.boundTo(1 - (elapsed * 9 * game.playbackRate), 0, 1));
 	}
 
@@ -221,9 +234,9 @@ abstract class UserInterface extends FlxBasic
 		iconP1.updateHitbox();
 
 		iconP1.x = healthBar.x
-		+ (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01))
-		+ (150 * iconP1.scale.x - 150) / 2
-		- iconOffset;
+			+ (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01))
+			+ (150 * iconP1.scale.x - 150) / 2
+			- iconOffset;
 
 		iconP1.animation.curAnim.curFrame = healthBar.percent < 20 ? 1 : 0;
 
@@ -243,15 +256,15 @@ abstract class UserInterface extends FlxBasic
 	// modified add, remove and insert functions.
 	function add(object:FlxBasic, ?customGroup:flixel.group.FlxSpriteGroup):Void
 	{
-		if(customGroup!=null)
-			customGroup.add(cast object);// unsafe cast
+		if (customGroup != null)
+			customGroup.add(cast object); // unsafe cast
 		else
 			game.uiGroup.add(cast object);
 	}
 
 	function remove(object:FlxBasic, ?customGroup:flixel.group.FlxSpriteGroup):Void
 	{
-		if(customGroup!=null)
+		if (customGroup != null)
 			customGroup.remove(cast object);
 		else
 			game.uiGroup.remove(cast object);
@@ -259,7 +272,7 @@ abstract class UserInterface extends FlxBasic
 
 	function insert(position:Int, object:FlxBasic, ?customGroup:flixel.group.FlxSpriteGroup):Void
 	{
-		if(customGroup!=null)
+		if (customGroup != null)
 			customGroup.insert(position, cast object);
 		else
 			game.uiGroup.insert(position, cast object);

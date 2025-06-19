@@ -993,6 +993,17 @@ class PlayState extends MusicBeatState
 		GlobalScript.instance.call('onCreatePost', []);
 
 		if(ui == null){
+			final MClass = HScriptUtils.fromMacro("funkin.backend.base.UserInterface"); // returns funkin.backend.base.UserInterface_RSC
+			
+			try{
+				Type.createInstance(MClass,['huds.${ClientPrefs.data.interfaceType.replace('-','')}', []]);
+			} catch(e){
+				Logs.error(e);
+				ui = null;
+			}
+		}
+		/*
+		if(ui == null){
 			switch (ClientPrefs.data.interfaceType) // turn into scripts
 			{
 				case 'Astro':
@@ -1002,9 +1013,9 @@ class PlayState extends MusicBeatState
 				default:
 					new VSliceScore();
 			}
-		}
+		} */
 
-		resetRPC();
+//		resetRPC();
 		
 		super.create();
 

@@ -473,7 +473,7 @@ class HScript extends RuleScript implements IScript
 					invalid = true;
 			if (!invalid)
 			{
-				var scriptedClassRef = HScriptUtils.getScriptedClass(apply);
+				var scriptedClassRef = HScriptUtils.fromMacro(apply);
 				if (scriptedClassRef == null)
 					continue;
 				rulescript.types.Typedefs.register(apply, scriptedClassRef);
@@ -489,9 +489,6 @@ class HScript extends RuleScript implements IScript
 		getParser(HxParser).allowAll();
 		errorHandler = HScriptUtils.onError;
 		interp.superInstance = FlxG.state; // fallback :3
-
-		if (variables.exists('main'))
-			variables.get('main')(); // KEEP UNLESS BREAK SCRIPTS // USED SOMETIMES IN STAGE SCRIPTS -orbl
 
 		#if LUA_ALLOWED
 		parentLua = parent;
@@ -754,7 +751,6 @@ class HScript extends RuleScript implements IScript
 			try
 			{
 				hs.varsToBring = varsToBring;
-				// hs.parse(true);
 				var ret:Dynamic = hs.tryExecute(code); // was execute but eh...
 				hs.returnValue = ret;
 			}

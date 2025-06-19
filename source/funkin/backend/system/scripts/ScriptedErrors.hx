@@ -51,8 +51,8 @@ class ScriptedErrors
 	@:dox(hide) @:noCompletion static function __regErr(type:ErrorAbstract, ?x:String, ?pos:haxe.PosInfos)
 	{
 		final hehe = ScriptUtil.formatError(x, pos);
+		Logs.error(hehe);
 		// HScriptUtils.onError(x);
-		Logs.trace(hehe, RED);
 		if (PlayState.instance != null)
 			PlayState.instance.addTextToDebug('${type.getError()}: $hehe', type.getColor());
 	}
