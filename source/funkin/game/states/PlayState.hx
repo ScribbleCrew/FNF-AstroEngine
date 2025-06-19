@@ -993,14 +993,6 @@ class PlayState extends MusicBeatState
 		GlobalScript.instance.call('onCreatePost', []);
 
 		if(ui == null){
-			final MClass = HScriptUtils.fromMacro("funkin.backend.base.UserInterface"); // returns funkin.backend.base.UserInterface_RSC
-			
-			try{
-				Type.createInstance(MClass,['huds.${ClientPrefs.data.interfaceType.replace('-','')}', []]);
-			} catch(e){
-				Logs.error(e);
-				ui = null;
-			}
 		}
 		/*
 		if(ui == null){
@@ -1021,6 +1013,17 @@ class PlayState extends MusicBeatState
 
 		if (ui == null)
 		{
+			final in: String = ClientPrefs.data.interfaceType;
+			final _hClass : Dynamic = HScriptUtils.fromMacro("funkin.backend.base.UserInterface"); // returns funkin.backend.base.UserInterface_RSC
+			
+			try {
+				Type.createInstance(_hClass, ['huds.${in.replace('-','')}', []]);
+				return;
+			} catch(e){
+				Logs.error(e.toString().replace('Null Object Reference', 'Cannot find script for HUD :: $in'));
+				ui = null;
+			}
+
 			switch (ClientPrefs.data.interfaceType)
 			{
 				case 'Astro':
