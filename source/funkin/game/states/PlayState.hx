@@ -984,9 +984,10 @@ class PlayState extends MusicBeatState
 		
 		super.create();
 
-		var uiValid = false;
+		var uiValid = true;
 		if (ui == null)
 		{
+			#if HSCRIPT_ALLOWED
 			final IType : String = ClientPrefs.data.interfaceType;
 			final _hClass : Dynamic = HScriptUtils.fromMacro("funkin.backend.base.UserInterface"); // returns funkin.backend.base.UserInterface_RSC
 			
@@ -994,19 +995,32 @@ class PlayState extends MusicBeatState
 				Type.createInstance(_hClass, ['huds.${IType.replace('-','')}', []]);
 				uiValid = true;
 				//return;
-			} catch(e : haxe.Exception){
-				Logs.info(e.toString().replace('Null Object Reference', 'Cannot find script for interface :: $IType'));
-				ui = null;
+			} catch(e : haxe.Exception) {
+				final errF : String = e.toString().replace('Null Object Reference', 'Cannot find script for interface :: $IType');
+				Logs.info(errF);
+				addTextToDebug(errF, 0xFFBB0000); // Use HaxeUI's alert
+				if(ui != null){
+					if(ui.destroy!=null)
+						ui.destroy(); // attempt :3
+					ui = null;
+				}
+					/*
+				for (v in this.members) {
+					if (Std.isOfType(v, UserInterface))  //🤞
+						cast(v, UserInterface).destroy();
+				} */
+// ballz
 				uiValid = false;
 			}
+			#else 
+				uiValid = false;
+			#end
 
 			if(!uiValid){
 				switch (ClientPrefs.data.interfaceType)
 				{
 					case 'Astro':
 						new AstroScore();
-					//case 'Psych':
-					//	new PsychScore();
 					default:
 						new VSliceScore();
 				}

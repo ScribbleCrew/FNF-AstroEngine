@@ -40,6 +40,6 @@ class VSlice extends UserInterface
 		}
 	}
 
-	override function updateScore():Void
-		scoreText.text = 'Score: {1}'.substitute([FlxStringUtil.formatMoney(game.songScore, false, true)]);
+	override function updateScore():Void{
+		scoreText.text = 'Score: {1}'.substitute([FlxStringUtil.formatMoney(game.songScore, false, true)]);}
 }
