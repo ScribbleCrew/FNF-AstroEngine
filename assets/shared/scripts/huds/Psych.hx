@@ -4,16 +4,16 @@ import flixel.util.FlxColor;
 import funkin.backend.base.UserInterface;
 import flixel.util.FlxStringUtil;
 import flixel.text.FlxText.FlxTextAlign;
+import funkin.backend.utils.Paths;
 
-import funkin.backend.utils.Paths; // substitute function
-
-using funkin.backend.utils.StringUtils;
+using funkin.backend.utils.StringUtils;  // for the substitute function
 
 class Psych extends UserInterface
 {
 	override function create():Void
 	{
-        super.create();
+		// shouldn't need to do this :3
+        // super.create();
 
 		scoreText = new FlxText(0, healthBar.y + 40, FlxG.width, "", 20);
 		scoreText.scrollFactor.set();
