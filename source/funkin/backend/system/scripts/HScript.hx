@@ -119,6 +119,7 @@ class HScript extends RuleScript implements IScript
 			'Type' => Type,
 			'Main' => funkin.game.Main,
 			'StringTools' => StringTools,
+			'Constants' => Constants, // :p
 			#if sys 'File' => File, 'FileSystem' => FileSystem, #end
 
 			// Flixel-Specific Stuff

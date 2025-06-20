@@ -317,11 +317,6 @@ class PlayState extends MusicBeatState
 	public var eventNotes:Array<EventNote> = [];
 
 	/**
-	 * The strumLine.
-	 */
-	private var strumLine:FlxSprite;
-
-	/**
 	 * The camera follow.
 	 */
 	public var camFollow:FlxObject;
@@ -880,11 +875,6 @@ class PlayState extends MusicBeatState
 		
 		Conductor.songPosition = -5000 / Conductor.songPosition;
 
-		strumLine = new FlxSprite(ClientPrefs.data.middleScroll ? STRUM_X_MIDDLESCROLL : STRUM_X, 50).makeGraphic(FlxG.width, 10);
-		if (ClientPrefs.data.downScroll) strumLine.y = FlxG.height - 150;
-		strumLine.scrollFactor.set();
-		strumLine.visible = !ClientPrefs.data.hideHud;
-
 		strumLineNotes = new FlxTypedGroup<StrumNote>();
 		noteGroup.add(strumLineNotes);
 		strumLineNotes.visible = !ClientPrefs.data.hideHud;
@@ -991,47 +981,35 @@ class PlayState extends MusicBeatState
 
 		stageAccess(function(stage:BaseStage) stage.createPost());
 		GlobalScript.instance.call('onCreatePost', []);
-
-		if(ui == null){
-		}
-		/*
-		if(ui == null){
-			switch (ClientPrefs.data.interfaceType) // turn into scripts
-			{
-				case 'Astro':
-					new AstroScore();
-				case 'Psych':
-					new PsychScore();
-				default:
-					new VSliceScore();
-			}
-		} */
-
-//		resetRPC();
 		
 		super.create();
 
+		var uiValid = false;
 		if (ui == null)
 		{
-			final in: String = ClientPrefs.data.interfaceType;
+			final IType : String = ClientPrefs.data.interfaceType;
 			final _hClass : Dynamic = HScriptUtils.fromMacro("funkin.backend.base.UserInterface"); // returns funkin.backend.base.UserInterface_RSC
 			
 			try {
-				Type.createInstance(_hClass, ['huds.${in.replace('-','')}', []]);
-				return;
-			} catch(e){
-				Logs.error(e.toString().replace('Null Object Reference', 'Cannot find script for HUD :: $in'));
+				Type.createInstance(_hClass, ['huds.${IType.replace('-','')}', []]);
+				uiValid = true;
+				//return;
+			} catch(e : haxe.Exception){
+				Logs.info(e.toString().replace('Null Object Reference', 'Cannot find script for interface :: $IType'));
 				ui = null;
+				uiValid = false;
 			}
 
-			switch (ClientPrefs.data.interfaceType)
-			{
-				case 'Astro':
-					new AstroScore();
-				case 'Psych':
-					new PsychScore();
-				default:
-					new VSliceScore();
+			if(!uiValid){
+				switch (ClientPrefs.data.interfaceType)
+				{
+					case 'Astro':
+						new AstroScore();
+					//case 'Psych':
+					//	new PsychScore();
+					default:
+						new VSliceScore();
+				}
 			}
 		}
 		if(ui!=null && ui.updateScore != null) updateScore();

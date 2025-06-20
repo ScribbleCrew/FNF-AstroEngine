@@ -1,13 +1,29 @@
 /**
-* Constants because funny???	
-* Inlines can't be accessed in runtime?
-*/
-@:dce final class Constants
+ * Constants because funny???	
+ * Inlines can't be accessed in runtime?
+ */
+class Constants
 {
+	/**
+	 * =========================
+	 * 		GLOBAL VARIABLES
+	 * =========================
+	 */
+
+	/**
+	 * Default character
+	 */
+	public static final DEFAULT_CHARACTER:String = 'bf'; // if the character is missing.
+
 	/**
 	 * Note sustain size.	
 	 */
-	public static inline final NOTE_SUSTAIN_SIZE:Int = 44;
+	public static final NOTE_SUSTAIN_SIZE:Int = 44;
+
+	/**
+	 * Friday Night Funkin's Classic Player Strumline Offset X axes.
+	 */
+	public static final CLASSIC_STRUMLINE_X_OFFSET:Float = 48;
 
 	/**
 	 * Default log prefix.
@@ -25,6 +41,11 @@
 	public static inline final DEFAULT_DISCORD_ID:String = "1095422496473358356";
 
 	/**
+	 * =========================
+	 * 		FILE EXTENSIONS
+	 * =========================
+	 */
+	/**
 	 * Sound file extension.
 	 */
 	public static inline final SOUND_EXT:String = #if web "mp3" #else "ogg" #end;
@@ -40,10 +61,10 @@
 	public static inline final VIDEO_EXT:String = "mp4";
 
 	/**
-	 * Default character
+	 * =========================
+	 * 		CHARTING STATE
+	 * =========================
 	 */
-	public static inline final DEFAULT_CHARACTER:String = 'bf'; // if the character is missing.
-
 	/**
 	 * Show the event column in teh chart editor...	
 	 */
@@ -65,7 +86,12 @@
 	public static inline final GRID_SIZE:Int = 40;
 
 	/**
-	 * The default font.
+	 * =========================
+	 * 			FONTS
+	 * =========================
+	 */
+	/**
+	 * Friday Night Funkin's Default Font.
 	 */
 	public static var DEFAULT_FONT(get, null):String;
 
