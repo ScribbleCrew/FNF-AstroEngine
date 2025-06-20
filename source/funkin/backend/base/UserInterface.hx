@@ -8,6 +8,15 @@ import flixel.util.FlxDestroyUtil.IFlxDestroyable;
 @:access(funkin.game.states.PlayState.songLength)
 abstract class UserInterface extends FlxBasic
 {
+	override function destroy() : Void {
+		super.destroy();
+
+		if(i in [timeBar, timeTxt, healthBar, iconP1, iconP2, botplayTxt, scoreText]) {
+			if(i != null && i.destroy != null)
+				i.destroy();
+		}
+	}
+
 	/**
 	 * Current PlayState instance.	
 	 */
