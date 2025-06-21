@@ -287,10 +287,20 @@ using StringTools;
 		addAsset("art/icons/iconOG.png", "iconOG.png", false); // maybe...
 		addAsset("art/readme.txt", "do NOT readme.txt", "art", false);
 
-		if (isDesktop)
-			@:nullSafety(Off) addAsset("alsoft.txt", '${isMac ? 'Resources/' : ''}plugins/alsoft.${isWindows ? 'ini' : 'conf'}', false);
+		if (isDesktop && sys.FileSystem.exists("alsoft.txt"))
+		{
+			@:nullSafety(Off) addAsset("alsoft.txt", getAudioConfigPath(), false);
+		}
 
 		addAssetPath("assets/fonts", null, null, ["*"], exclude, shouldEmbed); // was false...
+	}
+
+	// ADDED: Helper function for cross-platform audio config path
+	function getAudioConfigPath():String
+	{
+		if (isMac) return 'Resources/plugins/alsoft.conf';
+		if (isLinux) return 'plugins/alsoft.conf';
+		return 'plugins/alsoft.ini'; // Windows
 	}
 
 	function configureApp()
@@ -309,9 +319,10 @@ using StringTools;
 		for (source in SOURCES_DIR)
 			this.sources.push(source);
 
-		// Tell Lime to run some prebuild and postbuild scripts.
-		this.preBuildCallbacks.push(buildHaxeCLICommand(PREBUILD_HX));
-		this.postBuildCallbacks.push(buildHaxeCLICommand(POSTBUILD_HX));
+		if (sys.FileSystem.exists(PREBUILD_HX))
+			this.preBuildCallbacks.push(buildHaxeCLICommand(PREBUILD_HX));
+		if (sys.FileSystem.exists(POSTBUILD_HX))
+			this.postBuildCallbacks.push(buildHaxeCLICommand(POSTBUILD_HX));
 
 		// Configure the window.
 		// Automatically configure FPS.
@@ -391,8 +402,7 @@ using StringTools;
 
 		FLAG_FUNKIN_SOUNDTRAY.apply(this, true);
 
-		// Remove "officialBuild" to use videos on source mod
-		FLAG_VIDEOS_ALLOWED.apply(this, (isWindows || isLinux || isAndroid) && FLAG_OFFICIAL_BUILD.isEnabled(this));
+		FLAG_VIDEOS_ALLOWED.apply(this, isVideoSupportedPlatform());
 
 		// Crash handler
 		FLAG_CRASH_HANDLER.apply(this, isDesktop && isRelease);
@@ -400,11 +410,30 @@ using StringTools;
 		FLAG_CHECK_FOR_UPDATES.apply(this, isDesktop && FLAG_OFFICIAL_BUILD.isEnabled(this));
 	}
 
+	// ADDED: Helper function for video platform support
+	function isVideoSupportedPlatform():Bool
+	{
+		// Only enable videos on platforms where they're known to work
+		return (isWindows || (isLinux && !isCI()) || isAndroid) && FLAG_OFFICIAL_BUILD.isEnabled(this);
+	}
+
+	// ADDED: Helper to detect CI environment
+	function isCI():Bool
+	{
+		return Sys.environment().exists("CI") || 
+			   Sys.environment().exists("GITHUB_ACTIONS") ||
+			   Sys.environment().exists("TRAVIS") ||
+			   Sys.environment().exists("JENKINS_URL");
+	}
+
 	function configureCompileDefines()
 	{
 		// NOTE TO SELF: DISABLE THIS IF ISSUES ARE FOUND -->
 		// stable luas PUT AFTER FIRST LINE WITH APP NAME AND ETC -->
-		setHaxedef("LINC_LUA_RELATIVE_DYNAMIC_LIB");
+		if (FLAG_LUA_ALLOWED.isEnabled(this))
+		{
+			setHaxedef("LINC_LUA_RELATIVE_DYNAMIC_LIB");
+		}
 
 		if (FLAG_VIDEOS_ALLOWED.isEnabled(this))
 		{
@@ -436,8 +465,18 @@ using StringTools;
 		if (FLAG_HSCRIPT_ALLOWED.isEnabled(this))
 			setHaxedef("hscriptPos");
 
+
 		if (isLinux)
+		{
 			setHaxedef("NO_PRECOMPILED_HEADERS");
+			// Add additional Linux-specific defines
+			setHaxedef("LINUX");
+		}
+
+		if (isMac)
+		{
+			setHaxedef("MACOS");
+		}
 
 		setHaxedef("message.reporting", "pretty");
 		setHaxedef('message.log-format', 'pretty');
@@ -458,7 +497,7 @@ using StringTools;
 		if (isSwitch)
 			addHaxelib('faxe');
 
-		if (FLAG_LUA_ALLOWED.isEnabled(this))
+		if (FLAG_LUA_ALLOWED.isEnabled(this) && isDesktop)
 			addHaxelib('linc_luajit', 'git');
 
 		if (FLAG_HSCRIPT_ALLOWED.isEnabled(this))
@@ -470,7 +509,7 @@ using StringTools;
 		if (FLAG_FLXANIMATE_ALLOWED.isEnabled(this))
 			addHaxelib('flxanimate');
 
-		if (FLAG_DISCORD_ALLOWED.isEnabled(this))
+		if (FLAG_DISCORD_ALLOWED.isEnabled(this) && isDesktop)
 			addHaxelib('hxdiscord_rpc', 'git');
 
 		if (FLAG_DEBUG_SERVER_ALLOWED.isEnabled(this))
@@ -670,15 +709,16 @@ using StringTools;
 	/**
 	 * Display an error message. this should end the building process...	
 	 */
-	inline public function error(message:String):Void
+	 public function error(message:String):Void{
 		trace('[ERROR] $message'); // doesn't matter if its display ;p
+	}
 
 	/**
 	 * Display an info message. This should not interfere with the build process.
 	 */
-	public inline function info(message:String):Void
+	public  function info(message:String):Void{
 		if (command != 'display')
-			trace('[INFO] $message');
+			trace('[INFO] $message');}
 
 	// === Haxe Defines ===
 	public function getHaxedef(name:String):Null<Dynamic>
@@ -749,6 +789,7 @@ using StringTools;
 	{
 		this.haxeflags.push(value);
 	}
+
 
 	// === Haxe Macros ===
 
