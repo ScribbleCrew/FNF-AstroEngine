@@ -4,6 +4,7 @@ import flixel.util.FlxStringUtil;
 import funkin.backend.Highscore;
 
 using flixel.util.FlxSpriteUtil;
+
 // messy code :(
 // todo: completely rewrite this.
 class AstroScore extends UserInterface
@@ -25,7 +26,7 @@ class AstroScore extends UserInterface
 
 	function setupBGGroup()
 	{
-		game.insert(game.members.indexOf(game.uiGroup), uiBackgroundGroup = new FlxTypedGroup<FlxSprite>());//brah
+		game.insert(game.members.indexOf(game.uiGroup), uiBackgroundGroup = new FlxTypedGroup<FlxSprite>()); // brah
 		uiBackgroundGroup.visible = !ClientPrefs.data.downScroll;
 		uiBackgroundGroup.visible = !ClientPrefs.data.hideHud;
 		uiBackgroundGroup.cameras = [game.camHUD];
@@ -136,15 +137,16 @@ class AstroScore extends UserInterface
 			+ FlxStringUtil.formatTime(Math.max(0, Math.floor(FlxG.sound.music.length / 1000)), false);
 	}
 
-	@:dox(hide)override function updateScore():Void
+	@:dox(hide) override function updateScore():Void
 	{
-		scoreText.text = 'Score: {1} • Misses: {2} • Rating: {3}{4}'.substitute([// i love this func
+		scoreText.text = 'Score: {1} • Misses: {2} • Rating: {3}{4}'.substitute([
+			// i love this func
 			game.songScore,
 			game.songMisses,
 			game.ratingName,
 			(game.ratingName != '?' ? ' (${Highscore.floorDecimal(game.ratingPercent * 100, 2)}%) - ${game.ratingFC}' : '')
 		]);
-			
+
 		if (ClientPrefs.data.showRatingStats)
 			updateStats();
 	}
@@ -164,9 +166,9 @@ class AstroScore extends UserInterface
 	}
 
 	/**
-	* Create a round rect.	
-	*/
-	 private function addCurveBG(x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0, ellipseWidthAndHeight:Int = 0, startAlpha:Int = 0,
+	 * Create a round rect.	
+	 */
+	private function addCurveBG(x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0, ellipseWidthAndHeight:Int = 0, startAlpha:Int = 0,
 			?group:FlxTypedGroup<Dynamic>)
 	{
 		// width and height

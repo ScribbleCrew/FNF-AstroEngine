@@ -989,19 +989,21 @@ class PlayState extends MusicBeatState
 		{
 			#if HSCRIPT_ALLOWED
 			final IType:String = ClientPrefs.data.interfaceType;
+			final ITypeF:String = IType.replace('-', '');
 			final _hClass:Dynamic = HScriptUtils.fromMacro("funkin.backend.base.UserInterface"); // returns funkin.backend.base.UserInterface_RSC
 
 			try
 			{
-				Type.createInstance(_hClass, ['huds.${IType.replace('-', '')}', []]);
+				Type.createInstance(_hClass, ['huds.$ITypeF', [/* no args :( */]]);
 				uiValid = true;
 				// return;
 			}
 			catch (e:haxe.Exception)
 			{
-				final errF:String = e.toString().replace('Null Object Reference', 'Cannot find script for interface :: $IType');
-				Logs.error(errF);
-				addTextToDebug(errF, 0xFFBB0000); // Use HaxeUI's alert
+				final errF:String = e.toString().replace('Null Object Reference', 'Cannot find script for interface :: $IType // $ITypeF');
+				final fr:String = '{huds.$ITypeF}: $errF';
+				Logs.error(fr);
+				addTextToDebug(fr, 0xFFBB0000, false); // Use HaxeUI's alert instead
 				if (ui != null)
 				{
 					ui.destroy(); // attempt :3
@@ -1020,8 +1022,8 @@ class PlayState extends MusicBeatState
 			{
 				switch (ClientPrefs.data.interfaceType)
 				{
-					case 'Astro':
-						new AstroScore();
+					//case 'Astro':
+					//	new AstroScore();
 					default:
 						new VSliceScore();
 				}
@@ -1110,7 +1112,7 @@ class PlayState extends MusicBeatState
 	#end
 
 	#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
-	public function addTextToDebug(text:String, color:FlxColor):DebugText {
+	public function addTextToDebug(text:String, color:FlxColor, ?doTrace:Bool = true):DebugText {
 		var newText:DebugText = luaDebugGroup.recycle(DebugText);
 		newText.text = text;
 		newText.color = color;
@@ -1122,7 +1124,8 @@ class PlayState extends MusicBeatState
 		luaDebugGroup.forEachAlive(function(spr:DebugText) spr.y += newText.height + 2);
 		luaDebugGroup.add(newText);
 
-		Sys.println(text);
+		if(doTrace)
+			Sys.println(text);
 
 		return newText;
 	}
@@ -2032,8 +2035,7 @@ class PlayState extends MusicBeatState
 	public function resetRPC(?showTime:Bool = false)
 	{
 		#if DISCORD_ALLOWED
-		if (!autoUpdateRPC)
-			return;
+		if (!autoUpdateRPC || ui == null) return;
 
 		showTime ? DiscordClient.changePresence(detailsText, SONG.song
 			+ " ("
