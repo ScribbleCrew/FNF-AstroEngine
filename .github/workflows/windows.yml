@@ -8,6 +8,7 @@ on:
       - 'source/**'
       - '.github/workflows/**'
       - 'Project.hxp'
+      - 'Project.xml'
   pull_request:
     branches: [main, experimental]
     paths:
@@ -15,6 +16,7 @@ on:
       - 'source/**'
       - '.github/workflows/**'
       - 'Project.hxp'
+      - 'Project.xml'
 
   workflow_dispatch:
 
