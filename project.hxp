@@ -681,8 +681,9 @@ using StringTools;
 	public function getHaxedef(name:String):Null<Dynamic>
 		return this.haxedefs.get(name);
 
-	public function setHaxedef(name:String, ?value:String):Void
-		this.haxedefs.set(name, value ?? "");
+	public function setHaxedef(name:String, ?value:String):Void{
+				info('$name, $value');
+		this.haxedefs.set(name, value ?? "");}
 
 	public function unsetHaxedef(name:String):Void
 		this.haxedefs.remove(name);
