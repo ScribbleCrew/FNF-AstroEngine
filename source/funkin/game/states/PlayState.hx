@@ -317,11 +317,6 @@ class PlayState extends MusicBeatState
 	public var eventNotes:Array<EventNote> = [];
 
 	/**
-	 * The strumLine.
-	 */
-	private var strumLine:FlxSprite;
-
-	/**
 	 * The camera follow.
 	 */
 	public var camFollow:FlxObject;
@@ -880,11 +875,6 @@ class PlayState extends MusicBeatState
 		
 		Conductor.songPosition = -5000 / Conductor.songPosition;
 
-		strumLine = new FlxSprite(ClientPrefs.data.middleScroll ? STRUM_X_MIDDLESCROLL : STRUM_X, 50).makeGraphic(FlxG.width, 10);
-		if (ClientPrefs.data.downScroll) strumLine.y = FlxG.height - 150;
-		strumLine.scrollFactor.set();
-		strumLine.visible = !ClientPrefs.data.hideHud;
-
 		strumLineNotes = new FlxTypedGroup<StrumNote>();
 		noteGroup.add(strumLineNotes);
 		strumLineNotes.visible = !ClientPrefs.data.hideHud;
@@ -991,36 +981,56 @@ class PlayState extends MusicBeatState
 
 		stageAccess(function(stage:BaseStage) stage.createPost());
 		GlobalScript.instance.call('onCreatePost', []);
-
-		if(ui == null){
-			switch (ClientPrefs.data.interfaceType) // turn into scripts
-			{
-				case 'Astro':
-					new AstroScore();
-				case 'Psych':
-					new PsychScore();
-				default:
-					new VSliceScore();
-			}
-		}
-
-		resetRPC();
 		
 		super.create();
 
+		var uiValid : Bool = true;
 		if (ui == null)
 		{
-			switch (ClientPrefs.data.interfaceType)
+			#if HSCRIPT_ALLOWED
+			final IType:String = ClientPrefs.data.interfaceType;
+			final ITypeF:String = IType.replace('-', '');
+			final _hClass:Dynamic = HScriptUtils.fromMacro("funkin.backend.base.UserInterface"); // returns funkin.backend.base.UserInterface_RSC
+
+			try
 			{
-				case 'Astro':
-					new AstroScore();
-				case 'Psych':
-					new PsychScore();
-				default:
-					new VSliceScore();
+				Type.createInstance(_hClass, ['huds.$ITypeF', [/* no args :( */]]);
+				uiValid = true;
+				// return;
+			}
+			catch (e:haxe.Exception)
+			{
+				final errF:String = e.toString().replace('Null Object Reference', 'Cannot find script for interface :: $IType // $ITypeF');
+				final fr:String = '{huds.$ITypeF}: $errF';
+				Logs.error(fr);
+				addTextToDebug(fr, 0xFFBB0000, false); // Use HaxeUI's alert instead
+				if (ui != null)
+				{
+					ui.destroy(); // attempt :3
+					ui = null;
+				}
+				else
+					trace('ui equals null for some reason...');
+				// ballz
+				uiValid = false;
+			}
+			#else
+			uiValid = false;
+			#end
+
+			if (!uiValid)
+			{
+				switch (ClientPrefs.data.interfaceType)
+				{
+					//case 'Astro':
+					//	new AstroScore();
+					default:
+						new VSliceScore();
+				}
 			}
 		}
-		if(ui!=null && ui.updateScore != null) updateScore();
+		if (ui != null && ui.updateScore != null)
+			updateScore();
 
 		resetRPC();
 
@@ -1102,7 +1112,7 @@ class PlayState extends MusicBeatState
 	#end
 
 	#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
-	public function addTextToDebug(text:String, color:FlxColor):DebugText {
+	public function addTextToDebug(text:String, color:FlxColor, ?doTrace:Bool = true):DebugText {
 		var newText:DebugText = luaDebugGroup.recycle(DebugText);
 		newText.text = text;
 		newText.color = color;
@@ -1114,7 +1124,8 @@ class PlayState extends MusicBeatState
 		luaDebugGroup.forEachAlive(function(spr:DebugText) spr.y += newText.height + 2);
 		luaDebugGroup.add(newText);
 
-		Sys.println(text);
+		if(doTrace)
+			Sys.println(text);
 
 		return newText;
 	}
@@ -2024,8 +2035,7 @@ class PlayState extends MusicBeatState
 	public function resetRPC(?showTime:Bool = false)
 	{
 		#if DISCORD_ALLOWED
-		if (!autoUpdateRPC)
-			return;
+		if (!autoUpdateRPC || ui == null) return;
 
 		showTime ? DiscordClient.changePresence(detailsText, SONG.song
 			+ " ("

@@ -41,7 +41,7 @@ class RuleScriptedMacro
 
 		final cl:ClassType = clRef.get();
 
-		if (cl.isAbstract || cl.isExtern || cl.isInterface || cl.isFinal)
+		if (/*cl.isAbstract || */ cl.isExtern || cl.isInterface || cl.isFinal)
 			return null;
 		if(cl.name.endsWith(Config.CUSTOM_CLASSES_SHADOW_SUFFIX) || cl.name.contains(Config.CUSTOM_CLASSES_SHADOW_SUFFIX)) return null;
 		if (cl.name.endsWith("_Impl_") || modifiedClasses.contains(cl.name))

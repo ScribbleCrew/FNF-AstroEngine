@@ -8,12 +8,9 @@ using funkin.backend.utils.ObjectUtils;
 var halloweenBG:BGSprite;
 var halloweenWhite:BGSprite;
 
-function main():Void
-{
-	// PRECACHE SOUNDS
-	Paths.sound('thunder_1');
-	Paths.sound('thunder_2');
-}
+// PRECACHE SOUNDS
+Paths.sound('thunder_1');
+Paths.sound('thunder_2');
 
 function onCreate():Void
 {

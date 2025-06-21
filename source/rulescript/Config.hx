@@ -18,6 +18,8 @@ class Config
 		"funkin.game.objects.HealthIcon",
 		"funkin.game.objects.MenuItem",
 
+		"funkin.backend.base.UserInterface",// maybe add "--STRICT" flag
+
 		// STATE SYSTEMS
 		"funkin.backend.system.MusicBeatState",
 		"funkin.backend.system.MusicBeatSubState",

@@ -11,17 +11,18 @@ class HScriptUtils
 	{
 		final details:String = error.details();
 		Logs.prefixedTrace(details, 'ERROR', RED);
-		if (PlayState.instance != null) PlayState.instance.addTextToDebug(details, 0xFFBB0000);
+		if (PlayState.instance != null)
+			PlayState.instance.addTextToDebug(details, 0xFFBB0000);
 		return details;
 	}
 
 	/**
 	 * Gets a scripted macro class created by rulescript.
 	 */
-	@:noUsing public static inline function getScriptedClass(className:String)
+	@:noUsing public static inline function fromMacro(className:String)
 		return Type.resolveClass('${className}${Config.CUSTOM_CLASSES_SHADOW_SUFFIX}');
-	
-	public static function tryParseModule(code : String) : Array<ModuleDecl>
+
+	public static function tryParseModule(code:String):Array<ModuleDecl>
 	{
 		try
 		{
@@ -37,34 +38,42 @@ class HScriptUtils
 
 	public static function resolveModule(name:String):Array<ModuleDecl>
 	{
-		var path:Array<String> = name.split('.');
-
-		var pack:Array<String> = [];
-
-		while (path[0].charAt(0) == path[0].charAt(0).toLowerCase())
-			pack.push(path.shift());
-
-		var moduleName:String = null;
-
-		if (path.length > 1)
-			moduleName = path.shift();
-
-		final packName = '${(pack.length >= 1 ? pack.join('.') + '.' + (moduleName ?? path[0]) : path[0]).replace('.', '/')}.hx';// if ?? doesn't work use a newer version of haxe
-		final filePath = 'scripts/$packName';
-
-		#if MODS_ALLOWED
-		for (mod in (Mods.parseList().enabled).concat(['']))
+		try
 		{
-			final modPath:String = Paths.mods(mod + '/$filePath');
-			if (FileSystem.exists(modPath))
-				return tryParseModule(File.getContent(modPath));
-		}
-		#end
+			var path:Array<String> = name.split('.');
 
-		// Check file.
-		var full = Paths.getSharedPath() + filePath;
-		if (!FileSystem.exists(full))
+			var pack:Array<String> = [];
+
+			while (path[0].charAt(0) == path[0].charAt(0).toLowerCase())
+				pack.push(path.shift());
+
+			var moduleName:String = null;
+
+			if (path.length > 1)
+				moduleName = path.shift();
+
+			final packName = '${(pack.length >= 1 ? pack.join('.') + '.' + (moduleName ?? path[0]) : path[0]).replace('.', '/')}.hx'; // if ?? doesn't work use a newer version of haxe
+			final filePath = 'scripts/$packName';
+
+			#if MODS_ALLOWED
+			for (mod in (Mods.parseList().enabled).concat(['']))
+			{
+				final modPath:String = Paths.mods(mod + '/$filePath');
+				if (FileSystem.exists(modPath))
+					return tryParseModule(File.getContent(modPath));
+			}
+			#end
+
+			// Check file.
+			var full = Paths.getSharedPath() + filePath;
+			if (!FileSystem.exists(full))
+				return null;
+			return tryParseModule(File.getContent(full));
+		}
+		catch (e)
+		{
+			Logs.error(e);
 			return null;
-		return tryParseModule(File.getContent(full));
+		}
 	}
 }

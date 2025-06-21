@@ -5,10 +5,7 @@ import flixel.util.FlxColor;
 
 using funkin.backend.utils.ObjectUtils;
 
-function main():Void
-{
-	Paths.sound('Lights_Turn_On'); // preload
-}
+Paths.sound('Lights_Turn_On'); // preload
 
 function onCreate():Void
 {
