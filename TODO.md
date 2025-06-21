@@ -7,7 +7,7 @@
 * Fix countdown sound being incorrect (PIXEL SOMETIMES PLAYING ON NON PIXEL STAGES)
 * Make a better hscript error handler w pos info
 * Create HScript context levels e.g STATE, STAGE (Same Context as SONG), SONG (Same Context as STAGE)
-* Custom HUD Classes support. After that make 3d perspective rlly cool interface 👍👍👍👍🤔🤔🤔 ASTRO
+* After that make 3d perspective rlly cool interface 👍👍👍👍🤔🤔🤔 ASTRO-Newer
 * Fix titlestate switch state anim glitch thingy
 * .put on all `FlxPoint` (credits title uhh idk)
 * Rewrite TitleState -- DOING 3/30/2025
