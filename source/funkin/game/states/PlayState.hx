@@ -1002,8 +1002,10 @@ class PlayState extends MusicBeatState
 			{
 				final errF:String = e.toString().replace('Null Object Reference', 'Cannot find script for interface :: $IType // $ITypeF');
 				final fr:String = '{huds.$ITypeF}: $errF';
-				Logs.error(fr);
-				addTextToDebug(fr, 0xFFBB0000, false); // Use HaxeUI's alert instead
+				if(!fr.toLowerCase().replace('-','').contains('vslice')){// isn't the best way but ehh
+					Logs.error(fr);
+					addTextToDebug(fr, 0xFFBB0000, false); // Use HaxeUI's alert instead
+				}
 				if (ui != null)
 				{
 					ui.destroy(); // attempt :3
