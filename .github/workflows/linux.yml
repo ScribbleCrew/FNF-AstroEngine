@@ -1,5 +1,4 @@
 name: Linux
-
 on:
   push:
     branches: [main, experimental]
@@ -15,32 +14,76 @@ on:
       - 'source/**'
       - '.github/workflows/**'
       - 'Project.hxp'
-
   workflow_dispatch:
 
 jobs:
-   buildLinux:
+  buildLinux:
     name: Release Build
     runs-on: ubuntu-24.04
-
+    
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      
       - uses: krdlab/setup-haxe@master
         with:
           haxe-version: 4.3.4
+      
       # Runs a set of commands using the runners shell
       - name: Installing LibVLC
         run: |
           sudo apt-get install libvlc-dev libvlccore-dev
+      
       - name: Installing/Updating libraries
-        run: haxe -cp commandline -D analyzer-optimize --run Main setup -s
+        run: |
+          echo "=== Installing/Updating libraries with verbose output ==="
+          haxe -cp commandline -D analyzer-optimize --run Main setup -s -v
+      
+      - name: Debug Environment
+        run: |
+          echo "=== Debug Information ==="
+          echo "Working directory: $(pwd)"
+          echo "Haxe version: $(haxe --version)"
+          echo "Lime version: $(haxelib list lime)"
+          echo "Project.hxp exists: $(test -f Project.hxp && echo 'YES' || echo 'NO')"
+          echo "Directory contents:"
+          ls -la
+          echo "=== End Debug Information ==="
+      
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
-      - name: Compile
-        run: haxelib run lime build linux --app-version="4.0.0-${{ github.run_id}}"
+      
+      - name: Compile with Verbose Output
+        run: |
+          echo "=== Starting compilation with verbose output ==="
+          # Enable verbose output for both haxelib and lime
+          haxelib run lime build linux --app-version="4.0.0-${{ github.run_id}}" --verbose -v 2>&1 | tee build.log
+          echo "=== Compilation finished ==="
+          echo "Exit code: $?"
+      
+      # Upload build log even if compilation fails
+      - name: Upload Build Log
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Build Log
+          path: build.log
+      
+      - name: Check Build Output
+        run: |
+          echo "=== Checking build output ==="
+          if [ -d "export/release/linux/bin" ]; then
+            echo "Build directory exists"
+            ls -la export/release/linux/bin/
+          else
+            echo "Build directory does not exist"
+            echo "Available directories:"
+            find export/ -type d 2>/dev/null || echo "No export directory found"
+          fi
+      
       - name: Uploading artifact (entire build)
         uses: actions/upload-artifact@v4
+        if: success()
         with:
           name: Astro Engine
           path: export/release/linux/bin
