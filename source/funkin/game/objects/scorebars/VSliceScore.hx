@@ -27,6 +27,12 @@ package funkin.game.objects.scorebars;
 		{
 			final playerStrum = game.playerStrums.members[i];
 			playerStrum.x = (FlxG.width / 2 + Constants.CLASSIC_STRUMLINE_X_OFFSET) + ((Note.swagWidth) * i);
+
+			if(!ClientPrefs.data.middleScroll)
+			{
+				final oppStrum = game.opponentStrums.members[i];
+				oppStrum.x = Constants.CLASSIC_STRUMLINE_X_OFFSET  + (Note.swagWidth * i);
+			}
 		}
 	}
 
