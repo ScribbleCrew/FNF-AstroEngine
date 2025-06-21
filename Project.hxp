@@ -750,11 +750,6 @@ using StringTools;
 		this.haxeflags.push(value);
 	}
 
-	public function hasHaxelib(name:String)
-	{
-		return this.haxelibs.exists(name);
-	}
-
 	// === Haxe Macros ===
 
 	/**
