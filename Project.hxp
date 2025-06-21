@@ -447,6 +447,9 @@ using StringTools;
 
 	function configureHaxelibs()
 	{
+		addHaxelib('lime');
+		addHaxelib('openfl');
+
 		addHaxelib('flixel'); // Game engine
 		addHaxelib('flixel-addons');
 
@@ -456,7 +459,7 @@ using StringTools;
 			addHaxelib('faxe');
 
 		if (FLAG_LUA_ALLOWED.isEnabled(this))
-			addHaxelib('linc_luajit');
+			addHaxelib('linc_luajit', 'git');
 
 		if (FLAG_HSCRIPT_ALLOWED.isEnabled(this))
 			addHaxelib('rulescript', 'git');
@@ -745,6 +748,11 @@ using StringTools;
 	public function addHaxeFlag(value:String):Void
 	{
 		this.haxeflags.push(value);
+	}
+
+	public function hasHaxelib(name:String)
+	{
+		return this.haxelibs.exists(name);
 	}
 
 	// === Haxe Macros ===

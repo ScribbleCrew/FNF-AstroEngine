@@ -4,17 +4,17 @@ on:
   push:
     branches: [main, experimental]
     paths:
-      - 'assets/**'
-      - 'source/**'
-      - '.github/workflows/**'
-      - 'Project.hxp'
+      - "assets/**"
+      - "source/**"
+      - ".github/workflows/**"
+      - "Project.hxp"
   pull_request:
     branches: [main, experimental]
     paths:
-      - 'assets/**'
-      - 'source/**'
-      - '.github/workflows/**'
-      - 'Project.hxp'
+      - "assets/**"
+      - "source/**"
+      - ".github/workflows/**"
+      - "Project.hxp"
 
   workflow_dispatch:
 
@@ -34,7 +34,7 @@ jobs:
       # INSTALL / UPDATE LIBS
       - name: Installing/Updating libraries
         run: |
-            haxe -cp commandline -D analyzer-optimize --run Main setup -s
+          haxe -cp commandline -D analyzer-optimize --run Main setup -s
         shell: cmd
 
       # CREATE THE VERSION TAG
