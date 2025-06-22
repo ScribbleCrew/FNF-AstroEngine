@@ -118,11 +118,13 @@ class Character extends FlxSprite
 				}
 			}
 			// sadly, i need a bf (best friend)
-			this.characterScript = Type.createInstance(CCharScript, ['chars.${(overrideCharacterName ?? curCharacter).capitalize()}', []]);
+			this.characterScript = Type.createInstance(CCharScript, ['characters.${(overrideCharacterName ?? curCharacter).capitalize()}', [this]]);
 			this.characterScript.instance = this; // owo :3
 			this.characterScript.post();
 		}
-		catch (e:haxe.Exception) {}
+		catch (e:haxe.Exception)
+		{
+		}
 		#end
 	}
 	#end
@@ -155,7 +157,7 @@ class Character extends FlxSprite
 			#else
 			loadCharacterFile(tjson.TJSON.parse(Assets.getText(path)));
 			#end
-		#if HSCRIPT_ALLOWED	loadCharacterScript(true,character); #end
+			#if HSCRIPT_ALLOWED loadCharacterScript(true, character); #end
 		}
 		catch (e:Dynamic)
 		{

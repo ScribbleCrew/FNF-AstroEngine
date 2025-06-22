@@ -1214,6 +1214,7 @@ class PlayState extends MusicBeatState
 		}
 		#end
 
+		/*
 		// HScript
 		#if HSCRIPT_ALLOWED
 		var doPush:Bool = false;
@@ -1242,6 +1243,7 @@ class PlayState extends MusicBeatState
 				new HScript(null, scriptFile).run();
 		}
 		#end
+		*/
 	}
 
 	function startCharacterPos(char:Character, ?gfCheck:Bool = false)
@@ -2618,6 +2620,7 @@ class PlayState extends MusicBeatState
 					case 0:
 						if (boyfriend.curCharacter != value2)
 						{
+							if(boyfriend.characterScript != null) boyfriend.characterScript.destroy();
 							if (!boyfriendMap.exists(value2))
 							{
 								addCharacterToList(value2, charType);
@@ -2634,6 +2637,7 @@ class PlayState extends MusicBeatState
 					case 1:
 						if (dad.curCharacter != value2)
 						{
+							if(dad.characterScript != null) dad.characterScript.destroy();
 							if (!dadMap.exists(value2))
 							{
 								addCharacterToList(value2, charType);
@@ -2662,6 +2666,7 @@ class PlayState extends MusicBeatState
 					case 2:
 						if (gf != null)
 						{
+							if(gf.characterScript != null) gf.characterScript.destroy();
 							if (gf.curCharacter != value2)
 							{
 								if (!gfMap.exists(value2))
@@ -2677,6 +2682,7 @@ class PlayState extends MusicBeatState
 							GlobalScript.instance.set('gfName', gf.curCharacter);
 						}
 				}
+					
 				ui.reloadHealthBarColors();
 
 			case 'Change Scroll Speed':
