@@ -1,4 +1,4 @@
-./README ASAP.txt
+./readme.md
 
 # Information:
 
