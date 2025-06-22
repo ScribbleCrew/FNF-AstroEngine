@@ -90,11 +90,18 @@ class Constants
 	 * 			FONTS
 	 * =========================
 	 */
+
 	/**
 	 * Friday Night Funkin's Default Font.
 	 */
 	public static var DEFAULT_FONT(get, null):String;
-
 	@:dox(hide) @:noCompletion inline static function get_DEFAULT_FONT():String
-		return DEFAULT_FONT == null ? funkin.backend.utils.Paths.font("vcr.ttf") : DEFAULT_FONT;
+		return DEFAULT_FONT == null ? DEFAULT_FONT = funkin.backend.utils.Paths.font("vcr.ttf") : DEFAULT_FONT;
+
+	/**
+	 * Engine's Default Font.
+	 */
+	public static var DEFAULT_ENGINE_FONT(get, null):String;
+	@:dox(hide) @:noCompletion inline static function get_DEFAULT_ENGINE_FONT():String
+		return DEFAULT_ENGINE_FONT == null ? DEFAULT_ENGINE_FONT = funkin.backend.utils.Paths.font("PhantomMuff.ttf") : DEFAULT_ENGINE_FONT;
 }
