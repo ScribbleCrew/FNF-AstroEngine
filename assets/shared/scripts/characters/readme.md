@@ -19,7 +19,7 @@ package character;
 import funkin.game.objects.characters.CharacterScript;
 import flixel.addons.effects.FlxTrail;
 
-class Spirit extends CharacterScript
+class Furry extends CharacterScript
 {
 	// VARIABLE
 	var foo:FlxTrail = null;
@@ -36,7 +36,7 @@ class Spirit extends CharacterScript
 		game.addBehindDad(registeredTrail);
 
 		instance.setPosition(FlxG.width - instance.x, FlxG.height - instance.y);
-		instance.soSOMETHING();
+		instance.soSOMETHING(); // NOTICE: this isn't a real function, its just an example -orbl
 
 		// BLAH BLAH BLAH
 	}

@@ -6,9 +6,7 @@
 
 ---
 
-## Example:
-
-### HScript:
+### HScript Example:
 
 ```haxe
 package huds;
@@ -44,3 +42,5 @@ class Psych extends UserInterface
 	}
 }
 ```
+
+reference stolen from [`Psych.hx`](./Psych.hx)
