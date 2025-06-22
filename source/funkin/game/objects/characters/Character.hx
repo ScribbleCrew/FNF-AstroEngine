@@ -2,15 +2,13 @@ package funkin.game.objects.characters;
 
 import funkin.backend.Song.SwagSection;
 import funkin.backend.animation.AnimationController;
-
 import flixel.graphics.frames.FlxAtlasFrames;
-
 import flixel.util.FlxSort;
 import flixel.util.FlxDestroyUtil;
-
 import openfl.utils.Assets;
 
-typedef CharacterFile = {
+typedef CharacterFile =
+{
 	var animations:Array<AnimArray>;
 	var image:String;
 	var scale:Float;
@@ -26,7 +24,8 @@ typedef CharacterFile = {
 	var vocals_file:String;
 }
 
-typedef AnimArray = {
+typedef AnimArray =
+{
 	var anim:String;
 	var name:String;
 	var fps:Int;
@@ -49,9 +48,9 @@ class Character extends FlxSprite
 	public var specialAnim:Bool = false;
 	public var animationNotes:Array<Dynamic> = [];
 	public var stunned:Bool = false;
-	public var singDuration:Float = 4; //Multiplier of how long a character holds the sing pose
+	public var singDuration:Float = 4; // Multiplier of how long a character holds the sing pose
 	public var idleSuffix:String = '';
-	public var danceIdle:Bool = false; //Character use "danceLeft" and "danceRight" instead of "idle"
+	public var danceIdle:Bool = false; // Character use "danceLeft" and "danceRight" instead of "idle"
 	public var skipDance:Bool = false;
 
 	public var healthIcon:String = 'face';
@@ -66,12 +65,14 @@ class Character extends FlxSprite
 	public var hasMissAnimations:Bool = false;
 	public var vocalsFile:String = '';
 
-	//Used on Character Editor
+	// Used on Character Editor
 	public var imageFile:String = '';
 	public var jsonScale:Float = 1;
 	public var noAntialiasing:Bool = false;
 	public var originalFlipX:Bool = false;
 	public var editorIsPlayer:Null<Bool> = null;
+
+	public var characterScript:CharacterScript = null; // my balls hurt
 
 	public function new(x:Float, y:Float, ?character:String = 'bf', ?isPlayer:Bool = false)
 	{
@@ -82,10 +83,9 @@ class Character extends FlxSprite
 		animOffsets = new Map<String, Array<Dynamic>>();
 		this.isPlayer = isPlayer;
 		changeCharacter(character);
-		
-		
+
 		#if BASE_GAME_FILES
-		switch(curCharacter)
+		switch (curCharacter)
 		{
 			case 'pico-speaker':
 				skipDance = true;
@@ -96,6 +96,36 @@ class Character extends FlxSprite
 		}
 		#end
 	}
+
+	#if HSCRIPT_ALLOWED
+	static final CCharScript:Dynamic = HScriptUtils.fromMacro("funkin.game.objects.characters.CharacterScript");
+
+	/**
+	 * Loads a characters class script
+	 * @param killCurrent Destroys this instances character script.
+	 */
+	function loadCharacterScript(killCurrent:Bool = true, ?overrideCharacterName:String):Void
+	{
+		#if HSCRIPT_ALLOWED
+		try
+		{
+			if (killCurrent)
+			{
+				if (this.characterScript != null)
+				{
+					this.characterScript.destroy();
+					this.characterScript = null;
+				}
+			}
+			// sadly, i need a bf (best friend)
+			this.characterScript = Type.createInstance(CCharScript, ['chars.${(overrideCharacterName ?? curCharacter).capitalize()}', []]);
+			this.characterScript.instance = this; // owo :3
+			this.characterScript.post();
+		}
+		catch (e:haxe.Exception) {}
+		#end
+	}
+	#end
 
 	public function changeCharacter(character:String)
 	{
@@ -111,7 +141,8 @@ class Character extends FlxSprite
 		if (!Assets.exists(path))
 		#end
 		{
-			path = Paths.getSharedPath('characters/' + Constants.DEFAULT_CHARACTER + '.json'); //If a character couldn't be found, change him to BF just to prevent a crash
+			// If a character couldn't be found, change him to BF just to prevent a crash
+			path = Paths.getSharedPath('characters/' + Constants.DEFAULT_CHARACTER + '.json');
 			missingCharacter = true;
 			missingText = new FlxText(0, 0, 300, 'ERROR:\n$character.json', 16);
 			missingText.alignment = CENTER;
@@ -124,8 +155,9 @@ class Character extends FlxSprite
 			#else
 			loadCharacterFile(tjson.TJSON.parse(Assets.getText(path)));
 			#end
+		#if HSCRIPT_ALLOWED	loadCharacterScript(true,character); #end
 		}
-		catch(e:Dynamic)
+		catch (e:Dynamic)
 		{
 			trace('Error loading character file of "$character": $e');
 		}
@@ -149,11 +181,11 @@ class Character extends FlxSprite
 		scale.set(1, 1);
 		updateHitbox();
 
-		if(!isAnimateAtlas)
+		if (!isAnimateAtlas)
 		{
 			var split:Array<String> = json.image.split(',');
 			var charFrames:FlxAtlasFrames = Paths.getAtlas(split[0].trim());
-			if(split.length > 1)
+			if (split.length > 1)
 			{
 				var original:FlxAtlasFrames = charFrames;
 				charFrames = new FlxAtlasFrames(charFrames.parent);
@@ -161,7 +193,7 @@ class Character extends FlxSprite
 				for (i in 1...split.length)
 				{
 					var extraFrames:FlxAtlasFrames = Paths.getAtlas(split[i].trim());
-					if(extraFrames != null)
+					if (extraFrames != null)
 						charFrames.addAtlas(extraFrames, true);
 				}
 			}
@@ -176,7 +208,7 @@ class Character extends FlxSprite
 			{
 				Paths.loadAnimateAtlas(atlas, json.image);
 			}
-			catch(e:haxe.Exception)
+			catch (e:haxe.Exception)
 			{
 				FlxG.log.warn('Could not load atlas ${json.image}: $e');
 				trace(e.stack);
@@ -186,7 +218,8 @@ class Character extends FlxSprite
 
 		imageFile = json.image;
 		jsonScale = json.scale;
-		if(json.scale != 1) {
+		if (json.scale != 1)
+		{
 			scale.set(jsonScale, jsonScale);
 			updateHitbox();
 		}
@@ -210,17 +243,19 @@ class Character extends FlxSprite
 
 		// animations
 		animationsArray = json.animations;
-		if(animationsArray != null && animationsArray.length > 0) {
-			for (anim in animationsArray) {
+		if (animationsArray != null && animationsArray.length > 0)
+		{
+			for (anim in animationsArray)
+			{
 				var animAnim:String = '' + anim.anim;
 				var animName:String = '' + anim.name;
 				var animFps:Int = anim.fps;
-				var animLoop:Bool = !!anim.loop; //Bruh
+				var animLoop:Bool = !!anim.loop; // Bruh
 				var animIndices:Array<Int> = anim.indices;
 
-				if(!isAnimateAtlas)
+				if (!isAnimateAtlas)
 				{
-					if(animIndices != null && animIndices.length > 0)
+					if (animIndices != null && animIndices.length > 0)
 						animation.addByIndices(animAnim, animName, animIndices, "", animFps, animLoop);
 					else
 						animation.addByPrefix(animAnim, animName, animFps, animLoop);
@@ -228,41 +263,51 @@ class Character extends FlxSprite
 				#if FLXANIMATE_ALLOWED
 				else
 				{
-					if(animIndices != null && animIndices.length > 0)
+					if (animIndices != null && animIndices.length > 0)
 						atlas.anim.addBySymbolIndices(animAnim, animName, animIndices, animFps, animLoop);
 					else
 						atlas.anim.addBySymbol(animAnim, animName, animFps, animLoop);
 				}
 				#end
 
-				if(anim.offsets != null && anim.offsets.length > 1) addOffset(anim.anim, anim.offsets[0], anim.offsets[1]);
-				else addOffset(anim.anim, 0, 0);
+				if (anim.offsets != null && anim.offsets.length > 1)
+					addOffset(anim.anim, anim.offsets[0], anim.offsets[1]);
+				else
+					addOffset(anim.anim, 0, 0);
 			}
 		}
 		#if FLXANIMATE_ALLOWED
-		if(isAnimateAtlas) copyAtlasValues();
+		if (isAnimateAtlas)
+			copyAtlasValues();
 		#end
-		//trace('Loaded file to character ' + curCharacter);
+		// trace('Loaded file to character ' + curCharacter);
 	}
 
 	override function update(elapsed:Float)
 	{
-		if(isAnimateAtlas) atlas.update(elapsed);
+		#if HSCRIPT_ALLOWED
+		if (characterScript != null)
+			characterScript.update(elapsed);
+		#end
+		if (isAnimateAtlas)
+			atlas.update(elapsed);
 
-		if(debugMode || (!isAnimateAtlas && animation.curAnim == null) || (isAnimateAtlas && (atlas.anim.curInstance == null || atlas.anim.curSymbol == null)))
+		if (debugMode
+			|| (!isAnimateAtlas && animation.curAnim == null)
+			|| (isAnimateAtlas && (atlas.anim.curInstance == null || atlas.anim.curSymbol == null)))
 		{
 			super.update(elapsed);
 			return;
 		}
 
-		if(heyTimer > 0)
+		if (heyTimer > 0)
 		{
 			var rate:Float = (PlayState.instance != null ? PlayState.instance.playbackRate : 1.0);
 			heyTimer -= elapsed * rate;
-			if(heyTimer <= 0)
+			if (heyTimer <= 0)
 			{
 				var anim:String = getAnimationName();
-				if(specialAnim && (anim == 'hey' || anim == 'cheer'))
+				if (specialAnim && (anim == 'hey' || anim == 'cheer'))
 				{
 					specialAnim = false;
 					dance();
@@ -270,7 +315,7 @@ class Character extends FlxSprite
 				heyTimer = 0;
 			}
 		}
-		else if(specialAnim && isAnimationFinished())
+		else if (specialAnim && isAnimationFinished())
 		{
 			specialAnim = false;
 			dance();
@@ -281,33 +326,38 @@ class Character extends FlxSprite
 			finishAnimation();
 		}
 		#if BASE_GAME_FILES
-		switch(curCharacter)
+		switch (curCharacter)
 		{
 			case 'pico-speaker':
-				if(animationNotes.length > 0 && Conductor.songPosition > animationNotes[0][0])
+				if (animationNotes.length > 0 && Conductor.songPosition > animationNotes[0][0])
 				{
 					var noteData:Int = 1;
-					if(animationNotes[0][1] > 2) noteData = 3;
+					if (animationNotes[0][1] > 2)
+						noteData = 3;
 
 					noteData += FlxG.random.int(0, 1);
 					playAnim('shoot' + noteData, true);
 					animationNotes.shift();
 				}
-				if(isAnimationFinished()) playAnim(getAnimationName(), false, false, animation.curAnim.frames.length - 3);
+				if (isAnimationFinished())
+					playAnim(getAnimationName(), false, false, animation.curAnim.frames.length - 3);
 		}
 		#end
 
-		if (getAnimationName().startsWith('sing')) holdTimer += elapsed;
-		else if(isPlayer) holdTimer = 0;
+		if (getAnimationName().startsWith('sing'))
+			holdTimer += elapsed;
+		else if (isPlayer)
+			holdTimer = 0;
 
-		if (!isPlayer && holdTimer >= Conductor.stepCrochet * (0.0011 #if FLX_PITCH / (FlxG.sound.music != null ? FlxG.sound.music.pitch : 1) #end) * singDuration)
+		if (!isPlayer
+			&& holdTimer >= Conductor.stepCrochet * (0.0011 #if FLX_PITCH / (FlxG.sound.music != null ? FlxG.sound.music.pitch : 1) #end) * singDuration)
 		{
 			dance();
 			holdTimer = 0;
 		}
 
 		var name:String = getAnimationName();
-		if(isAnimationFinished() && hasAnimation('$name-loop'))
+		if (isAnimationFinished() && hasAnimation('$name-loop'))
 			playAnim('$name-loop');
 
 		super.update(elapsed);
@@ -319,6 +369,7 @@ class Character extends FlxSprite
 	}
 
 	var _lastPlayedAnimation:String;
+
 	inline public function getAnimationName():String
 	{
 		return _lastPlayedAnimation;
@@ -326,16 +377,20 @@ class Character extends FlxSprite
 
 	public function isAnimationFinished():Bool
 	{
-		if(isAnimationNull()) return false;
+		if (isAnimationNull())
+			return false;
 		return !isAnimateAtlas ? animation.curAnim.finished : atlas.anim.finished;
 	}
 
 	public function finishAnimation():Void
 	{
-		if(isAnimationNull()) return;
+		if (isAnimationNull())
+			return;
 
-		if(!isAnimateAtlas) animation.curAnim.finish();
-		else atlas.anim.curFrame = atlas.anim.length - 1;
+		if (!isAnimateAtlas)
+			animation.curAnim.finish();
+		else
+			atlas.anim.curFrame = atlas.anim.length - 1;
 	}
 
 	public function hasAnimation(anim:String):Bool
@@ -344,19 +399,26 @@ class Character extends FlxSprite
 	}
 
 	public var animPaused(get, set):Bool;
+
 	private function get_animPaused():Bool
 	{
-		if(isAnimationNull()) return false;
+		if (isAnimationNull())
+			return false;
 		return !isAnimateAtlas ? animation.curAnim.paused : atlas.anim.isPlaying;
 	}
+
 	private function set_animPaused(value:Bool):Bool
 	{
-		if(isAnimationNull()) return value;
-		if(!isAnimateAtlas) animation.curAnim.paused = value;
+		if (isAnimationNull())
+			return value;
+		if (!isAnimateAtlas)
+			animation.curAnim.paused = value;
 		else
 		{
-			if(value) atlas.pauseAnimation();
-			else atlas.resumeAnimation();
+			if (value)
+				atlas.pauseAnimation();
+			else
+				atlas.resumeAnimation();
 		}
 
 		return value;
@@ -371,7 +433,7 @@ class Character extends FlxSprite
 	{
 		if (!debugMode && !skipDance && !specialAnim)
 		{
-			if(danceIdle)
+			if (danceIdle)
 			{
 				danced = !danced;
 
@@ -380,7 +442,7 @@ class Character extends FlxSprite
 				else
 					playAnim('danceLeft' + idleSuffix);
 			}
-			else if(hasAnimation('idle' + idleSuffix))
+			else if (hasAnimation('idle' + idleSuffix))
 				playAnim('idle' + idleSuffix);
 		}
 	}
@@ -388,7 +450,7 @@ class Character extends FlxSprite
 	public function playAnim(AnimName:String, Force:Bool = false, Reversed:Bool = false, Frame:Int = 0):Void
 	{
 		specialAnim = false;
-		if(!isAnimateAtlas)
+		if (!isAnimateAtlas)
 		{
 			animation.play(AnimName, Force, Reversed, Frame);
 		}
@@ -404,13 +466,12 @@ class Character extends FlxSprite
 			var daOffset = animOffsets.get(AnimName);
 			offset.set(daOffset[0], daOffset[1]);
 		}
-		//else offset.set(0, 0);
+		// else offset.set(0, 0);
 
 		if (curCharacter.startsWith('gf-') || curCharacter == 'gf')
 		{
 			if (AnimName == 'singLEFT')
 				danced = true;
-
 			else if (AnimName == 'singRIGHT')
 				danced = false;
 
@@ -418,39 +479,45 @@ class Character extends FlxSprite
 				danced = !danced;
 		}
 	}
+
 	function loadMappedAnims():Void
+	{
+		try
 		{
-			try
-			{
-				var songData:SwagSong = Song.getChart('picospeaker', Paths.formatToSongPath(Song.loadedSongName));
-				if(songData != null)
-					for (section in songData.notes)
-						for (songNotes in section.sectionNotes)
-							animationNotes.push(songNotes);
-	
-				TankmenBG.animationNotes = animationNotes;
-				animationNotes.sort(sortAnims);
-			}
-			catch(e:Dynamic) {}
+			var songData:SwagSong = Song.getChart('picospeaker', Paths.formatToSongPath(Song.loadedSongName));
+			if (songData != null)
+				for (section in songData.notes)
+					for (songNotes in section.sectionNotes)
+						animationNotes.push(songNotes);
+
+			TankmenBG.animationNotes = animationNotes;
+			animationNotes.sort(sortAnims);
 		}
+		catch (e:Dynamic)
+		{
+		}
+	}
 
 	function sortAnims(Obj1:Array<Dynamic>, Obj2:Array<Dynamic>):Int
 		return FlxSort.byValues(FlxSort.ASCENDING, Obj1[0], Obj2[0]);
 
 	public var danceEveryNumBeats:Int = 2;
+
 	private var settingCharacterUp:Bool = true;
-	public function recalculateDanceIdle() {
+
+	public function recalculateDanceIdle()
+	{
 		var lastDanceIdle:Bool = danceIdle;
 		danceIdle = (hasAnimation('danceLeft' + idleSuffix) && hasAnimation('danceRight' + idleSuffix));
 
-		if(settingCharacterUp)
+		if (settingCharacterUp)
 		{
 			danceEveryNumBeats = (danceIdle ? 1 : 2);
 		}
-		else if(lastDanceIdle != danceIdle)
+		else if (lastDanceIdle != danceIdle)
 		{
 			var calc:Float = danceEveryNumBeats;
-			if(danceIdle)
+			if (danceIdle)
 				calc /= 2;
 			else
 				calc *= 2;
@@ -472,25 +539,26 @@ class Character extends FlxSprite
 	public var isAnimateAtlas(default, null):Bool = false;
 	#if FLXANIMATE_ALLOWED
 	public var atlas:FlxAnimate;
+
 	public override function draw():Void
 	{
 		var lastAlpha:Float = alpha;
 		var lastColor:FlxColor = color;
-		if(missingCharacter)
+		if (missingCharacter)
 		{
 			alpha *= 0.6;
 			color = FlxColor.BLACK;
 		}
 
-		if(isAnimateAtlas)
+		if (isAnimateAtlas)
 		{
-			if(atlas.anim.curInstance != null)
+			if (atlas.anim.curInstance != null)
 			{
 				copyAtlasValues();
 				atlas.draw();
 				alpha = lastAlpha;
 				color = lastColor;
-				if(missingCharacter && visible)
+				if (missingCharacter && visible)
 				{
 					missingText.x = getMidpoint().x - 150;
 					missingText.y = getMidpoint().y - 10;
@@ -500,7 +568,7 @@ class Character extends FlxSprite
 			return;
 		}
 		super.draw();
-		if(missingCharacter && visible)
+		if (missingCharacter && visible)
 		{
 			alpha = lastAlpha;
 			color = lastColor;
@@ -535,6 +603,10 @@ class Character extends FlxSprite
 
 	public override function destroy():Void
 	{
+		#if HSCRIPT_ALLOWED
+		if (characterScript != null)
+			characterScript.destroy();
+		#end
 		atlas = FlxDestroyUtil.destroy(atlas);
 		super.destroy();
 	}

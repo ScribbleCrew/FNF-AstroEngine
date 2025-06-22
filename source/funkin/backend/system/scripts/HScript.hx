@@ -160,6 +160,7 @@ class HScript extends RuleScript implements IScript
 			'WindowUtil' => funkin.backend.utils.native.WindowUtil,
 			'Character' => Character,
 			'Alphabet' => Alphabet,
+			'CharacterScript' => HScriptUtils.fromMacro("funkin.game.objects.characters.CharacterScript"),// :p
 			'Note' => Note,
 			'Logs' => Logs,
 			'CustomSubstate' => CustomSubstate,
