@@ -78,13 +78,14 @@ class RuleScriptedMacro
 				default: null;
 		};*/
 
+		// stolennnnnnnnnnnnnnnnnn
 		var _tempCl:ClassType = cl;
 		var _isStatic:Bool = (_tempCl.init == null
 			&& (fields.filter(f -> return f.access.contains(AStatic) || f.access.contains(AMacro)).length == 0));
 		while (_isStatic && _tempCl.superClass != null)
 		{
 			_tempCl = _tempCl.superClass.t.get();
-			_isStatic = (_tempCl.init == null && (_tempCl.fields.get().length == 0)); // -1
+			_isStatic = (_tempCl.init == null && (_tempCl.fields.get().length == 0));
 		}
 		if (_isStatic)
 			return null;
@@ -108,14 +109,13 @@ class RuleScriptedMacro
 			// shadowClass.pos = Context.currentPos();
 
 			final imports:Array<ImportExpr> = Context.getLocalImports().copy();
-			if (imports == null)
-				return null;
-			//		Utils.setupMetas(shadowClass, imports);
+			if (imports == null) return null;
 
 			Context.defineModule(cl.module, [shadowClass], imports);
 		}
 		catch (e:Dynamic)
 			trace('err: ${cl.module}.${cl.name} // $e');
+
 		return fields;
 	}
 	#end

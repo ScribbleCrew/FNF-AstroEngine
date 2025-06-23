@@ -1,6 +1,6 @@
 package character;
 
-import funkin.game.objects.characters.CharacterScript;
+//import funkin.game.objects.characters.CharacterScript;
 import flixel.addons.effects.FlxTrail;
 
 class Spirit extends CharacterScript

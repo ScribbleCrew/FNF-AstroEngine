@@ -29,7 +29,7 @@
     <git name="flxanimate" url="https://github.com/ScribbleCrew/flxanimate" />
     
 	<!-- Hxvlc -->
-    <lib name="hxvlc" version="1.9.3" skipDeps="true" />
+    <lib name="hxvlc" version="2.2.2" skipDeps="true" />
 
     <!-- HXP -->
     <lib name="hxp" version="1.3.0"/>
