@@ -1,4 +1,4 @@
-package funkin.backend.system.scripts.objects;
+package funkin.modding.objects;
 
 import flixel.util.FlxColor;
 

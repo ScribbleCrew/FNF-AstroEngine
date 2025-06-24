@@ -1,6 +1,6 @@
 package funkin.backend.system;
 
-import funkin.backend.system.scripts.HScript.ScriptContext;
+import funkin.modding.HScript.ScriptContext;
 import funkin.backend.Conductor.BPMChangeEvent as BPM_EVENT;
 import flixel.addons.transition.FlxTransitionableState;
 

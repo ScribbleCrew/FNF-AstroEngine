@@ -1,6 +1,6 @@
-package funkin.backend.system.scripts;
+package funkin.modding;
 
-import funkin.backend.system.scripts.objects.*;
+import funkin.modding.objects.*;
 import funkin.game.states.LoadingState;
 import openfl.display.BitmapData;
 #if LUA_ALLOWED
@@ -58,11 +58,11 @@ import funkin.backend.system.MusicBeatState;
 #if (desktop && DISCORD_ALLOWED)
 import funkin.backend.client.Discord;
 #end
-import funkin.backend.system.scripts.functions.*;
-import funkin.backend.system.scripts.LuaUtils;
-import funkin.backend.system.scripts.LuaUtils.LuaTweenOptions;
+import funkin.modding.functions.*;
+import funkin.modding.LuaUtils;
+import funkin.modding.LuaUtils.LuaTweenOptions;
 #if HSCRIPT_ALLOWED
-import funkin.backend.system.scripts.HScript;
+import funkin.modding.HScript;
 #end
 
 class CallbackHandler

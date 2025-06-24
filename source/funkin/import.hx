@@ -65,8 +65,8 @@ import haxe.extern.*;
 #if DISCORD_ALLOWED import funkin.backend.client.Discord; #end
 
 // Lua
-import funkin.backend.system.scripts.*;
-import funkin.backend.system.scripts.objects.*;
+import funkin.modding.*;
+import funkin.modding.objects.*;
 #if LUA_ALLOWED
 import llua.*;
 import llua.Lua;
@@ -109,7 +109,7 @@ import sys.thread.Mutex;
 
 // HSCRIPT
 #if HSCRIPT_ALLOWED
-import funkin.backend.system.scripts.HScript.HScriptInfos;
+import funkin.modding.HScript.HScriptInfos;
 import rulescript.*;
 import rulescript.parsers.*;
 import rulescript.scriptedClass.RuleScriptedClassUtil;

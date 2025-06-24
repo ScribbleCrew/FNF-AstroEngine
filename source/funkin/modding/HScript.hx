@@ -1,6 +1,6 @@
-package funkin.backend.system.scripts;
+package funkin.modding;
 
-#if LUA_ALLOWED import funkin.backend.system.scripts.FunkinLua; #end
+#if LUA_ALLOWED import funkin.modding.FunkinLua; #end
 
 #if HSCRIPT_ALLOWED
 import hscript.Expr;

@@ -1,4 +1,4 @@
-package funkin.backend.system.scripts;
+package funkin.modding;
 
 
 /**

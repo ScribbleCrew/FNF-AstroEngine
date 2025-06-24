@@ -36,7 +36,7 @@ import flixel.addons.display.FlxRuntimeShader;
  * "function eventEarlyTrigger" - Used for making your event start a few MILLISECONDS earlier
  * "function triggerEvent" - Called when the song hits your event's timestamp, this is probably what you were looking for
  */
-@:allow(funkin.backend.system.scripts.FunkinLua)
+@:allow(funkin.modding.FunkinLua)
 @:allow(funkin.backend.base.UserInterface)
 class PlayState extends MusicBeatState
 {

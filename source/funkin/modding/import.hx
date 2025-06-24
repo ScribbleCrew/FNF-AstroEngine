@@ -1,11 +1,11 @@
-package funkin.backend.system.scripts;
+package funkin.modding;
 
 #if !macro
 // BASE SCRIPTING STUFF
-import funkin.backend.system.scripts.*;
-import funkin.backend.system.scripts.interfaces.*;
-import funkin.backend.system.scripts.FunkinLua;
-import funkin.backend.system.scripts.ScriptUtil.FunctionFlag;
+import funkin.modding.*;
+import funkin.modding.interfaces.*;
+import funkin.modding.FunkinLua;
+import funkin.modding.ScriptUtil.FunctionFlag;
 #if HSCRIPT_ALLOWED
 // HSCRIPT // RULESCRIPT
 import rulescript.*;
