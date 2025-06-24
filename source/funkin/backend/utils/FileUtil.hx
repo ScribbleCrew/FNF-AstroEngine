@@ -5,8 +5,9 @@ import sys.FileSystem;
 class FileUtil
 {
 	public static var originPath(get, null):String;
+
 	@:noCompletion static function get_originPath():String
-		return  Sys.getCwd();
+		return Sys.getCwd();
 
 	public static inline function validDirectory(path:String, ?origin:Bool = true):Bool
 		return FileSystem.exists('${origin ? originPath : ''}$path');
@@ -52,16 +53,41 @@ class FileUtil
 		#end
 	}
 
-	public static function openFolder(path:String):Dynamic
+	public static function openFolder(path:String):Int
 	{
 		#if sys
-		final runProcess:String = #if windows "explorer" #elseif mac "open" #elseif linux "xdg-open" #else '' #end;
+		final _runProcess:String = #if windows "explorer" #elseif mac "open" #elseif linux "xdg-open" #else '' #end;
 		final fullPath:String = haxe.io.Path.join([originPath, path]);
-		return Sys.command(runProcess, [fullPath.replace('/', '\\')]);
+		return runProcess([#if windows "/c" #else "-c" #end, _runProcess, codeifyPath(fullPath)]);
+		//	return Sys.command(runProcess, [fullPath.replace('/', '\\')]);
 		#else
 		errorMsg('openFolder');
 		return;
 		#end
+	}
+
+	public static function codeifyPath(path:String):String
+		return path.replace('/', '\\');
+
+	public static function runProcess(args:Array<String>):Int
+	{
+		#if sys
+		final os = Sys.systemName();
+		switch (os)
+		{
+			case "Windows":
+				return Sys.command("cmd", args);
+			case "Mac":
+				return Sys.command("open", args);
+			case "Linux":
+				return Sys.command("xdg-open", args);
+			default:
+				trace("Unsupported OS: " + os);
+		}
+		#else
+		trace("FileUtil.runProcess() is not supported on this platform.");
+		#end
+		return -1;
 	}
 
 	static function errorMsg(cmdName:String):Void

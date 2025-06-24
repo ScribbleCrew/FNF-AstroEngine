@@ -1,19 +1,12 @@
 <!DOCTYPE AE-credits>
 <!-- Goofy ah code -orbl -->
 <credits>
-    <category name="Scribble Discord">
-        <credit name="(Coming Soon)" icon="discord" />
-    </category>
+    <category name=""> <credit name="Scribble Discord" icon="discord" link="https://discord.gg/zU7NxYqe9M"/> <!-- perma link --> </category>
     <category name="Astro Engine Team">
-        <credit name="YourFriendOrbl" icon="orbl" description="Main Programmer of Astro Engine" link="https://x.com/YourFriendOrbl" /> <!-- color="BA7EFF" -->
+        <credit name="YourFriendOrbl" icon="orbl" description="Programmer of Astro Engine" link="https://x.com/YourFriendOrbl" />
     </category>
     <category name="Engine Contributors">
         <credit name="Kriptel" icon="kriptelpro" description="Rulescript Developer" link="https://github.com/Kriptel" />
-
-        <!-- remove these ??? -->
-        <credit name="Keoiki" icon="keoiki" description="Note Splash Animations and Latin Alphabet" link="https://x.com/Keoiki_" color="D2D2D2" />
-        <credit name="SqirraRNG" icon="sqirra" description="Crash Handler and Base code for\nChart Editor's Waveform" link="https://x.com/gedehari" color="E1843A" />
-        <credit name="EliteMasterEric" icon="mastereric" description="Runtime Shaders support" link="https://x.com/EliteMasterEric" color="FFBD40" />
     </category>
     <category name="Funkin' Crew">
         <credit name="ninjamuffin99" icon="ninjamuffin99" description="Programmer of Friday Night Funkin'" link="https://x.com/ninja_muffin99" color="CF2D2D" />

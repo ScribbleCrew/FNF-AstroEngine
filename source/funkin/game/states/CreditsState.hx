@@ -17,7 +17,7 @@ import funkin.backend.client.Discord.DiscordClient;
 import sys.FileSystem;
 #end
 
-private typedef CreditsOptions =
+typedef CreditsOptions =
 {
 	@:optional var category:String;
 
@@ -127,12 +127,13 @@ class CreditsState extends MusicBeatState
 		return FlxColor.GRAY;
 	}
 
-	 var quitting:Bool = false;
-	@:dox(hide)  var holdTime:Float = 0;
+	var quitting:Bool = false;
+	@:dox(hide) var holdTime:Float = 0;
 
 	@:dox(hide) override function update(elapsed:Float):Void
 	{
-		if (FlxG.sound.music.volume < 0.7) FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
+		if (FlxG.sound.music.volume < 0.7)
+			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 
 		if (!quitting)
 		{
@@ -155,7 +156,7 @@ class CreditsState extends MusicBeatState
 
 				if (controls.UI_DOWN || controls.UI_UP)
 				{
-					function calcHoldTime():Int 
+					function calcHoldTime():Int
 						return Math.floor((holdTime - 0.5) * 10);
 
 					final checkLastHold:Int = calcHoldTime();
@@ -167,8 +168,28 @@ class CreditsState extends MusicBeatState
 				}
 			}
 
-			if ((controls.ACCEPT || FlxG.mouse.justPressedMiddle) && (creditsStuff[curSelected].link != null || creditsStuff[curSelected].link.length > 4))
-				CoolUtil.browserLoad(creditsStuff[curSelected].link);
+			if ((controls.ACCEPT || FlxG.mouse.justPressedMiddle)
+				&& (creditsStuff[curSelected].link != null || creditsStuff[curSelected].link.length > 4))
+			{
+				final duh:String = creditsStuff[curSelected].link;
+				/*
+					#if sys
+					// yeah, i love dis :D
+					var inviteCode = extractInviteCode(duh);
+					if (inviteCode == null)
+					{
+						trace("Invalid Discord invite link/code.");
+						return;
+					}
+
+					var discordScheme = "discord://-/invite/" + inviteCode;
+					trace("Opening invite: " + discordScheme);
+					FileUtil.runProcess(#if windows ["/c", "start", "", discordScheme] #else [discordScheme] #end);
+					#else
+					CoolUtil.browserLoad(duh);
+					#end */
+				CoolUtil.browserLoad(duh);
+			}
 		}
 
 		if (controls.BACK)
@@ -233,9 +254,26 @@ class CreditsState extends MusicBeatState
 		}
 	}
 
-	 function requireCreditsData(path:String, mods:Bool = true):Void
+	/*
+		static function extractInviteCode(url:String):String
+		{
+			var lower = url.toLowerCase();
+			var regex = ~/discord\.gg\/([a-z0-9]+)/i;
+			if (regex.match(url))
+				return regex.matched(1);
+
+			var regex2:EReg = ~/discord\.com\/invite\/([a-z0-9]+)/i;
+			if (regex2.match(url))
+				return regex2.matched(1);
+			var simpleCode:EReg = ~/^[a-z0-9]{5,10}$/i;
+			if (simpleCode.match(url))
+				return url;
+
+			return null;
+	}*/
+	function requireCreditsData(path:String, mods:Bool = true):Void
 	{
-		final access = new Access(Xml.parse(mods ? File.getContent(path) : Paths.getTextFromFile(path, true)).firstElement());// i FUCKING HATE THIS SHIT
+		final access = new Access(Xml.parse(mods ? File.getContent(path) : Paths.getTextFromFile(path, true)).firstElement()); // i FUCKING HATE THIS SHIT
 
 		try
 		{
@@ -262,7 +300,7 @@ class CreditsState extends MusicBeatState
 			Logs.prefixedTrace(e, 'Credits State', RED);
 	}
 
-	 function changeSelection(change:Int = 0):Void
+	function changeSelection(change:Int = 0):Void
 	{
 		FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
 
