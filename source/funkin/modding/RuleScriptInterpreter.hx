@@ -2,7 +2,7 @@
 package funkin.modding;
 
 /**
- * Modifed Interp to allow scripts ot access class vairables without using FlxG.state or other lesser methods.	
+ * Modified Interp to allow scripts ot access class variables without using FlxG.state or other lesser methods.	
  */
 class RuleScriptInterpreter extends RuleScriptInterp // USE BYTECODEINTERP INSTEAD...
 {
