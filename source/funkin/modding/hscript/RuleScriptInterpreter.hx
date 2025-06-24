@@ -1,8 +1,8 @@
-#if HSCRIPT_ALLOWED
-package funkin.backend.system.scripts;
+package funkin.modding.hscript;
 
+#if HSCRIPT_ALLOWED
 /**
- * Modifed Interp to allow scripts ot access class vairables without using FlxG.state or other lesser methods.	
+ * Modified Interp to allow scripts ot access class variables without using FlxG.state or other lesser methods.	
  */
 class RuleScriptInterpreter extends RuleScriptInterp // USE BYTECODEINTERP INSTEAD...
 {

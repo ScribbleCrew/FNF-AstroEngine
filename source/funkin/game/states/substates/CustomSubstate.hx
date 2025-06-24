@@ -6,7 +6,7 @@ class CustomSubstate extends MusicBeatSubstate
 	public static var instance:CustomSubstate;
 
 	#if LUA_ALLOWED
-	public static function implement(funk:FunkinLua):Void
+	public static function implement(funk:funkin.modding.lua.FunkinLua):Void
 	{
 		final lua = funk.lua;
 		Lua_helper.add_callback(lua, "openCustomSubstate", openCustomSubstate);

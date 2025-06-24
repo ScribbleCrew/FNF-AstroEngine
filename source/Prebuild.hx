@@ -15,13 +15,8 @@ class Prebuild
 			final time:Float = Sys.time();
 			fileOutput.writeDouble(time);
 			fileOutput.close();
-
-			trace('i like men');
 		}
-		catch (error:Dynamic)
-		{
-			
-		}
+		catch (error:Dynamic) {	}
 	}
 }
 #end

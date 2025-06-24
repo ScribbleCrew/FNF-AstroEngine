@@ -1,4 +1,4 @@
-package funkin.backend.system.scripts.objects;
+package funkin.modding.objects;
 
 interface IModSprite {
 	public function playAnim(name:String, forced:Bool = false, ?reverse:Bool = false, ?startFrame:Int = 0):Void;

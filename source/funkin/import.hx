@@ -65,11 +65,13 @@ import haxe.extern.*;
 #if DISCORD_ALLOWED import funkin.backend.client.Discord; #end
 
 // Lua
-import funkin.backend.system.scripts.*;
-import funkin.backend.system.scripts.objects.*;
+import funkin.modding.*;
+import funkin.modding.objects.*;
 #if LUA_ALLOWED
 import llua.*;
 import llua.Lua;
+import funkin.modding.lua.*;
+import funkin.modding.lua.FunkinLua;
 #end
 
 // FlxAnimate
@@ -109,16 +111,19 @@ import sys.thread.Mutex;
 
 // HSCRIPT
 #if HSCRIPT_ALLOWED
-import funkin.backend.system.scripts.HScript.HScriptInfos;
 import rulescript.*;
 import rulescript.parsers.*;
 import rulescript.scriptedClass.RuleScriptedClassUtil;
+
+import funkin.modding.hscript.*;
 #end
 
 // Discord
 #if DISCORD_ALLOWED
 import hxdiscord_rpc.Discord;
 import hxdiscord_rpc.Types;
+import funkin.backend.client.Discord;
+import funkin.backend.client.Discord.DiscordClient;
 #end
 
 // Haxe

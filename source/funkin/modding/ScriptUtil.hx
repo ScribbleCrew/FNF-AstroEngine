@@ -1,4 +1,6 @@
-package funkin.backend.system.scripts;
+package funkin.modding;
+
+#if (HSCRIPT_ALLOWED || LUA_ALLOWED)
 
 import hscript.Expr;
 
@@ -21,7 +23,7 @@ class ScriptUtil
 
 	public static function formatError(x, ?pos:haxe.PosInfos):String
 	{
-		final newPos:HScriptInfos = cast pos;
+		final newPos:HScript.HScriptInfos = cast pos;
 		if (newPos.showLine == null)
 			newPos.showLine = true;
 
@@ -59,3 +61,4 @@ class ScriptUtil
 		return #if hscriptPos (showPos ? (e.origin + ":" + e.line + ": " + message) : message) #else message #end;
 	}
 }
+#end

@@ -1,5 +1,5 @@
-package funkin.backend.system.scripts;
-
+package funkin.modding.hscript;
+#if HSCRIPT_ALLOWED
 typedef ErrorDataType =
 {
 	var error:String;
@@ -22,7 +22,7 @@ abstract ErrorAbstract(ErrorDataType) from ErrorDataType to ErrorDataType
 		return this.color;
 }
 
-class ScriptedErrors
+class HScriptedErrors
 {
 	/**
 	 * Warn Error Function.	
@@ -57,3 +57,4 @@ class ScriptedErrors
 			PlayState.instance.addTextToDebug('${type.getError()}: $hehe', type.getColor());
 	}
 }
+#end

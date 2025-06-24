@@ -1,6 +1,6 @@
-package funkin.backend.system.scripts;
+package funkin.modding.hscript;
 
-#if LUA_ALLOWED import funkin.backend.system.scripts.FunkinLua; #end
+#if LUA_ALLOWED import funkin.modding.lua.FunkinLua; #end
 
 #if HSCRIPT_ALLOWED
 import hscript.Expr;
@@ -202,7 +202,7 @@ class HScript extends RuleScript implements IScript
 				{
 					if (this.modFolder == null)
 					{
-						ScriptedErrors.error('getModSetting: Argument #2 is null and script is not inside a packed Mod folder!',
+						HScriptedErrors.error('getModSetting: Argument #2 is null and script is not inside a packed Mod folder!',
 							untyped this.interp.posInfos());
 						return null;
 					}
@@ -338,7 +338,7 @@ class HScript extends RuleScript implements IScript
 				if (funk != null)
 					funk.addLocalCallback(name, func);
 				else
-					ScriptedErrors.error('createCallback ($name): 3rd argument is null', untyped this.interp.posInfos());
+					HScriptedErrors.error('createCallback ($name): 3rd argument is null', untyped this.interp.posInfos());
 			},
 			#end
 
@@ -391,7 +391,7 @@ class HScript extends RuleScript implements IScript
 				}
 				catch (e:hscript.Expr.Error)
 				{
-					ScriptedErrors.error(ScriptUtil.errorToString(e, false), untyped this.interp.posInfos());
+					HScriptedErrors.error(ScriptUtil.errorToString(e, false), untyped this.interp.posInfos());
 				}
 			},
 
@@ -571,7 +571,7 @@ class HScript extends RuleScript implements IScript
 		catch (error:hscript.Expr.Error)
 		{
 			final filePosInfos:HScriptInfos = cast {_fileName: filePath, showLine: false};
-			ScriptedErrors.error(ScriptUtil.errorToString(error, false), filePosInfos);
+			HScriptedErrors.error(ScriptUtil.errorToString(error, false), filePosInfos);
 			final castInstance = cast(HScript.instances.get(filePath), HScript);
 			if (castInstance != null)
 				castInstance.destroy();
@@ -639,7 +639,7 @@ class HScript extends RuleScript implements IScript
 				var pos:HScriptInfos = cast {fileName: funk.scriptName, showLine: false};
 				if (funk.lastCalledFunction != '')
 					pos.funcName = funk.lastCalledFunction;
-				ScriptedErrors.error("runHaxeFunction: HScript has not been initialized yet! Use \"runHaxeCode\" to initialize it", pos);
+				HScriptedErrors.error("runHaxeFunction: HScript has not been initialized yet! Use \"runHaxeCode\" to initialize it", pos);
 			}
 			return null;
 		});
@@ -667,12 +667,12 @@ class HScript extends RuleScript implements IScript
 				if (resolvedClass != null)
 					funk.hscript.set(libName, resolvedClass)
 			catch (e:hscript.Expr.Error)
-				ScriptedErrors.error(ScriptUtil.errorToString(e, false), pos);
+				HScriptedErrors.error(ScriptUtil.errorToString(e, false), pos);
 
 			FunkinLua.lastCalledScript = funk;
 
 			if (FunkinLua.getBool('luaDebugMode') && FunkinLua.getBool('luaDeprecatedWarnings'))
-				ScriptedErrors.error("addHaxeLibrary is deprecated! Import classes through \"import\" in HScript!", pos);
+				HScriptedErrors.error("addHaxeLibrary is deprecated! Import classes through \"import\" in HScript!", pos);
 		});
 	}
 	#end
@@ -684,7 +684,7 @@ class HScript extends RuleScript implements IScript
 
 		if (!exists(functionName))
 		{
-			ScriptedErrors.error('No function named: $functionName', untyped this.interp.posInfos());
+			HScriptedErrors.error('No function named: $functionName', untyped this.interp.posInfos());
 			return null;
 		}
 
@@ -706,7 +706,7 @@ class HScript extends RuleScript implements IScript
 					pos.funcName = parentLua.lastCalledFunction;
 			}
 			#end
-			ScriptedErrors.error(ScriptUtil.errorToString(e, false), pos);
+			HScriptedErrors.error(ScriptUtil.errorToString(e, false), pos);
 		}
 		return null;
 	}
@@ -744,7 +744,7 @@ class HScript extends RuleScript implements IScript
 				var pos:HScriptInfos = cast {fileName: parent.scriptName, isLua: true};
 				if (parent.lastCalledFunction != '')
 					pos.funcName = parent.lastCalledFunction;
-				ScriptedErrors.error(ScriptUtil.errorToString(e, false), pos);
+				HScriptedErrors.error(ScriptUtil.errorToString(e, false), pos);
 				parent.hscript = null;
 			}
 		}
@@ -763,7 +763,7 @@ class HScript extends RuleScript implements IScript
 				pos.isLua = true;
 				if (parent.lastCalledFunction != '')
 					pos.funcName = parent.lastCalledFunction;
-				ScriptedErrors.error(ScriptUtil.errorToString(e, false), pos);
+				HScriptedErrors.error(ScriptUtil.errorToString(e, false), pos);
 				hs.returnValue = null;
 			}
 		}

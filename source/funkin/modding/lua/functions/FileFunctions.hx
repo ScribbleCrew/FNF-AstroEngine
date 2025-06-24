@@ -1,4 +1,4 @@
-package funkin.backend.system.scripts.functions;
+package funkin.modding.lua.functions;
 
 import openfl.utils.Assets;
 

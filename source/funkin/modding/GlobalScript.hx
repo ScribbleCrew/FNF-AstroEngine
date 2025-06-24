@@ -1,6 +1,6 @@
-package funkin.backend.system.scripts;
+package funkin.modding;
 
-
+#if (HSCRIPT_ALLOWED || LUA_ALLOWED)
 /**
 * Global Script Class...	
 */
@@ -323,8 +323,8 @@ class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable
 		}
 		catch (error:hscript.Expr.Error)
 		{
-			final filePosInfos:HScriptInfos = cast {_fileName: filePath, showLine: false};
-			ScriptedErrors.error(ScriptUtil.errorToString(error, false), filePosInfos);
+			final filePosInfos:HScript.HScriptInfos = cast {_fileName: filePath, showLine: false};
+			HScriptedErrors.error(ScriptUtil.errorToString(error, false), filePosInfos);
 
 			hscriptInstance = cast(HScript.instances.get(filePath), HScript);
 			if (hscriptInstance != null)
@@ -454,3 +454,4 @@ class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable
 	{
 	}
 }
+#end

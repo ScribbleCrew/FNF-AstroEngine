@@ -1,5 +1,6 @@
-package funkin.backend.system.scripts;
+package funkin.modding.hscript;
 
+#if HSCRIPT_ALLOWED
 import rulescript.scriptedClass.RuleScriptedClass.ScriptedClass;
 import hscript.Printer;
 import hscript.Expr.ClassDecl;
@@ -77,3 +78,4 @@ class HScriptUtils
 		}
 	}
 }
+#end
