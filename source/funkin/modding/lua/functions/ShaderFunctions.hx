@@ -1,4 +1,4 @@
-package funkin.modding.functions;
+package funkin.modding.lua.functions;
 
 #if (!flash && sys)
 import flixel.addons.display.FlxRuntimeShader;

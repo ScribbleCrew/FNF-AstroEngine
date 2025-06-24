@@ -1,6 +1,6 @@
-#if HSCRIPT_ALLOWED
-package funkin.modding;
+package funkin.modding.hscript;
 
+#if HSCRIPT_ALLOWED
 /**
  * Modified Interp to allow scripts ot access class variables without using FlxG.state or other lesser methods.	
  */

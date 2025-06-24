@@ -1,4 +1,4 @@
-package funkin.modding;
+package funkin.modding.lua;
 
 import funkin.modding.objects.*;
 import funkin.game.states.LoadingState;
@@ -59,10 +59,9 @@ import funkin.backend.system.MusicBeatState;
 import funkin.backend.client.Discord;
 #end
 import funkin.modding.functions.*;
-import funkin.modding.LuaUtils;
-import funkin.modding.LuaUtils.LuaTweenOptions;
+import funkin.modding.lua.LuaUtils;
 #if HSCRIPT_ALLOWED
-import funkin.modding.HScript;
+import funkin.modding.hscript.HScript;
 #end
 
 class CallbackHandler
@@ -692,7 +691,7 @@ class FunkinLua implements IScript
 			{
 				if (values != null)
 				{
-					var myOptions:LuaTweenOptions = LuaUtils.getLuaTween(options);
+					var myOptions:LuaUtils.LuaTweenOptions = LuaUtils.getLuaTween(options);
 					if (tag != null)
 					{
 						var variables = MusicBeatState.getVariables();

@@ -1,4 +1,4 @@
-package funkin.modding.functions;
+package funkin.modding.lua.functions;
 
 import flixel.util.FlxSave;
 import openfl.utils.Assets;

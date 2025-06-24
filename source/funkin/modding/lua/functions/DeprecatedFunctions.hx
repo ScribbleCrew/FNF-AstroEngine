@@ -1,4 +1,4 @@
-package funkin.modding.functions;
+package funkin.modding.lua.functions;
 //
 // This is simply where i store deprecated functions for it to be more organized.
 // I would suggest not messing with these, as it could break mods.

@@ -9,7 +9,7 @@ private enum abstract RPC_BUTTON_TYPE(String) from String to String
 	final SECOND:String = "second";
 }
 
-@:allow(funkin.modding.FunkinLua)
+@:allow(funkin.modding.lua.FunkinLua)
 class DiscordClient
 {
 	/**

@@ -36,7 +36,7 @@ import flixel.addons.display.FlxRuntimeShader;
  * "function eventEarlyTrigger" - Used for making your event start a few MILLISECONDS earlier
  * "function triggerEvent" - Called when the song hits your event's timestamp, this is probably what you were looking for
  */
-@:allow(funkin.modding.FunkinLua)
+@:allow(funkin.modding.lua.FunkinLua)
 @:allow(funkin.backend.base.UserInterface)
 class PlayState extends MusicBeatState
 {
@@ -110,7 +110,8 @@ class PlayState extends MusicBeatState
 	/**
 	 * Default character positions.
 	 */
-	private var defaultCharacterPositions:Map<String, FlxPoint> = [// put these leater
+	@:allow(funkin.modding.lua.FunkinLua)
+	private var defaultCharacterPositions:Map<String, FlxPoint> = [
 		"BF" => new FlxPoint(770, 100),
 		"DAD" => new FlxPoint(100, 100),
 		"GF" => new FlxPoint(400, 130)

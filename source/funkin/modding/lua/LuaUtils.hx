@@ -1,4 +1,4 @@
-package funkin.modding;
+package funkin.modding.lua;
 
 import flixel.FlxCamera;
 #if LUA_ALLOWED
