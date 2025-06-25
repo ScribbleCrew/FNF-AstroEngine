@@ -1,5 +1,4 @@
 <!-- https://shields.io/badges/git-hub-actions-workflow-status -->
-current version codename: ASTRO_N64
 <div align="center">
 
 ## [Community Server](https://discord.gg/zU7NxYqe9M)
