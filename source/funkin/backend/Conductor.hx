@@ -14,7 +14,7 @@ typedef BPMChangeEvent =
 class Conductor
 {
 	public static var bpm(default, set):Float = 100;
-	@:noCompletion private inline static function set_bpm(BPMChange:Float):Float
+	@:noCompletion inline static function set_bpm(BPMChange:Float):Float
 		{
 			crochet = calcCrochet(BPMChange);
 			stepCrochet = crochet / 4;
@@ -22,11 +22,11 @@ class Conductor
 		}
 
 	public static var crochet(get,default):Float; // beats in milliseconds
-	@:noCompletion inline private static function get_crochet():Float
+	@:noCompletion inline static function get_crochet():Float
 		return calcCrochet(bpm);
 	
 	public static var stepCrochet(get,default):Float; // steps in milliseconds
-	@:noCompletion inline private static function get_stepCrochet():Float
+	@:noCompletion inline static function get_stepCrochet():Float
 		return crochet / 4;
 
 	public static var songPosition:Float = 0;

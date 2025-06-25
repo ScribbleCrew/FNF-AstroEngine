@@ -1,7 +1,7 @@
 package states;
 
 function create():Void
-{// i love men
+{
 	menuButtons = [
 		{
 			name: 'story mode',

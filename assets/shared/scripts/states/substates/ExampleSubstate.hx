@@ -7,7 +7,7 @@ var closeText:FlxText;
 
 var closing = false;
 
-function onCreate():Void
+function create():Void
 {
 	closing = false;
 	

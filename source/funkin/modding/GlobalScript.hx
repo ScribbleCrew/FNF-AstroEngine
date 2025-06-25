@@ -4,7 +4,7 @@ package funkin.modding;
 /**
 * Global Script Class...	
 */
-class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable
+class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable implements IGlobal
 {
 	/**
 	 * Global Script Instance.
@@ -98,9 +98,7 @@ class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable
 			#if HSCRIPT_ALLOWED setOnHScript(variable, arg, exclusions); #end
 		}
 		catch (error:haxe.Exception)
-		{
-			Logs.prefixedTrace('{GlobalScript.set}: $error', 'ERROR', RED);
-		}
+			Logs.error('{GlobalScript.set}: $error');
 		#end
 	}
 
@@ -168,8 +166,8 @@ class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable
 	 * @param excludeValues and values which could be excluded
 	 * @param context Script context, MAIN / State
 	 */
-	public function call(functionName:String, args:Array<Dynamic> = null, ignoreStops = false, exclusions:Array<String> = null,
-			excludeValues:Array<Dynamic> = null, ?context:HScript.ScriptContext = MAIN):Dynamic
+	public function call(functionName:String, args:Array<Dynamic> = null, ignoreStops:Null<Bool> = false, exclusions:Array<String> = null,
+			excludeValues:Array<Dynamic> = null, context:HScript.ScriptContext = MAIN):Dynamic
 	{
 		// !! context hscript only... !!
 

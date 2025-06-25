@@ -54,7 +54,6 @@ function new(returnState:FlxState):Void
 function create():Void
 {
 	// lightmode stuff
-	savedDarkmodeSetting = WindowUtil.darkmode;
 	WindowUtil.darkmode = false;
 
 	// ugh... flixel being weird
@@ -101,8 +100,6 @@ function makeSprites():Void
 function destroy():Void
 	titleTimer = FlxDestroyUtil.destroy(titleTimer);
 
-var savedDarkmodeSetting:Bool = false;
-
 function update(elapsed:Float):Void
 {
 	// if(FlxG.state?.subState != null) return;
@@ -130,7 +127,7 @@ function update(elapsed:Float):Void
 
 		new FlxTimer().start(5.55, _ -> FlxG.camera.fade(FlxColor.BLACK, .1, false, () ->
 		{
-			WindowUtil.darkmode = savedDarkmodeSetting;
+			WindowUtil.darkmode = ClientPrefs.data.darkmodeEnabled;
 			MusicBeatState.switchState(returningState ?? new MainMenuState());
 		}));
 
