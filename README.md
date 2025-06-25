@@ -1,13 +1,16 @@
 <!-- https://shields.io/badges/git-hub-actions-workflow-status -->
 current version codename: ASTRO_N64
 <div align="center">
-    <img src="https://raw.githubusercontent.com/ScribbleCrew/.github/refs/heads/main/branding/4000x%20rounded.png" width="250" height="250" style="border-radius: 15%;"/>
-    <br>
-    <h1>Friday Night Funkin' • AE [<strong>ALPHA</strong>]</h1>
-    <br>    
-    <img src="https://img.shields.io/github/forks/ScribbleCrew/FNF-AstroEngine?style=for-the-badge" />
-    <img src="https://img.shields.io/github/license/ScribbleCrew/FNF-AstroEngine?style=for-the-badge" />
-    <br>
+
+## [Community Server](https://discord.gg/zU7NxYqe9M)
+
+<img src="https://raw.githubusercontent.com/ScribbleCrew/.github/refs/heads/main/branding/4000x%20rounded.png" width="250" height="250" style="border-radius: 15%;"/>
+<br>
+<h1>Friday Night Funkin' • AE [<strong>ALPHA</strong>]</h1>
+<br>    
+<img src="https://img.shields.io/github/forks/ScribbleCrew/FNF-AstroEngine?style=for-the-badge" />
+<img src="https://img.shields.io/github/license/ScribbleCrew/FNF-AstroEngine?style=for-the-badge" />
+<br>
 
 ---
 
@@ -75,4 +78,4 @@ For more information please refer to [`Q&A.md`](art/qna.md)
 <br>
 <br>
 
-©2025 • <strong>ScribbleCrew</strong> • engine is not affiliated with <a href="https://github.com/ShadowMario/FNF-PsychEngine">Psych Engine</a> or <a href="https://github.com/CodenameCrew/CodenameEngine">Codename Engine</a> in any way! • <strong>:3</strong>
+©2025 • <strong>ScribbleCrew</strong> • this engine isn't 'another' psych clone! • <strong>:3</strong>
