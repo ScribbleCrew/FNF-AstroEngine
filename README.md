@@ -42,6 +42,7 @@ After it finishes, run `lime test windows -debug` in order to compile a build of
 <h2>AE Credits</h2>
 
 **YourFriendOrbl** - Programmer of Astro Engine • **[X](https://x.com/YourFriendOrbl)**<br>
+**Kriptel** - Rulescript Developer • **[Github](https://github.com/Kriptel)**<br>
 
 ---
 
