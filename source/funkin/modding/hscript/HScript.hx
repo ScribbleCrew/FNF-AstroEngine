@@ -150,6 +150,7 @@ class HScript extends RuleScript implements IScript
 			'TitleState' => TitleState,
 
 			// Game-specific
+			'FunkinText' => funkin.game.objects.FunkinText,
 			'Countdown' => funkin.backend.base.BaseStage.Countdown,
 			'PlayState' => PlayState,
 			'Paths' => Paths,
