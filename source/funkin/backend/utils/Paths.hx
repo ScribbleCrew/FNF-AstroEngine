@@ -508,10 +508,12 @@ class Paths
 		return graph;
 	}
 
-	inline static public function getTextFromFile(key:String, ?ignoreMods:Bool = false):String
+	inline static public function getTextFromFile(key:String, ?ignoreMods:Bool = false, ?embedded:Bool = false):String
 	{
 		final path:String = getPath(key, TEXT, !ignoreMods);
 		#if sys
+		if(embedded)
+			return (OpenFlAssets.exists(path, TEXT)) ? Assets.getText(path) : null;
 		return (FileSystem.exists(path)) ? File.getContent(path) : null;
 		#else
 		return (OpenFlAssets.exists(path, TEXT)) ? Assets.getText(path) : null;

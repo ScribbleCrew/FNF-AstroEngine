@@ -45,6 +45,11 @@ class Main extends flixel.FlxGame
 	 */
 	public static var stateName:String = '';
 
+	/**
+	 * Make this empty once you've finished with this shitty project...
+	 */
+	public static final releaseCycle:String = "Beta";
+
 	/**	
 	 * Framerate variable.
 	 * used to handle my new sexy fps code.

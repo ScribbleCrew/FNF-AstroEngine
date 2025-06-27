@@ -1,5 +1,6 @@
 package funkin.game;
 
+import flixel.addons.transition.FlxTransitionableState;
 import funkin.backend.utils.Paths;
 import funkin.backend.system.initialization.*;
 // __init__ imports
@@ -19,6 +20,8 @@ import funkin.backend.system.initialization.ALSoftConfig;
 class Init extends flixel.FlxState
 {
 	#if WATERMARK public static var watermark:Watermark; #end
+
+	public static var shownCycleWarning:Bool = false;
 
 	override public function create():Void
 	{
@@ -89,11 +92,19 @@ class Init extends flixel.FlxState
 	{
 		#if windows WindowUtil.darkmode = ClientPrefs.data.darkmodeEnabled; #end
 		#if !mobile
-		if(Main.framerateCounter != null){
+		if (Main.framerateCounter != null)
+		{
 			Main.framerateCounter.visible = ClientPrefs.data.showFPS;
-			Main.framerateCounter.alpha = ClientPrefs.data.fpsCounterAlpha;}
+			Main.framerateCounter.alpha = ClientPrefs.data.fpsCounterAlpha;
+		}
 		#end
-		FlxG.switchState(new TitleState());
+		var newS:FlxState = null;
+		if (!shownCycleWarning)
+		{
+			shownCycleWarning = true;
+			newS = new InDevWarningState();
+		}
+		FlxG.switchState(newS ?? new TitleState());
 		Logs.prefix = '';
 	}
 
