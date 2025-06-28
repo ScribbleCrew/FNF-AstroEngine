@@ -98,14 +98,17 @@ class Init extends flixel.FlxState
 			Main.framerateCounter.alpha = ClientPrefs.data.fpsCounterAlpha;
 		}
 		#end
+
 		var newS:FlxState = null;
+		#if !SKIP_DEV_SCREEN
 		if (!shownCycleWarning)
 		{
 			shownCycleWarning = true;
 			newS = new InDevWarningState();
 		}
+		#end
 		FlxG.switchState(newS ?? new TitleState());
-		Logs.prefix = '';
+		Logs.prefix = '';// dpn't use this...
 	}
 
 	private function init():Void
