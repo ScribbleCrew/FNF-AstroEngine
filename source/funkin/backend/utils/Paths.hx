@@ -508,16 +508,13 @@ class Paths
 		return graph;
 	}
 
-	inline static public function getTextFromFile(key:String, ?ignoreMods:Bool = false, ?embedded:Bool = false):String
+	inline static public function getTextFromFile(key:String, ?ignoreMods:Bool = false):String
 	{
 		final path:String = getPath(key, TEXT, !ignoreMods);
-		#if sys
-		if(embedded)
-			return (OpenFlAssets.exists(path, TEXT)) ? Assets.getText(path) : null;
-		return (FileSystem.exists(path)) ? File.getContent(path) : null;
-		#else
-		return (OpenFlAssets.exists(path, TEXT)) ? Assets.getText(path) : null;
-		#end
+		if (OpenFlAssets.exists(path, TEXT)) return Assets.getText(path); // prioritize embedded assets
+		#if sys if (FileSystem.exists(path)) return File.getContent(path); #end // now you can access embedded and non embedded assets.
+		Logs.error('Cannot find $key || iM: $ignoreMods');
+		return ''; // yeahh placeholder :3
 	}
 
 	/**

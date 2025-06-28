@@ -8,7 +8,7 @@ class InDevWarningState extends MusicBeatState
 {
 	static inline final RED:Int = 0xFFFF5252;
 
-	final leave:() -> Void = () ->
+	static final leave:() -> Void = () ->
 	{
 		FlxTransitionableState.skipNextTransIn = FlxTransitionableState.skipNextTransOut = true;
 		FlxG.switchState(new TitleState());
@@ -34,7 +34,7 @@ class InDevWarningState extends MusicBeatState
 		warningText.alignment = CENTER;
 		add(warningText);
 
-		warningText.applyMarkup(Paths.getTextFromFile("data/developmentWarning.txt", true, true) // the 2nd true forces it to check embedded files
+		warningText.applyMarkup(Paths.getTextFromFile("data/developmentWarning.txt", true) // the 2nd true forces it to check embedded files
 			.replace('\\n', '')
 			.replace('\\l', '\n')
 			.substitute([Main.releaseCycle]), [
