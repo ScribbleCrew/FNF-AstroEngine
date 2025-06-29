@@ -21,6 +21,7 @@ class InDevWarningState extends MusicBeatState
 
 	override public function create():Void
 	{
+		WindowUtil.title = '%{GAME_TITLE} - Development Warning';
 		FlxG.mouse.visible = false;
 		
 		super.create();
