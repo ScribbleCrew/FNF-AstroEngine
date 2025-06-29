@@ -4,7 +4,7 @@ import flixel.system.ui.FlxSoundTray;
 import openfl.display.Bitmap;
 import openfl.display.BitmapData;
 import openfl.utils.Assets;
-
+import haxe.std.MathsAddon;
 /**
  *  V-Slice SoundTray
  *  Wouldnt say this is the best way of implemeting this, but it works.

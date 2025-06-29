@@ -1,5 +1,7 @@
 # ```TODO```
 
+* Make charting state like codename with new ui style and everyhing
+* move the assets from assets/shared/ to assets/
 * Add Tracy
 * rewrite rulescripted class macro
 * add Screenshot plugin

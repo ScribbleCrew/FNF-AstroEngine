@@ -68,21 +68,14 @@ class CoolUtil
 		}
 	}
 
-	public static function coolTextFile(path:String):Array<String>
+	@:noUsing public static function coolTextFile(path:String):Array<String>
 	{
-		var daList:Array<String> = [];
-		#if sys
-		if (FileSystem.exists(path))
-			daList = File.getContent(path).trim().split('\n');
-		#else
-		if (Assets.exists(path))
-			daList = Assets.getText(path).trim().split('\n');
-		#end
-
-		for (i in 0...daList.length)
-			daList[i] = daList[i].trim();
-
-		return daList;
+		var betterehh:String = '';
+		if (OpenFlAssets.exists(path)) betterehh = OpenFlAssets.getText(path);
+		#if sys if (FileSystem.exists(path)) betterehh = File.getContent(path); #end
+		
+		var trim:String;
+		return [for(line in betterehh.split("\n")) if ((trim = line.trim()) != "" && !trim.startsWith("#")) trim];
 	}
 
 	inline public static function colorFromString(color:String):FlxColor
@@ -152,7 +145,7 @@ class CoolUtil
 		return dumbArray;
 	}
 
-	public static function browserLoad(site:String)
+	@:noUsing public static function browserLoad(site:String)
 	{
 		#if linux
 		Sys.command('/usr/bin/xdg-open', [site]);
@@ -171,7 +164,6 @@ class CoolUtil
 		@crowplexus
 	**/
 	public static var savePath(get, default):String;
-
 	@:access(flixel.util.FlxSave.validate)
 	inline public static function get_savePath():String
 		return '${FlxG.stage.application.meta.get('company')}/${FlxSave.validate(FlxG.stage.application.meta.get('file'))}';
