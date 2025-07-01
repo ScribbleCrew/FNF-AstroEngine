@@ -177,11 +177,13 @@ class WindowUtil
 	public static function registerAudio():Void
 		Main._audioDisconnected = false;
 
+	#if windows
 	@:functionCode("
 		unsigned long long allocatedRAM = 0;
 		GetPhysicallyInstalledSystemMemory(&allocatedRAM);
 		return (allocatedRAM / 1024);
 	")
+	#end
 	public static function getTotalRam():Float
 	{
 		return 0;
