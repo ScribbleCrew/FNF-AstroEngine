@@ -63,6 +63,7 @@ import funkin.modding.lua.LuaUtils;
 #if HSCRIPT_ALLOWED
 import funkin.modding.hscript.HScript;
 #end
+import funkin.modding.Script;
 
 class CallbackHandler
 {
@@ -70,52 +71,60 @@ class CallbackHandler
 	{
 		try
 		{
-			//trace('calling $fname');
+			// trace('calling $fname');
 			var cbf:Dynamic = Lua_helper.callbacks.get(fname);
 
-			//Local functions have the lowest priority
-			//This is to prevent a "for" loop being called in every single operation,
-			//so that it only loops on reserved/special functions
-			if(cbf == null) 
+			// Local functions have the lowest priority
+			// This is to prevent a "for" loop being called in every single operation,
+			// so that it only loops on reserved/special functions
+			if (cbf == null)
 			{
-				//trace('checking last script');
+				// trace('checking last script');
 				var last:FunkinLua = FunkinLua.lastCalledScript;
-				if(last == null || last.lua != l)
+				if (last == null || last.lua != l)
 				{
-					//trace('looping thru scripts');
+					// trace('looping thru scripts');
 					for (script in GlobalScript.instance.luaInstances)
-						if(script != FunkinLua.lastCalledScript && script != null && script.lua == l)
+						if (script != FunkinLua.lastCalledScript && script != null && script.lua == l)
 						{
-							//trace('found script');
+							// trace('found script');
 							cbf = script.callbacks.get(fname);
 							break;
 						}
 				}
-				else cbf = last.callbacks.get(fname);
+				else
+					cbf = last.callbacks.get(fname);
 			}
-			
-			if(cbf == null) return 0;
+
+			if (cbf == null)
+				return 0;
 
 			var nparams:Int = Lua.gettop(l);
 			var args:Array<Dynamic> = [];
 
-			for (i in 0...nparams) {
+			for (i in 0...nparams)
+			{
 				args[i] = Convert.fromLua(l, i + 1);
 			}
 
 			var ret:Dynamic = null;
 			/* return the number of results */
 
-			ret = Reflect.callMethod(null,cbf,args);
+			ret = Reflect.callMethod(null, cbf, args);
 
-			if(ret != null){
+			if (ret != null)
+			{
 				Convert.toLua(l, ret);
 				return 1;
 			}
 		}
-		catch(e:Dynamic)
+		catch (e:Dynamic)
 		{
-			if(Lua_helper.sendErrorsToLua) {LuaL.error(l, 'CALLBACK ERROR! ${if(e.message != null) e.message else e}');return 0;}
+			if (Lua_helper.sendErrorsToLua)
+			{
+				LuaL.error(l, 'CALLBACK ERROR! ${if (e.message != null) e.message else e}');
+				return 0;
+			}
 			trace(e);
 			throw(e);
 		}
@@ -123,13 +132,16 @@ class CallbackHandler
 	}
 }
 
-class FunkinLua implements IScript
+class FunkinLua extends Script implements IScript
 {
 	public var lua:State = null;
 	public var camTarget:FlxCamera;
 	public var scriptName:String = '';
 	public var modFolder:String = null;
 	public var closed:Bool = false;
+
+	override function get_type():Script.ScriptType
+		return LUA;
 
 	#if HSCRIPT_ALLOWED
 	public var hscript:HScript = null;
@@ -141,6 +153,8 @@ class FunkinLua implements IScript
 
 	public function new(scriptName:String)
 	{
+		super();
+
 		lua = LuaL.newstate();
 		LuaL.openlibs(lua);
 
@@ -182,7 +196,9 @@ class FunkinLua implements IScript
 		#end
 
 		// custom functions.
-		for (name => func in customFunctions) if (func != null) Lua_helper.add_callback(lua, name, func);
+		for (name => func in customFunctions)
+			if (func != null)
+				Lua_helper.add_callback(lua, name, func);
 
 		try
 		{
@@ -215,15 +231,16 @@ class FunkinLua implements IScript
 		}
 	}
 
-	public function execute(?args:Array<Dynamic>){
+	public function execute(?args:Array<Dynamic>)
+	{
 		Logs.prefixedTrace('lua file loaded succesfully: $scriptName', 'Global Script', GREEN);
-		call('new', args ??=[]);
+		call('new', args ??= []);
 		call('onCreate', []);
 		return this;
 	}
 
-
-	function setCustomCallbacks(game:PlayState){
+	function setCustomCallbacks(game:PlayState)
+	{
 		set('Function_StopLua', Function_StopLua);
 		set('Function_StopHScript', Function_StopHScript);
 		set('Function_StopAll', Function_StopAll);
@@ -546,7 +563,7 @@ class FunkinLua implements IScript
 							luaTrace('addHScript: The script "' + foundScript + '" is already running!');
 							return;
 						}
-				
+
 				new HScript(null, foundScript).run();
 				return;
 			}
@@ -1878,7 +1895,7 @@ class FunkinLua implements IScript
 		Lua_helper.add_callback(lua, "debugPrint",
 			function(text:Dynamic = '', color:String = 'WHITE') PlayState.instance.addTextToDebug(text, CoolUtil.colorFromString(color)));
 
-		function __trace(_:String) : Void
+		function __trace(_:String):Void
 			Logs.prefixedTrace(_, 'LuaJIT', ORANGE);
 
 		Lua_helper.add_callback(lua, "trace", __trace);
@@ -1896,16 +1913,19 @@ class FunkinLua implements IScript
 	public var lastCalledFunction:String = '';
 
 	public static var lastCalledScript:FunkinLua = null;
-
-	public function call(functionName:String, ?funcArgs:Array<Dynamic>):Dynamic
+	override public  function setParent(parent:Dynamic) {
+	}
+	
+	override public function call(functionName:String, ?funcArgs:Array<Dynamic>):Dynamic
 	{
 		if (closed)
 			return Function_Continue;
 
 		lastCalledFunction = functionName;
 		lastCalledScript = this;
-		
-		if(lua == null) return Function_Continue;
+
+		if (lua == null)
+			return Function_Continue;
 		funcArgs ??= [];
 
 		try
@@ -1918,8 +1938,8 @@ class FunkinLua implements IScript
 
 			if (type != Lua.LUA_TFUNCTION)
 			{
-
-				if (type > Lua.LUA_TNIL){
+				if (type > Lua.LUA_TNIL)
+				{
 					final message:String = "ERROR: " + scriptName + " (" + functionName + "): attempt to call a " + typeToString(type) + " value";
 					luaTrace(message, true, false, FlxColor.RED);
 				}
@@ -1928,7 +1948,8 @@ class FunkinLua implements IScript
 				return Function_Continue;
 			}
 
-			for (arg in funcArgs) Convert.toLua(lua, arg);
+			for (arg in funcArgs)
+				Convert.toLua(lua, arg);
 			final status:Int = Lua.pcall(lua, funcArgs.length, 1, 0);
 
 			// Checks if it's not successful, then show a error.
@@ -1945,7 +1966,8 @@ class FunkinLua implements IScript
 			result ??= Function_Continue;
 
 			Lua.pop(lua, 1);
-			if (closed) stop();
+			if (closed)
+				stop();
 			return result;
 		}
 		catch (e:Dynamic)
@@ -1955,22 +1977,29 @@ class FunkinLua implements IScript
 		return Function_Continue;
 	}
 
-	static function typeToString(type:Int):String {
+	static function typeToString(type:Int):String
+	{
 		#if LUA_ALLOWED
-		switch(type)
+		switch (type)
 		{
-			case Lua.LUA_TBOOLEAN: return "boolean";
-			case Lua.LUA_TNUMBER: return "number";
-			case Lua.LUA_TSTRING: return "string";
-			case Lua.LUA_TTABLE: return "table";
-			case Lua.LUA_TFUNCTION: return "function";
+			case Lua.LUA_TBOOLEAN:
+				return "boolean";
+			case Lua.LUA_TNUMBER:
+				return "number";
+			case Lua.LUA_TSTRING:
+				return "string";
+			case Lua.LUA_TTABLE:
+				return "table";
+			case Lua.LUA_TFUNCTION:
+				return "function";
 		}
-		if (type <= Lua.LUA_TNIL) return "nil";
+		if (type <= Lua.LUA_TNIL)
+			return "nil";
 		#end
 		return "unknown";
 	}
 
-	public function set(variable:String, data:Dynamic)
+	override public function set(variable:String, data:Dynamic)
 	{
 		if (lua == null)
 			return;
@@ -2113,7 +2142,8 @@ class FunkinLua implements IScript
 		var v:String = Lua.tostring(lua, -1);
 		Lua.pop(lua, 1);
 
-		if (v != null) v = v.trim();
+		if (v != null)
+			v = v.trim();
 		if (v == null || v == "")
 		{
 			switch (status)
@@ -2133,8 +2163,8 @@ class FunkinLua implements IScript
 	}
 
 	/**
-	* Add local lua callback.
-	*/
+	 * Add local lua callback.
+	 */
 	public function addLocalCallback(name:String, functionName:Dynamic):Void
 	{
 		callbacks.set(name, functionName);

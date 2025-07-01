@@ -1,6 +1,5 @@
 package funkin.backend.system;
 
-import funkin.modding.hscript.HScript.ScriptContext;
 import funkin.backend.Conductor.BPMChangeEvent as BPM_EVENT;
 import flixel.addons.transition.FlxTransitionableState;
 
@@ -89,6 +88,11 @@ class MusicBeatState extends FlxState implements IBeat
 
 	#if SOFTCODED_STATES
 	/**
+	 * A pack of all scripts injected to this state
+	 */
+	var stateScripts:ScriptPack;
+
+	/**
 	 * Softcoded state script name.
 	 */
 	var scriptName:String = null;
@@ -104,6 +108,8 @@ class MusicBeatState extends FlxState implements IBeat
 		super();
 
 		#if SOFTCODED_STATES
+		(stateScripts = new ScriptPack()).setParent(this);
+
 		this.scriptName = scriptName;
 		this.scriptArgs = args;
 		#end
@@ -123,10 +129,10 @@ class MusicBeatState extends FlxState implements IBeat
 		// global script stuff.
 		// gets the metadata of the current class.
 		// not MusicBeatState, it's whatever is extending from it, since this is an abstract class.
-		GlobalScript.instance.executeClassScripts(scriptName, scriptArgs);
+		GlobalScript.instance.executeClassScripts(stateScripts, scriptName, scriptArgs);
 		super.create();
-		GlobalScript.instance.call('onCreatePost', [], ScriptContext.STATE); // gwa gwa lua
-		GlobalScript.instance.call('createPost', [], ScriptContext.STATE);
+		stateScripts.call('onCreatePost', []); // gwa gwa lua
+		stateScripts.call('createPost', []);
 		#end
 
 		if (!_isCameraLoaded)
@@ -302,9 +308,9 @@ class MusicBeatState extends FlxState implements IBeat
 		if (curStep % 4 == 0)
 			beatHit();
 
-		GlobalScript.instance.set('curStep', curStep);//oops i forgor
-		GlobalScript.instance.call('onStepHit', []);
-		GlobalScript.instance.call('stepHit', []);
+		stateScripts.set('curStep', curStep);//oops i forgor
+		stateScripts.call('onStepHit', []);
+		stateScripts.call('stepHit', []);
 	}
 
 	/**
@@ -321,9 +327,9 @@ class MusicBeatState extends FlxState implements IBeat
 		});
 
 		// softmoddin'
-		GlobalScript.instance.set('curBeat', curBeat); // DAWGG?????
-		GlobalScript.instance.call('onBeatHit', []);
-		GlobalScript.instance.call('beatHit', []);
+		stateScripts.set('curBeat', curBeat); // DAWGG?????
+		stateScripts.call('onBeatHit', []);
+		stateScripts.call('beatHit', []);
 	}
 
 	/**
@@ -339,9 +345,9 @@ class MusicBeatState extends FlxState implements IBeat
 		});
 
 		// softmoddin'
-		GlobalScript.instance.set('curSection', curSection);
-		GlobalScript.instance.call('onSectionHit', []);
-		GlobalScript.instance.call('sectionHit', []);
+		stateScripts.set('curSection', curSection);
+		stateScripts.call('onSectionHit', []);
+		stateScripts.call('sectionHit', []);
 	}
 
 	@:dox(hide) function _updateShaders(elapsed:Float):Void
@@ -383,17 +389,17 @@ class MusicBeatState extends FlxState implements IBeat
 
 		// Softmoddin'
 		stageAccess((stage:BaseStage) -> stage.update(elapsed));
-		GlobalScript.instance.call('onUpdate', [elapsed]); // gwa
-		GlobalScript.instance.call('update', [elapsed]); // gwa
+		stateScripts.call('onUpdate', [elapsed]); // gwa
+		stateScripts.call('update', [elapsed]); // gwa
 		super.update(elapsed);
-		GlobalScript.instance.call('onUpdatePost', [elapsed]);
-		GlobalScript.instance.call('updatePost', [elapsed]);
+		stateScripts.call('onUpdatePost', [elapsed]);
+		stateScripts.call('updatePost', [elapsed]);
 	}
 
 	@:dox(hide) override function destroy():Void
 	{
 		// Softmoddin'
-		GlobalScript.instance.destroy();
+		stateScripts.destroy();
 		super.destroy();
 	}
 }

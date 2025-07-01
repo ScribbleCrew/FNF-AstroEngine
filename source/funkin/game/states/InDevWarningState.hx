@@ -13,20 +13,31 @@ class InDevWarningState extends MusicBeatState
 		FlxTransitionableState.skipNextTransIn = FlxTransitionableState.skipNextTransOut = true;
 		FlxG.switchState(new TitleState());
 	}
-	
+
 	var transitioning:Bool = false;
 
 	var warningWhat:Alphabet;
 	var warningText:FunkinText;
+	var scripts:ScriptPack;
 
 	override public function create():Void
 	{
+		scripts = new ScriptPack();
+
+		final base = Paths.script();
+		for (i in 1...3)
+		{
+			final e:String= '${base}test$i.hx';
+			if (FileSystem.exists(e))
+				scripts.add(new HScript(null, e).run());
+		}
+
 		WindowUtil.title = '%{GAME_TITLE} - Development Warning';
 		FlxG.mouse.visible = false;
-		
+
 		super.create();
 
-		warningWhat = new Alphabet(0, 0, "!!! WARNING !!!", true);
+		warningWhat = new Alphabet(0, 0, "!!! Warning !!!", true);
 		warningWhat.color = RED;
 		warningWhat.screenCenter(X);
 		add(warningWhat);
@@ -48,6 +59,8 @@ class InDevWarningState extends MusicBeatState
 		final v:Int = Std.int((FlxG.height - (warningText.y + warningText.height)) / 2);
 		warningText.y += v;
 		warningWhat.y += v;
+
+		scripts.call('testing', ["arg1", "arg3"]); // dude i fucking hate my life
 	}
 
 	override function update(elapsed:Float):Void

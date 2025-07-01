@@ -77,6 +77,8 @@ class MusicBeatSubstate extends flixel.FlxSubState implements IBeat
 	}
 
 	#if SOFTCODED_STATES
+	var stateScripts:ScriptPack;
+	
 	/**
 	 * Softcoded state script name.
 	 */
@@ -92,6 +94,7 @@ class MusicBeatSubstate extends flixel.FlxSubState implements IBeat
 	{
 		final className = Type.getClassName(Type.getClass(FlxG.state));
 		#if SOFTCODED_STATES
+		(stateScripts = new ScriptPack()).setParent(this);
 		this.scriptName = scriptName;
 		this.scriptArgs = args;
 		#else
@@ -108,10 +111,10 @@ class MusicBeatSubstate extends flixel.FlxSubState implements IBeat
 		// global script stuff.
 		// gets the metadata of the current class.
 		// not MusicBeatState, it's whatever is extending from it, since this is an abstract class.
-		GlobalScript.instance.executeClassScripts(scriptName, scriptArgs, true);
+		GlobalScript.instance.executeClassScripts(stateScripts, scriptName, scriptArgs, true);
 		super.create();
-		GlobalScript.instance.call('onCreatePost', []); // gwa gwa lua
-		GlobalScript.instance.call('createPost', []);
+		stateScripts.call('onCreatePost', []); // gwa gwa lua
+		stateScripts.call('createPost', []);
 		#end
 	}
 
@@ -144,9 +147,9 @@ class MusicBeatSubstate extends flixel.FlxSubState implements IBeat
 		if (curSection > lastSection)
 			sectionHit();
 
-		GlobalScript.instance.set('curStep', curStep); // oops i forgor
-		GlobalScript.instance.call('onStepHit', []);
-		GlobalScript.instance.call('stepHit', []);
+		stateScripts.set('curStep', curStep); // oops i forgor
+		stateScripts.call('onStepHit', []);
+		stateScripts.call('stepHit', []);
 	}
 
 	/**
@@ -187,9 +190,9 @@ class MusicBeatSubstate extends flixel.FlxSubState implements IBeat
 	public function beatHit():Void
 	{/* Beat Hit */
 		// softmoddin'
-		GlobalScript.instance.set('curBeat', curBeat); // DAWGG?????
-		GlobalScript.instance.call('onBeatHit', []);
-		GlobalScript.instance.call('beatHit', []);
+		stateScripts.set('curBeat', curBeat); // DAWGG?????
+		stateScripts.call('onBeatHit', []);
+		stateScripts.call('beatHit', []);
 	}
 
 	/**
@@ -198,9 +201,9 @@ class MusicBeatSubstate extends flixel.FlxSubState implements IBeat
 	public function sectionHit():Void
 	{/* Section Hit */
 		// softmoddin'
-		GlobalScript.instance.set('curSection', curSection);
-		GlobalScript.instance.call('onSectionHit', []);
-		GlobalScript.instance.call('sectionHit', []);
+		stateScripts.set('curSection', curSection);
+		stateScripts.call('onSectionHit', []);
+		stateScripts.call('sectionHit', []);
 	}
 
 	@:dox(hide) override function update(elapsed:Float):Void
@@ -230,19 +233,19 @@ class MusicBeatSubstate extends flixel.FlxSubState implements IBeat
 			();
 		}
 
-		GlobalScript.instance.call('onUpdate', [elapsed]); // gwa
-		GlobalScript.instance.call('update', [elapsed]); // gwa
+		stateScripts.call('onUpdate', [elapsed]); // gwa
+		stateScripts.call('update', [elapsed]); // gwa
 		super.update(elapsed);
-		GlobalScript.instance.call('onUpdatePost', [elapsed]);
-		GlobalScript.instance.call('updatePost', [elapsed]);
+		stateScripts.call('onUpdatePost', [elapsed]);
+		stateScripts.call('updatePost', [elapsed]);
 	}
 
 	@:dox(hide) override function close():Void
 	{
-		GlobalScript.instance.call('onClose');
+		stateScripts.call('onClose');
 		final className = Type.getClassName(Type.getClass(_parentState));
 		funkin.game.Main.stateName = className.substring(className.lastIndexOf('.') + 1);
-		GlobalScript.instance.call('onClosePost');
+		stateScripts.call('onClosePost');
 
 		super.close();
 	}

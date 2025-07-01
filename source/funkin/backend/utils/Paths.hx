@@ -467,6 +467,10 @@ class Paths
 		return cacheBitmap(key, parentFolder, bitmap, allowGPU);
 	}
 
+	public static function script(path:String = '') : String {
+		return getSharedPath()+'scripts/$path';
+	}
+
 	public static function cacheBitmap(key:String, ?parentFolder:String = null, ?bitmap:BitmapData, ?allowGPU:Bool = true):FlxGraphic
 	{
 		if (bitmap == null)

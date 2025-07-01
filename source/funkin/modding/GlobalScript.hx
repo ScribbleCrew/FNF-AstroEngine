@@ -4,6 +4,12 @@ package funkin.modding;
 /**
 * Global Script Class...	
 */
+
+// this isn't even a globalscript class
+// im so stupid
+// dw tho
+// once i finish the scriptpack and script classes i'll fix this too!!!
+
 class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable implements IGlobal
 {
 	/**
@@ -106,7 +112,7 @@ class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable impleme
 	 * Execute class scripts inside of mods/source.
 	 * Used inside The BeatStates.
 	 */
-	public function executeClassScripts(?customClass:String, ?scriptArgs:Array<Dynamic>, ?substate:Bool = false):Void
+	public function executeClassScripts(scripts:ScriptPack, ?customClass:String, ?scriptArgs:Array<Dynamic>, ?substate:Bool = false):Void
 	{
 		// Get the current state's class name.
 		final currentClass:Class<Dynamic> = Type.getClass(FlxG.state);
@@ -143,14 +149,15 @@ class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable impleme
 				// Execute Lua/HScript scripts if flag concurrent flag is enabled.
 				#if LUA_ALLOWED
 				if (checkScriptExtensions(_fileName, "lua"))
-					new FunkinLua(convertedScriptPath).execute(scriptArgs);
+					scripts.add(new FunkinLua(convertedScriptPath).execute(scriptArgs));
 				#end
 				#if HSCRIPT_ALLOWED
 				if (checkScriptExtensions(_fileName, "haxe"))
 				{
-					final _class = new HScript(null, convertedScriptPath);
-					_class.parent = (substate ? SUB : STATE); // yay enums
-					_class.run(scriptArgs);
+				//	final _class = 
+					scripts.add(new HScript(null, convertedScriptPath).run(scriptArgs));
+				//	_class.parent = (substate ? SUB : STATE); // yay enums
+				//	_class.run(scriptArgs);
 				};
 				#end
 			}

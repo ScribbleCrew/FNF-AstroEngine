@@ -1,9 +1,14 @@
 package funkin.modding.hscript;
 
 #if LUA_ALLOWED import funkin.modding.lua.FunkinLua; #end
-
 #if HSCRIPT_ALLOWED
 import hscript.Expr;
+import rulescript.types.ScriptedTypeUtil;
+import haxe.extern.EitherType;
+import hscript.Expr;
+import rulescript.interps.RuleScriptInterp;
+import rulescript.parsers.HxParser;
+import rulescript.parsers.Parser;
 import rulescript.types.ScriptedTypeUtil;
 
 enum ScriptContext
@@ -63,7 +68,7 @@ typedef HScriptInfos =
 	#end
 }
 
-class HScript extends RuleScript implements IScript
+class HScript extends rulescript.RuleScript implements IScript
 {
 	/**
 	 * All executed instances of `HSCRIPT`.	
@@ -106,6 +111,7 @@ class HScript extends RuleScript implements IScript
 	}
 
 	public var defaultVariables(get, never):Map<String, Dynamic>;
+
 	function get_defaultVariables():Map<String, Dynamic>
 	{
 		#if SOFTCODED_STATES
@@ -161,7 +167,7 @@ class HScript extends RuleScript implements IScript
 			'WindowUtil' => funkin.backend.utils.native.WindowUtil,
 			'Character' => Character,
 			'Alphabet' => Alphabet,
-			'CharacterScript' => HScriptUtils.fromMacro("funkin.game.objects.characters.CharacterScript"),// :p
+			'CharacterScript' => HScriptUtils.fromMacro("funkin.game.objects.characters.CharacterScript"), // :p
 			'Note' => Note,
 			'Logs' => Logs,
 			'CustomSubstate' => CustomSubstate,
@@ -428,6 +434,15 @@ class HScript extends RuleScript implements IScript
 		return _interp.superInstance = ((val == STATE) ? FlxG.state : FlxG.state.subState);
 	}
 
+	override public function setParent(parent:Dynamic)
+	{
+		final _interp:RuleScriptInterpreter = Std.isOfType(interp, RuleScriptInterpreter) ? cast interp : null;
+		if (_interp == null)
+			return; // bruh,,, i fucking hate types 🥺🙏
+		_interp.superInstance = cast parent;
+		return;
+	}
+
 	/**
 	 * HScript's new constructor.
 	 *
@@ -436,7 +451,7 @@ class HScript extends RuleScript implements IScript
 	 * @param varsToBring Variables to bring. (optional)
 	 * @param manualRun If the script should manually run. (optional)
 	 */
-	@:dox(show) override public function new(?parent:Dynamic, ?file:String, ?varsToBring:Any = null, ?manualRun:Bool = false, ?context:ScriptContext) : Void
+	@:dox(show) override public function new(?parent:Dynamic, ?file:String, ?varsToBring:Any = null, ?manualRun:Bool = false, ?context:ScriptContext):Void
 	{
 		file ??= '';
 		filePath = file;
@@ -525,13 +540,15 @@ class HScript extends RuleScript implements IScript
 	/**
 	 * Set a import.	
 	 */
-	public function set(name:String, param:Dynamic):Void
+	override public function set(name:String, param:Dynamic):Void
+	{
 		RuleScript.defaultImports.get('').set(name, param);
+	}
 
 	/**
 	 * Get a variable...	
 	 */
-	public function get(hehe):Null<Dynamic>
+	override public function get(hehe):Null<Dynamic>
 		return variables.get(hehe);
 
 	/**
@@ -678,7 +695,7 @@ class HScript extends RuleScript implements IScript
 	}
 	#end
 
-	public function call(functionName:String, ?args:Array<Dynamic>)
+	override public function call(functionName:String, ?funcArgs:Array<Dynamic>)
 	{
 		if (functionName == null || interp == null)
 			return null;
@@ -692,7 +709,7 @@ class HScript extends RuleScript implements IScript
 		try
 		{
 			var func:Dynamic = variables.get(functionName); // function signature
-			final ret = Reflect.callMethod(null, func, args ?? []);
+			final ret = Reflect.callMethod(null, func, funcArgs ?? []);
 			return {funName: functionName, signature: func, returnValue: ret};
 		}
 		catch (e:hscript.Expr.Error)
@@ -712,11 +729,10 @@ class HScript extends RuleScript implements IScript
 		return null;
 	}
 
-	public function destroy():Void
+	override public function destroy():Void
 	{
 		origin = null;
 		#if LUA_ALLOWED parentLua = null; #end
-		// super.destroy();
 	}
 
 	#if LUA_ALLOWED
