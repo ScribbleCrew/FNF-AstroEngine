@@ -33,6 +33,8 @@ class ChartingGridSprite extends FlxSprite
 		vortexLine.color = 0xFF660000;
 		vortexLine.updateHitbox();
 
+		antialiasing = false;
+
 		stripe = new FlxSprite().makeGraphic(1, 1, FlxColor.WHITE);
 		stripe.scrollFactor.x = 0;
 		stripe.color = FlxColor.BLACK;

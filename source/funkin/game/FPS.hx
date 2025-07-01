@@ -1,5 +1,6 @@
 package funkin.game;
-
+import funkin.backend.framerate.*;
+import funkin.backend.framerate.addons.*;
 /**
  * **Custom FPS** class which provides a customizable, displays the fps, memory, and git information.
  * Takes customizability in account allowing this call to be used in HScript & Lua.
@@ -146,6 +147,7 @@ class FPS extends openfl.text.TextField
 		autoSize = LEFT;
 		multiline = true;
 		text = "FPS: ";
+		
 
 		/**
 		 * Creating the background sprite.
@@ -237,7 +239,7 @@ class FPS extends openfl.text.TextField
 		/**
 		 * FPS Text Field
 		 */
-		addLine('${#if ASTRO_WATERMARKS ClientPrefs.data.goober ? "owo's per second" : #end 'FPS'}: $currentFPS');
+		addLine('<fpsboi>${#if ASTRO_WATERMARKS ClientPrefs.data.goober ? "owo's per second" : #end 'FPS'}: $currentFPS<fpsboi>');
 		
 		/**
 		 * Memory Text Field

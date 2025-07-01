@@ -138,8 +138,8 @@ class VisualsUISubState extends BaseOptionsMenu
 		option.maxValue = 1;
 		option.changeValue = 0.1;
 		option.decimals = 1;
-		option.onChange = () -> @:privateAccess FlxTween.num(Main.framerateCounter.alpha, ClientPrefs.data.fpsCounterAlpha, .1, {ease: FlxEase.expoOut},
-			Main.framerateCounter.set_alpha);
+		//option.onChange = () -> @:privateAccess FlxTween.num(Main.framerateCounter.alpha, ClientPrefs.data.fpsCounterAlpha, .1, {ease: FlxEase.expoOut},
+		//	Main.framerateCounter.set_alpha);
 		addOption(option);
 		#end
 

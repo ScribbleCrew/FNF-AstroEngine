@@ -1,5 +1,8 @@
 package funkin.game.states.options.substates;
 
+import funkin.backend.framerate.FramerateContainer;
+import funkin.backend.framerate.addons.Framerate;
+
 class GameplaySettingsSubState extends BaseOptionsMenu
 {
 	public function new()
@@ -106,7 +109,10 @@ class GameplaySettingsSubState extends BaseOptionsMenu
 		option.changeValue = 0.1;
 		addOption(option);
 
-		#if ASTRO_WATERMARKS addOption(new Option('goob', null, 'goober', BOOL)); #end
+		#if ASTRO_WATERMARKS var hehe:Option = null; 
+		addOption(hehe = new Option('goob', null, 'goober', BOOL)); 
+		@:privateAccess hehe.onChange = FramerateContainer.instance.fpsCounter._checkF; // did u wash your ass tonight
+		#end
 
 		super();
 	}

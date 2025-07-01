@@ -132,6 +132,7 @@ class MusicBeatState extends FlxState implements IBeat
 		if (!_isCameraLoaded)
 			setupCamera();
 
+		funkin.backend.framerate.FramerateContainer.offset.set(0,0);
 		#if !SOFTCODED_STATES super.create(); #end
 
 		// transition stuff (ignore this).

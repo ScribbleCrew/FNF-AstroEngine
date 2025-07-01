@@ -25,6 +25,8 @@ class Init extends flixel.FlxState
 
 	override public function create():Void
 	{
+		@:privateAccess funkin.backend.framerate.FramerateContainer.instance.fpsCounter._checkF();
+		
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
 		WindowUtil.title = '';

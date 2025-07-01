@@ -526,6 +526,8 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		fullTipText.screenCenter();
 		add(fullTipText);
 		super.create();
+
+		funkin.backend.framerate.FramerateContainer.offset.y = 60;
 	}
 
 	var gridColors:Array<FlxColor>;

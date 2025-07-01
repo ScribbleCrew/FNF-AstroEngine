@@ -109,18 +109,20 @@ class WindowUtil
 	#if (WINDOW_CUSTOMIZATION && windows)
 	@:isVar
 	public static var darkmode(default, set):Bool;
+
 	@:functionCode('
     int darkMode = enable ? 1 : 0;
     HWND window = GetActiveWindow();
     if (S_OK != DwmSetWindowAttribute(window, 19, &darkMode, sizeof(darkMode)))
         DwmSetWindowAttribute(window, 20, &darkMode, sizeof(darkMode));
     ')
-	@:dox(hide) 
-	@:noCompletion 
+	@:dox(hide)
+	@:noCompletion
 	static function set_darkmode(enable:Bool):Bool
 	{
 		trace('doob');
-		if (OsAPI.hasVersion('Windows 10')) refreshWindow();
+		if (OsAPI.hasVersion('Windows 10'))
+			refreshWindow();
 		return darkmode = enable;
 	}
 	#end
@@ -151,15 +153,18 @@ class WindowUtil
 	 */
 	@:isVar
 	public static var title(default, set):String;
-	@:dox(hide) @:noCompletion inline static function set_title(value:String):String{
+
+	@:dox(hide) @:noCompletion inline static function set_title(value:String):String
+	{
 		// map with all replaceable stuff.
 		final replaceMap:Map<String, Dynamic> = [
 			"GAME_TITLE" => Application.current.meta.get('name'),
 			"GAME_VERSION" => Application.current.meta.get('version')
 		];
-		
+
 		// for loop to apply those custom shitz
-		for(id => fixed in replaceMap) value = value.replace('%{$id}', fixed);
+		for (id => fixed in replaceMap)
+			value = value.replace('%{$id}', fixed);
 
 		// set da title n shit.
 		return Application.current.window.title = title = Std.string(value);
@@ -171,4 +176,14 @@ class WindowUtil
 	#if windows @:functionCode(' if (!curAudioFix) curAudioFix = new AudioFixClient(); ') #end
 	public static function registerAudio():Void
 		Main._audioDisconnected = false;
+
+	@:functionCode("
+		unsigned long long allocatedRAM = 0;
+		GetPhysicallyInstalledSystemMemory(&allocatedRAM);
+		return (allocatedRAM / 1024);
+	")
+	public static function getTotalRam():Float
+	{
+		return 0;
+	}
 }

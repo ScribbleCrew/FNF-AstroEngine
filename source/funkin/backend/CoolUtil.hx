@@ -13,6 +13,51 @@ import openfl.utils.Assets;
 
 class CoolUtil
 {
+
+		/**
+	 * Returns a string representation of a size, following this format: `1.02 GB`, `134.00 MB`
+	 * @param size Size to convert to string
+	 * @return String Result string representation
+	 */
+	public static function getSizeString(size:Float):String {
+		var labels = ["B", "KB", "MB", "GB", "TB"];
+		var rSize:Float = size;
+		var label:Int = 0;
+		while(rSize > 1024 && label < labels.length-1) {
+			label++;
+			rSize /= 1024;
+		}
+		return '${Std.int(rSize) + "." + addZeros(Std.string(Std.int((rSize % 1) * 100)), 2)}${labels[label]}';
+	}
+
+	/**
+	 * Returns the class in question's path e.g `funkin.backend.CoolUtil`
+	 * @param class 
+	 * @return String 
+		return Type.getClassName(Type.getClass(class))
+	 */
+	public static function getClassPath(_class:Dynamic):String 
+		return Type.getClassName(Type.getClass(_class));
+
+	/**
+	 * Returns the class in question's name e.g `CoolUtil`
+	 * @param class 
+	 * @return String
+		return getClassPath(class).split(".").pop()
+	 */
+	public static function getClassName(_class:Dynamic):String
+		return getClassPath(_class).split(".").pop();
+
+	/**
+	 * Add several zeros at the beginning of a string, so that `2` becomes `02`.
+	 * @param str String to add zeros
+	 * @param num The length required
+	 */
+	public static inline function addZeros(str:String, num:Int) {
+		while(str.length < num) str = '0${str}';
+		return str;
+	}
+
 	/**
 	 * Used to uhh fix json maps.	
 	 */

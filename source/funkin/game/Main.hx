@@ -4,7 +4,8 @@ package funkin.game;
 import openfl.Lib;
 import funkin.game.FPS;
 import openfl.display.MovieClip;
-
+import funkin.backend.framerate.*;
+import funkin.backend.framerate.addons.*;
 /**
  * Hello traveler, What brings you here?
  *
@@ -48,15 +49,15 @@ class Main extends flixel.FlxGame
 	/**
 	 * Make this empty once you've finished with this shitty project...
 	 */
-	public static final releaseCycle:String = "Beta";
+	public static final releaseCycle:String = "Alpha";
 
 	/**	
 	 * Framerate variable.
 	 * used to handle my new sexy fps code.
 	 */
 	@:isVar
-	public static var framerateCounter(get, null):FPS;
-	@:dox(hide) @:noCompletion inline static function get_framerateCounter():FPS
+	public static var framerateCounter(get, null):FramerateContainer;
+	@:dox(hide) @:noCompletion inline static function get_framerateCounter():FramerateContainer
 		return #if !mobile framerateCounter #else null #end;
 
 	/**
@@ -92,10 +93,12 @@ class Main extends flixel.FlxGame
 	{
 		@:bypassAccessor instance = this;
 
+		#if (!mobile && !web)
 		/**
 		 * Create the framerate counter.
 		 */
-		framerateCounter = FPS.make();
+		framerateCounter = new funkin.backend.framerate.FramerateContainer(); // FPS.make();
+		#end
 
 		#if ALLOW_DPI_FIX
 		/** 
@@ -157,7 +160,7 @@ class Main extends flixel.FlxGame
 		/**
 		 * Add and setup the framerate counter.	
 		 */
-		applicationScreen.stage.addChild(framerateCounter.bgSprite);
+	//	applicationScreen.stage.addChild(framerateCounter.bgSprite);
 		applicationScreen.stage.addChild(framerateCounter);
 
 		/**

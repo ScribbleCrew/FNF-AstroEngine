@@ -11,11 +11,16 @@ var halloweenWhite:BGSprite;
 // PRECACHE SOUNDS
 Paths.sound('thunder_1');
 Paths.sound('thunder_2');
-
 function onCreate():Void
 {
-	halloweenBG = !ClientPrefs.data.lowQuality ? new BGSprite('halloween_bg', -200, -100,
-		['halloweem bg0', 'halloweem bg lightning strike']) : new BGSprite('halloween_bg_low', -200, -100);
+	if (!ClientPrefs.data.lowQuality)
+	{
+		halloweenBG = new BGSprite('halloween_bg', -200, -100, ['halloweem bg0', 'halloweem bg lightning strike']);
+	}
+	else
+	{
+		halloweenBG = new BGSprite('halloween_bg_low', -200, -100);
+	}
 	addHxObject(halloweenBG);
 
 	// Monster cutscene
@@ -56,9 +61,12 @@ function lightningStrikeShit():Void
 	lightningStrikeBeat = curBeat;
 	lightningOffset = FlxG.random.int(8, 24);
 
-	if (boyfriend.animOffsets.exists('scared')) boyfriend.playAnim('scared', true);
-	if (dad.animOffsets.exists('scared')) dad.playAnim('scared', true);
-	if (gf != null && gf.animOffsets.exists('scared')) gf.playAnim('scared', true);
+	if (boyfriend.animOffsets.exists('scared'))
+		boyfriend.playAnim('scared', true);
+	if (dad.animOffsets.exists('scared'))
+		dad.playAnim('scared', true);
+	if (gf != null && gf.animOffsets.exists('scared'))
+		gf.playAnim('scared', true);
 
 	if (ClientPrefs.data.camZooms)
 	{
@@ -80,7 +88,7 @@ function lightningStrikeShit():Void
 	}
 }
 
-function monsterCutscene() : Void
+function monsterCutscene():Void
 {
 	inCutscene = true;
 	camHUD.visible = false;
