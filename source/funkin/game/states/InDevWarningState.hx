@@ -60,7 +60,7 @@ class InDevWarningState extends MusicBeatState
 		warningText.y += v;
 		warningWhat.y += v;
 
-		scripts.call('testing', ["arg1", "arg3"]); // dude i fucking hate my life
+		scripts.call('testing', [["arg1", "arg3"]]); // dude i fucking hate my life
 	}
 
 	override function update(elapsed:Float):Void
