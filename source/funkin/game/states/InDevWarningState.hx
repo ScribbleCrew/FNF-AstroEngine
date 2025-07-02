@@ -22,7 +22,7 @@ class InDevWarningState extends MusicBeatState
 
 	override public function create():Void
 	{
-		scripts = new ScriptPack();
+		(scripts = new ScriptPack()).setParent(this);
 
 		final base = Paths.script();
 		for (i in 1...3)

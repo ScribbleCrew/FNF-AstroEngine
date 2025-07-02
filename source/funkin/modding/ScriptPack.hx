@@ -3,6 +3,7 @@ package funkin.modding;
 class ScriptPack
 {
 	public var scripts:Array<Script> = [];
+	public var parent:Dynamic = null;
 
 	public function new()
 	{
@@ -107,6 +108,7 @@ class ScriptPack
 
 	public function setParent(parent:Dynamic)
 	{
+		this.parent = parent;
 		for (e in scripts)
 			e.setParent(parent);
 	}
@@ -229,11 +231,15 @@ class ScriptPack
 		return null;
 	}
 
-	public function set(val:String, value:Dynamic)
+	public function set(val:String, value:Dynamic, ?fucker:ScriptType)
+	{
+		fucker ??= BOTH;
 		for (e in scripts)
-			e.set(val, value);
+			if ((fucker == HSCRIPT && e.type == HSCRIPT) || (fucker == LUA && e.type == LUA) || (fucker == BOTH))
+				e.set(val, value);
+	}
 
-	public function destroy()
+	public function destroy():Void
 		for (e in scripts)
 			if (e.type == HSCRIPT)
 				e.destroy();
@@ -241,6 +247,7 @@ class ScriptPack
 	public function add(script:Script):Script
 	{
 		scripts.push(script);
+		__SupScript(script);
 		return script;
 	}
 
@@ -250,6 +257,16 @@ class ScriptPack
 	public function insert(pos:Int, script:Script):Script
 	{
 		scripts.insert(pos, script);
+		__SupScript(script);
 		return script;
 	}
+
+	/**
+		* Script Setup
+		* @param script 
+		* @return Void 
+				script.setParent(this.parent)
+	 */
+	public function __SupScript(script:Script):Void
+		script.setParent(this.parent);
 }

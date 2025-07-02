@@ -1,6 +1,6 @@
 /**
  * Constants because funny???	
- * Inlines can't be accessed in runtime?
+ * Inlines can't be accessed during runtime?
  */
 class Constants
 {

@@ -2110,7 +2110,7 @@ class PlayState extends MusicBeatState
 
 	override public function update(elapsed:Float):Void
 	{	
-		//scripts.call('onUpdate', [elapsed]);
+		scripts.call('onUpdate', [elapsed]);
 
 		if(ui?.update!=null) ui.update(elapsed);
 
@@ -2297,7 +2297,7 @@ class PlayState extends MusicBeatState
 		scripts.set('cameraX', camFollow.x);
 		scripts.set('cameraY', camFollow.y);
 		scripts.set('botPlay', cpuControlled);
-	//	scripts.call('onUpdatePost', [elapsed]);
+		scripts.call('onUpdatePost', [elapsed]);
 	}
 	
 	/**
