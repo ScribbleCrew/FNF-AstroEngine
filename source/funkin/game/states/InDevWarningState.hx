@@ -24,7 +24,7 @@ class InDevWarningState extends MusicBeatState
 	{
 		(scripts = new ScriptPack()).setParent(this);
 
-		final base = Paths.script();
+		final base:String = Paths.script();
 		for (i in 1...3)
 		{
 			final e:String= '${base}test$i.hx';
@@ -60,7 +60,7 @@ class InDevWarningState extends MusicBeatState
 		warningText.y += v;
 		warningWhat.y += v;
 
-		scripts.call('testing', [["arg1", "arg3"]]); // dude i fucking hate my life
+		scripts.call('testing', [["arg1", "arg3"], "huh"]); // dude i fucking hate my life
 	}
 
 	override function update(elapsed:Float):Void

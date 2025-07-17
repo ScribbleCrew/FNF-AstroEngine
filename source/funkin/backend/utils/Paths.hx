@@ -512,12 +512,13 @@ class Paths
 		return graph;
 	}
 
-	inline static public function getTextFromFile(key:String, ?ignoreMods:Bool = false):String
+	inline static public function getTextFromFile(key:String, ?ignoreMods:Bool = false, ?ignoreWarnings:Bool = false):String
 	{
 		final path:String = getPath(key, TEXT, !ignoreMods);
 		if (OpenFlAssets.exists(path, TEXT)) return Assets.getText(path); // prioritize embedded assets
 		#if sys if (FileSystem.exists(path)) return File.getContent(path); #end // now you can access embedded and non embedded assets.
-		Logs.error('Cannot find $key || ignoreMods: $ignoreMods');
+		if(!ignoreWarnings)
+			Logs.warn('Cannot find $key || ignoreMods: $ignoreMods');
 		return null; // yeahh placeholder :3
 	}
 
@@ -768,7 +769,7 @@ class Paths
 
 				if (!changedAtlasJson)
 				{
-					spriteJson = getTextFromFile('images/$originalPath/spritemap$st.json');
+					spriteJson = getTextFromFile('images/$originalPath/spritemap$st.json', false, true);
 					if (spriteJson != null)
 					{
 						changedImage = true;

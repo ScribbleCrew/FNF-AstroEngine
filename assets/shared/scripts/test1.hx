@@ -1,3 +1,4 @@
-function testing(args:Array<String>){
-    trace(['yeahh the scriptpack works!!!!', args]);
+function testing(args:Array<String>, ddd:String):Void
+{
+	trace(['yeahh the scriptpack works!!!!', args, ddd]);
 }

@@ -6,11 +6,11 @@ import hscript.Expr;
 
 enum abstract FunctionFlag(String) from String to String
 {
-	final Function_Stop:FunctionFlag = "##ASTRO_GLOBALSCRIPT_FUNCTION_STOP";
-	final Function_Continue:FunctionFlag = "##ASTRO_GLOBALSCRIPT_FUNCTION_CONTINUE";
-	final Function_StopLua:FunctionFlag = "##ASTRO_GLOBALSCRIPT_FUNCTIONSTOP_LUA";
-	final Function_StopHScript:FunctionFlag = "##ASTRO_GLOBALSCRIPT_FUNCTIONSTOP_HSCRIPT";
-	final Function_StopAll:FunctionFlag = "##ASTRO_GLOBALSCRIPT_FUNCTION_STOPALL";
+	final Function_Stop:FunctionFlag = "##ASTRO_LUNARMOD_FUNCTION_STOP";
+	final Function_Continue:FunctionFlag = "##ASTRO_LUNARMOD_FUNCTION_CONTINUE";
+	final Function_StopLua:FunctionFlag = "##ASTRO_LUNARMOD_FUNCTIONSTOP_LUA";
+	final Function_StopHScript:FunctionFlag = "##ASTRO_LUNARMOD_FUNCTIONSTOP_HSCRIPT";
+	final Function_StopAll:FunctionFlag = "##ASTRO_LUNARMOD_FUNCTION_STOPALL";
 }
 
 class ScriptUtil

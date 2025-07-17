@@ -636,7 +636,7 @@ class PlayState extends MusicBeatState
 	override public function create()
 	{
 		_lastLoadedModDirectory = Mods.currentModDirectory;
-		
+
 		Paths.clearStoredMemory();
 		if(nextReloadAll) Paths.clearUnusedMemory();
 		nextReloadAll = false;
@@ -1969,6 +1969,7 @@ class PlayState extends MusicBeatState
 					vocals.pause();
 					opponentVocals.pause();
 				}
+				FlxG.camera.active = false;
 				FlxTimer.globalManager.forEach((tmr:FlxTimer) -> if(!tmr.finished) tmr.active = false);
 				FlxTween.globalManager.forEach((twn:FlxTween) -> if(!twn.finished) twn.active = false);
 				#if VIDEOS_ALLOWED if(videoCutscene != null) videoCutscene.pause(); #end
@@ -1988,6 +1989,7 @@ class PlayState extends MusicBeatState
 			if (FlxG.sound.music != null && !startingSong && canResync)
 				resyncVocals();
 
+			FlxG.camera.active = true;
 			FlxTimer.globalManager.forEach((tmr:FlxTimer) -> if(!tmr.finished) tmr.active = true);
 			FlxTween.globalManager.forEach((twn:FlxTween) -> if(!twn.finished) twn.active = true);
 			#if VIDEOS_ALLOWED
@@ -2395,7 +2397,7 @@ class PlayState extends MusicBeatState
 				persistentDraw = false;
 				
 				for(i => v in [FlxTimer.globalManager, FlxTween.globalManager])
-					untyped v.clear();
+					untyped v.clear(); // VERY AND I MEAN VERY UNSAFE, but it works.
 
 				FlxG.camera.setFilters([]);
 
