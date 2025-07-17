@@ -1,16 +1,19 @@
 package funkin.modding;
 
-class ScriptPack
+import funkin.modding.Script.ScriptType as TScript;
+
+class ScriptPack implements IDummy
 {
 	public var scripts:Array<Script> = [];
 	public var parent:Dynamic = null;
 
-	public function new()
+	public function new() : Void
 	{
+		//super();
 	}
 
 	public function call(funcToCall:String, ?args:Array<Dynamic>, ?ignoreStops:Bool, ?exclusions:Array<String>, ?excludeValues:Array<Dynamic>,
-			?fucker:funkin.modding.Script.ScriptType = BOTH):Dynamic
+			?fucker:TScript = BOTH):Dynamic
 	{
 		fucker ??= BOTH;
 		args ??= [];
@@ -171,7 +174,7 @@ class ScriptPack
 
 		if (FileSystem.exists(scriptToLoad))
 			if (!HScript.instances.exists(scriptToLoad)) // make my own
-				return new HScript(null, scriptToLoad).run();
+				return add(new HScript(null, scriptToLoad).run());
 
 		//	RuleScript.i
 
@@ -231,7 +234,7 @@ class ScriptPack
 		return null;
 	}
 
-	public function set(val:String, value:Dynamic, ?fucker:ScriptType)
+	public function set(val:String, value:Dynamic, ?fucker:TScript)
 	{
 		fucker ??= BOTH;
 		for (e in scripts)

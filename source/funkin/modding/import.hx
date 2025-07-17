@@ -4,6 +4,7 @@ package funkin.modding;
 // BASE SCRIPTING STUFF
 import funkin.modding.*;
 import funkin.modding.interfaces.*;
+import funkin.modding.interfaces.scriptTypes.*;
 import funkin.modding.ScriptUtil;
 import funkin.modding.ScriptUtil.FunctionFlag;
 #if HSCRIPT_ALLOWED

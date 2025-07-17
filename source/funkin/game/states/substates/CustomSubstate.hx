@@ -38,8 +38,8 @@ class CustomSubstate extends MusicBeatSubstate
 		PlayState.instance.openSubState(new CustomSubstate(name));
 
 		#if HSCRIPT_ALLOWED
-		playScriptPack.set('customSubstate', instance, HSCRIPT);
-		playScriptPack.set('customSubstateName', name, HSCRIPT);
+		PlayState.instance.scripts.set('customSubstate', instance, HSCRIPT);
+		PlayState.instance.scripts.set('customSubstateName', name, HSCRIPT);
 		#end
 	}
 

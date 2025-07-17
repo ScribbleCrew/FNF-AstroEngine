@@ -132,7 +132,7 @@ class CallbackHandler
 	}
 }
 
-class FunkinLua extends Script implements IScript
+class FunkinLua extends Script implements IScript implements ILua
 {
 	public var lua:State = null;
 	public var camTarget:FlxCamera;
