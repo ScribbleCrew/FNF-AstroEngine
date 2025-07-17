@@ -636,6 +636,7 @@ class PlayState extends MusicBeatState
 	override public function create()
 	{
 		_lastLoadedModDirectory = Mods.currentModDirectory;
+		
 		Paths.clearStoredMemory();
 		if(nextReloadAll) Paths.clearUnusedMemory();
 		nextReloadAll = false;
@@ -3765,7 +3766,8 @@ class PlayState extends MusicBeatState
 		ui.beatHit();
 
 		characterBopper(curBeat);
-		//scripts.set('curBeat', curBeat);
+
+		scripts.set('curBeat', curBeat);
 		scripts.call('onBeatHit', []);
 
 		_lastBeatHit = curBeat;

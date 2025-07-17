@@ -517,8 +517,8 @@ class Paths
 		final path:String = getPath(key, TEXT, !ignoreMods);
 		if (OpenFlAssets.exists(path, TEXT)) return Assets.getText(path); // prioritize embedded assets
 		#if sys if (FileSystem.exists(path)) return File.getContent(path); #end // now you can access embedded and non embedded assets.
-		Logs.error('Cannot find $key || iM: $ignoreMods');
-		return ''; // yeahh placeholder :3
+		Logs.error('Cannot find $key || ignoreMods: $ignoreMods');
+		return null; // yeahh placeholder :3
 	}
 
 	/**

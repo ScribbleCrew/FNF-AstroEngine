@@ -2,7 +2,7 @@ package funkin.modding;
 
 import funkin.modding.Script.ScriptType as TScript;
 
-enum ScriptType// use interfaces instead -- TODO
+enum ScriptType // use interfaces instead -- TODO
 {
 	HSCRIPT;
 	PYTHON;
@@ -39,7 +39,7 @@ class Script
 		return null;
 	}
 
-	public function call(functionName:String, ?funcArgs:Array<Dynamic>):Dynamic// should we even have the stop stuff here?
+	public function call(functionName:String, ?funcArgs:Array<Dynamic>):Dynamic // should we even have the stop stuff here?
 	{
 		return null;
 	}

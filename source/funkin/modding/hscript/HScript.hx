@@ -107,12 +107,14 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 	{
 		final exec = super.execute(code);
 		instances.set(this.scriptName, this);
+		trace(this.scriptName + ' executed!');
+		trace(this.filePath + ' executed!');
 		return exec;
 	}
 
 	public var defaultVariables(get, never):Map<String, Dynamic>;
 
-	function get_defaultVariables():Map<String, Dynamic>
+	@:dox(hide) function get_defaultVariables():Map<String, Dynamic>
 	{
 		#if SOFTCODED_STATES
 		function closeInstanceSubstate():Void // for custom substates ;3
@@ -354,7 +356,7 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 			{
 				if (PlayState.instance == null)
 				{
-					FlxG.log.warn('HScript: {addHxObject} isn\'t allowed in current state');
+					FlxG.log.warn('{HScript.setDefaultGF}: This isn\'t allowed in current state');
 					return null;
 				}
 				var gfVersion:String = PlayState.SONG.gfVersion;
@@ -368,7 +370,7 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 			{ // stolen from FunkinLua
 				if (PlayState.instance == null)
 				{
-					FlxG.log.warn('HScript: {addHxObject} isn\'t allowed in current state');
+					FlxG.log.warn('{HScript.addHxObject}: This isn\'t allowed in current state');
 					return null;
 				}
 
@@ -575,6 +577,7 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 		return null;
 	}
 
+
 	public function run(?args:Array<Dynamic>, ?customGroupMap:String):HScript
 	{
 		try
@@ -582,11 +585,13 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 			tryCall('new', args);
 			tryCall('onCreate');
 			tryCall('create');
-			// GlobalScript.instance.hscriptInstances.push(this);
 
-			final scriptGroup = customGroupMap == null ? Main.stateName : customGroupMap;
-			GlobalScript.instance.hscriptInstances.exists(scriptGroup) ? GlobalScript.instance.hscriptInstances.get(scriptGroup)
-				.push(this) : GlobalScript.instance.hscriptInstances.set(scriptGroup, [this]);
+			for (i in instances)
+				if (i != this && i.filePath != filePath)
+				{
+					instances.set(filePath, this);
+					break;
+				}
 
 			Logs.prefixedTrace('successfully initialized HScript interp on "$filePath"', 'Global Script', GREEN);
 		}
@@ -736,6 +741,7 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 	override public function destroy():Void
 	{
 		origin = null;
+		instances.remove(filePath);
 		#if LUA_ALLOWED parentLua = null; #end
 	}
 
