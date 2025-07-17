@@ -10,7 +10,7 @@ package funkin.modding;
 // dw tho
 // once i finish the scriptpack and script classes i'll fix this too!!!
 
-class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable implements IGlobal
+class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable #if HSCRIPT_ALLOWED implements IGlobal #end
 {
 	/**
 	 * Global Script Instance.
@@ -88,26 +88,6 @@ class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable impleme
 		// If the extension isn't found
 		return false;
 	}
-
-	#if (LUA_ALLOWED && HSCRIPT_ALLOWED)
-	/**
-	 * Set vars on scripts.	
-	 */
-	public function set(variable:String, arg:Dynamic, exclusions:Array<String> = null):Void
-	{
-		exclusions ??= [];
-
-		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
-		try
-		{
-			#if LUA_ALLOWED setOnLuas(variable, arg, exclusions); #end
-			#if HSCRIPT_ALLOWED setOnHScript(variable, arg, exclusions); #end
-		}
-		catch (error:haxe.Exception)
-			Logs.error('{GlobalScript.set}: $error');
-		#end
-	}
-
 	/**
 	 * Execute class scripts inside of mods/source.
 	 * Used inside The BeatStates.
@@ -163,6 +143,24 @@ class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable impleme
 			}
 		}
 	}
+	#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
+	/**
+	 * Set vars on scripts.	
+	 */
+	public function set(variable:String, arg:Dynamic, exclusions:Array<String> = null):Void
+	{
+		exclusions ??= [];
+
+		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
+		try
+		{
+			#if LUA_ALLOWED setOnLuas(variable, arg, exclusions); #end
+			#if HSCRIPT_ALLOWED setOnHScript(variable, arg, exclusions); #end
+		}
+		catch (error:haxe.Exception)
+			Logs.error('{GlobalScript.set}: $error');
+		#end
+	}
 
 	/**
 	 * Call on scripts (HScript, Lua)
@@ -174,10 +172,10 @@ class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable impleme
 	 * @param context Script context, MAIN / State
 	 */
 	public function call(functionName:String, args:Array<Dynamic> = null, ignoreStops:Null<Bool> = false, exclusions:Array<String> = null,
-			excludeValues:Array<Dynamic> = null, context:HScript.ScriptContext = MAIN):Dynamic
+			excludeValues:Array<Dynamic> = null):Dynamic
 	{
 		// !! context hscript only... !!
-
+		
 		// Null checks.
 		args ??= [];
 		exclusions ??= [];
@@ -187,7 +185,7 @@ class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable impleme
 		var scriptCall:Dynamic = #if LUA_ALLOWED callOnLuas(functionName, args, ignoreStops, exclusions, excludeValues) #else null #end;
 		#if HSCRIPT_ALLOWED
 		if (scriptCall == null || excludeValues.contains(scriptCall))
-			scriptCall = callOnHScript(functionName, args, ignoreStops, exclusions, excludeValues, context);
+			scriptCall = callOnHScript(functionName, args, ignoreStops, exclusions, excludeValues);
 		#end
 
 		return scriptCall;
@@ -350,7 +348,7 @@ class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable impleme
 	 * @param exclusions Exclusions.
 	 */
 	public function callOnHScript(functionName:String, args:Array<Dynamic> = null, ?ignoreStops:Bool = false, exclusions:Array<String> = null,
-			excludeValues:Array<Dynamic> = null, ?context:HScript.ScriptContext):Dynamic
+			excludeValues:Array<Dynamic> = null):Dynamic
 	{
 		var returnVal:String = Function_Continue;
 

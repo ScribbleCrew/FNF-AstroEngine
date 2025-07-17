@@ -808,7 +808,7 @@ class HScript
 	#if LUA_ALLOWED
 	public static function implement(funk:FunkinLua):Void
 	{
-		function debug(txt:String):Void
+		function debug(txt:String):Dynamic
 		{
 			PlayState.instance.addTextToDebug(txt, FlxColor.RED);
 			return null;

@@ -5,6 +5,7 @@ import funkin.modding.Script.ScriptType as TScript;
 class ScriptPack implements IDummy
 {
 	public static var packInstances:Array<ScriptPack> = [];
+
 	public var scripts:Array<Script> = [];
 	public var parent:Dynamic = null;
 
@@ -40,6 +41,7 @@ class ScriptPack implements IDummy
 		return scriptCall;
 	}
 
+	#if LUA_ALLOWED
 	public function callOnLuas(functionName:String, args:Array<Dynamic> = null, ignoreStops = false, exclusions:Array<String> = null,
 			excludeValues:Array<Dynamic> = null):Dynamic
 	{
@@ -88,7 +90,9 @@ class ScriptPack implements IDummy
 		#end
 		return returnVal;
 	}
+	#end
 
+	#if HSCRIPT_ALLOWED
 	var hsScripts(get, never):Array<HScript>;
 
 	function get_hsScripts()
@@ -99,7 +103,9 @@ class ScriptPack implements IDummy
 				uhh.push(cast(x, HScript));
 		return uhh;
 	}
+	#end
 
+	#if LUA_ALLOWED
 	var lusScripts(get, never):Array<FunkinLua>;
 
 	function get_lusScripts()
@@ -110,6 +116,7 @@ class ScriptPack implements IDummy
 				uhh.push(cast(x, FunkinLua));
 		return uhh;
 	}
+	#end
 
 	public function setParent(parent:Dynamic)
 	{
@@ -118,6 +125,7 @@ class ScriptPack implements IDummy
 			e.setParent(parent);
 	}
 
+	#if HSCRIPT_ALLOWED
 	public function callOnHScript(functionName:String, args:Array<Dynamic> = null, ?ignoreStops:Bool = false, exclusions:Array<String> = null,
 			excludeValues:Array<Dynamic> = null):Dynamic
 	{
@@ -162,7 +170,6 @@ class ScriptPack implements IDummy
 		return returnVal;
 	}
 
-	#if HSCRIPT_ALLOWED
 	public function startHScriptsNamed(scriptFile:String)
 	{
 		var scriptToLoad:String;
@@ -187,6 +194,7 @@ class ScriptPack implements IDummy
 	public static inline function resultIsStop(result:funkin.modding.ScriptUtil.FunctionFlag):Bool
 		return Function_Stop == result || Function_StopHScript == result || Function_StopAll == result;
 
+	#if LUA_ALLOWED
 	public function startLuasNamed(luaFile:String):Bool
 	{
 		var luaScript:String;
@@ -222,6 +230,7 @@ class ScriptPack implements IDummy
 		#end
 		return false;
 	}
+	#end
 
 	public function get(val:String):Dynamic
 	{

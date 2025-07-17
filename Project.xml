@@ -174,7 +174,7 @@
 	<!-- Linux icon -->
 	<assets path='art/icons/iconOG.png' rename='icon.png' if="linux" />
 
-	<section if="BASE_GAME_FILES HSCRIPT_ALLOWED">
+	<section if="BASE_GAME_FILES">
 		<assets path="assets/base_funkin" rename="assets" exclude="*.ogg" if="web"/>
 		<assets path="assets/base_funkin" rename="assets" exclude="*.mp3" unless="web"/>
 		<haxelib name="grig.audio" if="BASE_GAME_FILES"/>

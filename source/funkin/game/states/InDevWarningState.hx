@@ -23,7 +23,7 @@ class InDevWarningState extends MusicBeatState
 	override public function create():Void
 	{
 		(scripts = new ScriptPack()).setParent(this);
-
+		#if HSCRIPT_ALLOWED
 		final base:String = Paths.script();
 		for (i in 1...3)
 		{
@@ -31,6 +31,7 @@ class InDevWarningState extends MusicBeatState
 			if (FileSystem.exists(e))
 				scripts.add(new HScript(null, e).run());
 		}
+		#end
 
 		WindowUtil.title = '%{GAME_TITLE} - Development Warning';
 		FlxG.mouse.visible = false;

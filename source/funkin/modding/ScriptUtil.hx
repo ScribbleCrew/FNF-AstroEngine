@@ -1,7 +1,6 @@
 package funkin.modding;
 
 #if (HSCRIPT_ALLOWED || LUA_ALLOWED)
-
 import hscript.Expr;
 
 enum abstract FunctionFlag(String) from String to String
@@ -21,6 +20,7 @@ class ScriptUtil
 	public static final Function_StopHScript:FunctionFlag = FunctionFlag.Function_StopHScript;
 	public static final Function_StopAll:FunctionFlag = FunctionFlag.Function_StopAll;
 
+	#if HSCRIPT_ALLOWED
 	public static function formatError(x, ?pos:haxe.PosInfos):String
 	{
 		final newPos:HScript.HScriptInfos = cast pos;
@@ -60,5 +60,6 @@ class ScriptUtil
 		};
 		return #if hscriptPos (showPos ? (e.origin + ":" + e.line + ": " + message) : message) #else message #end;
 	}
+	#end
 }
 #end
