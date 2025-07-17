@@ -249,4 +249,14 @@ class MusicBeatSubstate extends flixel.FlxSubState implements IBeat
 
 		super.close();
 	}
+
+	override function destroy():Void
+	{
+		// softmodding
+		stateScripts.call('onDestroy');
+		stateScripts.call('destroy');
+		stateScripts.destroy();
+
+		super.destroy();
+	}
 }

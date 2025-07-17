@@ -2770,12 +2770,9 @@ class PlayState extends MusicBeatState
 			return;
 		}
 
-		var isDad:Bool = (SONG.notes[sec].mustHitSection != true);
+		final isDad:Bool = (SONG.notes[sec].mustHitSection != true);
 		moveCamera(isDad);
-		if (isDad)
-			scripts.call('onMoveCamera', ['dad']);
-		else
-			scripts.call('onMoveCamera', ['boyfriend']);
+		scripts.call('onMoveCamera', [isDad ? 'dad' : 'boyfriend']);
 	}
 	
 	public function moveCameraToGirlfriend():Void
@@ -2783,45 +2780,22 @@ class PlayState extends MusicBeatState
 		camFollow.setPosition(gf.getMidpoint().x, gf.getMidpoint().y);
 		camFollow.x += gf.cameraPosition[0] + girlfriendCameraOffset[0];
 		camFollow.y += gf.cameraPosition[1] + girlfriendCameraOffset[1];
-		tweenCamIn();
 	}
-
-	var cameraTwn:FlxTween;
 
 	public function moveCamera(isDad:Bool):Void
 	{
-		isDad ? {
+		if(isDad){
 			if (dad == null)
 				return;
 			camFollow.setPosition(dad.getMidpoint().x + 150, dad.getMidpoint().y - 100);
 			camFollow.x += dad.cameraPosition[0] + opponentCameraOffset[0];
 			camFollow.y += dad.cameraPosition[1] + opponentCameraOffset[1];
-			tweenCamIn();
-		} : {
+		} else {
 			if (boyfriend == null)
 				return;
 			camFollow.setPosition(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100);
 			camFollow.x -= boyfriend.cameraPosition[0] - boyfriendCameraOffset[0];
 			camFollow.y += boyfriend.cameraPosition[1] + boyfriendCameraOffset[1];
-
-			if (songName == 'tutorial' && cameraTwn == null && FlxG.camera.zoom != 1)
-			{ // SOFTMOD SOMEHOW :3
-				cameraTwn = FlxTween.tween(FlxG.camera, {zoom: 1}, (Conductor.stepCrochet * 4 / 1000), {
-					ease: FlxEase.elasticInOut,
-					onComplete: function(twn:FlxTween) cameraTwn = null
-				});
-			}
-		}
-	}
-
-	function tweenCamIn()
-	{
-		if (Paths.formatToSongPath(SONG.song) == 'tutorial' && cameraTwn == null && FlxG.camera.zoom != 1.3)
-		{
-			cameraTwn = FlxTween.tween(FlxG.camera, {zoom: 1.3}, (Conductor.stepCrochet * 4 / 1000), {
-				ease: FlxEase.elasticInOut,
-				onComplete: function(twn:FlxTween) cameraTwn = null
-			});
 		}
 	}
 
@@ -3446,8 +3420,8 @@ class PlayState extends MusicBeatState
 
 	function opponentNoteHit(note:Note):Void
 	{
-		if (Paths.formatToSongPath(SONG.song) != 'tutorial')
-			camZooming = true;
+		// if (Paths.formatToSongPath(SONG.song) != 'tutorial')
+		 	camZooming = true;
 
 		if (note.noteType == 'Hey!' && dad.animOffsets.exists('hey'))
 		{
@@ -3485,7 +3459,7 @@ class PlayState extends MusicBeatState
 			spawnNoteSplashOnNote(note);
 
 		stageAccess(function(stage:BaseStage) stage.opponentNoteHit(note));
-		scripts.call('opponentNoteHit', [
+		scripts.call('onOpponentNoteHit', [
 			notes.members.indexOf(note),
 			Math.abs(note.noteData),
 			note.noteType,
@@ -3712,6 +3686,8 @@ class PlayState extends MusicBeatState
 
 		#if FLX_PITCH FlxG.sound.music.pitch = 1; #end
 		FlxG.animationTimeScale = 1;
+
+		scripts.destroy();
 
 		Note.globalRgbShaders = [];
 		NoteTypesConfig.clearNoteTypesData();

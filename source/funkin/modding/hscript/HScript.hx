@@ -745,6 +745,11 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 		#if LUA_ALLOWED parentLua = null; #end
 	}
 
+	override public function stop():Void
+	{
+		destroy();
+	}
+
 	#if LUA_ALLOWED
 	public var parentLua:FunkinLua;
 

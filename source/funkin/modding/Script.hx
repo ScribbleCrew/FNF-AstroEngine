@@ -34,6 +34,10 @@ class Script
 	{
 	}
 
+	public function stop()
+	{
+	}
+
 	public function get(blah:String):Dynamic
 	{
 		return null;

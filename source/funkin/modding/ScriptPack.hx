@@ -4,12 +4,14 @@ import funkin.modding.Script.ScriptType as TScript;
 
 class ScriptPack implements IDummy
 {
+	public static var packInstances:Array<ScriptPack> = [];
 	public var scripts:Array<Script> = [];
 	public var parent:Dynamic = null;
 
-	public function new() : Void
+	public function new():Void
 	{
-		//super();
+		// super();
+		packInstances.push(this);
 	}
 
 	public function call(funcToCall:String, ?args:Array<Dynamic>, ?ignoreStops:Bool, ?exclusions:Array<String>, ?excludeValues:Array<Dynamic>,
@@ -243,9 +245,14 @@ class ScriptPack implements IDummy
 	}
 
 	public function destroy():Void
+	{
+		packInstances.remove(this);
 		for (e in scripts)
-			if (e.type == HSCRIPT)
-				e.destroy();
+			e.stop();
+
+		scripts = [];
+		parent = null;
+	}
 
 	public function add(script:Script):Script
 	{

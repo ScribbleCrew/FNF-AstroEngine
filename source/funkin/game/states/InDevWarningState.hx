@@ -27,7 +27,7 @@ class InDevWarningState extends MusicBeatState
 		final base:String = Paths.script();
 		for (i in 1...3)
 		{
-			final e:String= '${base}test$i.hx';
+			final e:String = '${base}test$i.hx';
 			if (FileSystem.exists(e))
 				scripts.add(new HScript(null, e).run());
 		}
@@ -63,6 +63,12 @@ class InDevWarningState extends MusicBeatState
 		scripts.call('testing', [["arg1", "arg3"], "huh"]); // dude i fucking hate my life
 	}
 
+	override function destroy():Void
+	{
+		scripts.destroy();
+		super.destroy();
+	}
+
 	override function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
@@ -83,6 +89,14 @@ class InDevWarningState extends MusicBeatState
 			}
 			else if (controls.BACK)
 				CoolUtil.browserLoad(EngineData.REPOSITORY);
+		}
+		else
+		{
+			if (controls.ACCEPT)
+			{
+				FlxG.camera.stopFX();
+				FlxG.camera.visible = false;
+			}
 		}
 	}
 }

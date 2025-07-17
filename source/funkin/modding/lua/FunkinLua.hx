@@ -405,7 +405,8 @@ class FunkinLua extends Script implements IScript implements ILua
 				exclusions = [];
 			if (ignoreSelf && !exclusions.contains(scriptName))
 				exclusions.push(scriptName);
-			GlobalScript.instance.setOnHScript(varName, arg, exclusions);
+			
+			 GlobalScript.instance.setOnHScript(varName, arg, exclusions);
 		});
 		#end
 
@@ -456,7 +457,8 @@ class FunkinLua extends Script implements IScript implements ILua
 					excludeScripts = [];
 				if (ignoreSelf && !excludeScripts.contains(scriptName))
 					excludeScripts.push(scriptName);
-				GlobalScript.instance.callOnHScript(funcName, args, ignoreStops, excludeScripts, excludeValues);
+
+				 GlobalScript.instance.callOnHScript(funcName, args, ignoreStops, excludeScripts, excludeValues);
 				return true;
 			});
 		#end
@@ -1913,9 +1915,11 @@ class FunkinLua extends Script implements IScript implements ILua
 	public var lastCalledFunction:String = '';
 
 	public static var lastCalledScript:FunkinLua = null;
-	override public  function setParent(parent:Dynamic) {
+
+	override public function setParent(parent:Dynamic)
+	{
 	}
-	
+
 	override public function call(functionName:String, ?funcArgs:Array<Dynamic>):Dynamic
 	{
 		if (closed)
@@ -2008,7 +2012,7 @@ class FunkinLua extends Script implements IScript implements ILua
 		Lua.setglobal(lua, variable);
 	}
 
-	public function stop()
+	override public function stop()
 	{
 		closed = true;
 
