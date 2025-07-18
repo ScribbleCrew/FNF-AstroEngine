@@ -1,5 +1,5 @@
 package funkin.modding.lua.functions;
-
+#if LUA_ALLOWED
 #if (!flash && sys)
 import flixel.addons.display.FlxRuntimeShader;
 #end
@@ -283,4 +283,5 @@ class ShaderFunctions
 	}
 	#end
 }
+#end
 #end

@@ -169,12 +169,10 @@ class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable #if HSC
 	 * @param ignoreStop ignore stop events
 	 * @param exclusions any call exclusions
 	 * @param excludeValues and values which could be excluded
-	 * @param context Script context, MAIN / State
 	 */
 	public function call(functionName:String, args:Array<Dynamic> = null, ignoreStops:Null<Bool> = false, exclusions:Array<String> = null,
 			excludeValues:Array<Dynamic> = null):Dynamic
 	{
-		// !! context hscript only... !!
 		
 		// Null checks.
 		args ??= [];
@@ -371,7 +369,7 @@ class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable #if HSC
 			if (script == null
 				|| !script.exists(functionName)
 				|| exclusions.contains(script.origin)
-				|| (script.context != context || script.context != MAIN))
+				)
 				continue;
 
 			try
@@ -396,14 +394,14 @@ class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable #if HSC
 		return returnVal;
 	}
 
-	public function setOnHScript(variable:String, arg:Dynamic, exclusions:Array<String> = null, ?context:HScript.ScriptContext = MAIN)
+	public function setOnHScript(variable:String, arg:Dynamic, exclusions:Array<String> = null)
 	{
 		#if HSCRIPT_ALLOWED
 		exclusions ??= [];
 		final uhh:Array<HScript> = hscriptInstances.safeGet(Main.stateName, []);
 		for (script in uhh)
 		{
-			if (exclusions.contains(script.origin) || (script.context != context || script.context != MAIN))
+			if (exclusions.contains(script.origin) )
 				continue;
 
 			// Push to exclude list.

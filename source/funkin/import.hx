@@ -72,6 +72,8 @@ import llua.*;
 import llua.Lua;
 import funkin.modding.lua.*;
 import funkin.modding.lua.FunkinLua;
+#else
+import funkin.modding.lua.LuaUtils;
 #end
 
 // FlxAnimate

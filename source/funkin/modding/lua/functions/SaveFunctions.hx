@@ -1,5 +1,5 @@
 package funkin.modding.lua.functions;
-
+#if LUA_ALLOWED
 import flixel.util.FlxSave;
 
 // Save data management
@@ -68,3 +68,5 @@ class SaveFunctions
 		});
 	}
 }
+
+#end

@@ -20,5 +20,7 @@ import funkin.modding.hscript.*;
 #if LUA_ALLOWED
 // LUA
 import funkin.modding.lua.*;
+#else
+import funkin.modding.lua.LuaUtils;
 #end
 #end

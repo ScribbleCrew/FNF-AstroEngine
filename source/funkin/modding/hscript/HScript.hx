@@ -217,7 +217,7 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 					}
 					modName = this.modFolder;
 				}
-				return LuaUtils.getModSetting(saveTag, modName);
+				return funkin.modding.lua.LuaUtils.getModSetting(saveTag, modName);
 			},
 
 			// Keyboard & Gamepads

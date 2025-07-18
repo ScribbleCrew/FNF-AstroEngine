@@ -1,5 +1,5 @@
 package funkin.modding.lua.functions;
-
+#if LUA_ALLOWED 
 import flixel.util.FlxSave;
 import openfl.utils.Assets;
 import haxe.crypto.*;
@@ -195,3 +195,5 @@ class ExtraFunctions
 		});
 	}
 }
+
+#end

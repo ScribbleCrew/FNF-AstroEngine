@@ -1,5 +1,5 @@
 package funkin.modding.lua.functions;
-
+#if LUA_ALLOWED
 class TextFunctions
 {
 	
@@ -200,3 +200,5 @@ class TextFunctions
 		});
 	}
 }
+
+#end

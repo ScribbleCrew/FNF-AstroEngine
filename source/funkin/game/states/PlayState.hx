@@ -580,12 +580,10 @@ class PlayState extends MusicBeatState
 	var detailsPausedText:String = "";
 	#end
 
-	#if LUA_ALLOWED
 	/**
-	 * Lua debug text group.
+	 * Lua & Haxe debug text group.
 	 */
-	private var luaDebugGroup:FlxTypedGroup<DebugText>;
-	#end
+	private var debugTextGroup:FlxTypedGroup<DebugText>;
 
 	/**
 	 * An array which contains debug chart keys.
@@ -807,9 +805,9 @@ class PlayState extends MusicBeatState
 		add(boyfriendGroup);
 
 		#if LUA_ALLOWED
-		luaDebugGroup = new FlxTypedGroup<DebugText>();
-		luaDebugGroup.cameras = [camOther];
-		add(luaDebugGroup);
+		debugTextGroup = new FlxTypedGroup<DebugText>();
+		debugTextGroup.cameras = [camOther];
+		add(debugTextGroup);
 		#end
 		
 		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
@@ -1122,7 +1120,7 @@ class PlayState extends MusicBeatState
 
 	#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
 	public function addTextToDebug(text:String, color:FlxColor, ?doTrace:Bool = true):DebugText {
-		var newText:DebugText = luaDebugGroup.recycle(DebugText);
+		var newText:DebugText = debugTextGroup.recycle(DebugText);
 		newText.text = text;
 		newText.color = color;
 		newText.disableTime = 6;
@@ -1130,8 +1128,8 @@ class PlayState extends MusicBeatState
 		newText.alpha = 1;
 		newText.setPosition(10, 8 - newText.height);
 
-		luaDebugGroup.forEachAlive(function(spr:DebugText) spr.y += newText.height + 2);
-		luaDebugGroup.add(newText);
+		debugTextGroup.forEachAlive(function(spr:DebugText) spr.y += newText.height + 2);
+		debugTextGroup.add(newText);
 
 		if(doTrace)
 			Sys.println(text);

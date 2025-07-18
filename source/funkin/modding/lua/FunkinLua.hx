@@ -65,6 +65,7 @@ import funkin.modding.hscript.HScript;
 #end
 import funkin.modding.Script;
 
+#if LUA_ALLOWED
 class CallbackHandler
 {
 	public static inline function call(l:State, fname:String):Int
@@ -2240,3 +2241,4 @@ class FunkinLua extends Script implements IScript implements ILua
 	}
 	#end
 }
+#end

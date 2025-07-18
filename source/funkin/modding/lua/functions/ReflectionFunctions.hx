@@ -1,5 +1,5 @@
 package funkin.modding.lua.functions;
-
+#if LUA_ALLOWED
 import Type.ValueType;
 import haxe.Constraints;
 
@@ -237,3 +237,4 @@ class ReflectionFunctions
 		return funcToRun != null ? Reflect.callMethod(obj, funcToRun, args) : null;
 	}
 }
+#end
