@@ -8,8 +8,6 @@ import flixel.addons.transition.FlxTransitionableState;
 @:nullSafety
 class InDevWarningState extends MusicBeatState
 {
-	static inline final customRedColor:Int = 0xFFFF5252;
-
 	static final leave:() -> Void = () ->
 	{
 		FlxTransitionableState.skipNextTransIn = FlxTransitionableState.skipNextTransOut = true;
@@ -55,7 +53,7 @@ class InDevWarningState extends MusicBeatState
 			return path.replace('\\n', '').replace('\\l', '\n').substitute([Main.releaseCycle]);
 
 		final markdwn:Array<FlxTextFormatMarkerPair> = [
-			new FlxTextFormatMarkerPair(new FlxTextFormat(customRedColor), "<important>"),
+			new FlxTextFormatMarkerPair(new FlxTextFormat(0xFFFF5252), "<important>"),
 			new FlxTextFormatMarkerPair(new FlxTextFormat(0xFFF0A4FF), "<sillyFormat>"),
 			new FlxTextFormatMarkerPair(new FlxTextFormat(0xFFFF8E4C), "<reinworld>"),
 			new FlxTextFormatMarkerPair(new FlxTextFormat(0xFF7DFF7D), "<luckyCharms>")
@@ -76,7 +74,6 @@ class InDevWarningState extends MusicBeatState
 		super.create();
 
 		// Make texts
-		warningWhat.color = customRedColor;
 		warningWhat.screenCenter(X);
 		add(warningWhat);
 

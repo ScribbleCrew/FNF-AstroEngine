@@ -510,7 +510,7 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 		getParser(HxParser).allowAll();
 		errorHandler = HScriptUtils.onError;
 		interp.superInstance = FlxG.state; // fallback :3
-		interp.scriptName = scriptName.replace('assets/shared', '');// shouldn't be doing this but eh.
+		interp.scriptName = scriptName.replace('assets/shared/', '');// shouldn't be doing this but eh.
 
 		#if LUA_ALLOWED
 		parentLua = parent;
