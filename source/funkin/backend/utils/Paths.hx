@@ -515,8 +515,8 @@ class Paths
 	inline static public function getTextFromFile(key:String, ?ignoreMods:Bool = false, ?ignoreWarnings:Bool = false):String
 	{
 		final path:String = getPath(key, TEXT, !ignoreMods);
-		if (OpenFlAssets.exists(path, TEXT)) return Assets.getText(path); // prioritize embedded assets
 		#if sys if (FileSystem.exists(path)) return File.getContent(path); #end // now you can access embedded and non embedded assets.
+				if (OpenFlAssets.exists(path, TEXT)) return Assets.getText(path); // prioritize embedded assets
 		if(!ignoreWarnings)
 			Logs.warn('Cannot find $key || ignoreMods: $ignoreMods');
 		return null; // yeahh placeholder :3

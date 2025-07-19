@@ -4,6 +4,7 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 import flixel.effects.FlxFlicker;
 import flixel.addons.transition.FlxTransitionableState;
+import openfl.display.ShaderParameter;
 
 @:nullSafety
 class InDevWarningState extends MusicBeatState
@@ -19,15 +20,19 @@ class InDevWarningState extends MusicBeatState
 	var warningWhat:Alphabet;
 	var warningText:FunkinText;
 	var warningBtns:FunkinText;
+	var background:FlxSprite;
 	var scripts:ScriptPack;
+	var void:VOID;
 
 	public function new():Void
 	{
 		// initialize everything before calling super
+		void = new VOID();
 		scripts = new ScriptPack();
 		warningWhat = new Alphabet(0, 0, '', true);
 		warningText = new FunkinText(16, 0, FlxG.width - 32, "", 32);
 		warningBtns = new FunkinText(18, 0, FlxG.width - 32, "", 24);
+		background = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 
 		super();
 	}
@@ -73,6 +78,14 @@ class InDevWarningState extends MusicBeatState
 
 		super.create();
 
+		void.circleColor.value = [0.8, 0.6, 1.0]; // light purple
+		void.backgroundColor.value = [0.0, 0.0, 0.0]; // black
+
+
+		background.screenCenter();
+		background.shader = void;
+		add(background);
+
 		// Make texts
 		warningWhat.screenCenter(X);
 		add(warningWhat);
@@ -113,6 +126,9 @@ class InDevWarningState extends MusicBeatState
 	{
 		super.update(elapsed);
 
+		if (void != null)
+			void.update(elapsed);
+
 		if (controls.ACCEPT && transitioning)
 		{
 			FlxG.camera.stopFX();
@@ -140,5 +156,101 @@ class InDevWarningState extends MusicBeatState
 				FlxG.camera.visible = false;
 			}
 		}
+	}
+}
+
+class VOID extends flixel.addons.display.FlxRuntimeShader
+{
+	/*
+		@:glFragmentSource('
+		   #pragma header
+
+		uniform float time;
+		uniform vec3 circleColor;
+		uniform vec3 backgroundColor;
+		uniform float frequency;
+		uniform float speed;
+		uniform bool showLines;
+
+		const float PI = 3.14159265;
+
+		float tex(vec2 pos){
+		float upper = length(vec2(cos(PI/3.), sin(PI/3.)) * length(pos) - pos);
+		return min(pow(upper, .11), pow(1. - length(pos), .2));
+		}
+
+		void main() {
+		// Normalized position (-1 to 1), aspect-corrected
+		vec2 uv = openfl_TextureCoordv * 2.0 - 1.0;
+		uv.y *= openfl_TextureSize.y / openfl_TextureSize.x;
+
+		vec4 baseColor = vec4(backgroundColor, 1.0);
+		gl_FragColor = baseColor;
+
+		vec2 circleDistor = uv;
+		circleDistor /= (sqrt(5.0) - length(circleDistor));
+		float modab = 1.0;
+		float off = mod(time * speed, 1.0) * modab;
+		circleDistor = normalize(circleDistor) * mod(length(circleDistor) - off, modab);
+		float ang = asin(circleDistor.y / length(circleDistor));
+		if(circleDistor.x < 0.0){
+			ang = PI - ang;
+		}
+		ang = mod(ang, PI / frequency);
+		circleDistor = vec2(cos(ang), sin(ang)) * length(circleDistor);
+		vec4 col = mix(vec4(circleColor, 1.0), baseColor, tex(circleDistor));
+
+		if(showLines){
+			gl_FragColor = col;
+		} else {
+			gl_FragColor = baseColor;
+		}
+		}
+		') */
+	public var time:ShaderParameter<Float>;
+	public var circleColor:ShaderParameter<Float>;
+	public var backgroundColor:ShaderParameter<Float>;
+	public var frequency:ShaderParameter<Float>;
+	public var speed:ShaderParameter<Float>;
+	public var showLines:ShaderParameter<Bool>; 
+
+	public function new()
+	{
+		final frag = Paths.shaderFragment('warningPulse');
+		super(FileSystem.exists(frag) ? File.getContent(frag) : null); 
+
+		time = getFParam("time", [0.0]);
+		circleColor = getFParam("circleColor", [1.0, 1.0, 1.0]);
+		backgroundColor = getFParam("backgroundColor", [0.0, 0.0, 0.0]);
+		frequency = getFParam("frequency", [1.0]);
+		speed = getFParam("speed", [.5]);
+		showLines = getBoolParam("showLines", [true]);
+	}
+
+	public function update(elapsed:Float):Void
+	{
+		if (time != null)
+			time.value[0] += elapsed;
+	}
+
+	function getFParam(id:String, defaultValue:Array<Float>):ShaderParameter<Float>
+	{
+		final p = Reflect.field(this.data, id);
+		if (p != null)
+			p.value = defaultValue;
+		else
+			trace('Missing shader param: $id');
+		return p;
+	}
+
+	
+	function getBoolParam(id:String, defaultValue:Array<Bool>):ShaderParameter<Bool>
+	{
+		final p = Reflect.field(this.data, id);
+		if (p != null)
+			p.value = defaultValue;
+		else
+			trace('Missing shader param: $id');
+		return p;
 	}
 }

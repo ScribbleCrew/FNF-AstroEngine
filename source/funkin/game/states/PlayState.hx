@@ -869,14 +869,15 @@ class PlayState extends MusicBeatState
 		if (gf != null) startCharacterScripts(gf.curCharacter);
 		if (dad != null) startCharacterScripts(dad.curCharacter);
 		if (boyfriend != null) startCharacterScripts(boyfriend.curCharacter);
+
+		Logs.prefixedTrace('Finished loading all scripts', 'PlayState', ORANGE);
 		#end
 
-		noteGroup = new FlxTypedGroup<FlxBasic>();
-		noteGroup.visible = !ClientPrefs.data.hideHud;
 		add(comboGroup = new FlxSpriteGroup());
-		add(noteGroup);
-	
+		add(noteGroup = new FlxTypedGroup<FlxBasic>());
 		add(uiGroup = new FlxSpriteGroup());
+
+		noteGroup.visible = !ClientPrefs.data.hideHud;
 		
 		Conductor.songPosition = -5000 / Conductor.songPosition;
 
