@@ -190,7 +190,7 @@ class MusicBeatSubstate extends flixel.FlxSubState implements IBeat
 	public function beatHit():Void
 	{/* Beat Hit */
 		// softmoddin'
-		stateScripts.set('curBeat', curBeat); // DAWGG?????
+		stateScripts.set('curBeat', curBeat, LUA); // DAWGG?????
 		stateScripts.call('onBeatHit', []);
 		stateScripts.call('beatHit', []);
 	}

@@ -3743,7 +3743,7 @@ class PlayState extends MusicBeatState
 
 		characterBopper(curBeat);
 
-		scripts.set('curBeat', curBeat);
+		scripts.set('curBeat', curBeat, LUA);
 		scripts.call('onBeatHit', []);
 
 		_lastBeatHit = curBeat;

@@ -229,7 +229,7 @@ class MusicBeatState extends FlxState implements IBeat
 	/**
 	 *	Updates the beat.
 	 */
-	function updateBeat():Void
+	function _updateBeat():Void
 	{
 		// update beat
 		curBeat = Math.floor(curStep / 4);
@@ -239,7 +239,7 @@ class MusicBeatState extends FlxState implements IBeat
 	/**
 	 *	Updates the current step.
 	 */
-	function updateCurStep():Void
+	function _updateCurStep():Void
 	{
 		// saving vars
 		final lastChange:BPM_EVENT = Conductor.getBPMFromSeconds(Conductor.songPosition);
@@ -327,7 +327,7 @@ class MusicBeatState extends FlxState implements IBeat
 		});
 
 		// softmoddin'
-		stateScripts.set('curBeat', curBeat); // DAWGG?????
+		stateScripts.set('curBeat', curBeat, LUA); // DAWGG?????
 		stateScripts.call('onBeatHit', []);
 		stateScripts.call('beatHit', []);
 	}
@@ -372,8 +372,8 @@ class MusicBeatState extends FlxState implements IBeat
 
 		// CurBeat stuff, sooo so cool!!!
 		final oldStep:Int = curStep;
-		updateCurStep();
-		updateBeat();
+		_updateCurStep();
+		_updateBeat();
 
 		// Shaders
 		_updateShaders(elapsed);

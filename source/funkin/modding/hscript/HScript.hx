@@ -432,6 +432,7 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 		final _interp:RuleScriptInterpreter = Std.isOfType(interp, RuleScriptInterpreter) ? cast interp : null;
 		if (_interp == null)
 			return null; // bruh,,, i fucking hate types 🥺🙏
+		
 		this.parent = val;
 		return _interp.superInstance = ((val == STATE) ? FlxG.state : FlxG.state.subState);
 	}
@@ -439,12 +440,8 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 	override public function setParent(parent:Dynamic)
 	{
 		final _interp:RuleScriptInterpreter = Std.isOfType(interp, RuleScriptInterpreter) ? cast interp : null;
-		if (_interp == null){
-			trace('null ass interp');
+		if (_interp == null)
 			return; // bruh,,, i fucking hate types 🥺🙏
-		}else{
-			trace('valid ass interp');
-		}
 		_interp.superInstance = parent;
 		return;
 	}
@@ -513,6 +510,7 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 		getParser(HxParser).allowAll();
 		errorHandler = HScriptUtils.onError;
 		interp.superInstance = FlxG.state; // fallback :3
+		interp.scriptName = scriptName.replace('assets/shared', '');// shouldn't be doing this but eh.
 
 		#if LUA_ALLOWED
 		parentLua = parent;
