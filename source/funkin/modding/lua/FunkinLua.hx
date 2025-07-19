@@ -234,7 +234,8 @@ class FunkinLua extends Script implements IScript implements ILua
 
 	public function execute(?args:Array<Dynamic>)
 	{
-		Logs.prefixedTrace('lua file loaded succesfully: $scriptName', 'Global Script', GREEN);
+		//		Logs.prefixedTrace('lua file loaded succesfully: $scriptName', 'Global Script', GREEN);
+		FlxG.log.notice('lua script loaded: $scriptName');
 		call('new', args ??= []);
 		call('onCreate', []);
 		return this;
@@ -406,8 +407,8 @@ class FunkinLua extends Script implements IScript implements ILua
 				exclusions = [];
 			if (ignoreSelf && !exclusions.contains(scriptName))
 				exclusions.push(scriptName);
-			
-			 GlobalScript.instance.setOnHScript(varName, arg, exclusions);
+
+			GlobalScript.instance.setOnHScript(varName, arg, exclusions);
 		});
 		#end
 
@@ -459,7 +460,7 @@ class FunkinLua extends Script implements IScript implements ILua
 				if (ignoreSelf && !excludeScripts.contains(scriptName))
 					excludeScripts.push(scriptName);
 
-				 GlobalScript.instance.callOnHScript(funcName, args, ignoreStops, excludeScripts, excludeValues);
+				GlobalScript.instance.callOnHScript(funcName, args, ignoreStops, excludeScripts, excludeValues);
 				return true;
 			});
 		#end
