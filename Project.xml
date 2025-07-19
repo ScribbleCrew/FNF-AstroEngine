@@ -69,8 +69,11 @@
 	<!-- Enables FlxAnimate Support -->
 	<define name="FLXANIMATE_ALLOWED" />
 
+
 	<!-- Enables Support For Discord Client Integration -->
-	<define name="DISCORD_ALLOWED" if="desktop" unless="html5"/>
+	<section if="cpp">
+		<define name="DISCORD_ALLOWED" if="desktop"/>
+	</section>
 
 	<!-- Disable discord's io thread -->
 	<define name="DISCORD_DISABLE_IO_THREAD" if="DISCORD_ALLOWED"/>
@@ -114,6 +117,9 @@
 
 	<!-- RuleScript abstract txt file path -->
 	<define name="rulescript_abstracts_file_path" value="rulescript/RuleScriptAbstracts.txt" />
+
+	<!-- Disable a optimization, to allow reflection to use more functions -->
+	<define name="FLX_NO_GENERIC" />
 
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
 	<assets path='art/icons/iconOG.png' rename='icon.png' if="linux" />
@@ -244,9 +250,13 @@
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
 
 	<!-- Crash Handler -->
-	<haxedef name="HXCPP_CHECK_POINTER" if="CRASH_HANDLER" />
-	<haxedef name="HXCPP_STACK_LINE" if="CRASH_HANDLER" />
-	<haxedef name="HXCPP_STACK_TRACE" if="CRASH_HANDLER" />
+	<section if="CRASH_HANDLER">
+		<haxedef name="HXCPP_CHECK_POINTER" />
+		<haxedef name="HXCPP_STACK_LINE" />
+		<haxedef name="HXCPP_STACK_TRACE" />
+		<haxedef name="HXCPP_DEBUG_LINK" />
+	</section>
+	<haxedef name="HXCPP_CATCH_SEGV" />
 
 	<!-- Disable deprecated warnings -->
 	<haxedef name='no-deprecation-warnings' />
@@ -266,6 +276,11 @@
 	/>
 	
 	<haxeflag name="--macro" value="rulescript.macro.RuleScriptedMacro.init()" if="HSCRIPT_ALLOWED"/>
+
+	<haxedef name="openfl_dpi_aware" if="openfl_dpi_aware" />
+	<haxedef name="EXPERIMENTAL_FLXGRAPHIC_DESTROY_FIX" />
+
+	<setenv name="HAXEPATH" value="./"/>
 
 	<!-- Fixes HXCPP NOT FOUND ERRORS -->
 	<haxedef name="NO_PRECOMPILED_HEADERS" if="linux" />
