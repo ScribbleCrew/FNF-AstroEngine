@@ -100,7 +100,7 @@ import hxvlc.flixel.FlxVideoSprite;
 import flixel.addons.display.FlxRuntimeShader;
 import openfl.filters.ShaderFilter;
 #end
-
+import funkin.game.objects.options.Option;
 // System
 #if sys
 import sys.FileSystem;

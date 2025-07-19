@@ -1,5 +1,6 @@
 # ```TODO```
 
+* Fix building on html5, ios, android
 * design charting state :P
 * Make charting state like codename with new ui style and everyhing
 * move the assets from assets/shared/ to assets/

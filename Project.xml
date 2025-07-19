@@ -52,7 +52,7 @@
 	<define name="HSCRIPT_ALLOWED" if="desktop" />
 
 	<!-- Enables Threading support -->
-	<define name="THREADING_ALLOWED" />
+	<define name="THREADING_ALLOWED" unless="html5"/>
 
 	<!-- Custom FPS allowed -->
 	<define name="CUSTOM_FPS_ALLOWED"/>
@@ -102,7 +102,9 @@
 	<define name="FUNKIN_SOUNDTRAY"/>
 
 	<!-- Remove "officialBuild" to use videos on source mod -->
-	<define name="VIDEOS_ALLOWED" if="(windows || linux || android) officialBuild || debug" unless="32bits html5"/>
+	<section unless="html5">
+		<define name="VIDEOS_ALLOWED" if="(windows || linux || android) officialBuild || debug" unless="32bits"/>
+	</section>
 
 	<!-- Crash handler -->
 	<define name="CRASH_HANDLER" if="desktop release" />

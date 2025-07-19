@@ -191,8 +191,8 @@ class ScriptPack implements IDummy
 	}
 	#end
 
-	public static inline function resultIsStop(result:funkin.modding.ScriptUtil.FunctionFlag):Bool
-		return Function_Stop == result || Function_StopHScript == result || Function_StopAll == result;
+	//public static inline function resultIsStop(result:funkin.modding.ScriptUtil.FunctionFlag):Bool
+	//	return Function_Stop == result || Function_StopHScript == result || Function_StopAll == result;
 
 	#if LUA_ALLOWED
 	public function startLuasNamed(luaFile:String):Bool
