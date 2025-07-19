@@ -34,9 +34,6 @@ import openfl.display.Bitmap;
 @:bitmap("assets/embed/shared/images/extra/kisser.png")
 @:noCompletion class BoyKissers extends BitmapData {}
 
-@:bitmap("assets/exclude/ghost.png")
-@:noCompletion class Ghost extends BitmapData {}
-
 typedef GraphicStats = flixel.system.debug.FlxDebugger.GraphicStats;
 /**
  * A Visual Studio-style "watch" window, for use in the debugger overlay.
