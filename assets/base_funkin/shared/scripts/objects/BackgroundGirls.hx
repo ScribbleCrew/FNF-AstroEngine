@@ -4,45 +4,38 @@ import funkin.backend.CoolUtil;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 
-class BackgroundGirls extends FlxSprite
+class BackgroundGirls extends BGSprite
 {
-	var isPissed:Bool = true;
-	public function new(x:Float, y:Float)
+	public var isPissed:Bool = true;
+
+	public function new(x:Float, y:Float) : Void
 	{
-		super(x, y);
+		super(x, y, null);
 
 		// BG fangirls dissuaded
 		frames = Paths.getSparrowAtlas('weeb/bgFreaks');
 		antialiasing = false;
-		swapDanceType();
+		__remapAnimations();
 
 		setGraphicSize(Std.int(width * PlayState.daPixelZoom));
 		updateHitbox();
 		animation.play('danceLeft');
 	}
 
-	var danceDir:Bool = false;
+	var __danceDir:Bool = false;
 
-	public function swapDanceType():Void
+	public function __remapAnimations():Void
 	{
 		isPissed = !isPissed;
-		if(!isPissed) { //Gets unpissed
-			animation.addByIndices('danceLeft', 'BG girls group', CoolUtil.numberArray(14), "", 24, false);
-			animation.addByIndices('danceRight', 'BG girls group', CoolUtil.numberArray(30, 15), "", 24, false);
-		} else { //Pisses
-			animation.addByIndices('danceLeft', 'BG fangirls dissuaded', CoolUtil.numberArray(14), "", 24, false);
-			animation.addByIndices('danceRight', 'BG fangirls dissuaded', CoolUtil.numberArray(30, 15), "", 24, false);
-		}
+		animation.addByIndices('danceLeft', isPissed ? 'BG fangirls dissuaded' : 'BG girls group', CoolUtil.numberArray(14), "", 24, false);
+		animation.addByIndices('danceRight', isPissed ? 'BG fangirls dissuaded' : 'BG girls group', CoolUtil.numberArray(30, 15), "", 24, false);
+
 		dance();
 	}
 
 	public function dance():Void
 	{
-		danceDir = !danceDir;
-
-		if (danceDir)
-			animation.play('danceRight', true);
-		else
-			animation.play('danceLeft', true);
+		__danceDir = !__danceDir;
+		animation.play(__danceDir ? 'danceRight' : 'danceLeft', true);
 	}
 }

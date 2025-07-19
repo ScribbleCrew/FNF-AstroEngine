@@ -7,10 +7,10 @@ class GlowGradient extends FlxSprite
 	public var intendedAlpha:Float = 1;
 	public function new(x:Float, y:Float)
 	{
-		super(x, y);
+		super(x, y, Paths.image('philly/gradient'));
 		originalY = y;
 
-		loadGraphic(Paths.image('philly/gradient'));
+		//loadGraphic(Paths.image('philly/gradient'));
 		antialiasing = ClientPrefs.data.antialiasing;
 		scrollFactor.set(0, 0.75);
 		setGraphicSize(2000, originalHeight);

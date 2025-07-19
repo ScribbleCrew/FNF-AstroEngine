@@ -11,35 +11,6 @@ import rulescript.parsers.HxParser;
 import rulescript.parsers.Parser;
 import rulescript.types.ScriptedTypeUtil;
 
-enum ScriptContext
-{
-	/**
-	 * The script is being executed in the main game.
-	 */
-	MAIN;
-
-	/**
-	 * The script is being executed in a custom state.
-	 */
-	STATE;
-}
-
-/**
- * Enum choices when setting/changing the scripts parent class/state.
- */
-enum ParentChoices
-{
-	/** 
-		*STATE aka `FlxG.state`
-	 */
-	STATE;
-
-	/**
-	 * SUB aka `FlxG.state.subState`	
-	 */
-	SUB;
-}
-
 /**
  * Modified `haxe.PosInfos` type.	
  */
@@ -96,19 +67,12 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 	public var origin:String;
 
 	/**
-	 * The script context.
-	 */
-	public var context:ScriptContext;
-
-	/**
 	 * The function which executes the code given.
 	 */
 	@:dox(show) override function execute(code:EitherType<String, Expr>):Dynamic
 	{
 		final exec = super.execute(code);
 		instances.set(this.scriptName, this);
-		trace(this.scriptName + ' executed!');
-		trace(this.filePath + ' executed!');
 		return exec;
 	}
 
@@ -213,6 +177,7 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 					{
 						HScriptedErrors.error('getModSetting: Argument #2 is null and script is not inside a packed Mod folder!',
 							untyped this.interp.posInfos());
+
 						return null;
 					}
 					modName = this.modFolder;
@@ -422,21 +387,6 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 		];
 	}
 
-	/**
-	 * Script parent...	
-	 */
-	public var parent(default, set):ParentChoices;
-
-	@:dox(hide) function set_parent(val:ParentChoices):Dynamic
-	{
-		final _interp:RuleScriptInterpreter = Std.isOfType(interp, RuleScriptInterpreter) ? cast interp : null;
-		if (_interp == null)
-			return null; // bruh,,, i fucking hate types 🥺🙏
-		
-		this.parent = val;
-		return _interp.superInstance = ((val == STATE) ? FlxG.state : FlxG.state.subState);
-	}
-
 	override public function setParent(parent:Dynamic)
 	{
 		final _interp:RuleScriptInterpreter = Std.isOfType(interp, RuleScriptInterpreter) ? cast interp : null;
@@ -454,11 +404,10 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 	 * @param varsToBring Variables to bring. (optional)
 	 * @param manualRun If the script should manually run. (optional)
 	 */
-	@:dox(show) override public function new(?parent:Dynamic, ?file:String, ?varsToBring:Any = null, ?manualRun:Bool = false, ?context:ScriptContext):Void
+	@:dox(show) override public function new(?parent:Dynamic, ?file:String, ?varsToBring:Any = null, ?manualRun:Bool = false):Void
 	{
 		file ??= '';
 		filePath = file;
-		this.context = context == null ? ScriptContext.MAIN : context;
 
 		if (filePath != null && filePath.length > 0)
 		{
@@ -510,7 +459,9 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 		getParser(HxParser).allowAll();
 		errorHandler = HScriptUtils.onError;
 		interp.superInstance = FlxG.state; // fallback :3
-		interp.scriptName = scriptName.replace('assets/shared/', '');// shouldn't be doing this but eh.
+
+		final index:Int = scriptName.lastIndexOf("/");
+		interp.scriptName = (index == -1) ? scriptName : scriptName.substr(index + 1);
 
 		#if LUA_ALLOWED
 		parentLua = parent;
@@ -553,13 +504,17 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 	 * Get a variable...	
 	 */
 	override public function get(hehe):Null<Dynamic>
+	{
 		return variables.get(hehe);
+	}
 
 	/**
 	 * Check if a variable exists.	
 	 */
 	public function exists(hehe):Bool
+	{
 		return variables.exists(hehe);
+	}
 
 	/**
 	 * Safely call a function.	
@@ -574,7 +529,6 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 		};
 		return null;
 	}
-
 
 	public function run(?args:Array<Dynamic>, ?customGroupMap:String):HScript
 	{
@@ -591,7 +545,7 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 					break;
 				}
 
-			Logs.prefixedTrace('successfully initialized HScript interp on "$filePath"', 'Global Script', GREEN);
+			// Logs.prefixedTrace('successfully initialized HScript interp on "$filePath"', 'Global Script', GREEN);
 		}
 		catch (error:hscript.Expr.Error)
 		{
@@ -668,6 +622,7 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 			}
 			return null;
 		});
+		
 		// This function is unnecessary because import already exists in HScript as a native feature
 		funk.addLocalCallback("addHaxeLibrary", function(libName:String, ?libPackage:String = '')
 		{
@@ -679,7 +634,6 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 
 			var resolvedClass:Dynamic = Type.resolveClass(str + libName);
 			resolvedClass ??= Type.resolveEnum(str + libName);
-
 			if (funk.hscript == null)
 				initHaxeModule(funk);
 
@@ -736,16 +690,16 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 		return null;
 	}
 
+	override public function stop():Void
+	{
+		destroy();
+	}
+
 	override public function destroy():Void
 	{
 		origin = null;
 		instances.remove(filePath);
 		#if LUA_ALLOWED parentLua = null; #end
-	}
-
-	override public function stop():Void
-	{
-		destroy();
 	}
 
 	#if LUA_ALLOWED
@@ -788,8 +742,7 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 			}
 			catch (e:hscript.Expr.Error)
 			{
-				var pos:HScriptInfos = null;
-				cast(untyped hs.interp.posInfos());
+				var pos:HScriptInfos = cast(untyped hs.interp.posInfos());
 				pos.isLua = true;
 				if (parent.lastCalledFunction != '')
 					pos.funcName = parent.lastCalledFunction;

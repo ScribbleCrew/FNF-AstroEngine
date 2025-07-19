@@ -111,7 +111,7 @@ function onEventCalled(eventName:String, value1:String, value2:String, flValue1:
 	{
 		case "BG Freaks Expression":
 			if (bgGirls != null)
-				bgGirls.swapDanceType();
+				bgGirls.__remapAnimations();
 	}
 }
 
