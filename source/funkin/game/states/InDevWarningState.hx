@@ -163,9 +163,9 @@ class InDevWarningState extends MusicBeatState
 
 		engineLogo.loadGraphic(Paths.image('credits/orbl'));
 		engineLogo.screenCenter(X);
-		engineLogo.y = -FlxG.height ;
 		engineLogo.scale.set(1.3,1.3);
 		engineLogo.alpha = 0;
+		engineLogo.screenCenter();
 		add(engineLogo);
 
 		// Appl text and markup stuff.
@@ -227,7 +227,7 @@ class InDevWarningState extends MusicBeatState
 					FlxTween.num(warningBtns.y, 1000, 1., {ease: FlxEase.cubeInOut, startDelay: .33}, warningBtns.set_y);
 					FlxTween.num(FlxG.camera.zoom, 2., 15., {ease: FlxEase.expoOut}, FlxG.camera.set_zoom);
 					//FlxTween.num(engineLogo.y, (FlxG.height - engineLogo.height) / 2, {ease: FlxEase.cubeInOut}, engineLogo.set_y);
-					engineLogo.screenCenter(); // looks better i guess :p
+					// looks better i guess :p
 					FlxTween.num(engineLogo.alpha, 1, {ease: FlxEase.cubeInOut, startDelay: .33}, engineLogo.set_alpha);
 				}
 
