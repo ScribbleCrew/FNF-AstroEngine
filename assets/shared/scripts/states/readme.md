@@ -69,7 +69,7 @@ function onDestroy()
 end
 ```
 
-# GlobalScript:
+# Global States:
 
 - Anything that starts with the global will be run every state change.
 - Example:

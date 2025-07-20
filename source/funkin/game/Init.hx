@@ -60,7 +60,7 @@ class Init extends flixel.FlxState
 		#if SHADERS_ALLOWED ShaderResizeFix.init(); #end
 		#if windows AudioSwitchFix.init(); #end
 
-		GlobalScript.init();
+		#if GLOBAL_SCRIPT GlobalScript.init();#end
 
 		funkin.game.objects.Alphabet.AlphaCharacter.loadAlphabetData();
 

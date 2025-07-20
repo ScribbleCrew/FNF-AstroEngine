@@ -297,7 +297,7 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 			// not very tested but should work
 			'createGlobalCallback' => (name:String, func:Dynamic) ->
 			{
-				for (script in GlobalScript.instance.luaInstances)
+				for (script in FunkinLua.instances)
 					if (script != null && script.lua != null && !script.closed)
 						Lua_helper.add_callback(script.lua, name, func);
 

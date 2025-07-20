@@ -94,7 +94,7 @@
 	<define name="GIT_ALLOWED" if="debug"/>
 
 	<!-- Enable global script -->
-	<define name="GLOBAL_SCRIPT" if="HSCRIPT_ALLOWED"/>
+	<define name="GLOBAL_SCRIPT" />
 	<define name="CUSTOM_CLASSES" if="HSCRIPT_ALLOWED" />
 
 	<!-- Enables funkin sound tray -->

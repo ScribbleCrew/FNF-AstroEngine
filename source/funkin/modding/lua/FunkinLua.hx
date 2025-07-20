@@ -85,7 +85,7 @@ class CallbackHandler
 				if (last == null || last.lua != l)
 				{
 					// trace('looping thru scripts');
-					for (script in GlobalScript.instance.luaInstances)
+					for (script in FunkinLua.instances)
 						if (script != FunkinLua.lastCalledScript && script != null && script.lua == l)
 						{
 							// trace('found script');
@@ -135,6 +135,8 @@ class CallbackHandler
 
 class FunkinLua extends Script implements IScript implements ILua
 {
+	public static var instances:Array<FunkinLua> = [];
+
 	public var lua:State = null;
 	public var camTarget:FlxCamera;
 	public var scriptName:String = '';
@@ -162,7 +164,7 @@ class FunkinLua extends Script implements IScript implements ILua
 		this.scriptName = scriptName.trim();
 		var game:PlayState = PlayState.instance;
 		if (game != null)
-			GlobalScript.instance.luaInstances.push(this);
+			FunkinLua.instances.push(this);
 
 		var myFolder:Array<String> = this.scriptName.split('/');
 		#if MODS_ALLOWED
@@ -232,12 +234,13 @@ class FunkinLua extends Script implements IScript implements ILua
 		}
 	}
 
-	public function execute(?args:Array<Dynamic>)
+	public function execute(?args:Array<Dynamic>):FunkinLua
 	{
 		//		Logs.prefixedTrace('lua file loaded succesfully: $scriptName', 'Global Script', GREEN);
 		FlxG.log.notice('lua script loaded: $scriptName');
 		call('new', args ??= []);
 		call('onCreate', []);
+		instances.push(this);
 		return this;
 	}
 
@@ -384,7 +387,7 @@ class FunkinLua extends Script implements IScript implements ILua
 		Lua_helper.add_callback(lua, "getRunningScripts", function()
 		{
 			final runningScripts:Array<String> = [];
-			for (script in GlobalScript.instance.luaInstances)
+			for (script in FunkinLua.instances)
 				runningScripts.push(script.scriptName);
 			return runningScripts;
 		});
@@ -396,7 +399,12 @@ class FunkinLua extends Script implements IScript implements ILua
 				exclusions = [];
 			if (ignoreSelf && !exclusions.contains(scriptName))
 				exclusions.push(scriptName);
-			GlobalScript.instance.set(varName, arg, exclusions);
+			// FIX exclusions
+			for (i in HScript.instances)
+				i.set(varName, arg);
+			for (i in FunkinLua.instances)
+				i.set(varName, arg);
+			// GlobalScript.instance.set(varName, arg, exclusions);
 		});
 		#end
 
@@ -408,7 +416,10 @@ class FunkinLua extends Script implements IScript implements ILua
 			if (ignoreSelf && !exclusions.contains(scriptName))
 				exclusions.push(scriptName);
 
-			GlobalScript.instance.setOnHScript(varName, arg, exclusions);
+			// FIX exclusions
+			for (i in HScript.instances)
+				i.set(varName, arg);
+			//		GlobalScript.instance.setOnHScript(varName, arg, exclusions);
 		});
 		#end
 
@@ -419,7 +430,11 @@ class FunkinLua extends Script implements IScript implements ILua
 				exclusions = [];
 			if (ignoreSelf && !exclusions.contains(scriptName))
 				exclusions.push(scriptName);
-			GlobalScript.instance.setOnLuas(varName, arg, exclusions);
+			// FIX exclusions
+			for (i in HScript.instances)
+				i.set(varName, arg);
+			// for(i in FunkinLua.instances) i.set(varName,arg);
+			// GlobalScript.instance.setOnLuas(varName, arg, exclusions);
 		});
 		#end
 
@@ -432,7 +447,10 @@ class FunkinLua extends Script implements IScript implements ILua
 					excludeScripts = [];
 				if (ignoreSelf && !excludeScripts.contains(scriptName))
 					excludeScripts.push(scriptName);
-				GlobalScript.instance.call(funcName, args, ignoreStops, excludeScripts, excludeValues);
+				// FIX exclusions
+				for (i in ScriptPack.packInstances)
+					i.call(funcName, args, ignoreStops, excludeScripts, excludeValues);
+				// GlobalScript.instance.call(funcName, args, ignoreStops, excludeScripts, excludeValues);
 				return true;
 			});
 		#end
@@ -445,7 +463,9 @@ class FunkinLua extends Script implements IScript implements ILua
 					excludeScripts = [];
 				if (ignoreSelf && !excludeScripts.contains(scriptName))
 					excludeScripts.push(scriptName);
-				GlobalScript.instance.callOnLuas(funcName, args, ignoreStops, excludeScripts, excludeValues);
+				for (i in ScriptPack.packInstances)
+					i.call(funcName, args, ignoreStops, excludeScripts, excludeValues, LUA);
+				//	GlobalScript.instance.callOnLuas(funcName, args, ignoreStops, excludeScripts, excludeValues);
 				return true;
 			});
 		#end
@@ -460,7 +480,9 @@ class FunkinLua extends Script implements IScript implements ILua
 				if (ignoreSelf && !excludeScripts.contains(scriptName))
 					excludeScripts.push(scriptName);
 
-				GlobalScript.instance.callOnHScript(funcName, args, ignoreStops, excludeScripts, excludeValues);
+				for (i in ScriptPack.packInstances)
+					i.call(funcName, args, ignoreStops, excludeScripts, excludeValues, HSCRIPT);
+				//	GlobalScript.instance.callOnHScript(funcName, args, ignoreStops, excludeScripts, excludeValues);
 				return true;
 			});
 		#end
@@ -474,7 +496,7 @@ class FunkinLua extends Script implements IScript implements ILua
 
 			var foundScript:String = findScript(luaFile);
 			if (foundScript != null)
-				for (luaInstance in GlobalScript.instance.luaInstances)
+				for (luaInstance in FunkinLua.instances)
 					if (luaInstance.scriptName == foundScript)
 					{
 						luaInstance.call(funcName, args);
@@ -486,7 +508,7 @@ class FunkinLua extends Script implements IScript implements ILua
 		{ // returns the global from a script
 			var foundScript:String = findScript(luaFile);
 			if (foundScript != null)
-				for (luaInstance in GlobalScript.instance.luaInstances)
+				for (luaInstance in FunkinLua.instances)
 					if (luaInstance.scriptName == foundScript)
 					{
 						Lua.getglobal(luaInstance.lua, global);
@@ -511,7 +533,7 @@ class FunkinLua extends Script implements IScript implements ILua
 		{ // returns the global from a script
 			final foundScript:String = findScript(luaFile);
 			if (foundScript != null)
-				for (luaInstance in GlobalScript.instance.luaInstances)
+				for (luaInstance in FunkinLua.instances)
 					if (luaInstance.scriptName == foundScript)
 						luaInstance.set(global, val);
 		});
@@ -520,7 +542,7 @@ class FunkinLua extends Script implements IScript implements ILua
 		{
 			var foundScript:String = findScript(luaFile);
 			if (foundScript != null)
-				for (luaInstance in GlobalScript.instance.luaInstances)
+				for (luaInstance in FunkinLua.instances)
 					if (luaInstance.scriptName == foundScript)
 						return true;
 			return false;
@@ -542,7 +564,7 @@ class FunkinLua extends Script implements IScript implements ILua
 			if (foundScript != null)
 			{
 				if (!ignoreAlreadyRunning)
-					for (luaInstance in GlobalScript.instance.luaInstances)
+					for (luaInstance in FunkinLua.instances)
 						if (luaInstance.scriptName == foundScript)
 						{
 							luaTrace('addLuaScript: The script "' + foundScript + '" is already running!');
@@ -561,7 +583,7 @@ class FunkinLua extends Script implements IScript implements ILua
 			if (foundScript != null)
 			{
 				if (!ignoreAlreadyRunning)
-					for (script in GlobalScript.instance.hscriptInstances.get(Main.stateName))
+					for (script in HScript.instances)
 						if (script.origin == foundScript)
 						{
 							luaTrace('addHScript: The script "' + foundScript + '" is already running!');
@@ -582,7 +604,7 @@ class FunkinLua extends Script implements IScript implements ILua
 			if (foundScript != null)
 			{
 				if (!ignoreAlreadyRunning)
-					for (luaInstance in GlobalScript.instance.luaInstances)
+					for (luaInstance in FunkinLua.instances)
 						if (luaInstance.scriptName == foundScript)
 						{
 							luaInstance.stop();
@@ -600,7 +622,7 @@ class FunkinLua extends Script implements IScript implements ILua
 			if (foundScript != null)
 			{
 				if (!ignoreAlreadyRunning)
-					for (script in GlobalScript.instance.hscriptInstances.get(Main.stateName))
+					for (script in HScript.instances)
 						if (script.origin == foundScript)
 						{
 							trace('Closing script ' + (script.origin != null ? script.origin : luaFile));
@@ -726,19 +748,24 @@ class FunkinLua extends Script implements IScript implements ILua
 							onUpdate: function(twn:FlxTween)
 							{
 								if (myOptions.onUpdate != null)
-									GlobalScript.instance.callOnLuas(myOptions.onUpdate, [tag, vars]);
+									for (i in ScriptPack.packInstances)
+										i.call(myOptions.onUpdate, [tag, vars], LUA);
+								// GlobalScript.instance.callOnLuas(myOptions.onUpdate, [tag, vars]);
 							},
 							onStart: function(twn:FlxTween)
 							{
 								if (myOptions.onStart != null)
-									GlobalScript.instance.callOnLuas(myOptions.onStart, [tag, vars]);
+									for (i in ScriptPack.packInstances)
+										i.call(myOptions.onStart, [tag, vars], LUA);
+								// GlobalScript.instance.callOnLuas(myOptions.onStart, [tag, vars]);
 							},
 							onComplete: function(twn:FlxTween)
 							{
 								if (twn.type == FlxTweenType.ONESHOT || twn.type == FlxTweenType.BACKWARD)
 									variables.remove(tag);
 								if (myOptions.onComplete != null)
-									GlobalScript.instance.callOnLuas(myOptions.onComplete, [tag, vars]);
+									for (i in ScriptPack.packInstances)
+										i.call(myOptions.onComplete, [tag, vars], LUA);
 							}
 						}));
 					}
@@ -796,7 +823,8 @@ class FunkinLua extends Script implements IScript implements ILua
 						{
 							variables.remove(tag);
 							if (game != null)
-								GlobalScript.instance.callOnLuas('onTweenCompleted', [originalTag, vars]);
+								for (i in ScriptPack.packInstances)
+									i.call('onTweenCompleted', [originalTag, vars], LUA);
 						}
 					}));
 				}
@@ -878,7 +906,9 @@ class FunkinLua extends Script implements IScript implements ILua
 			{
 				if (tmr.finished)
 					variables.remove(tag);
-				GlobalScript.instance.callOnLuas('onTimerCompleted', [originalTag, tmr.loops, tmr.loopsLeft]);
+				for (i in ScriptPack.packInstances)
+					i.call('onTimerCompleted', [originalTag, tmr.loops, tmr.loopsLeft], LUA);
+				// GlobalScript.instance.callOnLuas('onTimerCompleted', [originalTag, tmr.loops, tmr.loopsLeft]);
 				// trace('Timer Completed: ' + tag);
 			}, loops));
 		});
@@ -1671,7 +1701,9 @@ class FunkinLua extends Script implements IScript implements ILua
 					if (!loop)
 						variables.remove(tag);
 					if (game != null)
-						GlobalScript.instance.callOnLuas('onSoundFinished', [originalTag]);
+						for (i in ScriptPack.packInstances)
+							i.call('onSoundFinished', [originalTag], LUA);
+					// GlobalScript.instance.callOnLuas('onSoundFinished', [originalTag]);
 				}));
 				return;
 			}
@@ -1899,7 +1931,7 @@ class FunkinLua extends Script implements IScript implements ILua
 		Lua_helper.add_callback(lua, "debugPrint",
 			function(text:Dynamic = '', color:String = 'WHITE') PlayState.instance.addTextToDebug(text, CoolUtil.colorFromString(color)));
 
-	//	final uhh = funkin.backend.utils.FileUtil.filename(scriptName);
+		//	final uhh = funkin.backend.utils.FileUtil.filename(scriptName);
 		function __trace(_:String):Void
 			Sys.println('${funkin.backend.utils.FileUtil.filename(scriptName)}:0: $_');
 		//	Logs.prefixedTrace(_, 'LuaJIT', ORANGE);}
@@ -2016,12 +2048,13 @@ class FunkinLua extends Script implements IScript implements ILua
 		Lua.setglobal(lua, variable);
 	}
 
-	override public function stop()
+	override public function stop():Void
 	{
 		closed = true;
 
 		if (lua == null)
 			return;
+		instances.remove(this);
 		Lua.close(lua);
 		lua = null;
 		#if HSCRIPT_ALLOWED
@@ -2048,8 +2081,10 @@ class FunkinLua extends Script implements IScript implements ILua
 					onComplete: function(twn:FlxTween)
 					{
 						variables.remove(tag);
-						if (GlobalScript.instance != null)
-							GlobalScript.instance.callOnLuas('onTweenCompleted', [originalTag, vars]);
+						for (i in ScriptPack.packInstances)
+							i.call('onTweenCompleted', [originalTag, vars], LUA);
+						// if (GlobalScript.instance != null)
+						//	GlobalScript.instance.callOnLuas('onTweenCompleted', [originalTag, vars]);
 					}
 				}));
 			}
@@ -2081,8 +2116,10 @@ class FunkinLua extends Script implements IScript implements ILua
 				onComplete: function(twn:FlxTween)
 				{
 					variables.remove(tag);
-					if (GlobalScript.instance != null)
-						GlobalScript.instance.callOnLuas('onTweenCompleted', [originalTag]);
+					for (i in ScriptPack.packInstances)
+						i.call('onTweenCompleted', [originalTag], LUA);
+					// if (GlobalScript.instance != null)
+					//	GlobalScript.instance.callOnLuas('onTweenCompleted', [originalTag]);
 				}
 			}));
 		}
