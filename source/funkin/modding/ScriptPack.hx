@@ -2,7 +2,7 @@ package funkin.modding;
 
 import funkin.modding.Script.ScriptType as TScript;
 
-class ScriptPack implements IDummy
+class ScriptPack implements IDummy implements flixel.util.FlxDestroyUtil.IFlxDestroyable
 {
 	public static var packInstances:Array<ScriptPack> = [];
 
@@ -251,6 +251,11 @@ class ScriptPack implements IDummy
 		for (e in scripts)
 			if ((fucker == HSCRIPT && e.type == HSCRIPT) || (fucker == LUA && e.type == LUA) || (fucker == BOTH))
 				e.set(val, value);
+	}
+
+	public function run() : Void{
+		for (e in scripts)
+			e.run();
 	}
 
 	public function destroy():Void

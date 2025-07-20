@@ -234,7 +234,8 @@ class FunkinLua extends Script implements IScript implements ILua
 		}
 	}
 
-	public function execute(?args:Array<Dynamic>):FunkinLua
+	override public function run(?args:Array<Dynamic>) return execute(args);
+	public function execute(?args:Array<Dynamic>):Dynamic
 	{
 		//		Logs.prefixedTrace('lua file loaded succesfully: $scriptName', 'Global Script', GREEN);
 		FlxG.log.notice('lua script loaded: $scriptName');

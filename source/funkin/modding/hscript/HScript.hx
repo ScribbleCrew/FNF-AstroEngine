@@ -530,7 +530,7 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 		return null;
 	}
 
-	public function run(?args:Array<Dynamic>, ?customGroupMap:String):HScript
+	override public function run(?args:Array<Dynamic>):Dynamic
 	{
 		try
 		{

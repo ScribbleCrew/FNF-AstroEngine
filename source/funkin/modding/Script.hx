@@ -43,6 +43,11 @@ class Script
 		return null;
 	}
 
+	public function run(?args:Array<Dynamic>):Dynamic
+	{
+		return null;
+	}
+
 	public function call(functionName:String, ?funcArgs:Array<Dynamic>):Dynamic // should we even have the stop stuff here?
 	{
 		return null;

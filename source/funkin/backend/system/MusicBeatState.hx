@@ -110,8 +110,6 @@ class MusicBeatState extends FlxState implements IBeat
 		super();
 
 		#if SOFTCODED_STATES
-		#if LUA_ALLOWED extensions.set('lua', [".lua", ".funkinlua"]); #end
-		#if HSCRIPT_ALLOWED extensions.set('haxe', [".hx", ".hxc", ".hscript" /* why would anyone need this... */]); /* funi extensions */ #end
 		(stateScripts = new ScriptPack()).setParent(this);
 
 		this.scriptName = scriptName;
@@ -161,6 +159,9 @@ class MusicBeatState extends FlxState implements IBeat
 	 */
 	static function checkScriptExtensions(file:String, ?type:String):Bool
 	{
+		#if LUA_ALLOWED extensions.set('lua', [".lua", ".funkinlua"]); #end
+		#if HSCRIPT_ALLOWED extensions.set('haxe', [".hx", ".hxc", ".hscript" /* why would anyone need this... */]); /* funi extensions */ #end
+		
 		// Extension check loop
 		for (typeKey in extensions.keys())
 		{
