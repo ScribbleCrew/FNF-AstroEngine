@@ -870,7 +870,7 @@ class PlayState extends MusicBeatState
 		if (dad != null) startCharacterScripts(dad.curCharacter);
 		if (boyfriend != null) startCharacterScripts(boyfriend.curCharacter);
 
-		Logs.prefixedTrace('Finished loading all scripts', 'PlayState', ORANGE);
+		Logs.log('Finished loading all scripts', ORANGE);
 		#end
 
 		add(comboGroup = new FlxSpriteGroup());

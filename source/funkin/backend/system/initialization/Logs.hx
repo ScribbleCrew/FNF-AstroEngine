@@ -90,7 +90,7 @@ import funkin.backend.utils.native.Terminal.TColor;
 		if (infos != null && infos.customParams != null)
 			for (param in infos.customParams)
 				v += ", " + param;
-		return '[${prefix ?? Logs.prefix}]: $v : ${infos.fileName}:${infos.lineNumber}';
+		return '${prefix == null ? '' : '[${prefix ?? Logs.prefix}]:'} $v : ${infos.fileName}:${infos.lineNumber}';
 	}
 
 	/**
