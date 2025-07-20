@@ -9,7 +9,7 @@ import flixel.addons.transition.FlxTransitionableState;
 @:nullSafety
 class InDevWarningState extends MusicBeatState
 {
-	inline static function leave():Void
+	/*inline*/ static dynamic function leave():Void
 	{
 		#if !mobile
 		if (Main.framerateCounter != null)
@@ -49,7 +49,7 @@ class InDevWarningState extends MusicBeatState
 	}
 	#end
 
-//	var subCameraDuh:FlxCamera;
+	//	var subCameraDuh:FlxCamera;
 
 	public function new():Void
 	{
@@ -57,14 +57,14 @@ class InDevWarningState extends MusicBeatState
 		#if SHADERS_ALLOWED
 		if (ClientPrefs.data.shaders)
 			void = new FlxRuntimeShader(FileSystem.exists(frag) ? File.getContent(frag) : null);
-			// final frag:String = Paths.shaderFragment('WarningPulse');
-			// time = getFloatParam("time", [0.0]);
-			// circleColor = getFloatParam("circleColor", [1.0, 1.0, 1.0]);
-			// backgroundColor = getFloatParam("backgroundColor", [0.0, 0.0, 0.0]);
-			// frequency = getFloatParam("frequency", [1.0]);
-			// speed = getFloatParam("speed", [.5]);
-			// showLines = getBoolParam("showLines", [true]);
-		
+		// final frag:String = Paths.shaderFragment('WarningPulse');
+		// time = getFloatParam("time", [0.0]);
+		// circleColor = getFloatParam("circleColor", [1.0, 1.0, 1.0]);
+		// backgroundColor = getFloatParam("backgroundColor", [0.0, 0.0, 0.0]);
+		// frequency = getFloatParam("frequency", [1.0]);
+		// speed = getFloatParam("speed", [.5]);
+		// showLines = getBoolParam("showLines", [true]);
+
 		background = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		#end
 
@@ -142,7 +142,7 @@ class InDevWarningState extends MusicBeatState
 		@:nullSafety(Off) {
 			if (void != null)
 			{
-				setShaderField("circleColor", [0.1176, 0.0, 0.6314]);// Purple(ish) color
+				setShaderField("circleColor", [0.1176, 0.0, 0.6314]); // Purple(ish) color
 				background.shader = void;
 			}
 		}
@@ -163,7 +163,7 @@ class InDevWarningState extends MusicBeatState
 
 		engineLogo.loadGraphic(Paths.image('credits/orbl'));
 		engineLogo.screenCenter(X);
-		engineLogo.scale.set(1.3,1.3);
+		engineLogo.scale.set(1.3, 1.3);
 		engineLogo.alpha = 0;
 		engineLogo.screenCenter();
 		add(engineLogo);
@@ -226,18 +226,18 @@ class InDevWarningState extends MusicBeatState
 						FlxTween.num(i.alpha, 0, .5, {startDelay: .2}, i.set_alpha);
 					FlxTween.num(warningBtns.y, 1000, 1., {ease: FlxEase.cubeInOut, startDelay: .33}, warningBtns.set_y);
 					FlxTween.num(FlxG.camera.zoom, 2., 15., {ease: FlxEase.expoOut}, FlxG.camera.set_zoom);
-					//FlxTween.num(engineLogo.y, (FlxG.height - engineLogo.height) / 2, {ease: FlxEase.cubeInOut}, engineLogo.set_y);
+					// FlxTween.num(engineLogo.y, (FlxG.height - engineLogo.height) / 2, {ease: FlxEase.cubeInOut}, engineLogo.set_y);
 					// looks better i guess :p
 					FlxTween.num(engineLogo.alpha, 1, {ease: FlxEase.cubeInOut, startDelay: .33}, engineLogo.set_alpha);
 				}
 
 				// FlxTween.tween(warningBtns, {y: 1000}, 0.5, {ease: FlxEase.cubeInOut});
 				#if SHADERS_ALLOWED
-				//if (background != null)
-					//background = FlxDestroyUtil.destroy(background);
+				// if (background != null)
+				// background = FlxDestroyUtil.destroy(background);
 				#end
-				new FlxTimer().start(1.5, (_) -> FlxG.camera.fade(FlxColor.BLACK, 2.33, false, leave));
-				//FlxG.camera.flash(FlxColor.WHITE, 1., () -> FlxG.camera.fade(FlxColor.BLACK, 2.33, false, leave));
+				new FlxTimer().start(1.5, (_) -> FlxG.camera.fade(FlxColor.BLACK, 2.33, false, () -> new FlxTimer().start(1, _ -> leave())));
+				// FlxG.camera.flash(FlxColor.WHITE, 1., () -> FlxG.camera.fade(FlxColor.BLACK, 2.33, false, leave));
 				FlxFlicker.flicker(warningBtns, 1, .1, false, true);
 			}
 			else if (controls.BACK)
