@@ -460,8 +460,8 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 		errorHandler = HScriptUtils.onError;
 		interp.superInstance = FlxG.state; // fallback :3
 
-		final index:Int = scriptName.lastIndexOf("/");
-		interp.scriptName = (index == -1) ? scriptName : scriptName.substr(index + 1);
+		//final index:Int = scriptName.lastIndexOf("/");
+		interp.scriptName = funkin.backend.utils.FileUtil.filename(scriptName);//(index == -1) ? scriptName : scriptName.substr(index + 1);
 
 		#if LUA_ALLOWED
 		parentLua = parent;

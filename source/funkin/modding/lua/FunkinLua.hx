@@ -1899,8 +1899,10 @@ class FunkinLua extends Script implements IScript implements ILua
 		Lua_helper.add_callback(lua, "debugPrint",
 			function(text:Dynamic = '', color:String = 'WHITE') PlayState.instance.addTextToDebug(text, CoolUtil.colorFromString(color)));
 
+	//	final uhh = funkin.backend.utils.FileUtil.filename(scriptName);
 		function __trace(_:String):Void
-			Logs.prefixedTrace(_, 'LuaJIT', ORANGE);
+			Sys.println('${funkin.backend.utils.FileUtil.filename(scriptName)}:0: $_');
+		//	Logs.prefixedTrace(_, 'LuaJIT', ORANGE);}
 
 		Lua_helper.add_callback(lua, "trace", __trace);
 		Lua_helper.add_callback(lua, "print", __trace);

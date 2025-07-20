@@ -25,8 +25,6 @@ class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable #if HSC
 		try
 		{
 			instance = new GlobalScript(); // i aint making a constructor
-			#if LUA_ALLOWED extensions.set('lua', [".lua", ".funkinlua"]); #end
-			#if HSCRIPT_ALLOWED extensions.set('haxe', [".hx", ".hxc", ".hscript" /* why would anyone need this... */]); /* funi extensions */ #end
 
 			Logs.prefixedTrace('Successfully initialized', 'GlobalScript', GREEN);
 		}
@@ -59,90 +57,7 @@ class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable #if HSC
 	public var luaInstances:Array<FunkinLua> = [];
 	#end
 
-	/**
-	 * Extension map, contains all file extensions for allowed scripts.	
-	 */
-	static final extensions:Map<String, Array<String>> = new Map<String, Array<String>>();
-
-	/**
-	 * Checks if the script's file extension	is inside of the extensions map.
-	 */
-	static function checkScriptExtensions(file:String, ?type:String):Bool
-	{
-		// Extension check loop
-		for (typeKey in extensions.keys())
-		{
-			// If 'type' is provided, check only that specific type
-			if (type != null && type != typeKey)
-				continue;
-
-			// Check extensions for the current type
-			for (ext in extensions.get(typeKey))
-			{
-				// Check if the file ends with the extension
-				if (file.endsWith(ext))
-					return true;
-			}
-		}
-
-		// If the extension isn't found
-		return false;
-	}
-	/**
-	 * Execute class scripts inside of mods/source.
-	 * Used inside The BeatStates.
-	 */
-	public function executeClassScripts(scripts:ScriptPack, ?customClass:String, ?scriptArgs:Array<Dynamic>, ?substate:Bool = false):Void
-	{
-		// Get the current state's class name.
-		final currentClass:Class<Dynamic> = Type.getClass(FlxG.state);
-		final _className:String = customClass != null ? customClass : Type.getClassName(currentClass);
-
-		// Convert to lowercase for consistency
-		final __className:String = _className.substring(_className.lastIndexOf('.') + 1).toLowerCase();
-
-		// Loop through all mod folders containing scripts.
-		for (folderName in Mods.directoriesWithFile(Paths.getSharedPath(), substate ? 'scripts/states/substates/' : 'scripts/states/'))
-		{
-			// Get all files inside the directory
-			for (_fileName in FileSystem.readDirectory(folderName))
-			{
-				// Skip files without valid extensions
-				if (!checkScriptExtensions(_fileName))
-					continue;
-
-				// Skips disabled scripts.
-				if (_fileName.startsWith("~"))
-					continue;
-
-				// Combines the folder path with the file name.
-				final convertedScriptPath:String = folderName + _fileName;
-
-				// Remove extension and convert to lowercase
-				final convertedScriptName:String = _fileName.substr(0, _fileName.lastIndexOf('.')).toLowerCase();
-
-				// Ensure the Global Script (global.hx, or anything that starts with global) runs no matter
-				// the state, and scripts that are for specific states run when matching the state name.
-				if (convertedScriptName != __className && !convertedScriptName.contains("global"))
-					continue;
-
-				// Execute Lua/HScript scripts if flag concurrent flag is enabled.
-				#if LUA_ALLOWED
-				if (checkScriptExtensions(_fileName, "lua"))
-					scripts.add(new FunkinLua(convertedScriptPath).execute(scriptArgs));
-				#end
-				#if HSCRIPT_ALLOWED
-				if (checkScriptExtensions(_fileName, "haxe"))
-				{
-				//	final _class = 
-					scripts.add(new HScript(null, convertedScriptPath).run(scriptArgs));
-				//	_class.parent = (substate ? SUB : STATE); // yay enums
-				//	_class.run(scriptArgs);
-				};
-				#end
-			}
-		}
-	}
+	
 	#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
 	/**
 	 * Set vars on scripts.	

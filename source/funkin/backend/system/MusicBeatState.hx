@@ -52,6 +52,7 @@ class MusicBeatState extends FlxState implements IBeat
 	 */
 	@:isVar
 	var beatsOnSection(get, null):Float;
+
 	@:dox(hide) inline function get_beatsOnSection():Float
 	{
 		// section beats, idk...
@@ -65,6 +66,7 @@ class MusicBeatState extends FlxState implements IBeat
 	 * @returns Controls Instance
 	 */
 	public var controls(get, never):Controls;
+
 	@:dox(hide) inline function get_controls():Controls
 		return Controls.instance;
 
@@ -98,8 +100,8 @@ class MusicBeatState extends FlxState implements IBeat
 	var scriptName:String = null;
 
 	/**
-	* Softcoded state script args.	
-	*/
+	 * Softcoded state script args.	
+	 */
 	var scriptArgs = null;
 	#end
 
@@ -108,6 +110,8 @@ class MusicBeatState extends FlxState implements IBeat
 		super();
 
 		#if SOFTCODED_STATES
+		#if LUA_ALLOWED extensions.set('lua', [".lua", ".funkinlua"]); #end
+		#if HSCRIPT_ALLOWED extensions.set('haxe', [".hx", ".hxc", ".hscript" /* why would anyone need this... */]); /* funi extensions */ #end
 		(stateScripts = new ScriptPack()).setParent(this);
 
 		this.scriptName = scriptName;
@@ -124,12 +128,12 @@ class MusicBeatState extends FlxState implements IBeat
 
 		final className = Type.getClassName(Type.getClass(FlxG.state));
 		funkin.game.Main.stateName = className.substring(className.lastIndexOf('.') + 1);
-		
+
 		#if SOFTCODED_STATES
 		// global script stuff.
 		// gets the metadata of the current class.
 		// not MusicBeatState, it's whatever is extending from it, since this is an abstract class.
-		GlobalScript.instance.executeClassScripts(stateScripts, scriptName, scriptArgs);
+		executeClassScripts(stateScripts, scriptName, scriptArgs);
 		super.create();
 		stateScripts.call('onCreatePost', []); // gwa gwa lua
 		stateScripts.call('createPost', []);
@@ -138,13 +142,99 @@ class MusicBeatState extends FlxState implements IBeat
 		if (!_isCameraLoaded)
 			setupCamera();
 
-		funkin.backend.framerate.FramerateContainer.offset.set(0,0);
+		funkin.backend.framerate.FramerateContainer.offset.set(0, 0);
 		#if !SOFTCODED_STATES super.create(); #end
 
 		// transition stuff (ignore this).
 		if (!skipNextTransOut)
 			openSubState(new FunkinFadeTransition(0.5, true));
 		FlxTransitionableState.skipNextTransOut = false;
+	}
+
+	/**
+	 * Extension map, contains all file extensions for allowed scripts.	
+	 */
+	static final extensions:Map<String, Array<String>> = new Map<String, Array<String>>();
+
+	/**
+	 * Checks if the script's file extension	is inside of the extensions map.
+	 */
+	static function checkScriptExtensions(file:String, ?type:String):Bool
+	{
+		// Extension check loop
+		for (typeKey in extensions.keys())
+		{
+			// If 'type' is provided, check only that specific type
+			if (type != null && type != typeKey)
+				continue;
+
+			// Check extensions for the current type
+			for (ext in extensions.get(typeKey))
+			{
+				// Check if the file ends with the extension
+				if (file.endsWith(ext))
+					return true;
+			}
+		}
+
+		// If the extension isn't found
+		return false;
+	}
+
+	/**
+	 * Execute class scripts inside of mods/source.
+	 * Used inside The BeatStates.
+	 */
+	public static function executeClassScripts(scripts:ScriptPack, ?customClass:String, ?scriptArgs:Array<Dynamic>, ?substate:Bool = false):Void
+	{
+		// Get the current state's class name.
+		final currentClass:Class<Dynamic> = Type.getClass(FlxG.state);
+		final _className:String = customClass != null ? customClass : Type.getClassName(currentClass);
+
+		// Convert to lowercase for consistency
+		final __className:String = _className.substring(_className.lastIndexOf('.') + 1).toLowerCase();
+
+		// Loop through all mod folders containing scripts.
+		for (folderName in Mods.directoriesWithFile(Paths.getSharedPath(), substate ? 'scripts/states/substates/' : 'scripts/states/'))
+		{
+			// Get all files inside the directory
+			for (_fileName in FileSystem.readDirectory(folderName))
+			{
+				// Skip files without valid extensions
+				if (!checkScriptExtensions(_fileName))
+					continue;
+
+				// Skips disabled scripts.
+				if (_fileName.startsWith("~"))
+					continue;
+
+				// Combines the folder path with the file name.
+				final convertedScriptPath:String = folderName + _fileName;
+
+				// Remove extension and convert to lowercase
+				final convertedScriptName:String = _fileName.substr(0, _fileName.lastIndexOf('.')).toLowerCase();
+
+				// Ensure the Global Script (global.hx, or anything that starts with global) runs no matter
+				// the state, and scripts that are for specific states run when matching the state name.
+				if (convertedScriptName != __className && !convertedScriptName.contains("global"))
+					continue;
+
+				// Execute Lua/HScript scripts if flag concurrent flag is enabled.
+				#if LUA_ALLOWED
+				if (checkScriptExtensions(_fileName, "lua"))
+					scripts.add(new FunkinLua(convertedScriptPath).execute(scriptArgs));
+				#end
+				#if HSCRIPT_ALLOWED
+				if (checkScriptExtensions(_fileName, "haxe"))
+				{
+					//	final _class =
+					scripts.add(new HScript(null, convertedScriptPath).run(scriptArgs));
+					//	_class.parent = (substate ? SUB : STATE); // yay enums
+					//	_class.run(scriptArgs);
+				};
+				#end
+			}
+		}
 	}
 
 	/**
@@ -167,9 +257,9 @@ class MusicBeatState extends FlxState implements IBeat
 	@:dox(hide) static var _elapsed:Float = 0;
 
 	/**
-	* Stage Access Tho...
-	* @param func The Function.	
-	*/
+	 * Stage Access Tho...
+	 * @param func The Function.	
+	 */
 	inline function stageAccess(func:BaseStage->(Void)):Void
 	{
 		// very cool stage access function.
@@ -259,7 +349,7 @@ class MusicBeatState extends FlxState implements IBeat
 	public static function switchState(?nextState:EitherTwo<FlxState, MusicBeatState>, ?scriptName:String, ?args:Array<Dynamic>):Void
 	{
 		// Make sure the next state doesn't equal null or the current state.
-		nextState ??= new MusicBeatState(scriptName,args);
+		nextState ??= new MusicBeatState(scriptName, args);
 		if (nextState == FlxG.state)
 			return resetState();
 
@@ -279,12 +369,12 @@ class MusicBeatState extends FlxState implements IBeat
 	}
 
 	/**
-	* Requires a lua object from the variables map.	
-	* @param tag The object's tag.
-	*/
+	 * Requires a lua object from the variables map.	
+	 * @param tag The object's tag.
+	 */
 	public function getLuaObject(tag:String):FlxSprite
 		return variables.get(tag);
-	
+
 	/**
 	 *	Gets the current state using a cast with the type of `MusicBeatState`.
 	 */
@@ -308,7 +398,7 @@ class MusicBeatState extends FlxState implements IBeat
 		if (curStep % 4 == 0)
 			beatHit();
 
-		stateScripts.set('curStep', curStep);//oops i forgor
+		stateScripts.set('curStep', curStep); // oops i forgor
 		stateScripts.call('onStepHit', []);
 		stateScripts.call('stepHit', []);
 	}

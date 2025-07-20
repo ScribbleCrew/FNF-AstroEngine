@@ -111,7 +111,7 @@ class MusicBeatSubstate extends flixel.FlxSubState implements IBeat
 		// global script stuff.
 		// gets the metadata of the current class.
 		// not MusicBeatState, it's whatever is extending from it, since this is an abstract class.
-		GlobalScript.instance.executeClassScripts(stateScripts, scriptName, scriptArgs, true);
+		MusicBeatState.executeClassScripts(stateScripts, scriptName, scriptArgs, true);
 		super.create();
 		stateScripts.call('onCreatePost', []); // gwa gwa lua
 		stateScripts.call('createPost', []);
