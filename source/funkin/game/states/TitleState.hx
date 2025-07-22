@@ -97,7 +97,7 @@ class TitleState extends MusicBeatState
 		if (ClientPrefs.data.checkForUpdates && !closedState)
 		{
 			Logs.prefixedTrace('Checking for update', 'Update Sync', CYAN);
-			final http:haxe.Http = new haxe.Http(GitMacro.toCDN("ScribbleCrew/FNF-AstroEngine/main/gitVersion.txt"));
+			final http:haxe.Http = new haxe.Http(GitMacro.getUserContent("ScribbleCrew/FNF-AstroEngine/main/gitVersion.txt"));
 			http.onData = function(data:String)
 			{
 				updateVersion = data.split('\n')[0].trim();
@@ -343,6 +343,7 @@ class TitleState extends MusicBeatState
 	 * Intro text list.	
 	 */
 	var introTextList(get, never):Array<Array<String>>;
+
 	@:dox(hide) function get_introTextList():Array<Array<String>>
 		return [
 			for (i in #if MODS_ALLOWED Mods.mergeAllTextsNamed('data/introText.txt') #else Assets.getText(Paths.txt('introText')).split('\n') #end)
@@ -386,8 +387,10 @@ class TitleState extends MusicBeatState
 		{
 			if (gamepad.justPressed.START)
 				pressedEnter = true;
-			#if switch if (gamepad.justPressed.B)
-				pressedEnter = true; #end
+			#if switch
+			if (gamepad.justPressed.B)
+				pressedEnter = true;
+			#end
 		}
 
 		if (newTitle)
@@ -426,19 +429,23 @@ class TitleState extends MusicBeatState
 
 				new FlxTimer().start(1, function(tmr:FlxTimer):Void
 				{
-					MusicBeatState.switchState(#if CHECK_FOR_UPDATES _mustUpdate ? new funkin.game.states.OutdatedState() : #end new funkin.game.states.MainMenuState());
+					MusicBeatState.switchState(#if CHECK_FOR_UPDATES _mustUpdate ? new funkin.game.states.OutdatedState() : #end
+						new funkin.game.states.MainMenuState());
 					closedState = true;
 				});
 			}
 		}
 
-		if (initialized && pressedEnter && !skippedIntro) skipIntro();
+		if (initialized && pressedEnter && !skippedIntro)
+			skipIntro();
 
 		// hue control.
 		if (swagShader != null)
 		{
-			if (controls.UI_LEFT) swagShader.hue -= elapsed * 0.1;
-			if (controls.UI_RIGHT) swagShader.hue += elapsed * 0.1;
+			if (controls.UI_LEFT)
+				swagShader.hue -= elapsed * 0.1;
+			if (controls.UI_RIGHT)
+				swagShader.hue += elapsed * 0.1;
 		}
 
 		super.update(elapsed);
