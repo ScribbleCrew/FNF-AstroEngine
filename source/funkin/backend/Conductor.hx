@@ -19,7 +19,7 @@ class Conductor
 	 */
 	public static var onBeatHit:FlxTypedSignal<Int->Void> = new FlxTypedSignal();
 	public static var onStepHit:FlxTypedSignal<Int->Void> = new FlxTypedSignal();
-//	public static var onBPMChange:FlxTypedSignal<Float->Void> = new FlxTypedSignal();
+	public static var onBPMChange:FlxTypedSignal<Float->Void> = new FlxTypedSignal();
 
 
 	public static var bpm(default, set):Float = 100;
@@ -27,6 +27,7 @@ class Conductor
 		{
 			crochet = calcCrochet(BPMChange);
 			stepCrochet = crochet / 4;
+			onBPMChange.dispatch(bpm);
 			return bpm = BPMChange;
 		}
 

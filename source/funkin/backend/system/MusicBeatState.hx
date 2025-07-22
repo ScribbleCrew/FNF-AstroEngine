@@ -157,6 +157,7 @@ class MusicBeatState extends FlxState implements IBeat
 	/**
 	 * Checks if the script's file extension	is inside of the extensions map.
 	 */
+	#if GLOBAL_SCRIPT @:allow(funkin.modding.GlobalScript) #end
 	static function checkScriptExtensions(file:String, ?type:String):Bool
 	{
 		#if LUA_ALLOWED extensions.set('lua', [".lua", ".funkinlua"]); #end

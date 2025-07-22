@@ -285,6 +285,8 @@ class ModsMenuState extends MusicBeatState
 
 		final RELOAD_MOD_BUTTON = new ModButton(buttonsX + 400, buttonsY, 80, 80, Paths.image('ui/mods_icons'), function() // On/Off
 		{
+			GlobalScript.onModSwitch.dispatch(); // hopefully this doesn't cause lag due to spamming
+
 			var curMod:ModItem = modsGroup.members[curSelectedMod];
 			var mod:String = curMod.folder;
 			if (!modsList.disabled.contains(mod)) // Enable

@@ -93,7 +93,7 @@ class InDevWarningState extends MusicBeatState
 
 		super();
 
-		// fuck off, ik im stupid
+		// fuck off, im stupid ik :(
 		subCam = setupCamera();
 
 		#if SHADERS_ALLOWED

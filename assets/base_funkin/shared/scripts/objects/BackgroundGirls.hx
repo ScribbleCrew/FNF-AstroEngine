@@ -27,8 +27,8 @@ class BackgroundGirls extends BGSprite
 	public function __remapAnimations():Void
 	{
 		isPissed = !isPissed;
-		animation.addByIndices('danceLeft', isPissed ? 'BG fangirls dissuaded' : 'BG girls group', CoolUtil.numberArray(14), "", 24, false);
-		animation.addByIndices('danceRight', isPissed ? 'BG fangirls dissuaded' : 'BG girls group', CoolUtil.numberArray(30, 15), "", 24, false);
+		animation.addByIndices('danceLeft', isPissed ? 'BG fangirls dissuaded' : 'BG girls group', CoolUtil.range(14), "", 24, false);
+		animation.addByIndices('danceRight', isPissed ? 'BG fangirls dissuaded' : 'BG girls group', CoolUtil.range(30, 15), "", 24, false);
 
 		dance();
 	}

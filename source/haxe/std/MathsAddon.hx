@@ -4,10 +4,10 @@ package haxe.std;
 @:noCompletion
 @:dox(hide)
 @:pure class MathsAddon
-{   
-    /**
-    * quantize 
-    */
+{
+	/**
+	 * quantize 
+	 */
 	inline public static function quantize(f:Float, snap:Float):Float
 	{
 		// changed so this actually works lol
@@ -15,9 +15,9 @@ package haxe.std;
 		return (m / snap);
 	}
 
-    /**
-    * If `v` is not a number. 
-    */
+	/**
+	 * If `v` is not a number. 
+	 */
 	public static inline function isNaN(v:Dynamic):Bool
 	{
 		return v is Float && Math.isNaN((v : Float));

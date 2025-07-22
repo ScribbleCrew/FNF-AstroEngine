@@ -61,7 +61,7 @@ class CoolUtil
 	/**
 	 * Used to uhh fix json maps.	
 	 */
-	public static function mapify<T>(v:Dynamic):Map<String, Dynamic>
+	public static function objectToMap<T>(v:Dynamic):Map<String, Dynamic>
 	{
 		final animPrefixes:StringMap<Dynamic> = new StringMap<Dynamic>();
 		for (field in Reflect.fields(v))
@@ -96,23 +96,6 @@ class CoolUtil
 		return (v == null || MathsAddon.isNaN(v)) ? defaultValue : v;
 	}
 
-	static var _mousePoint:FlxPoint = new FlxPoint();
-	static var _objPoint:FlxPoint = new FlxPoint();
-
-	public static function mouseOverlapping<T:flixel.FlxObject>(obj:T, ?mousePoint:FlxPoint, ?camera:flixel.FlxCamera):Bool
-	{
-		camera ??= obj.camera;
-		if (mousePoint == null)
-		{
-			mousePoint = _mousePoint;
-			FlxG.mouse.getScreenPosition(camera, mousePoint);
-		}
-		{
-			obj.getScreenPosition(_objPoint, camera);
-			return FlxMath.pointInCoordinates(mousePoint.x, mousePoint.y, _objPoint.x, _objPoint.y, obj.width, obj.height);
-		}
-	}
-
 	@:noUsing public static function coolTextFile(path:String):Array<String>
 	{
 		var betterehh:String = '';
@@ -124,30 +107,13 @@ class CoolUtil
 	}
 
 	inline public static function colorFromString(color:String):FlxColor
-	{
-		var hideChars = ~/[\t\n\r]/;
-		var color:String = hideChars.split(color).join('').trim();
-		if (color.startsWith('0x'))
-			color = color.substring(color.length - 6);
+		return FlxColor.fromString((color = ~/[\t\n\r]/.split(color).join('').trim()).startsWith('0x') ? color.substring(color.length - 6) : color) 
+			?? FlxColor.fromString('#$color') 
+			?? FlxColor.WHITE;
 
-		var colorNum:Null<FlxColor> = FlxColor.fromString(color);
-		if (colorNum == null)
-			colorNum = FlxColor.fromString('#$color');
-		return colorNum != null ? colorNum : FlxColor.WHITE;
-	}
 
 	public static function listFromString(string:String):Array<String>
-	{
-		var daList:Array<String> = [];
-		daList = string.trim().split('\n');
-
-		for (i in 0...daList.length)
-		{
-			daList[i] = daList[i].trim();
-		}
-
-		return daList;
-	}
+		return [for (line in string.trim().split('\n')) line.trim()];
 
 	inline public static function dominantColor(sprite:flixel.FlxSprite):Int
 	{
@@ -181,16 +147,10 @@ class CoolUtil
 		return maxKey;
 	}
 
-	public static function numberArray(max:Int, ?min = 0):Array<Int>
-	{
-		var dumbArray:Array<Int> = [];
-		for (i in min...max)
-			dumbArray.push(i);
+	public static function range(max:Int, ?min = 0):Array<Int>
+		return [for (i in min...max) i];
 
-		return dumbArray;
-	}
-
-	@:noUsing public static function browserLoad(site:String)
+	@:noUsing public static function browserLoad(site:String) : Void
 	{
 		#if linux
 		Sys.command('/usr/bin/xdg-open', [site]);

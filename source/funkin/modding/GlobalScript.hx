@@ -1,63 +1,76 @@
 package funkin.modding;
 
 #if GLOBAL_SCRIPT
-import funkin.backend.system.MusicBeatState.checkScriptExtensions;
-
-@:access(funkin.backend.system.MusicBeatState.checkScriptExtensions)
+import flixel.util.FlxSignal.FlxTypedSignal;
+import funkin.modding.Script.ScriptType as TScript;
 class GlobalScript
 {
-	public static var scripts:ScriptPack;
+	// 
+	// PUBLIC HELPERS
+	//
+	public static function call(event:String, ?args:Array<Dynamic>, ?scriptType:TScript):Dynamic
+		return scripts.call(event, args, scriptType);
 
-	public static function reload()
+	public static function set(name:String, value:Dynamic, ?scriptType:TScript):Void
+		scripts.set(name, value, scriptType);
+
+	public static var scripts:ScriptPack;
+	public static var onModSwitch:FlxTypedSignal<Void->Void> = new FlxTypedSignal();
+
+	public static function reload():Void
 	{
 		if (scripts != null)
 		{
 			scripts.call('destroy');
 			scripts = FlxDestroyUtil.destroy(scripts);
 		}
+
 		scripts = new ScriptPack();
-		for (folderName in Mods.directoriesWithFile(Paths.getSharedPath(), 'scripts/modules/')) // stolen from the `executeClassScripts`
+
+		loadScripts();
+		scripts.run();
+		// for(i in )
+	}
+
+	static function loadScripts()
+	{
+		for (folderName in Mods.directoriesWithFile(Paths.getSharedPath(), 'scripts/modules/'))
 		{
 			for (_fileName in FileSystem.readDirectory(folderName))
 			{
-				trace(_fileName);
-				if (!checkScriptExtensions(_fileName))
+				if (!MusicBeatState.checkScriptExtensions(_fileName))
 					continue;
-
-				if (_fileName.startsWith("~"))
+				if (!_fileName.startsWith("MODULE_"))
 					continue;
 
 				final convertedScriptPath:String = folderName + _fileName;
-				final convertedScriptName:String = _fileName.substr(0, _fileName.lastIndexOf('.')).toLowerCase();
-
 				#if LUA_ALLOWED
-				if (checkScriptExtensions(_fileName, "lua"))
+				if (MusicBeatState.checkScriptExtensions(_fileName, "lua"))
 					scripts.add(new FunkinLua(convertedScriptPath));
 				#end
 				#if HSCRIPT_ALLOWED
-				if (checkScriptExtensions(_fileName, "haxe"))
+				if (MusicBeatState.checkScriptExtensions(_fileName, "haxe"))
 					scripts.add(new HScript(null, convertedScriptPath));
 				#end
 				scripts.run();
 			}
 		}
-		scripts.run();
-		// for(i in )
 	}
 
 	public static function init():Void
 	{
-		reload();
+		onModSwitch.add(reload);
+		onModSwitch.add(() -> Logs.log('Loading global scripts...', YELLOW));
+		onModSwitch.dispatch();
 
 		///
 
 		Conductor.onBeatHit.add(_ -> scripts.call("beatHit", [_]));
 		Conductor.onStepHit.add(_ -> scripts.call("stepHit", [_]));
+		Conductor.onBPMChange.add(_ -> scripts.call("onBPMChange", [_]));
 
 		FlxG.signals.focusGained.add(() -> scripts.call("focusGained"));
-
 		FlxG.signals.focusLost.add(() -> scripts.call("focusLost"));
-
 		FlxG.signals.gameResized.add((w:Int, h:Int) -> scripts.call("gameResized", [w, h]));
 		FlxG.signals.postDraw.add(() -> scripts.call("postDraw"));
 		FlxG.signals.postGameReset.add(() -> scripts.call("postGameReset"));
