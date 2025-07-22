@@ -285,7 +285,10 @@ class ModsMenuState extends MusicBeatState
 
 		final RELOAD_MOD_BUTTON = new ModButton(buttonsX + 400, buttonsY, 80, 80, Paths.image('ui/mods_icons'), function() // On/Off
 		{
-			GlobalScript.onModSwitch.dispatch(); // hopefully this doesn't cause lag due to spamming
+			#if GLOBAL_SCRIPT 
+			// hopefully this doesn't cause lag due to spamming
+			GlobalScript.onModSwitch.dispatch();  
+			#end
 
 			var curMod:ModItem = modsGroup.members[curSelectedMod];
 			var mod:String = curMod.folder;
@@ -796,6 +799,7 @@ class ModsMenuState extends MusicBeatState
 		else if (position < 0)
 			position = modsList.all.length - 1;
 
+		#if GLOBAL_SCRIPT GlobalScript.onModSwitch.dispatch(); #end
 		trace('mod "$mod" moved to position $position');
 		var id:Int = modsList.all.indexOf(mod);
 		if (position == id)
