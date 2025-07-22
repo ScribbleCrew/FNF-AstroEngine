@@ -180,11 +180,11 @@ class InDevWarningState extends MusicBeatState
 		warningBtns.alignment = CENTER;
 		add(warningBtns);
 
+		// make engine logo, currently using a placeholder.
 		engineLogo.loadGraphic(Paths.image('credits/orbl'));
-		engineLogo.screenCenter(X);
 		engineLogo.scale.set(1.3, 1.3);
-		engineLogo.alpha = 0;
 		engineLogo.screenCenter();
+		engineLogo.alpha = 0;
 		add(engineLogo);
 
 		// Apply text and markup stuff.
