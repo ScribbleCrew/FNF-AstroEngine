@@ -92,7 +92,7 @@ class MainMenuState extends MusicBeatState
 		{
 			name: 'Astro Engine v${EngineData.VERSION}'
 			#if debug
-			+ ",ASTRO_N64"
+			+ "(debug)"
 			#end
 			,
 			offset: new FlxPoint(0, 0)
