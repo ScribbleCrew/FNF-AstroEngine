@@ -72,6 +72,8 @@ import llua.*;
 import llua.Lua;
 import funkin.modding.lua.*;
 import funkin.modding.lua.FunkinLua;
+#else
+import funkin.modding.lua.LuaUtils;
 #end
 
 // FlxAnimate
@@ -98,7 +100,7 @@ import hxvlc.flixel.FlxVideoSprite;
 import flixel.addons.display.FlxRuntimeShader;
 import openfl.filters.ShaderFilter;
 #end
-
+import funkin.game.objects.options.Option;
 // System
 #if sys
 import sys.FileSystem;

@@ -5,6 +5,12 @@ class CustomSubstate extends MusicBeatSubstate
 	public static var name:String = 'unnamed';
 	public static var instance:CustomSubstate;
 
+	public var playScriptPack(get, never):ScriptPack;
+	function get_playScriptPack():ScriptPack
+	{
+		return (PlayState.instance != null && PlayState.instance.scripts != null) ? PlayState.instance.scripts : null;
+	}
+
 	#if LUA_ALLOWED
 	public static function implement(funk:funkin.modding.lua.FunkinLua):Void
 	{
@@ -30,10 +36,10 @@ class CustomSubstate extends MusicBeatSubstate
 			}
 		}
 		PlayState.instance.openSubState(new CustomSubstate(name));
-		
+
 		#if HSCRIPT_ALLOWED
-		GlobalScript.instance.setOnHScript('customSubstate', instance);
-		GlobalScript.instance.setOnHScript('customSubstateName', name);
+		PlayState.instance.scripts.set('customSubstate', instance, HSCRIPT);
+		PlayState.instance.scripts.set('customSubstateName', name, HSCRIPT);
 		#end
 	}
 
@@ -53,8 +59,10 @@ class CustomSubstate extends MusicBeatSubstate
 		if (instance != null)
 		{
 			var tagObject:FlxObject = cast(MusicBeatState.getVariables().get(tag), FlxObject);
-			#if LUA_ALLOWED if (tagObject == null)
-				tagObject = cast(MusicBeatState.getVariables().get(tag), FlxObject); #end
+			#if LUA_ALLOWED
+			if (tagObject == null)
+				tagObject = cast(MusicBeatState.getVariables().get(tag), FlxObject);
+			#end
 
 			if (tagObject != null)
 			{
@@ -72,9 +80,9 @@ class CustomSubstate extends MusicBeatSubstate
 	{
 		instance = this;
 
-		GlobalScript.instance.call('onCustomSubstateCreate', [name]);
+		playScriptPack.call('onCustomSubstateCreate', [name]);
 		super.create();
-		GlobalScript.instance.call('onCustomSubstateCreatePost', [name]);
+		playScriptPack.call('onCustomSubstateCreatePost', [name]);
 	}
 
 	public function new(name:String):Void
@@ -86,21 +94,21 @@ class CustomSubstate extends MusicBeatSubstate
 
 	override function update(elapsed:Float):Void
 	{
-		GlobalScript.instance.call('onCustomSubstateUpdate', [name, elapsed]);
+		playScriptPack.call('onCustomSubstateUpdate', [name, elapsed]);
 		super.update(elapsed);
-		GlobalScript.instance.call('onCustomSubstateUpdatePost', [name, elapsed]);
+		playScriptPack.call('onCustomSubstateUpdatePost', [name, elapsed]);
 	}
 
 	override function destroy():Void
 	{
-		GlobalScript.instance.call('onCustomSubstateDestroy', [name]);
+		playScriptPack.call('onCustomSubstateDestroy', [name]);
 		name = 'unnamed';
 
 		#if HSCRIPT_ALLOWED
-		GlobalScript.instance.setOnHScript('customSubstate', null);
-		GlobalScript.instance.setOnHScript('customSubstateName', name);
+		playScriptPack.set('customSubstate', null, HSCRIPT);
+		playScriptPack.set('customSubstateName', name, HSCRIPT);
 		#end
-		
+
 		super.destroy();
 	}
 }

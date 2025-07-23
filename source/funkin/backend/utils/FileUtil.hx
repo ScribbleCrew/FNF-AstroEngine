@@ -9,6 +9,13 @@ class FileUtil
 	@:noCompletion static function get_originPath():String
 		return Sys.getCwd();
 
+	
+	public static inline function filename(string:String):String
+	{
+		final index:Int = string.lastIndexOf("/");
+		return index == -1 ? string : string.substr(index + 1);
+	}
+
 	public static inline function validDirectory(path:String, ?origin:Bool = true):Bool
 		return FileSystem.exists('${origin ? originPath : ''}$path');
 

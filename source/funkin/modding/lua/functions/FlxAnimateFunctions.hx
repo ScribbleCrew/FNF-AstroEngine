@@ -1,5 +1,5 @@
 package funkin.modding.lua.functions;
-
+#if LUA_ALLOWED
 import openfl.utils.Assets;
 import funkin.modding.objects.ModchartSprite.ModchartAnimateSprite;
 #if (LUA_ALLOWED && flxanimate)
@@ -72,4 +72,5 @@ class FlxAnimateFunctions
 		});
 	}
 }
+#end
 #end

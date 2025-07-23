@@ -1,455 +1,112 @@
 package funkin.modding;
 
-#if (HSCRIPT_ALLOWED || LUA_ALLOWED)
-/**
-* Global Script Class...	
-*/
-class GlobalScript implements flixel.util.FlxDestroyUtil.IFlxDestroyable implements IGlobal
+#if GLOBAL_SCRIPT
+import flixel.util.FlxSignal.FlxTypedSignal;
+import funkin.modding.Script.ScriptType as TScript;
+class GlobalScript
 {
-	/**
-	 * Global Script Instance.
-	 */
-	public static var instance(default, null):GlobalScript = null;
+	// 
+	// PUBLIC HELPERS
+	//
+	public static function call(event:String, ?args:Array<Dynamic>, ?scriptType:TScript):Dynamic
+		return scripts.call(event, args, scriptType);
 
-	/**
-	 * Creates a new instance of `GlobalScript`.
-	 */
-	public static function init():Void
+	public static function set(name:String, value:Dynamic, ?scriptType:TScript):Void
+		scripts.set(name, value, scriptType);
+
+	public static var scripts:ScriptPack;
+	public static var onModSwitch:FlxTypedSignal<Void->Void> = new FlxTypedSignal();
+
+	public static function reload():Void
 	{
-		try
+		if (scripts != null)
 		{
-			instance = new GlobalScript(); // i aint making a constructor
-			#if LUA_ALLOWED extensions.set('lua', [".lua", ".funkinlua"]); #end
-			#if HSCRIPT_ALLOWED extensions.set('haxe', [".hx", ".hxc", ".hscript" /* why would anyone need this... */]); /* funi extensions */ #end
-
-			Logs.prefixedTrace('Successfully initialized', 'GlobalScript', GREEN);
-		}
-		catch (error:Dynamic)
-			Logs.prefixedTrace('Failed to initialized : $error', 'GlobalScript', RED);
-
-		Application.current.window.onClose.add(()-> {
-			if(instance != null)
-				instance.destroy();
-		});
-	}
-
-	#if HSCRIPT_ALLOWED
-	/**
-	 * Contains all HScript instances.
-	 */
-	public var hscriptInstances:Map<String, Array<HScript>> = [];
-
-	/**
-	 * Excludes any HScript instances.
-	 */
-	private var hscriptExclude:Array<String> = [];
-	#end
-
-	#if LUA_ALLOWED
-	/**
-	 * An array of all running lua scripts?
-	 * i need to check :3c -orbl
-	 */
-	public var luaInstances:Array<FunkinLua> = [];
-	#end
-
-	/**
-	 * Extension map, contains all file extensions for allowed scripts.	
-	 */
-	static final extensions:Map<String, Array<String>> = new Map<String, Array<String>>();
-
-	/**
-	 * Checks if the script's file extension	is inside of the extensions map.
-	 */
-	static function checkScriptExtensions(file:String, ?type:String):Bool
-	{
-		// Extension check loop
-		for (typeKey in extensions.keys())
-		{
-			// If 'type' is provided, check only that specific type
-			if (type != null && type != typeKey)
-				continue;
-
-			// Check extensions for the current type
-			for (ext in extensions.get(typeKey))
-			{
-				// Check if the file ends with the extension
-				if (file.endsWith(ext))
-					return true;
-			}
+			scripts.call('destroy');
+			scripts = FlxDestroyUtil.destroy(scripts);
 		}
 
-		// If the extension isn't found
-		return false;
+		scripts = new ScriptPack();
+
+		loadScripts();
+		scripts.run();
+		// for(i in )
 	}
 
-	#if (LUA_ALLOWED && HSCRIPT_ALLOWED)
-	/**
-	 * Set vars on scripts.	
-	 */
-	public function set(variable:String, arg:Dynamic, exclusions:Array<String> = null):Void
+	static function loadScripts()
 	{
-		exclusions ??= [];
-
-		#if (LUA_ALLOWED || HSCRIPT_ALLOWED)
-		try
+		for (folderName in Mods.directoriesWithFile(Paths.getSharedPath(), 'scripts/modules/'))
 		{
-			#if LUA_ALLOWED setOnLuas(variable, arg, exclusions); #end
-			#if HSCRIPT_ALLOWED setOnHScript(variable, arg, exclusions); #end
-		}
-		catch (error:haxe.Exception)
-			Logs.error('{GlobalScript.set}: $error');
-		#end
-	}
-
-	/**
-	 * Execute class scripts inside of mods/source.
-	 * Used inside The BeatStates.
-	 */
-	public function executeClassScripts(?customClass:String, ?scriptArgs:Array<Dynamic>, ?substate:Bool = false):Void
-	{
-		// Get the current state's class name.
-		final currentClass:Class<Dynamic> = Type.getClass(FlxG.state);
-		final _className:String = customClass != null ? customClass : Type.getClassName(currentClass);
-
-		// Convert to lowercase for consistency
-		final __className:String = _className.substring(_className.lastIndexOf('.') + 1).toLowerCase();
-
-		// Loop through all mod folders containing scripts.
-		for (folderName in Mods.directoriesWithFile(Paths.getSharedPath(), substate ? 'scripts/states/substates/' : 'scripts/states/'))
-		{
-			// Get all files inside the directory
 			for (_fileName in FileSystem.readDirectory(folderName))
 			{
-				// Skip files without valid extensions
-				if (!checkScriptExtensions(_fileName))
+				if (!MusicBeatState.checkScriptExtensions(_fileName))
+					continue;
+				if (!_fileName.startsWith("MODULE_"))
 					continue;
 
-				// Skips disabled scripts.
-				if (_fileName.startsWith("~"))
-					continue;
-
-				// Combines the folder path with the file name.
 				final convertedScriptPath:String = folderName + _fileName;
-
-				// Remove extension and convert to lowercase
-				final convertedScriptName:String = _fileName.substr(0, _fileName.lastIndexOf('.')).toLowerCase();
-
-				// Ensure the Global Script (global.hx, or anything that starts with global) runs no matter
-				// the state, and scripts that are for specific states run when matching the state name.
-				if (convertedScriptName != __className && !convertedScriptName.contains("global"))
-					continue;
-
-				// Execute Lua/HScript scripts if flag concurrent flag is enabled.
 				#if LUA_ALLOWED
-				if (checkScriptExtensions(_fileName, "lua"))
-					new FunkinLua(convertedScriptPath).execute(scriptArgs);
+				if (MusicBeatState.checkScriptExtensions(_fileName, "lua"))
+					scripts.add(new FunkinLua(convertedScriptPath));
 				#end
 				#if HSCRIPT_ALLOWED
-				if (checkScriptExtensions(_fileName, "haxe"))
-				{
-					final _class = new HScript(null, convertedScriptPath);
-					_class.parent = (substate ? SUB : STATE); // yay enums
-					_class.run(scriptArgs);
-				};
+				if (MusicBeatState.checkScriptExtensions(_fileName, "haxe"))
+					scripts.add(new HScript(null, convertedScriptPath));
 				#end
+				scripts.run();
 			}
 		}
 	}
 
-	/**
-	 * Call on scripts (HScript, Lua)
-	 * @param functionName the event's name
-	 * @param args Event Arguments
-	 * @param ignoreStop ignore stop events
-	 * @param exclusions any call exclusions
-	 * @param excludeValues and values which could be excluded
-	 * @param context Script context, MAIN / State
-	 */
-	public function call(functionName:String, args:Array<Dynamic> = null, ignoreStops:Null<Bool> = false, exclusions:Array<String> = null,
-			excludeValues:Array<Dynamic> = null, context:HScript.ScriptContext = MAIN):Dynamic
+	public static function init():Void
 	{
-		// !! context hscript only... !!
+		onModSwitch.add(reload);
+		onModSwitch.add(() -> Logs.log('Loading global scripts...', YELLOW));
+		onModSwitch.dispatch();
 
-		// Null checks.
-		args ??= [];
-		exclusions ??= [];
-		excludeValues ??= [Function_Continue];
+		///
 
-		// calling.
-		var scriptCall:Dynamic = #if LUA_ALLOWED callOnLuas(functionName, args, ignoreStops, exclusions, excludeValues) #else null #end;
-		#if HSCRIPT_ALLOWED
-		if (scriptCall == null || excludeValues.contains(scriptCall))
-			scriptCall = callOnHScript(functionName, args, ignoreStops, exclusions, excludeValues, context);
-		#end
+		Conductor.onBeatHit.add(_ -> scripts.call("beatHit", [_]));
+		Conductor.onStepHit.add(_ -> scripts.call("stepHit", [_]));
+		Conductor.onBPMChange.add(_ -> scripts.call("onBPMChange", [_]));
 
-		return scriptCall;
-	}
-	#end
+		FlxG.signals.focusGained.add(() -> scripts.call("focusGained"));
+		FlxG.signals.focusLost.add(() -> scripts.call("focusLost"));
+		FlxG.signals.gameResized.add((w:Int, h:Int) -> scripts.call("gameResized", [w, h]));
+		FlxG.signals.postDraw.add(() -> scripts.call("postDraw"));
+		FlxG.signals.postGameReset.add(() -> scripts.call("postGameReset"));
+		FlxG.signals.postGameStart.add(() -> scripts.call("postGameStart"));
+		FlxG.signals.postStateSwitch.add(() -> scripts.call("postStateSwitch"));
 
-	#if LUA_ALLOWED
-	public function startLuasNamed(luaFile:String):Bool
-	{
-		var luaScript:String;
-
-		for (script in luaInstances)
-			if (script.scriptName == luaFile)
-				return false;
-
-		#if MODS_ALLOWED
-		luaScript = Paths.modFolders(luaFile);
-
-		FileSystem.exists(luaScript) ? {
-			luaInstances.push(new FunkinLua(luaScript).execute());
-
-			return true;
-		} : {
-			luaScript = Paths.getSharedPath(luaFile);
-			if (FileSystem.exists(luaScript))
+		FlxG.signals.postUpdate.add(() ->
+		{
+			if (FlxG.keys.justPressed.F5)
 			{
-				luaInstances.push(new FunkinLua(luaScript).execute());
-
-				return true;
-			}
-			}
-		#elseif sys
-		luaScript = Paths.getSharedPath(luaFile);
-
-		if (OpenFlAssets.exists(luaScript))
-		{
-			luaInstances.push(new FunkinLua(luaScript).execute());
-			return true;
-		}
-		#end
-		return false;
-	}
-
-	public function callOnLuas(functionName:String, args:Array<Dynamic> = null, ignoreStops = false, exclusions:Array<String> = null,
-			excludeValues:Array<Dynamic> = null):Dynamic
-	{
-		var returnVal:Dynamic = Function_Continue;
-		#if LUA_ALLOWED
-		if (args == null)
-			args = [];
-		if (exclusions == null)
-			exclusions = [];
-		if (excludeValues == null)
-			excludeValues = [Function_Continue];
-
-		var arr:Array<FunkinLua> = [];
-		for (script in luaInstances)
-		{
-			if (script.closed)
-			{
-				arr.push(script);
-				continue;
-			}
-
-			if (exclusions.contains(script.scriptName))
-				continue;
-
-			var myValue:Dynamic = script.call(functionName, args);
-			if ((myValue == Function_StopLua || myValue == Function_StopAll) && !excludeValues.contains(myValue) && !ignoreStops)
-			{
-				returnVal = myValue;
-				break;
-			}
-
-			if (myValue != null && !excludeValues.contains(myValue))
-				returnVal = myValue;
-
-			if (script.closed)
-				arr.push(script);
-		}
-
-		if (arr.length > 0)
-			for (script in arr)
-				luaInstances.remove(script);
-		#end
-		return returnVal;
-	}
-
-	public function setOnLuas(variable:String, arg:Dynamic, exclusions:Array<String> = null):Void
-	{
-		if (exclusions == null)
-			exclusions = [];
-
-		for (script in luaInstances)
-		{
-			if (exclusions.contains(script.scriptName))
-				continue;
-			script.set(variable, arg);
-		}
-	}
-	#end
-
-	#if HSCRIPT_ALLOWED
-	public function startHScriptsNamed(scriptFile:String, ?customScriptGroup:String)
-	{
-		var scriptToLoad:String;
-		#if MODS_ALLOWED
-		scriptToLoad = Paths.modFolders(scriptFile);
-		if (!FileSystem.exists(scriptToLoad))
-			scriptToLoad = Paths.getSharedPath(scriptFile);
-		#else
-		scriptToLoad = Paths.getSharedPath(scriptFile);
-		#end
-
-		if (FileSystem.exists(scriptToLoad))
-			if (!HScript.instances.exists(scriptToLoad)) // make my own
-				return new HScript(null, scriptToLoad).run(null, customScriptGroup);
-
-		//	RuleScript.i
-
-		return null;
-	}
-
-	public function initHScriptHook(filePath:String):Bool
-	{
-		var hscriptInstance:HScript = null;
-
-		try
-		{
-			hscriptInstance = new HScript(null, filePath);
-			hscriptInstance.variables.get('onCreate')();
-			hscriptInstance.variables.get('create')();
-			// hscriptInstances.push(hscriptInstance);
-
-			Logs.prefixedTrace('successfully initialized HScript interp on "$filePath"', 'Global Script', GREEN);
-
-			return true;
-		}
-		catch (error:hscript.Expr.Error)
-		{
-			final filePosInfos:HScript.HScriptInfos = cast {_fileName: filePath, showLine: false};
-			HScriptedErrors.error(ScriptUtil.errorToString(error, false), filePosInfos);
-
-			hscriptInstance = cast(HScript.instances.get(filePath), HScript);
-			if (hscriptInstance != null)
-				hscriptInstance.destroy();
-
-			return false;
-		}
-
-		return false; // unknown
-	}
-
-	/**
-	 * Calls a HScript Function.
-	 *
-	 * @param functionName the name of the function.
-	 * @param args args.
-	 * @param ignoreStops ignore Stops
-	 * @param exclusions Exclusions.
-	 */
-	public function callOnHScript(functionName:String, args:Array<Dynamic> = null, ?ignoreStops:Bool = false, exclusions:Array<String> = null,
-			excludeValues:Array<Dynamic> = null, ?context:HScript.ScriptContext):Dynamic
-	{
-		var returnVal:String = Function_Continue;
-
-		#if HSCRIPT_ALLOWED
-		if (exclusions == null)
-			exclusions = new Array();
-		if (excludeValues == null)
-			excludeValues = new Array();
-		excludeValues.push(Function_Continue);
-
-		final uhh:Array<HScript> = hscriptInstances.safeGet(Main.stateName, []);
-
-		final len:Int = uhh.length;
-		if (len < 1)
-			return returnVal;
-
-		for (script in uhh)
-		{
-			@:privateAccess
-			if (script == null
-				|| !script.exists(functionName)
-				|| exclusions.contains(script.origin)
-				|| (script.context != context || script.context != MAIN))
-				continue;
-
-			try
-			{
-				var callValue = script.call(functionName, args);
-				var myValue:Dynamic = callValue.returnValue;
-
-				if ((myValue == Function_StopHScript || myValue == Function_StopAll) && !excludeValues.contains(myValue) && !ignoreStops)
+				if (scripts.scripts.length > 0)
 				{
-					returnVal = myValue;
-					break;
+					Logs.log('Reloading global scripts...', YELLOW);
+					reload();
+					Logs.log('Global script successfully reloaded.', YELLOW);
 				}
-
-				if (myValue != null && !excludeValues.contains(myValue))
-					returnVal = myValue;
+				else
+				{
+					Logs.log('No global scripts to reload...', YELLOW);
+					reload();
+				}
 			}
-			catch (error:Dynamic)
-				PlayState.instance?.addTextToDebug('ERROR (${script.origin}: $functionName) - $error', FlxColor.RED);
-		}
-		#end
+			scripts.call("postUpdate", [FlxG.elapsed]);
+		});
 
-		return returnVal;
-	}
+		FlxG.signals.preDraw.add(() -> scripts.call("preDraw"));
+		FlxG.signals.preGameReset.add(() -> scripts.call("preGameReset"));
+		FlxG.signals.preGameStart.add(() -> scripts.call("preGameStart"));
+		FlxG.signals.preStateCreate.add((state:FlxState) -> scripts.call("preStateCreate", [state]));
+		FlxG.signals.preStateSwitch.add(() -> scripts.call("preStateSwitch", []));
 
-	public function setOnHScript(variable:String, arg:Dynamic, exclusions:Array<String> = null, ?context:HScript.ScriptContext = MAIN)
-	{
-		#if HSCRIPT_ALLOWED
-		exclusions ??= [];
-		final uhh:Array<HScript> = hscriptInstances.safeGet(Main.stateName, []);
-		for (script in uhh)
+		FlxG.signals.preUpdate.add(() ->
 		{
-			if (exclusions.contains(script.origin) || (script.context != context || script.context != MAIN))
-				continue;
-
-			// Push to exclude list.
-			if (!hscriptExclude.contains(variable))
-				hscriptExclude.push(variable);
-
-			// set args
-			script.variables.set(variable, arg);
-		}
-		#end
-	}
-	#end
-
-	public function destroy():Void
-	{
-		#if LUA_ALLOWED
-		for (luaScript in GlobalScript.instance.luaInstances)
-		{
-			luaScript.call('onDestroy', []);
-			luaScript.stop();
-		}
-		GlobalScript.instance.luaInstances = [];
-		FunkinLua.customFunctions.clear();
-		#end
-
-		#if HSCRIPT_ALLOWED
-		final uhh:Array<HScript> = hscriptInstances.safeGet(Main.stateName, []);
-		for (haxeScript in uhh)
-		{
-			if (haxeScript != null)
-			{
-				final onDestory:Dynamic = haxeScript.variables.get('onDestroy');
-				if (onDestory != null && Reflect.isFunction(onDestory))
-					onDestory();
-
-				final destory:Dynamic = haxeScript.variables.get('destroy');
-				if (destory != null && Reflect.isFunction(destory))
-					destory();
-
-				haxeScript.destroy();
-			}
-		}
-		// reset hscript.
-		final stateName = Main.stateName;
-		if (GlobalScript.instance.hscriptInstances.exists(stateName))
-			GlobalScript.instance.hscriptInstances.set(stateName, []);
-		#end
-	}
-
-	public function new():Void
-	{
+			scripts.call("preUpdate", [FlxG.elapsed]);
+			scripts.call("update", [FlxG.elapsed]);
+		});
 	}
 }
 #end

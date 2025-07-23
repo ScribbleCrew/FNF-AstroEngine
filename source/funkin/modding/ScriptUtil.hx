@@ -1,16 +1,15 @@
 package funkin.modding;
 
 #if (HSCRIPT_ALLOWED || LUA_ALLOWED)
-
 import hscript.Expr;
 
 enum abstract FunctionFlag(String) from String to String
 {
-	final Function_Stop:FunctionFlag = "##ASTRO_GLOBALSCRIPT_FUNCTION_STOP";
-	final Function_Continue:FunctionFlag = "##ASTRO_GLOBALSCRIPT_FUNCTION_CONTINUE";
-	final Function_StopLua:FunctionFlag = "##ASTRO_GLOBALSCRIPT_FUNCTIONSTOP_LUA";
-	final Function_StopHScript:FunctionFlag = "##ASTRO_GLOBALSCRIPT_FUNCTIONSTOP_HSCRIPT";
-	final Function_StopAll:FunctionFlag = "##ASTRO_GLOBALSCRIPT_FUNCTION_STOPALL";
+	final Function_Stop:FunctionFlag = "##ASTRO_LUNARMOD_FUNCTION_STOP";
+	final Function_Continue:FunctionFlag = "##ASTRO_LUNARMOD_FUNCTION_CONTINUE";
+	final Function_StopLua:FunctionFlag = "##ASTRO_LUNARMOD_FUNCTIONSTOP_LUA";
+	final Function_StopHScript:FunctionFlag = "##ASTRO_LUNARMOD_FUNCTIONSTOP_HSCRIPT";
+	final Function_StopAll:FunctionFlag = "##ASTRO_LUNARMOD_FUNCTION_STOPALL";
 }
 
 class ScriptUtil
@@ -21,6 +20,7 @@ class ScriptUtil
 	public static final Function_StopHScript:FunctionFlag = FunctionFlag.Function_StopHScript;
 	public static final Function_StopAll:FunctionFlag = FunctionFlag.Function_StopAll;
 
+	#if HSCRIPT_ALLOWED
 	public static function formatError(x, ?pos:haxe.PosInfos):String
 	{
 		final newPos:HScript.HScriptInfos = cast pos;
@@ -60,5 +60,6 @@ class ScriptUtil
 		};
 		return #if hscriptPos (showPos ? (e.origin + ":" + e.line + ": " + message) : message) #else message #end;
 	}
+	#end
 }
 #end

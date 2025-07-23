@@ -1,39 +1,15 @@
 package funkin.modding.hscript;
 
 #if LUA_ALLOWED import funkin.modding.lua.FunkinLua; #end
-
 #if HSCRIPT_ALLOWED
 import hscript.Expr;
 import rulescript.types.ScriptedTypeUtil;
-
-enum ScriptContext
-{
-	/**
-	 * The script is being executed in the main game.
-	 */
-	MAIN;
-
-	/**
-	 * The script is being executed in a custom state.
-	 */
-	STATE;
-}
-
-/**
- * Enum choices when setting/changing the scripts parent class/state.
- */
-enum ParentChoices
-{
-	/** 
-		*STATE aka `FlxG.state`
-	 */
-	STATE;
-
-	/**
-	 * SUB aka `FlxG.state.subState`	
-	 */
-	SUB;
-}
+import haxe.extern.EitherType;
+import hscript.Expr;
+import rulescript.interps.RuleScriptInterp;
+import rulescript.parsers.HxParser;
+import rulescript.parsers.Parser;
+import rulescript.types.ScriptedTypeUtil;
 
 /**
  * Modified `haxe.PosInfos` type.	
@@ -63,7 +39,7 @@ typedef HScriptInfos =
 	#end
 }
 
-class HScript extends RuleScript implements IScript
+class HScript extends rulescript.RuleScript implements IScript implements IHScript
 {
 	/**
 	 * All executed instances of `HSCRIPT`.	
@@ -91,11 +67,6 @@ class HScript extends RuleScript implements IScript
 	public var origin:String;
 
 	/**
-	 * The script context.
-	 */
-	public var context:ScriptContext;
-
-	/**
 	 * The function which executes the code given.
 	 */
 	@:dox(show) override function execute(code:EitherType<String, Expr>):Dynamic
@@ -106,7 +77,8 @@ class HScript extends RuleScript implements IScript
 	}
 
 	public var defaultVariables(get, never):Map<String, Dynamic>;
-	function get_defaultVariables():Map<String, Dynamic>
+
+	@:dox(hide) function get_defaultVariables():Map<String, Dynamic>
 	{
 		#if SOFTCODED_STATES
 		function closeInstanceSubstate():Void // for custom substates ;3
@@ -161,7 +133,7 @@ class HScript extends RuleScript implements IScript
 			'WindowUtil' => funkin.backend.utils.native.WindowUtil,
 			'Character' => Character,
 			'Alphabet' => Alphabet,
-			'CharacterScript' => HScriptUtils.fromMacro("funkin.game.objects.characters.CharacterScript"),// :p
+			'CharacterScript' => HScriptUtils.fromMacro("funkin.game.objects.characters.CharacterScript"), // :p
 			'Note' => Note,
 			'Logs' => Logs,
 			'CustomSubstate' => CustomSubstate,
@@ -205,11 +177,12 @@ class HScript extends RuleScript implements IScript
 					{
 						HScriptedErrors.error('getModSetting: Argument #2 is null and script is not inside a packed Mod folder!',
 							untyped this.interp.posInfos());
+
 						return null;
 					}
 					modName = this.modFolder;
 				}
-				return LuaUtils.getModSetting(saveTag, modName);
+				return funkin.modding.lua.LuaUtils.getModSetting(saveTag, modName);
 			},
 
 			// Keyboard & Gamepads
@@ -324,7 +297,7 @@ class HScript extends RuleScript implements IScript
 			// not very tested but should work
 			'createGlobalCallback' => (name:String, func:Dynamic) ->
 			{
-				for (script in GlobalScript.instance.luaInstances)
+				for (script in FunkinLua.instances)
 					if (script != null && script.lua != null && !script.closed)
 						Lua_helper.add_callback(script.lua, name, func);
 
@@ -348,7 +321,7 @@ class HScript extends RuleScript implements IScript
 			{
 				if (PlayState.instance == null)
 				{
-					FlxG.log.warn('HScript: {addHxObject} isn\'t allowed in current state');
+					FlxG.log.warn('{HScript.setDefaultGF}: This isn\'t allowed in current state');
 					return null;
 				}
 				var gfVersion:String = PlayState.SONG.gfVersion;
@@ -362,7 +335,7 @@ class HScript extends RuleScript implements IScript
 			{ // stolen from FunkinLua
 				if (PlayState.instance == null)
 				{
-					FlxG.log.warn('HScript: {addHxObject} isn\'t allowed in current state');
+					FlxG.log.warn('{HScript.addHxObject}: This isn\'t allowed in current state');
 					return null;
 				}
 
@@ -414,18 +387,13 @@ class HScript extends RuleScript implements IScript
 		];
 	}
 
-	/**
-	 * Script parent...	
-	 */
-	public var parent(default, set):ParentChoices;
-
-	@:dox(hide) function set_parent(val:ParentChoices):Dynamic
+	override public function setParent(parent:Dynamic)
 	{
 		final _interp:RuleScriptInterpreter = Std.isOfType(interp, RuleScriptInterpreter) ? cast interp : null;
 		if (_interp == null)
-			return null; // bruh,,, i fucking hate types 🥺🙏
-		this.parent = val;
-		return _interp.superInstance = ((val == STATE) ? FlxG.state : FlxG.state.subState);
+			return; // bruh,,, i fucking hate types 🥺🙏
+		_interp.superInstance = parent;
+		return;
 	}
 
 	/**
@@ -436,11 +404,10 @@ class HScript extends RuleScript implements IScript
 	 * @param varsToBring Variables to bring. (optional)
 	 * @param manualRun If the script should manually run. (optional)
 	 */
-	@:dox(show) override public function new(?parent:Dynamic, ?file:String, ?varsToBring:Any = null, ?manualRun:Bool = false, ?context:ScriptContext) : Void
+	@:dox(show) override public function new(?parent:Dynamic, ?file:String, ?varsToBring:Any = null, ?manualRun:Bool = false):Void
 	{
 		file ??= '';
 		filePath = file;
-		this.context = context == null ? ScriptContext.MAIN : context;
 
 		if (filePath != null && filePath.length > 0)
 		{
@@ -493,6 +460,9 @@ class HScript extends RuleScript implements IScript
 		errorHandler = HScriptUtils.onError;
 		interp.superInstance = FlxG.state; // fallback :3
 
+		//final index:Int = scriptName.lastIndexOf("/");
+		interp.scriptName = funkin.backend.utils.FileUtil.filename(scriptName);//(index == -1) ? scriptName : scriptName.substr(index + 1);
+
 		#if LUA_ALLOWED
 		parentLua = parent;
 		if (parent != null)
@@ -525,20 +495,26 @@ class HScript extends RuleScript implements IScript
 	/**
 	 * Set a import.	
 	 */
-	public function set(name:String, param:Dynamic):Void
+	override public function set(name:String, param:Dynamic):Void
+	{
 		RuleScript.defaultImports.get('').set(name, param);
+	}
 
 	/**
 	 * Get a variable...	
 	 */
-	public function get(hehe):Null<Dynamic>
+	override public function get(hehe):Null<Dynamic>
+	{
 		return variables.get(hehe);
+	}
 
 	/**
 	 * Check if a variable exists.	
 	 */
 	public function exists(hehe):Bool
+	{
 		return variables.exists(hehe);
+	}
 
 	/**
 	 * Safely call a function.	
@@ -554,20 +530,22 @@ class HScript extends RuleScript implements IScript
 		return null;
 	}
 
-	public function run(?args:Array<Dynamic>, ?customGroupMap:String):HScript
+	override public function run(?args:Array<Dynamic>):Dynamic
 	{
 		try
 		{
 			tryCall('new', args);
 			tryCall('onCreate');
 			tryCall('create');
-			// GlobalScript.instance.hscriptInstances.push(this);
 
-			final scriptGroup = customGroupMap == null ? Main.stateName : customGroupMap;
-			GlobalScript.instance.hscriptInstances.exists(scriptGroup) ? GlobalScript.instance.hscriptInstances.get(scriptGroup)
-				.push(this) : GlobalScript.instance.hscriptInstances.set(scriptGroup, [this]);
+			for (i in instances)
+				if (i != this && i.filePath != filePath)
+				{
+					instances.set(filePath, this);
+					break;
+				}
 
-			Logs.prefixedTrace('successfully initialized HScript interp on "$filePath"', 'Global Script', GREEN);
+			// Logs.prefixedTrace('successfully initialized HScript interp on "$filePath"', 'Global Script', GREEN);
 		}
 		catch (error:hscript.Expr.Error)
 		{
@@ -644,6 +622,7 @@ class HScript extends RuleScript implements IScript
 			}
 			return null;
 		});
+		
 		// This function is unnecessary because import already exists in HScript as a native feature
 		funk.addLocalCallback("addHaxeLibrary", function(libName:String, ?libPackage:String = '')
 		{
@@ -655,7 +634,6 @@ class HScript extends RuleScript implements IScript
 
 			var resolvedClass:Dynamic = Type.resolveClass(str + libName);
 			resolvedClass ??= Type.resolveEnum(str + libName);
-
 			if (funk.hscript == null)
 				initHaxeModule(funk);
 
@@ -678,7 +656,7 @@ class HScript extends RuleScript implements IScript
 	}
 	#end
 
-	public function call(functionName:String, ?args:Array<Dynamic>)
+	override public function call(functionName:String, ?funcArgs:Array<Dynamic>)
 	{
 		if (functionName == null || interp == null)
 			return null;
@@ -692,7 +670,7 @@ class HScript extends RuleScript implements IScript
 		try
 		{
 			var func:Dynamic = variables.get(functionName); // function signature
-			final ret = Reflect.callMethod(null, func, args ?? []);
+			final ret = Reflect.callMethod(null, func, funcArgs ?? []);
 			return {funName: functionName, signature: func, returnValue: ret};
 		}
 		catch (e:hscript.Expr.Error)
@@ -712,11 +690,16 @@ class HScript extends RuleScript implements IScript
 		return null;
 	}
 
-	public function destroy():Void
+	override public function stop():Void
+	{
+		destroy();
+	}
+
+	override public function destroy():Void
 	{
 		origin = null;
+		instances.remove(filePath);
 		#if LUA_ALLOWED parentLua = null; #end
-		// super.destroy();
 	}
 
 	#if LUA_ALLOWED
@@ -759,8 +742,7 @@ class HScript extends RuleScript implements IScript
 			}
 			catch (e:hscript.Expr.Error)
 			{
-				var pos:HScriptInfos = null;
-				cast(untyped hs.interp.posInfos());
+				var pos:HScriptInfos = cast(untyped hs.interp.posInfos());
 				pos.isLua = true;
 				if (parent.lastCalledFunction != '')
 					pos.funcName = parent.lastCalledFunction;
@@ -777,7 +759,7 @@ class HScript
 	#if LUA_ALLOWED
 	public static function implement(funk:FunkinLua):Void
 	{
-		function debug(txt:String):Void
+		function debug(txt:String):Dynamic
 		{
 			PlayState.instance.addTextToDebug(txt, FlxColor.RED);
 			return null;

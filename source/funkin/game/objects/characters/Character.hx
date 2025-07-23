@@ -98,8 +98,8 @@ class Character extends FlxSprite
 	}
 
 	#if HSCRIPT_ALLOWED
-	static final CCharScript:Dynamic = HScriptUtils.fromMacro("funkin.game.objects.characters.CharacterScript");
-
+	@:unreflective static final CCharScript:Dynamic = HScriptUtils.fromMacro("funkin.game.objects.characters.CharacterScript");
+	
 	/**
 	 * Loads a characters class script
 	 * @param killCurrent Destroys this instances character script.

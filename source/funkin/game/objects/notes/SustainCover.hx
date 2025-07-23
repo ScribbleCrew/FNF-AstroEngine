@@ -127,7 +127,7 @@ class SustainCover extends FlxSprite
 				allowPixel: raw.allowPixel ?? true
 			};
 
-			final rawAnims:Map<String, Dynamic> = CoolUtil.mapify(raw.animations);
+			final rawAnims:Map<String, Dynamic> = CoolUtil.objectToMap(raw.animations);
 			for (key in rawAnims.keys())
 			{
 				final anim:Dynamic = rawAnims.get(key);
@@ -163,7 +163,7 @@ class SustainCover extends FlxSprite
 
 			var prefixOffsets:StringMap<TwoDimensionalPoint> = new StringMap<TwoDimensionalPoint>();
 
-			var prefixes:Map<String, Dynamic> = CoolUtil.mapify(anim.anim_prefixes);
+			var prefixes:Map<String, Dynamic> = CoolUtil.objectToMap(anim.anim_prefixes);
 
 			for (part in prefixes.keys())
 			{

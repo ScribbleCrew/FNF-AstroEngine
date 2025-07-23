@@ -79,10 +79,13 @@ class LoadingState extends MusicBeatState
 	var funkay:FlxSprite;
 	#end
 
+	//public var scripts:ScriptPack;
+
 	var stateChangeDelay:Float = 0;
 
 	override function create()
 	{
+
 		var bg:FlxSprite = new FlxSprite(0, 660).makeGraphic(1, 1, FlxColor.BLACK);
 		bg.scale.set(FlxG.width - 300, 25);
 		bg.updateHitbox();
@@ -113,11 +116,10 @@ class LoadingState extends MusicBeatState
 		}
 
 		#if HSCRIPT_ALLOWED
-		// grabs all class scripts running for LoadingState.
-		for (i in GlobalScript.instance.hscriptInstances.get('LoadingState'))
+		for (i in stateScripts.scripts)
 		{ // HAHAHAHAHAHAH
-			i.variables.set('getLoaded', () -> return loaded);
-			i.variables.set('getLoadMax', () -> return loadMax);
+			i.set('getLoaded', () -> return loaded);
+			i.set('getLoadMax', () -> return loadMax);
 			// i.set('barBack', barBack);
 			// i.set('bar', bar);
 		}

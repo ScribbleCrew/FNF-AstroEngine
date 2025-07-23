@@ -4,8 +4,11 @@ package funkin.modding;
 // BASE SCRIPTING STUFF
 import funkin.modding.*;
 import funkin.modding.interfaces.*;
+import funkin.modding.interfaces.scriptTypes.*;
 import funkin.modding.ScriptUtil;
+#if (HSCRIPT_ALLOWED || LUA_ALLOWED)
 import funkin.modding.ScriptUtil.FunctionFlag;
+#end
 #if HSCRIPT_ALLOWED
 // HSCRIPT
 import rulescript.*;
@@ -19,5 +22,7 @@ import funkin.modding.hscript.*;
 #if LUA_ALLOWED
 // LUA
 import funkin.modding.lua.*;
+#else
+import funkin.modding.lua.LuaUtils;
 #end
 #end

@@ -1,5 +1,6 @@
 # ```TODO```
 
+* Fix building on html5, ios, android
 * rewrite the commandline stuff
 * design charting state :P
 * Make charting state like codename with new ui style and everyhing

@@ -70,7 +70,21 @@ class MainMenuState extends MusicBeatState
 		{
 			name: 'freeplay',
 			state: new funkin.game.states.FreeplayState()
-		}
+		},
+		{
+			preloaded: true,
+			name: 'options',
+			state: new funkin.game.states.OptionsState(),
+			onChange: () ->
+			{
+				if (PlayState.SONG != null)
+				{
+					PlayState.SONG.arrowSkin = null;
+					PlayState.SONG.splashSkin = null;
+					PlayState.stageUI = 'normal';
+				}
+			}
+		},
 	]; // i love modablity so muchh
 
 	// Version

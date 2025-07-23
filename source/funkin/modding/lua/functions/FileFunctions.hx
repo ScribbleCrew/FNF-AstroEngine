@@ -1,5 +1,5 @@
 package funkin.modding.lua.functions;
-
+#if LUA_ALLOWED
 import openfl.utils.Assets;
 
 class FileFunctions
@@ -83,3 +83,5 @@ class FileFunctions
 		});
 	}
 }
+
+#end

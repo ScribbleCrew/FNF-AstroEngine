@@ -467,6 +467,10 @@ class Paths
 		return cacheBitmap(key, parentFolder, bitmap, allowGPU);
 	}
 
+	public static function script(path:String = '') : String {
+		return getSharedPath()+'scripts/$path';
+	}
+
 	public static function cacheBitmap(key:String, ?parentFolder:String = null, ?bitmap:BitmapData, ?allowGPU:Bool = true):FlxGraphic
 	{
 		if (bitmap == null)
@@ -508,13 +512,14 @@ class Paths
 		return graph;
 	}
 
-	inline static public function getTextFromFile(key:String, ?ignoreMods:Bool = false):String
+	inline static public function getTextFromFile(key:String, ?ignoreMods:Bool = false, ?ignoreWarnings:Bool = false):String
 	{
 		final path:String = getPath(key, TEXT, !ignoreMods);
-		if (OpenFlAssets.exists(path, TEXT)) return Assets.getText(path); // prioritize embedded assets
 		#if sys if (FileSystem.exists(path)) return File.getContent(path); #end // now you can access embedded and non embedded assets.
-		Logs.error('Cannot find $key || iM: $ignoreMods');
-		return ''; // yeahh placeholder :3
+				if (OpenFlAssets.exists(path, TEXT)) return Assets.getText(path); // prioritize embedded assets
+		if(!ignoreWarnings)
+			Logs.warn('Cannot find $key || ignoreMods: $ignoreMods');
+		return null; // yeahh placeholder :3
 	}
 
 	/**
@@ -522,7 +527,7 @@ class Paths
 	*
 	* @param key Name of the font.	
 	*/
-	inline static public function font(key:String, ?library:String):String
+	static public function font(key:String, ?library:String):String
 	{
 		if(library != null) return getFolderPath('fonts/$key', library);
 		#if MODS_ALLOWED
@@ -764,7 +769,7 @@ class Paths
 
 				if (!changedAtlasJson)
 				{
-					spriteJson = getTextFromFile('images/$originalPath/spritemap$st.json');
+					spriteJson = getTextFromFile('images/$originalPath/spritemap$st.json', false, true);
 					if (spriteJson != null)
 					{
 						changedImage = true;

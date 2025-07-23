@@ -38,10 +38,11 @@ import funkin.backend.utils.native.Terminal.TColor;
 	/**
 	 * Custom trace function which allow traces with color, has a child function 
 	 * `print` which is basically the same function.
-	 * I'm in love with this functions, its very cute ;3
+	 * I'm in love with these functions, they're very cute ;3
 	 */
 	public static function trace(v:Dynamic, ?color:TColor, ?infos:PosInfos):Void return print(v, color, infos);
 	public static function error(v:Dynamic, ?infos:PosInfos):Void return print(v, RED, infos, "ERROR");
+	public static function warn(v:Dynamic, ?infos:PosInfos):Void return print(v, ORANGE, infos, "WARNING");
 	public static function success(v:Dynamic, ?infos:PosInfos):Void return print(v, GREEN, infos, "SUCCESS");
 	public static function info(v:Dynamic, ?infos:PosInfos):Void return print(v, BLUE, infos, "INFORMATION");
 	@:dox(hide) @:noCompletion public static function log(v:Dynamic, ?color:TColor, ?infos:PosInfos):Void return print(v, color, infos);
@@ -89,7 +90,7 @@ import funkin.backend.utils.native.Terminal.TColor;
 		if (infos != null && infos.customParams != null)
 			for (param in infos.customParams)
 				v += ", " + param;
-		return '[${prefix ?? Logs.prefix}]: $v : ${infos.fileName}:${infos.lineNumber}';
+		return '${prefix == null ? '' : '[${prefix ?? Logs.prefix}]: '}$v : ${infos.fileName}:${infos.lineNumber}';
 	}
 
 	/**

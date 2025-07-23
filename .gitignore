@@ -11,6 +11,8 @@ local/*
 .haxelib/
 *.code-workspace
 
+*.hash
+
 ### Local history which shouldn't be shared.
 .history
 .ionide

@@ -20,7 +20,7 @@ class Framerate extends FContainerField
 
 			(label == fpsLabel) ? _checkF() : label.text = 'FPS';
 			label.multiline = label.wordWrap = false;
-			label.defaultTextFormat = new TextFormat(FramerateContainer.fontName, label == fpsNum ? 18 : 12, -1);
+			label.defaultTextFormat = new TextFormat(FramerateContainer.fontName, label == fpsNum ? 14 : 12, -1);
 			label.selectable = false;
 			addChild(label);
 		}

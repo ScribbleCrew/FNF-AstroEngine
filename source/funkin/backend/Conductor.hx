@@ -2,7 +2,7 @@ package funkin.backend;
 
 import funkin.backend.Song.SwagSong;
 import funkin.game.states.PlayState;
-
+import flixel.util.FlxSignal.FlxTypedSignal;
 typedef BPMChangeEvent =
 {
 	var stepTime:Int;
@@ -13,11 +13,21 @@ typedef BPMChangeEvent =
 
 class Conductor
 {
+		/**
+	 * FlxSignals
+	 * idea: cne
+	 */
+	public static var onBeatHit:FlxTypedSignal<Int->Void> = new FlxTypedSignal();
+	public static var onStepHit:FlxTypedSignal<Int->Void> = new FlxTypedSignal();
+	public static var onBPMChange:FlxTypedSignal<Float->Void> = new FlxTypedSignal();
+
+
 	public static var bpm(default, set):Float = 100;
 	@:noCompletion inline static function set_bpm(BPMChange:Float):Float
 		{
 			crochet = calcCrochet(BPMChange);
 			stepCrochet = crochet / 4;
+			onBPMChange.dispatch(bpm);
 			return bpm = BPMChange;
 		}
 
@@ -34,8 +44,40 @@ class Conductor
 
 	// public static var safeFrames:Int = 10;
 	public static var safeZoneOffset:Float = 0; // is calculated in create(), is safeFrames in milliseconds
+	/**
+	 * Current step
+	 */
+	public static var curStep:Int = 0;
+
+	/**
+	 * Current beat
+	 */
+	public static var curBeat:Int = 0;
 
 	public static var bpmChangeMap:Array<BPMChangeEvent> = [];
+	public static function init(){
+		FlxG.signals.preUpdate.add(update);
+	}
+	static function update(){
+		final oldStep:Int = curStep;
+		final oldBeat:Int = curBeat;
+
+		final lastChange:BPMChangeEvent = Conductor.getBPMFromSeconds(Conductor.songPosition);
+		final curStepChange:Float = ((Conductor.songPosition - ClientPrefs.data.noteOffset) - lastChange.songTime) / lastChange.stepCrochet;
+
+		curStep = lastChange.stepTime + Math.floor(curStepChange); 
+		curBeat = Math.floor(curStep/4);
+
+		if (curStep > oldStep)
+		{
+			for(i in oldStep...curStep)
+				onStepHit.dispatch(i+1);
+		}
+
+		if(curBeat > oldBeat)
+			for(i in oldBeat...curBeat)
+				onBeatHit.dispatch(i+1);
+	}
 
 	public static function judgeNote(arr:Array<Rating>, diff:Float = 0):Rating // die
 	{
@@ -125,6 +167,7 @@ class Conductor
 					bpm: curBPM,
 					stepCrochet: calcCrochet(curBPM) / 4
 				};
+				
 				bpmChangeMap.push(event);
 			}
 
