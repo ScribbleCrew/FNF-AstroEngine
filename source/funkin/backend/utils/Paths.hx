@@ -527,7 +527,7 @@ class Paths
 	*
 	* @param key Name of the font.	
 	*/
-	inline static public function font(key:String, ?library:String):String
+	static public function font(key:String, ?library:String):String
 	{
 		if(library != null) return getFolderPath('fonts/$key', library);
 		#if MODS_ALLOWED
