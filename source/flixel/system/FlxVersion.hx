@@ -1,7 +1,8 @@
 package flixel.system;
 
+#if GIT_ALLOWED
 import funkin.backend.macro.GitMacro;
-
+#end
 /**
  * Helper object for semantic versioning.
  * @see   http://semver.org/
@@ -32,6 +33,6 @@ class FlxVersion
 		{
 			sha = "@" + sha.substring(0, 7);
 		}
-		return 'HaxeFlixel $major.$minor.$patch$sha • Astro Engine ${GitMacro.commitNumber}@${GitMacro.commitHash}';
+		return 'HaxeFlixel $major.$minor.$patch$sha' #if GIT_ALLOWED + ' • Astro Engine ${GitMacro.commitNumber}@${GitMacro.commitHash}' #end;
 	}
 }
