@@ -30,8 +30,6 @@ function stepHit(step)
 }
 ```
 
-reference stolen from [`MODULE_test1.hx`](./MODULE_test1.hx)
-
 ---
 
 ### Lua Example:
@@ -52,5 +50,3 @@ function stepHit()
 	print("step hit!!! " + step);
 end;
 ```
-
-reference stolen from [`MODULE_test2.lua`](./MODULE_test2.lua)

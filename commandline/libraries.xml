@@ -17,7 +17,7 @@
     <git name="hscript" url="https://github.com/HaxeFoundation/hscript/"/>
 
     <!-- temp -->
-    <git name="rulescript" url="https://github.com/Kriptel/RuleScript/" ref="dev"/>
+    <git name="rulescript" url="https://github.com/Kriptel/RuleScript/" ref="5c336c34032c93ea0bdca779eecd23b2228eb895"/>
 
     <!-- TJson -->
     <lib name="tjson" version="1.4.0" />
