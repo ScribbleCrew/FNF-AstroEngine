@@ -1969,6 +1969,7 @@ class PlayState extends MusicBeatState
 					opponentVocals.pause();
 				}
 				FlxG.camera.active = false;
+				
 				FlxTimer.globalManager.forEach((tmr:FlxTimer) -> if(!tmr.finished) tmr.active = false);
 				FlxTween.globalManager.forEach((twn:FlxTween) -> if(!twn.finished) twn.active = false);
 				#if VIDEOS_ALLOWED if(videoCutscene != null) videoCutscene.pause(); #end
