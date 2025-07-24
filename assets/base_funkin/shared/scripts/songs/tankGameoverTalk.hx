@@ -8,7 +8,7 @@ function get_gameover():GameOverSubstate
 
 function onLoopFinish() : Void
 {
-	if (!isDead && GameOverSubstate.instance != null)
+	if (!inGameOver && !isDead && gameover != null)
 		return;
 
 	if (!gameover.isEnding && gameover.justPlayedLoop && PlayState.SONG.stage == 'tank')
