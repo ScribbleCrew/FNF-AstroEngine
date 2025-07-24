@@ -1,9 +1,9 @@
 #pragma header
 
 // yeahh i love dis :3c
-
+// TODO: rewrite the uniforms
 uniform float iTime;
-uniform vec3 circleColor=vec3(1.);
+uniform vec3 uCircColor=vec3(1.);
 uniform vec3 backgroundColor=vec3(0.);
 uniform float frequency=1.;
 uniform float speed=.25;
@@ -64,10 +64,10 @@ void main(){
         distor=normalize(distor)*mod(len-off,1.);
     }
     
-    //vec4 col = mix(vec4(circleColor, alpha), baseColor, tex(distor));
+    //vec4 col = mix(vec4(uCircColor, alpha), baseColor, tex(distor));
     //gl_FragColor = visible ? col : baseColor;
     
-    vec3 colRGB=mix(circleColor,backgroundColor,tex(distor));
+    vec3 colRGB=mix(uCircColor,backgroundColor,tex(distor));
     gl_FragColor=visible?vec4(colRGB,alpha):vec4(backgroundColor,0.);
     
 }

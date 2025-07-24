@@ -45,17 +45,6 @@ class InDevWarningState extends MusicBeatState
 	//
 	// HELPERS
 	//
-	function setShaderField(id:String, value:Dynamic):Void
-	{
-		if (void == null)
-			return;
-		final field:Dynamic = Reflect.field(void.data, id);
-		if (field != null)
-			field.value = value;
-		else
-			trace('Missing/Invalid shader param: $id');
-	}
-
 	static function intToVec3(color:Int):Array<Float>
 		return [
 			((color >> 16) & 0xFF) / 255.0,
@@ -72,19 +61,22 @@ class InDevWarningState extends MusicBeatState
 		#if SHADERS_ALLOWED
 		if (ClientPrefs.data.shaders)
 		{
-			void = new FlxRuntimeShader(FileSystem.exists(frag) ? File.getContent(frag) : null);
+			void =
+				{
+					if (!FileSystem.exists(frag))
+						null;
+					else
+					{
+						final _:FlxRuntimeShader = new FlxRuntimeShader(File.getContent(frag));
+						_.setFloat("iTime", 0);
+						_.setFloat("frequency", 1.0);
+						_.setFloatArray("uCircColor", intToVec3(0xFFA4C1FF));
+
+						_;
+					}
+				};
 			background = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT);
 		}
-		// final frag:String = Paths.shaderFragment('WarningPulse');
-		// time = getFloatParam("time", [0.0]);
-		// circleColor = getFloatParam("circleColor", [1.0, 1.0, 1.0]);
-		// backgroundColor = getFloatParam("backgroundColor", [0.0, 0.0, 0.0]);
-		// frequency = getFloatParam("frequency", [1.0]);
-		// speed = getFloatParam("speed", [.5]);
-		// showLines = getBoolParam("showLines", [true]);
-
-		// background = new FlxSprite(0, 0).makeGraphic(1,1, FlxColor.BLACK);
-		// background.scale.set(FlxG.width, FlxG.height);
 		#end
 
 		scripts = new ScriptPack();
@@ -97,14 +89,6 @@ class InDevWarningState extends MusicBeatState
 
 		// fuck off, im stupid ik :(
 		subCam = setupCamera();
-
-		#if SHADERS_ALLOWED
-		if (ClientPrefs.data.shaders)
-		{
-			setShaderField("iTime", [0]);
-			setShaderField("frequency", [1.0]);
-		}
-		#end
 	}
 
 	static var developmentText(get, never):String;
@@ -164,7 +148,6 @@ class InDevWarningState extends MusicBeatState
 		@:nullSafety(Off) {
 			if (void != null && background != null)
 			{
-				setShaderField("circleColor", [0.1176, 0.0, 0.6314]); // Purple(ish) color
 				background.shader = void;
 				background.screenCenter();
 				add(background);
@@ -223,7 +206,7 @@ class InDevWarningState extends MusicBeatState
 		#if SHADERS_ALLOWED
 		if (ClientPrefs.data.shaders)
 			if (void != null)
-				@:nullSafety(Off) Reflect.field(void.data, 'iTime').value[0] += elapsed;
+				@:nullSafety(Off) Reflect.field(void.data, 'iTime').value[0] += elapsed; // easier than using `getFloat` and `setFloat`
 		#end
 
 		if (controls.ACCEPT && transitioning)
@@ -248,13 +231,15 @@ class InDevWarningState extends MusicBeatState
 						FlxTween.num(subCam.zoom, 2., 15., {ease: FlxEase.expoOut}, FlxG.camera.set_zoom);
 
 					#if SHADERS_ALLOWED
-					if (ClientPrefs.data.shaders)
+					if (ClientPrefs.data.shaders && void != null)
 					{
-						@:nullSafety(Off) final initialColor:Array<Float> = Reflect.field(void.data, "circleColor").value;
-						final targetColor:Array<Float> = intToVec3(0xFFFFFDA4);
-						final color:{r:Float, g:Float, b:Float} = {r: initialColor[0], g: initialColor[1], b: initialColor[2]};
-						FlxTween.tween(color, {r: targetColor[0], g: targetColor[1], b: targetColor[2]}, 2,
-							{onUpdate: (_) -> setShaderField("circleColor", [color.r, color.g, color.b])});
+						@:nullSafety(Off) {
+							final initialColor:Array<Float> = Reflect.field(void.data, "uCircColor").value;
+							final targetColor:Array<Float> = intToVec3(0xFFFFFDA4);
+							final color:{r:Float, g:Float, b:Float} = {r: initialColor[0], g: initialColor[1], b: initialColor[2]};
+							FlxTween.tween(color, {r: targetColor[0], g: targetColor[1], b: targetColor[2]}, 2,
+								{onUpdate: (_) -> void.setFloatArray("uCircColor", [color.r, color.g, color.b])});
+						}
 					}
 					#end
 
