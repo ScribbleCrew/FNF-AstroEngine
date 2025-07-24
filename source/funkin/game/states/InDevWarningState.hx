@@ -1,3 +1,4 @@
+#if INDEV_SCREEN
 package funkin.game.states;
 
 import flixel.text.FlxText;
@@ -37,6 +38,7 @@ class InDevWarningState extends MusicBeatState
 	var void:Null<FlxRuntimeShader>;
 
 	static var frag(get, never):String;
+
 	@:dox(hide) @:noCompletion static inline function get_frag():Null<String>
 		return Paths.shaderFragment('WarningPulse');
 
@@ -245,7 +247,6 @@ class InDevWarningState extends MusicBeatState
 					if (subCam != null)
 						FlxTween.num(subCam.zoom, 2., 15., {ease: FlxEase.expoOut}, FlxG.camera.set_zoom);
 
-					// @:nullSafety(Off) {
 					#if SHADERS_ALLOWED
 					if (ClientPrefs.data.shaders)
 					{
@@ -256,10 +257,10 @@ class InDevWarningState extends MusicBeatState
 							{onUpdate: (_) -> setShaderField("circleColor", [color.r, color.g, color.b])});
 					}
 					#end
-					// }
-					// FlxTween.num(engineLogo.y, (FlxG.height - engineLogo.height) / 2, {ease: FlxEase.cubeInOut}, engineLogo.set_y);
+
 					// looks better i guess :p
 					FlxTween.num(engineLogo.alpha, 1, {ease: FlxEase.cubeInOut, startDelay: .33}, engineLogo.set_alpha);
+					// FlxTween.num(engineLogo.y, (FlxG.height - engineLogo.height) / 2, {ease: FlxEase.cubeInOut}, engineLogo.set_y);
 				}
 
 				// FlxTween.tween(warningBtns, {y: 1000}, 0.5, {ease: FlxEase.cubeInOut});
@@ -284,3 +285,4 @@ class InDevWarningState extends MusicBeatState
 		}
 	}
 }
+#end

@@ -33,6 +33,8 @@
 
 	<!-- <define name="WATERMARK" /> -->
 
+	<define name="INDEV_SCREEN" />
+
 	<!-- Enables astro engine watermarks. -->
 	<define name="ASTRO_WATERMARKS"/>
 

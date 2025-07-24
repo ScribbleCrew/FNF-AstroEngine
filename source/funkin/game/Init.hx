@@ -103,7 +103,7 @@ class Init extends flixel.FlxState
 		#end
 
 		var newS:FlxState = null;
-		#if !SKIP_DEV_SCREEN
+		#if INDEV_SCREEN
 		if (!shownCycleWarning)
 		{
 			shownCycleWarning = true;
