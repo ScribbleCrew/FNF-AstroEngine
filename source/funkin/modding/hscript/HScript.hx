@@ -455,7 +455,7 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 		RuleScript.resolveScript = ScriptedTypeUtil.resolveScript;
 
 		final interp:RuleScriptInterpreter = new RuleScriptInterpreter();
-		super(interp, new HxParser());
+		super(interp, new HxParser(), new Context());
 		getParser(HxParser).allowAll();
 		errorHandler = HScriptUtils.onError;
 		interp.superInstance = FlxG.state; // fallback :3

@@ -1,4 +1,5 @@
 package funkin.modding.hscript;
+import rulescript.Tools.getScriptProp;
 
 #if HSCRIPT_ALLOWED
 

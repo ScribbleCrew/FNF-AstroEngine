@@ -1,5 +1,6 @@
 package rulescript;
 
+import funkin.modding.Script;
 import haxe.extern.EitherType;
 import hscript.Expr;
 import rulescript.interps.RuleScriptInterp;
@@ -7,7 +8,7 @@ import rulescript.parsers.HxParser;
 import rulescript.parsers.Parser;
 import rulescript.types.ScriptedTypeUtil;
 // TODO::: COMBINE THIS AND HSCRIPT.HX
-class RuleScript extends funkin.modding.Script
+class RuleScript extends Script
 {
 	@:deprecated('`resolveScript` is deprecated, use `ScriptedTypeUtil.resolveScript`')
 	public static var resolveScript(get, set):String->Dynamic;
@@ -28,7 +29,9 @@ class RuleScript extends funkin.modding.Script
 	}
 
 	/**
-	 * Package => Imports
+	 * Functions similarly to import.hx (https://haxe.org/manual/type-system-import-defaults.html).
+	 * 
+	 * Package => Types.
 	 */
 	public static var defaultImports:Map<String, Map<String, Dynamic>> = [
 		'' => [
@@ -64,12 +67,18 @@ class RuleScript extends funkin.modding.Script
 
 	public var errorHandler(get, set):haxe.Exception->Void;
 
-	public function new(?interp:IInterp, ?parser:Parser)
+	public var context(get, set):Context;
+
+	public function new(?interp:IInterp, ?parser:Parser, ?context:Context)
 	{
 		super();
+		
 		// You can register custom parser in a child class
 		this.interp ??= interp ?? createInterp();
 		this.parser ??= parser ?? new HxParser();
+
+		if (context != null)
+			this.context = context;
 	}
 
 	public function execute(code:EitherType<String, Expr>):Dynamic
@@ -92,7 +101,7 @@ class RuleScript extends funkin.modding.Script
 		return cast parser;
 	}
 
-	public function getInterp<T>(?interpClass:Class<T>):T
+	public function getInterp<T:IInterp>(?interpClass:Class<T>):T
 	{
 		return cast interp;
 	}
@@ -161,6 +170,16 @@ class RuleScript extends funkin.modding.Script
 	function set_errorHandler(v:haxe.Exception->Void):haxe.Exception->Void
 	{
 		return access.errorHandler = v;
+	}
+
+	function get_context():Dynamic
+	{
+		return access.context;
+	}
+
+	function set_context(v:Dynamic):Dynamic
+	{
+		return access.context = v;
 	}
 }
 
