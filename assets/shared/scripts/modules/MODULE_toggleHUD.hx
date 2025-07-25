@@ -1,4 +1,4 @@
-// hides every camera except the first one also known as array place number 0
+// hides every camera except the initial one, also known as `FlxG.camera`
 // im really bad at explaining, sorry. :(
 
 var cooldown:Float = 0;
