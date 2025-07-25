@@ -8,7 +8,7 @@ import openfl.net.FileReference;
 //Only way I could find to keep the path after saving a file
 class FileReferenceCustom extends FileReference
 {
-	@:allow(backend.FileDialogHandler)
+	@:allow(funkin.backend.objects.editers.FileDialogHandler)
 	var _trackSavedPath:String;
 	override function saveFileDialog_onSelect(path:String):Void
 	{
