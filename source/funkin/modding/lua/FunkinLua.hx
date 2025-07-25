@@ -40,6 +40,7 @@ import funkin.backend.data.*;
 import openfl.filters.BitmapFilter;
 import openfl.utils.Assets;
 import flixel.math.FlxMath;
+import haxe.io.Path;
 import flixel.util.FlxSave;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.system.FlxAssets.FlxShader;
@@ -1934,7 +1935,7 @@ class FunkinLua extends Script implements IScript implements ILua
 
 		//	final uhh = funkin.backend.utils.FileUtil.filename(scriptName);
 		function __trace(_:String):Void
-			Sys.println('${funkin.backend.utils.FileUtil.filename(scriptName)}:0: $_');
+			Sys.println('${Path.withoutDirectory(scriptName)}:0: $_');
 		//	Logs.prefixedTrace(_, 'LuaJIT', ORANGE);}
 
 		Lua_helper.add_callback(lua, "trace", __trace);

@@ -1,9 +1,10 @@
 package funkin.modding.hscript;
+
 import rulescript.Tools.getScriptProp;
 
 #if HSCRIPT_ALLOWED
-
 // whats the diff between the normal one :p
+
 /**
  * Modified Interp to allow scripts ot access class variables without using FlxG.state or other lesser methods.	
  */
@@ -39,12 +40,14 @@ class RuleScriptInterpreter extends RuleScriptInterp // USE BYTECODEINTERP INSTE
 			return i;
 		}
 		catch (e)
-			Logs.error(e);
+		{
+	//		Logs.error(e);
+		}
 
 		// UNKNOWN VARIABLE>>>
-		error(EUnknownVariable(id));
+		//error(EUnknownVariable(id));
 
-		// return null since 404 (NOT FOUND)
+		// return null
 		return null;
 	}
 }

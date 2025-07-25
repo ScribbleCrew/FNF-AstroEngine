@@ -26,7 +26,7 @@ class Init extends flixel.FlxState
 	override public function create():Void
 	{
 		@:privateAccess funkin.backend.framerate.FramerateContainer.instance.fpsCounter._checkF();
-		
+
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
 		WindowUtil.title = '';
@@ -60,8 +60,8 @@ class Init extends flixel.FlxState
 		#if SHADERS_ALLOWED ShaderResizeFix.init(); #end
 		#if windows AudioSwitchFix.init(); #end
 
-		#if GLOBAL_SCRIPT GlobalScript.init();#end
-		
+		#if HSCRIPT_ALLOWED @:privateAccess StaticImports.init(); #end
+		#if GLOBAL_SCRIPT GlobalScript.init(); #end
 
 		funkin.game.objects.Alphabet.AlphaCharacter.loadAlphabetData();
 
@@ -111,7 +111,7 @@ class Init extends flixel.FlxState
 		}
 		#end
 		FlxG.switchState(newS ?? new TitleState());
-		Logs.prefix = '';// dpn't use this...
+		Logs.prefix = ''; // dpn't use this...
 	}
 
 	private function init():Void
