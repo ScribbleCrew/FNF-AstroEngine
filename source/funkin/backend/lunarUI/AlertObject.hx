@@ -50,7 +50,7 @@ class AlertManager
 	{
 	}
 
-	public function show(data:AlertManagerData) : Void
+	public function show(data:AlertManagerData):Void
 	{
 		for (v in __list)
 		{
@@ -59,7 +59,7 @@ class AlertManager
 			v.y += 150;
 		}
 
-		final bruh = new AlertObject(200, 200, data); 
+		final bruh = new AlertObject(200, 200, data);
 		__list.push(bruh);
 		// make fucking camera for dis
 	}
@@ -83,11 +83,13 @@ class AlertManager
 // 	error:String, // right??? errors are strings right????
 // 	?posInfos:haxe.PosInfos,
 // }
-
 // todo: convert to a openfl sprite
-// 
+//
 class AlertObject extends FlxTypedSpriteGroup<FlxSprite>
 {
+	//
+	//
+	//
 	// TODO: be fucking stupid and make seperate cameras for each of these because DUH :3
 	// DISCLAIMER: THIS IS UHH SHIT AND MESSY CODE SO FUCK OFF IF YOU CAN'T READ IT OR
 	// IF IM USING THE SAME CODE MULTIPLE TIMES FOR NO FUCKING REASON OKAY!!!
@@ -163,9 +165,9 @@ class AlertObject extends FlxTypedSpriteGroup<FlxSprite>
 		// }
 
 		FlxG.state.add(this);
+		//FlxG.game.addChild(new FlxSpriteBitmapMirror(this));
 
 		notiSpr.bHeight = Std.int((error.y + error.height) - titleSpr.y);
-
 	}
 
 	// TODO: make btnObject class with option to follow a object
