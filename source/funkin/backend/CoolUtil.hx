@@ -30,6 +30,16 @@ class CoolUtil
 		return '${Std.int(rSize) + "." + addZeros(Std.string(Std.int((rSize % 1) * 100)), 2)}${labels[label]}';
 	}
 
+		static var _mousePoint:FlxPoint = new FlxPoint();
+	static var _objPoint:FlxPoint = new FlxPoint();
+	public static function mouseOverlapping<T:flixel.FlxObject>(obj:T, ?mousePoint:FlxPoint, ?camera:flixel.FlxCamera)
+	{
+		camera ??= obj.camera;
+		mousePoint ??= FlxG.mouse.getScreenPosition(camera, _mousePoint);
+		obj.getScreenPosition(_objPoint, camera);
+		return FlxMath.pointInCoordinates(mousePoint.x, mousePoint.y, _objPoint.x, _objPoint.y, obj.width, obj.height);
+	}
+
 	/**
 	 * Returns the class in question's path e.g `funkin.backend.CoolUtil`
 	 * @param class 

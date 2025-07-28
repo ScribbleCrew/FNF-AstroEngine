@@ -120,7 +120,6 @@ class WindowUtil
 	@:noCompletion
 	static function set_darkmode(enable:Bool):Bool
 	{
-		trace('doob');
 		if (OsAPI.hasVersion('Windows 10'))
 			refreshWindow();
 		return darkmode = enable;

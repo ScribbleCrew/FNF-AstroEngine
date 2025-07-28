@@ -107,7 +107,7 @@ class Init extends flixel.FlxState
 		if (!shownCycleWarning)
 		{
 			shownCycleWarning = true;
-			newS = new InDevWarningState();
+			newS = new #if UIDEBUG UIDebugState #else InDevWarningState #end();
 		}
 		#end
 		FlxG.switchState(newS ?? new TitleState());

@@ -2,7 +2,7 @@
 // Game
 import funkin.game.Main;
 import funkin.game.Config;
-
+import funkin.backend.lunarUI.*;
 import funkin.game.objects.characters.*;
 import funkin.game.objects.*;
 import funkin.game.objects.options.*;
