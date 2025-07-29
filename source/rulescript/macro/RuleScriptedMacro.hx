@@ -23,13 +23,23 @@ class RuleScriptedMacro
 			return;
 		for (v in Config.ALLOWED_CUSTOM_CLASSES)
 			if (!v.endsWith(Config.CUSTOM_CLASSES_SHADOW_SUFFIX) || v.contains(Config.CUSTOM_CLASSES_SHADOW_SUFFIX))
-				Compiler.addGlobalMetadata(v, '@:build(rulescript.macro.RuleScriptedMacro.build())');
+			{
+				Compiler.addGlobalMetadata(v, '@:build(rulescript.macro.RuleScriptedMacro.build(${v.endsWith("__$STRICT_CLASS_")}))');
+			}
 	}
 
 	public static var modifiedClasses:Array<String> = [];
-	public static var noMetas:Array<String> = [":bitmap", ":noCustomClass", ":structInit", ":generic", ":nullSafety", ":forceOverride", ":ignoreFields"];
+	@:noCompletion static var bannedMetas:Array<String> = [
+		":bitmap",
+		":noCustomClass",
+		":structInit",
+		":generic",
+		":nullSafety",
+		":forceOverride",
+		":ignoreFields"
+	];
 
-	public static function build():Array<Field>
+	public static function build(?strict:Bool = false):Array<Field>
 	{
 		var fields:Array<Field> = Context.getBuildFields();
 		if (fields.length == 0 || fields == null)
@@ -43,7 +53,8 @@ class RuleScriptedMacro
 
 		if (/*cl.isAbstract || */ cl.isExtern || cl.isInterface || cl.isFinal)
 			return null;
-		if(cl.name.endsWith(Config.CUSTOM_CLASSES_SHADOW_SUFFIX) || cl.name.contains(Config.CUSTOM_CLASSES_SHADOW_SUFFIX)) return null;
+		if (cl.name.endsWith(Config.CUSTOM_CLASSES_SHADOW_SUFFIX) || cl.name.contains(Config.CUSTOM_CLASSES_SHADOW_SUFFIX))
+			return null;
 		if (cl.name.endsWith("_Impl_") || modifiedClasses.contains(cl.name))
 			return null;
 		if (cl.params.length > 0)
@@ -53,7 +64,7 @@ class RuleScriptedMacro
 			return null;
 
 		for (m in cl.meta.get())
-			if (noMetas.contains(m.name))
+			if (bannedMetas.contains(m.name))
 				return null;
 
 		// trace(cls.name);
@@ -68,7 +79,7 @@ class RuleScriptedMacro
 			if (fkey.startsWith(i) || key.startsWith(i))
 				return null;
 		}
-		//trace(cl.name + " isAbstract=" + cl.isAbstract);
+		// trace(cl.name + " isAbstract=" + cl.isAbstract);
 		// for(v in Config.disallowedClasses) doesStartWith(v) return null;
 		// final interfaceType:Type = Context.getType("rulescript.scriptedClass.RuleScriptedClass");
 		// final interfaceRef = null;
@@ -90,13 +101,11 @@ class RuleScriptedMacro
 		if (_isStatic)
 			return null;
 
-	//	trace(cl.constructor);
+		//	trace(cl.constructor);
 
 		try
 		{
-			final shadowClass:TypeDefinition = macro class
-				{
-				};
+			final shadowClass:TypeDefinition = untyped macro class {};
 			shadowClass.name = cl.name + Config.CUSTOM_CLASSES_SHADOW_SUFFIX; // _RSC
 			// shadowClass.pack = shadowInfo.pack;
 			shadowClass.kind = TDClass({
@@ -105,16 +114,21 @@ class RuleScriptedMacro
 			},
 				[{pack: ["rulescript", "scriptedClass"], name: "RuleScriptedClass", params: []}], false, false, false);
 			shadowClass.meta = cl.meta.get().concat([{name: ":ruleScriptedClass", pos: Context.currentPos()}]);
+			if (strict)
+				shadowClass.meta.push({name: ":strictScriptedConstructor", pos: Context.currentPos()});
 			//	shadowClass.fields = fields;
 			// shadowClass.pos = Context.currentPos();
 
 			final imports:Array<ImportExpr> = Context.getLocalImports().copy();
-			if (imports == null) return null;
+			if (imports == null)
+				return null;
 
 			Context.defineModule(cl.module, [shadowClass], imports);
 		}
-		catch (e:Dynamic)
-			trace('err: ${cl.module}.${cl.name} // $e');
+		catch (error:Dynamic)
+		{
+			trace('RuleScriptedMacro:${cl.module}.${cl.name}: $error');
+		}
 
 		return fields;
 	}

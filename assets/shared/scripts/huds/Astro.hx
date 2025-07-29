@@ -25,12 +25,6 @@ class Astro extends UserInterface
 	var watermark:FlxText;
 	var songLeft:FlxText;
 	var versionTxtSmth:FlxText;
-	// erm :3c
-	var sickTxt:FlxText;
-	var goodsTxt:FlxText;
-	var badTxt:FlxText;
-	var shitsTxt:FlxText;
-	var missTxt:FlxText;
 
 	/**
 	 * Stores HUD Objects in a Group	
@@ -89,57 +83,9 @@ class Astro extends UserInterface
 		watermark.y += 10;
 		scoreText.y += 10;
 
-		// SHIT YOU DONT WANNA LOOK AT OWO
-		setupRatingStats();
-
 		super.create();
 
 		timeTxt.setFormat(CONST_FONT, 32, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-	}
-
-	function setupRatingStats():Void
-	{
-		if (ClientPrefs.data.showRatingStats) // if i aint broke dont fix it -psy
-		{
-			final main_y:Int = 264;
-			final x:Int = 40;
-			final y:Int = 40;
-
-			var MAIN_SIZE:Int = 24;
-			sickTxt = new FlxText(x, main_y, 0, "SICKS: 000",
-				MAIN_SIZE).setFormat(CONST_FONT, MAIN_SIZE, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-			sickTxt.visible = !ClientPrefs.data.hideHud;
-			add(sickTxt);
-			addCurveBG(sickTxt.x - 10, sickTxt.y - 2.5, sickTxt.fieldWidth - 10, 35, 35, 0, uiBackgroundGroup);
-
-			goodsTxt = new FlxText(x, main_y, 0, "GOODS: 000",
-				MAIN_SIZE).setFormat(CONST_FONT, MAIN_SIZE, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-			goodsTxt.visible = !ClientPrefs.data.hideHud;
-			goodsTxt.y += y;
-			add(goodsTxt);
-			addCurveBG(goodsTxt.x - 10, goodsTxt.y - 2.5, sickTxt.fieldWidth - 10, 35, 35, 0, uiBackgroundGroup);
-
-			badTxt = new FlxText(x, main_y, 0, "BAD: 000",
-				MAIN_SIZE).setFormat(CONST_FONT, MAIN_SIZE, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-			badTxt.visible = !ClientPrefs.data.hideHud;
-			badTxt.y = goodsTxt.y + y;
-			add(badTxt);
-			addCurveBG(badTxt.x - 10, badTxt.y - 2.5, sickTxt.fieldWidth - 10, 35, 35, 0, uiBackgroundGroup);
-
-			shitsTxt = new FlxText(x, main_y, 0, "SHIT: 000",
-				MAIN_SIZE).setFormat(CONST_FONT, MAIN_SIZE, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-			shitsTxt.visible = !ClientPrefs.data.hideHud;
-			shitsTxt.y = badTxt.y + y;
-			add(shitsTxt);
-			addCurveBG(shitsTxt.x - 10, shitsTxt.y - 2.5, sickTxt.fieldWidth - 10, 35, 35, 0, uiBackgroundGroup);
-
-			missTxt = new FlxText(x, main_y, 0, "MISS: 000",
-				MAIN_SIZE).setFormat(CONST_FONT, MAIN_SIZE, FlxColor.WHITE, FlxTextAlign.CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
-			missTxt.visible = !ClientPrefs.data.hideHud;
-			missTxt.y = shitsTxt.y + y;
-			add(missTxt);
-			addCurveBG(missTxt.x - 10, missTxt.y - 2.5, sickTxt.fieldWidth - 10, 35, 35, 0, uiBackgroundGroup);
-		}
 	}
 
 	override function startSong():Void
@@ -167,18 +113,6 @@ class Astro extends UserInterface
 			game.ratingName,
 			(game.ratingName != '?' ? ' (${Highscore.floorDecimal(game.ratingPercent * 100, 2)}%) - ${game.ratingFC}' : '')
 		]);
-
-		if (ClientPrefs.data.showRatingStats)
-			updateStats();
-	}
-
-	function updateStats():Void
-	{
-		sickTxt.text = 'Sick: ${game.ratingsData[0].hits}';
-		goodsTxt.text = 'Good: ${game.ratingsData[1].hits}';
-		badTxt.text = 'Bad: ${game.ratingsData[2].hits}';
-		shitsTxt.text = 'Shit: ${game.ratingsData[3].hits}';
-		missTxt.text = 'Miss: ${game.songMisses}';
 	}
 
 	function addCurveBG(x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0, ellipseScale:Int = 0, startAlpha:Int = 0, ?group:FlxGroup)

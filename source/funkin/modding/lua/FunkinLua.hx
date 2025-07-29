@@ -245,6 +245,11 @@ class FunkinLua extends Script implements IScript implements ILua
 		instances.push(this);
 		return this;
 	}
+	
+	override public function destroy():Void{
+		closed = true;
+		super.destroy();
+	}
 
 	function setCustomCallbacks(game:PlayState)
 	{

@@ -20,8 +20,8 @@ class Config
 		"funkin.game.objects.FunkinText",
 		
 		// Custom Scripted Things
-		"funkin.game.objects.characters.CharacterScript",
 		"funkin.backend.base.UserInterface",
+		"funkin.game.objects.characters.CharacterScript",
 
 		// STATE SYSTEMS
 		"funkin.backend.system.MusicBeatState",

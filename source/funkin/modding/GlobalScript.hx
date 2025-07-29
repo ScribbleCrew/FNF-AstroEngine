@@ -1,5 +1,6 @@
 package funkin.modding;
 
+import flixel.util.FlxDestroyUtil.IFlxDestroyable;
 #if GLOBAL_SCRIPT
 import flixel.util.FlxSignal.FlxTypedSignal;
 import funkin.modding.Script.ScriptType as TScript;
@@ -19,22 +20,18 @@ class GlobalScript
 
 	public static function reload():Void
 	{
-		if (scripts != null)
-		{
-			scripts.call('destroy');
-			scripts = FlxDestroyUtil.destroy(scripts);
-		}
+		destroy();
 
 		scripts = new ScriptPack();
 
-		loadScripts();
+		loadScripts(Paths.getSharedPath(), 'scripts/modules/');
 		scripts.run();
 		// for(i in )
 	}
 
-	static function loadScripts()
+	public static function loadScripts(path:String, fileToFind:String) : Void
 	{
-		for (folderName in Mods.directoriesWithFile(Paths.getSharedPath(), 'scripts/modules/'))
+		for (folderName in Mods.directoriesWithFile(path, fileToFind))
 		{
 			for (_fileName in FileSystem.readDirectory(folderName))
 			{
@@ -107,6 +104,14 @@ class GlobalScript
 			scripts.call("preUpdate", [FlxG.elapsed]);
 			scripts.call("update", [FlxG.elapsed]);
 		});
+	}
+
+	public static function destroy():Void{
+		if (scripts != null)
+		{
+			scripts.call('destroy');
+			scripts = FlxDestroyUtil.destroy(scripts);
+		}
 	}
 }
 #end

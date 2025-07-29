@@ -1,9 +1,10 @@
 package funkin.modding;
 
-import funkin.modding.Script.ScriptType as TScript;
+import funkin.modding.Script.ScriptType;
 
 class ScriptPack implements IDummy implements flixel.util.FlxDestroyUtil.IFlxDestroyable
 {
+	@:deprecated('Find a better way')
 	public static var packInstances:Array<ScriptPack> = [];
 
 	public var scripts:Array<Script> = [];
@@ -11,34 +12,23 @@ class ScriptPack implements IDummy implements flixel.util.FlxDestroyUtil.IFlxDes
 
 	public function new():Void
 	{
-		// super();
 		packInstances.push(this);
 	}
 
-	public function call(funcToCall:String, ?args:Array<Dynamic>, ?ignoreStops:Bool, ?exclusions:Array<String>, ?excludeValues:Array<Dynamic>,
-			?fucker:TScript = BOTH):Dynamic
+	public function call(funcToCall:String, ?args:Array<Dynamic>, ?ignoreStops:Bool, ?exclusions:Array<String>, ?excludeValues:Array<Dynamic>, ?type:ScriptType = BOTH):Dynamic
 	{
-		fucker ??= BOTH;
+		type ??= BOTH;
 		args ??= [];
 		exclusions ??= [];
 		excludeValues ??= [Function_Continue];
 
-		var scriptCall:Dynamic = null;
-		#if LUA_ALLOWED
-		if (fucker == LUA || fucker == BOTH)
-			scriptCall = callOnLuas(funcToCall, args, ignoreStops, exclusions, excludeValues);
-		else
-			scriptCall = null;
-		#else
-		scriptCall = null;
-		#end
-
+		var __scriptCall:Dynamic = (#if LUA_ALLOWED (type == LUA || type == BOTH) ? callOnLuas(funcToCall, args, ignoreStops, exclusions, excludeValues) :#end null);
 		#if HSCRIPT_ALLOWED
-		if (fucker == HSCRIPT || fucker == BOTH)
-			if (scriptCall == null || excludeValues.contains(scriptCall))
-				scriptCall = callOnHScript(funcToCall, args, ignoreStops, exclusions, excludeValues);
+		if (type == HSCRIPT || type == BOTH)
+			if (__scriptCall == null || excludeValues.contains(__scriptCall))
+				__scriptCall = callOnHScript(funcToCall, args, ignoreStops, exclusions, excludeValues);
 		#end
-		return scriptCall;
+		return __scriptCall;
 	}
 
 	#if LUA_ALLOWED
@@ -191,9 +181,8 @@ class ScriptPack implements IDummy implements flixel.util.FlxDestroyUtil.IFlxDes
 	}
 	#end
 
-	//public static inline function resultIsStop(result:funkin.modding.ScriptUtil.FunctionFlag):Bool
+	// public static inline function resultIsStop(result:funkin.modding.ScriptUtil.FunctionFlag):Bool
 	//	return Function_Stop == result || Function_StopHScript == result || Function_StopAll == result;
-
 	#if LUA_ALLOWED
 	public function startLuasNamed(luaFile:String):Bool
 	{
@@ -245,15 +234,16 @@ class ScriptPack implements IDummy implements flixel.util.FlxDestroyUtil.IFlxDes
 		return null;
 	}
 
-	public function set(val:String, value:Dynamic, ?fucker:TScript)
+	public function set(val:String, value:Dynamic, ?type:ScriptType)
 	{
-		fucker ??= BOTH;
+		type ??= BOTH;
 		for (e in scripts)
-			if ((fucker == HSCRIPT && e.type == HSCRIPT) || (fucker == LUA && e.type == LUA) || (fucker == BOTH))
+			if ((type == HSCRIPT && e.type == HSCRIPT) || (type == LUA && e.type == LUA) || (type == BOTH))
 				e.set(val, value);
 	}
 
-	public function run() : Void{
+	public function run():Void
+	{
 		for (e in scripts)
 			e.run();
 	}
@@ -261,10 +251,13 @@ class ScriptPack implements IDummy implements flixel.util.FlxDestroyUtil.IFlxDes
 	public function destroy():Void
 	{
 		packInstances.remove(this);
-		for (e in scripts)
-			e.stop();
+		for (v in scripts)
+		{
+			v.destroy();
+			v.stop();
+		}
 
-		scripts = [];
+		scripts = FlxDestroyUtil.destroyArray(scripts);
 		parent = null;
 	}
 

@@ -1,5 +1,6 @@
 package funkin.modding;
 
+import flixel.util.FlxDestroyUtil.IFlxDestroyable;
 import funkin.modding.Script.ScriptType as TScript;
 
 enum ScriptType // use interfaces instead -- TODO
@@ -10,7 +11,7 @@ enum ScriptType // use interfaces instead -- TODO
 	BOTH; // DO NOT DELETE ME
 }
 
-class Script
+class Script implements IFlxDestroyable
 {
 	public var type(get, never):ScriptType;
 
