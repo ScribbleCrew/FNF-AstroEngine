@@ -139,7 +139,7 @@ class RuleScriptedMacro
 			trace('RuleScriptedMacro:${cl.module}.${cl.name}: $error');
 		}
 
-		modifiedClasses.push(cl.name + CUSTOM_CLASSES_SHADOW_SUFFIX)
+		modifiedClasses.push(cl.name + CUSTOM_CLASSES_SHADOW_SUFFIX);
 		return fields;
 	}
 	#end
