@@ -6,8 +6,6 @@ package rulescript;
 @:publicFields
 class Config
 {
-	static final CUSTOM_CLASSES_SHADOW_SUFFIX:String = '_RSC';
-
 	static final ALLOWED_CUSTOM_CLASSES:Array<String> = [// IMPORTANT: ADD NEEDED CLASSES TO THIS...
 		"flixel.FlxSprite",
 		"flixel.text.FlxText",

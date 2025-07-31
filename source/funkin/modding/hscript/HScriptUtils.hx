@@ -18,10 +18,10 @@ class HScriptUtils
 	}
 
 	/**
-	 * Gets a scripted macro class created by rulescript (aka the macro i made).
+	 * Gets a scripted macro class created by the scripted class macro i made.
 	 */
 	@:noUsing public static inline function fromMacro(className:String)
-		return Type.resolveClass('${className}${Config.CUSTOM_CLASSES_SHADOW_SUFFIX}');
+		return Type.resolveClass('${className}${rulescript.macro.RuleScriptedMacro.CUSTOM_CLASSES_SHADOW_SUFFIX}');
 
 	public static function tryParseModule(code:String):Array<ModuleDecl>
 	{

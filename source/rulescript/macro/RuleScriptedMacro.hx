@@ -16,16 +16,23 @@ using StringTools;
 
 class RuleScriptedMacro
 {
+	@:allow(funkin.modding.hscript.HScriptUtils)
+	@:noCompletion static inline final CUSTOM_CLASSES_SHADOW_SUFFIX:String = '_RSC';
+
 	#if macro
 	public static function init():Void
 	{
 		if (Context.defined("display") || !Context.defined("CUSTOM_CLASSES"))
+		{
 			return;
+		}
 		for (v in Config.ALLOWED_CUSTOM_CLASSES)
-			if (!v.endsWith(Config.CUSTOM_CLASSES_SHADOW_SUFFIX) || v.contains(Config.CUSTOM_CLASSES_SHADOW_SUFFIX))
+		{
+			if (!v.endsWith(CUSTOM_CLASSES_SHADOW_SUFFIX) || v.contains(CUSTOM_CLASSES_SHADOW_SUFFIX))
 			{
 				Compiler.addGlobalMetadata(v, '@:build(rulescript.macro.RuleScriptedMacro.build(${v.endsWith("__$STRICT_CLASS_")}))');
 			}
+		}
 	}
 
 	public static var modifiedClasses:Array<String> = [];
@@ -39,7 +46,7 @@ class RuleScriptedMacro
 		":ignoreFields"
 	];
 
-	public static function build(?strict:Bool = false):Array<Field>
+	@:noCompletion public static function build(?strict:Bool = false):Array<Field>
 	{
 		var fields:Array<Field> = Context.getBuildFields();
 		if (fields.length == 0 || fields == null)
@@ -53,7 +60,7 @@ class RuleScriptedMacro
 
 		if (/*cl.isAbstract || */ cl.isExtern || cl.isInterface || cl.isFinal)
 			return null;
-		if (cl.name.endsWith(Config.CUSTOM_CLASSES_SHADOW_SUFFIX) || cl.name.contains(Config.CUSTOM_CLASSES_SHADOW_SUFFIX))
+		if (cl.name.endsWith(CUSTOM_CLASSES_SHADOW_SUFFIX) || cl.name.contains(CUSTOM_CLASSES_SHADOW_SUFFIX))
 			return null;
 		if (cl.name.endsWith("_Impl_") || modifiedClasses.contains(cl.name))
 			return null;
@@ -105,8 +112,10 @@ class RuleScriptedMacro
 
 		try
 		{
-			final shadowClass:TypeDefinition = untyped macro class {};
-			shadowClass.name = cl.name + Config.CUSTOM_CLASSES_SHADOW_SUFFIX; // _RSC
+			final shadowClass:TypeDefinition = untyped macro class
+			{
+			};
+			shadowClass.name = cl.name + CUSTOM_CLASSES_SHADOW_SUFFIX; // _RSC
 			// shadowClass.pack = shadowInfo.pack;
 			shadowClass.kind = TDClass({
 				pack: cl.pack.copy(),
@@ -130,6 +139,7 @@ class RuleScriptedMacro
 			trace('RuleScriptedMacro:${cl.module}.${cl.name}: $error');
 		}
 
+		modifiedClasses.push(cl.name + CUSTOM_CLASSES_SHADOW_SUFFIX)
 		return fields;
 	}
 	#end
