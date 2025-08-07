@@ -712,7 +712,7 @@ class PlayState extends MusicBeatState
 		if (isPixelStage)
 			introSoundsSuffix = '-pixel';
 		if (SONG == null)
-			SONG = Song.loadFromJson('tutorial');
+			SONG = Song.loadFromJson('test');
 
 		Conductor.mapBPMChanges(SONG);
 		Conductor.bpm = SONG.bpm;

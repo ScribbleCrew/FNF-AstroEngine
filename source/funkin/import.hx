@@ -35,6 +35,8 @@ import funkin.game.objects.mods.*;
 import funkin.game.objects.notes.Note.EventNote;
 import funkin.game.objects.shaders.RGBPalette.RGBShaderReference;
 
+import funkin.backend.assets.*;
+
 // backend
 import funkin.backend.macro.*;
 import funkin.backend.system.*;

@@ -10,14 +10,12 @@ import openfl.utils.AssetType;
 import openfl.display.BitmapData;
 
 import flash.media.Sound;
-import lime.utils.Assets;
+import openfl.utils.Assets;
 
 #if sys
 import sys.io.File;
 import sys.FileSystem;
 #end
-
-typedef OpenFlAssets = openfl.utils.Assets;
 
 /**
  * Paths cuz very cool
@@ -25,6 +23,7 @@ typedef OpenFlAssets = openfl.utils.Assets;
 @:access(flash.media.Sound)
 @:access(openfl.display.BitmapData)
 @:access(flixel.system.frontEnds.BitmapFrontEnd._cache)
+@:allow(funkin.backend.assets.AssetsPaths)
 class Paths
 {
 	#if MODS_ALLOWED
@@ -115,6 +114,8 @@ class Paths
 				currentTrackedAssets.remove(key);
 			}
 		}
+
+		FlxG.bitmap.clearUnused();
 
 		/**
 		 * Run the garbage collector for good measure lmfao
@@ -643,26 +644,15 @@ class Paths
 		return hideChars.split(fixedPath).join("").toLowerCase();
 	}
 
-	public static function returnSound(key:String, ?path:String, ?modsAllowed:Bool = true, ?beepOnNull:Bool = true)
-	{
-		final file:String = getPath('$key.${Constants.SOUND_EXT}', SOUND, path, modsAllowed);
-
-		// trace('precaching sound: $file');
-		if (!currentTrackedSounds.exists(file))
-		{
-			#if sys
-			if (FileSystem.exists(file))
-				currentTrackedSounds.set(file, Sound.fromFile(file));
-			#else
-			if (OpenFlAssets.exists(file, SOUND))
-				currentTrackedSounds.set(file, OpenFlAssets.getSound(file));
-			#end
-			else if (beepOnNull)
-			{
-				Logs.prefixedTrace('SOUND NOT FOUND: $key ($path)','SOUND BACKEND');
-				FlxG.log.error('SOUND NOT FOUND: $key, PATH: $path');
+	public static function returnSound(key:String, ?path:String, ?modsAllowed = true, ?beepOnInvalid = true):Sound {
+		final file : String = getPath('$key.${Constants.SOUND_EXT}', SOUND, path, modsAllowed);
+		if (!currentTrackedSounds.exists(file)) {
+			final s:Sound = FileSystem.exists(file) ? Sound.fromFile(file) : Assets.exists(file) ? Assets.getSound(file) : null;
+			if (s == null) {
+				if (beepOnInvalid) FlxG.log.error('SOUND NOT FOUND: $key, PATH: $path');
 				return FlxAssets.getSound('flixel/sounds/beep');
 			}
+			currentTrackedSounds.set(file, s);
 		}
 		localTrackedAssets.push(file);
 		return currentTrackedSounds.get(file);

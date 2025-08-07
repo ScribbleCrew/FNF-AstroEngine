@@ -273,7 +273,7 @@ class CreditsState extends MusicBeatState
 	}*/
 	function requireCreditsData(path:String, mods:Bool = true):Void
 	{
-		final access = new Access(Xml.parse(mods ? File.getContent(path) : Paths.getTextFromFile(path, true)).firstElement()); // i FUCKING HATE THIS SHIT
+		final access = new Access(Xml.parse(AssetsPaths.getContent(path, mods)).firstElement()); // i FUCKING HATE THIS SHIT
 
 		try
 		{
