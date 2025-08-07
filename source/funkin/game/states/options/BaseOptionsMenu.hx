@@ -59,7 +59,7 @@ class BaseOptionsMenu extends BaseMenu
 		#if DISCORD_ALLOWED
 		DiscordClient.changePresence(rpcTitle, null);
 		#end
-		WindowUtil.title = ('%{GAME_TITLE} - Options - $title');
+		Windows.title = ('%{GAME_TITLE} - Options - $title');
 		#end
 
 		// avoids lagspikes while scrolling through menus!

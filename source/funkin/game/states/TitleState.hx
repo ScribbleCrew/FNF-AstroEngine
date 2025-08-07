@@ -88,7 +88,7 @@ class TitleState extends MusicBeatState
 		// discord & window stuff
 		#if desktop
 		#if DISCORD_ALLOWED DiscordClient.changePresence("Browsing the menus", null); #end
-		WindowUtil.title = '%{GAME_TITLE}';
+		Windows.title = '%{GAME_TITLE}';
 		FlxG.mouse.visible = false;
 		#end
 

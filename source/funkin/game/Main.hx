@@ -6,6 +6,8 @@ import funkin.game.FPS;
 import openfl.display.MovieClip;
 import funkin.backend.framerate.*;
 import funkin.backend.framerate.addons.*;
+import openfl.display3D.utils.UInt8Buff;
+
 /**
  * Hello traveler, What brings you here?
  *
@@ -57,6 +59,7 @@ class Main extends flixel.FlxGame
 	 */
 	@:isVar
 	public static var framerateCounter(get, null):FramerateContainer;
+
 	@:dox(hide) @:noCompletion inline static function get_framerateCounter():FramerateContainer
 		return #if !mobile framerateCounter #else null #end;
 
@@ -73,6 +76,16 @@ class Main extends flixel.FlxGame
 
 	public static function main():Void
 	{
+		initLoad();
+
+		/** 
+		 * Create a new instance of Main.
+		 */
+		new Main();
+	}
+
+	static function initLoad() : Void
+	{
 		/** 
 		 * Set the FlxSprite's default antialiasing to true.
 		 */
@@ -82,13 +95,8 @@ class Main extends flixel.FlxGame
 		 * Init the cool events.
 		 */
 		funkin.backend.system.initialization.CoolEvents.init();
-
-		/** 
-		 * Create a new instance of Main.
-		 */
-		new Main();
 	}
-
+	
 	public function new():Void
 	{
 		@:bypassAccessor instance = this;
@@ -160,7 +168,7 @@ class Main extends flixel.FlxGame
 		/**
 		 * Add and setup the framerate counter.	
 		 */
-	//	applicationScreen.stage.addChild(framerateCounter.bgSprite);
+		//	applicationScreen.stage.addChild(framerateCounter.bgSprite);
 		applicationScreen.stage.addChild(framerateCounter);
 
 		/**

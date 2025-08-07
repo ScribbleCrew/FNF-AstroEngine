@@ -19,7 +19,7 @@ class FlashingState extends MusicBeatState
 	override function create()
 	{
 		#if desktop
-		WindowUtil.title = ('%{GAME_TITLE}');
+		Windows.title = ('%{GAME_TITLE}');
 		#end
 		
 		super.create();

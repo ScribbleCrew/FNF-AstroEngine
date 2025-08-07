@@ -100,7 +100,7 @@ AudioFixClient *curAudioFix;
 ')
 #end
 @:access(funkin.game.Main._audioDisconnected)
-class WindowUtil
+class Windows
 {
 	/**
 	 *	Set the window to darkmode.

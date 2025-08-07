@@ -131,7 +131,7 @@ class MainMenuState extends MusicBeatState
 		// Discord RPC
 		#if desktop
 		#if DISCORD_ALLOWED DiscordClient.changePresence("Main Menu", null); #end
-		WindowUtil.title = ('%{GAME_TITLE} - Main Menu');
+		Windows.title = ('%{GAME_TITLE} - Main Menu');
 		#end
 
 		// Editor Debug Keys

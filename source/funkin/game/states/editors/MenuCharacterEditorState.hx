@@ -46,7 +46,7 @@ class MenuCharacterEditorState extends MusicBeatState implements FlxUIEventHandl
 		#if DISCORD_ALLOWED
 		DiscordClient.changePresence("Menu Character Editor", "Editting: " + characterFile.image);
 		#end
-		WindowUtil.title = ('%{GAME_TITLE} - Menu Character Editor');
+		Windows.title = ('%{GAME_TITLE} - Menu Character Editor');
 		#end
 
 		grpWeekCharacters = new FlxTypedGroup<MenuCharacter>();

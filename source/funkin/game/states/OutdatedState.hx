@@ -25,7 +25,7 @@ class OutdatedState extends MusicBeatState
 	override function create():Void
 	{
 		#if desktop
-		WindowUtil.title = ('%{GAME_TITLE} - Outdated');
+		Windows.title = ('%{GAME_TITLE} - Outdated');
 		FlxG.mouse.visible = false;
 		#end
 

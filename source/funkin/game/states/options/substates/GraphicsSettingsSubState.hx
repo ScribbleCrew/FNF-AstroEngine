@@ -43,7 +43,7 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 
 		#if (WINDOW_CUSTOMIZATION && windows)
 		var darkmodeOption:Option = new Option('Dark Mode', 'Enabled Dark Mode Support.', 'darkmodeEnabled', BOOL);
-		darkmodeOption.onChange = () -> WindowUtil.darkmode = ClientPrefs.data.darkmodeEnabled;
+		darkmodeOption.onChange = () -> Windows.darkmode = ClientPrefs.data.darkmodeEnabled;
 		addOption(darkmodeOption);
 		#end
 

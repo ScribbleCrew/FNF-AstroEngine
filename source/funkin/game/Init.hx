@@ -1,5 +1,6 @@
 package funkin.game;
 
+import openfl.display3D.utils.UInt8Buff;
 import flixel.addons.transition.FlxTransitionableState;
 import funkin.backend.utils.Paths;
 import funkin.backend.system.initialization.*;
@@ -29,7 +30,7 @@ class Init extends flixel.FlxState
 
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
-		WindowUtil.title = '';
+		Windows.title = '';
 
 		FlxG.save.bind('funkin', funkin.backend.CoolUtil.savePath);
 
@@ -65,6 +66,10 @@ class Init extends flixel.FlxState
 
 		funkin.game.objects.Alphabet.AlphaCharacter.loadAlphabetData();
 
+			
+		FlxG.signals.postStateSwitch.add(onStateSwitchPost);
+		FlxG.mouse.useSystemCursor = true;
+
 		super.create();
 
 		#if WATERMARK
@@ -91,9 +96,28 @@ class Init extends flixel.FlxState
 		// Extra stuff goes here :3
 	}
 
+
+	static function onStateSwitchPost() : Void
+	{
+		// manual asset clearing since base openfl one doesnt clear lime one
+		// doesnt clear bitmaps since flixel fork does it auto
+
+		@:privateAccess {
+			// clear uint8 pools
+			for (length => pool in UInt8Buff._pools)
+				for (b in pool.clear())
+					b.destroy();
+			
+			UInt8Buff._pools.clear();
+		}
+
+		MemoryUtil.clearMajor();
+	}
+
+
 	static function clearState():Void
 	{
-		#if windows WindowUtil.darkmode = ClientPrefs.data.darkmodeEnabled; #end
+		#if windows Windows.darkmode = ClientPrefs.data.darkmodeEnabled; #end
 		#if !mobile
 		if (Main.framerateCounter != null)
 		{

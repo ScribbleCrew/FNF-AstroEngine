@@ -54,7 +54,7 @@ function new(returnState:FlxState):Void
 function create():Void
 {
 	// lightmode stuff
-	WindowUtil.darkmode = false;
+	Windows.darkmode = false;
 
 	// ugh... flixel being weird
 	// FlxG.sound.music.stop();
@@ -69,7 +69,7 @@ function create():Void
 // setup the window title changer
 function titleTween():Void
 {
-	titleTimer = new FlxTimer().start(2.5, (timer) -> WindowUtil.title = titles[FlxG.random.int(0, titles.length - 1)], 0);
+	titleTimer = new FlxTimer().start(2.5, (timer) -> Windows.title = titles[FlxG.random.int(0, titles.length - 1)], 0);
 	titleTimer.onComplete(titleTimer);
 }
 
@@ -118,8 +118,8 @@ function update(elapsed:Float):Void
 
 		leaving = true;
 		titleTimer.cancel();
-		WindowUtil.title = "wawawawawawawawawawawa";
-		WindowUtil.darkmode = true;
+		Windows.title = "wawawawawawawawawawawa";
+		Windows.darkmode = true;
 		FlxG.sound.play(Paths.sound('cancelMenu'));
 		FlxTween.cancelTweensOf(daKisser);
 		FlxG.camera.flash(0xFFFFC0CB);
@@ -127,7 +127,7 @@ function update(elapsed:Float):Void
 
 		new FlxTimer().start(5.55, _ -> FlxG.camera.fade(FlxColor.BLACK, .1, false, () ->
 		{
-			WindowUtil.darkmode = ClientPrefs.data.darkmodeEnabled;
+			Windows.darkmode = ClientPrefs.data.darkmodeEnabled;
 			MusicBeatState.switchState(returningState ?? new MainMenuState());
 		}));
 
@@ -139,7 +139,7 @@ function update(elapsed:Float):Void
 				onComplete: _ ->
 				{
 					FlxTween.num(Main.framerateCounter.alpha, ClientPrefs.data.fpsCounterAlpha, .5, {ease: FlxEase.expoOut}, Main.framerateCounter.set_alpha);
-					WindowUtil.title = '%{GAME_TITLE}'; // YEAH!
+					Windows.title = '%{GAME_TITLE}'; // YEAH!
 				}
 			})
 		});

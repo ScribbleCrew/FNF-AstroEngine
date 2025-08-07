@@ -46,7 +46,7 @@ class MasterEditorMenu extends MusicBeatState
 		#if DISCORD_ALLOWED 
 		DiscordClient.changePresence("Browsing the menus", null);
 		#end
-		WindowUtil.title = ('%{GAME_TITLE} - Master Editor');
+		Windows.title = ('%{GAME_TITLE} - Master Editor');
 		#end
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));

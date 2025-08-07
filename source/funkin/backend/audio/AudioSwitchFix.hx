@@ -49,7 +49,7 @@ class AudioSwitchFix
 	public static function init():Void
 	{
 		#if windows
-		WindowUtil.registerAudio();
+		Windows.registerAudio();
 		FlxG.signals.preStateCreate.add(onStateSwitch);
 		#end
 	}

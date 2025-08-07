@@ -1,5 +1,6 @@
 # ```TODO```
 
+* remove `CharacterScript` scripted class its buggy as hell and it's unneeded
 * Fix building on html5, ios, android
 * rewrite the commandline stuff
 * design charting state :P

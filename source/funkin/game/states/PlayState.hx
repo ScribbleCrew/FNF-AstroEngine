@@ -983,7 +983,7 @@ class PlayState extends MusicBeatState
 		else if(Paths.formatToSongPath(ClientPrefs.data.pauseMusic) != 'none')
 			Paths.music(Paths.formatToSongPath(ClientPrefs.data.pauseMusic));
 
-		#if desktop WindowUtil.title = ('%{GAME_TITLE} - $detailsText'); #end
+		#if desktop Windows.title = ('%{GAME_TITLE} - $detailsText'); #end
 
 		stageAccess(function(stage:BaseStage) stage.createPost());
 		scripts.call('onCreatePost', []);
@@ -1648,7 +1648,7 @@ class PlayState extends MusicBeatState
 		#if DISCORD_ALLOWED
 		if(autoUpdateRPC) DiscordClient.changePresence(detailsText, SONG.song + " (" + storyDifficultyText + ")", ui.iconP2.character, true, songLength);
 		#end
-		#if desktop WindowUtil.title = ('%{GAME_TITLE} - $detailsText - ${SONG.song} (${storyDifficultyText})'); #end
+		#if desktop Windows.title = ('%{GAME_TITLE} - $detailsText - ${SONG.song} (${storyDifficultyText})'); #end
 	}
 
 	private var noteTypes:Array<String> = [];
@@ -2000,7 +2000,7 @@ class PlayState extends MusicBeatState
 			paused = false;
 			scripts.call('onResume');
 			resetRPC(startTimer != null && startTimer.finished);
-			#if desktop WindowUtil.title = '%{GAME_TITLE} - $detailsText - ${SONG.song} (${storyDifficultyText})'; #end
+			#if desktop Windows.title = '%{GAME_TITLE} - $detailsText - ${SONG.song} (${storyDifficultyText})'; #end
 		}
 
 		super.closeSubState();
@@ -2015,7 +2015,7 @@ class PlayState extends MusicBeatState
 			{
 				resetRPC(Conductor.songPosition > 0.0) ;
 				#if desktop 
-				WindowUtil.title = '%{GAME_TITLE} - ${SONG.song} (${storyDifficultyText.toUpperCase()})'; 
+				Windows.title = '%{GAME_TITLE} - ${SONG.song} (${storyDifficultyText.toUpperCase()})'; 
 				#end
 			};
 			#if VIDEOS_ALLOWED
@@ -2032,7 +2032,7 @@ class PlayState extends MusicBeatState
 		#if desktop
 		if (!paused)
 		{
-			#if desktop WindowUtil.title = ('%{GAME_TITLE} - Paused - ${SONG.song.replace('-', ' ').capitalize()}'); #end
+			#if desktop Windows.title = ('%{GAME_TITLE} - Paused - ${SONG.song.replace('-', ' ').capitalize()}'); #end
 			#if DISCORD_ALLOWED if (health > 0 && autoUpdateRPC) DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", ui.iconP2.character); #end
 			#if VIDEOS_ALLOWED if (videoCutscene != null) videoCutscene.pause(); #end
 		}
@@ -2333,7 +2333,7 @@ class PlayState extends MusicBeatState
 		openSubState(new PauseSubState());
 
 		#if DISCORD_ALLOWED DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", ui.iconP2.character); #end
-		#if desktop WindowUtil.title = ('%{GAME_TITLE} - Paused - ${SONG.song}'); #end
+		#if desktop Windows.title = ('%{GAME_TITLE} - Paused - ${SONG.song}'); #end
 	}
 
 	function openChartEditor()
@@ -2352,7 +2352,7 @@ class PlayState extends MusicBeatState
 		chartingMode = true;
 
 		#if DISCORD_ALLOWED DiscordClient.changePresence("Chart Editor", null, null, true); #end
-		#if desktop WindowUtil.title = ('%{GAME_TITLE} - Chart Editor'); #end
+		#if desktop Windows.title = ('%{GAME_TITLE} - Chart Editor'); #end
 	}
 
 	function openCharacterEditor()
@@ -2423,7 +2423,7 @@ class PlayState extends MusicBeatState
 				}
 
 				#if DISCORD_ALLOWED DiscordClient.changePresence("Game Over - " + detailsText, SONG.song + " (" + storyDifficultyText + ")", ui.iconP2.character); #end
-				#if desktop WindowUtil.title = ('Game Over - ${detailsText} - ${SONG.song}');#end
+				#if desktop Windows.title = ('Game Over - ${detailsText} - ${SONG.song}');#end
 
 				return isDead = true;
 			}

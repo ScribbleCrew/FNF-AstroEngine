@@ -121,7 +121,7 @@ class InDevWarningState extends MusicBeatState
 		}
 		#end
 
-		WindowUtil.title = '%{GAME_TITLE} - Development Warning';
+		Windows.title = '%{GAME_TITLE} - Development Warning';
 		FlxG.mouse.visible = false;
 
 		function duh(path:String):String

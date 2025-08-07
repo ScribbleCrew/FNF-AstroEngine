@@ -57,7 +57,7 @@ class StaticImports
 			'BGSprite' => BGSprite,
 			'Conductor' => Conductor,
 			'ClientPrefs' => ClientPrefs,
-			'WindowUtil' => funkin.backend.utils.native.WindowUtil,
+			'Windows' => funkin.backend.utils.native.Windows,
 			'Character' => Character,
 			'Alphabet' => Alphabet,
 			'CharacterScript' => HScriptUtils.fromMacro("funkin.game.objects.characters.CharacterScript"), // :p
