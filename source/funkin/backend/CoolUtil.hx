@@ -13,25 +13,32 @@ import openfl.utils.Assets;
 
 class CoolUtil
 {
+		@:access(openfl.media.Sound)
+	@:access(flixel.sound.FlxSound)
+	public static function isValid<T:FlxSound>(sound:T):Bool
+		return sound._sound?.__buffer != null && sound?._transform != null;
 
-		/**
+	/**
 	 * Returns a string representation of a size, following this format: `1.02 GB`, `134.00 MB`
 	 * @param size Size to convert to string
 	 * @return String Result string representation
 	 */
-	public static function getSizeString(size:Float):String {
+	public static function getSizeString(size:Float):String
+	{
 		var labels = ["B", "KB", "MB", "GB", "TB"];
 		var rSize:Float = size;
 		var label:Int = 0;
-		while(rSize > 1024 && label < labels.length-1) {
+		while (rSize > 1024 && label < labels.length - 1)
+		{
 			label++;
 			rSize /= 1024;
 		}
 		return '${Std.int(rSize) + "." + addZeros(Std.string(Std.int((rSize % 1) * 100)), 2)}${labels[label]}';
 	}
 
-		static var _mousePoint:FlxPoint = new FlxPoint();
+	static var _mousePoint:FlxPoint = new FlxPoint();
 	static var _objPoint:FlxPoint = new FlxPoint();
+
 	public static function mouseOverlapping<T:flixel.FlxObject>(obj:T, ?mousePoint:FlxPoint, ?camera:flixel.FlxCamera)
 	{
 		camera ??= obj.camera;
@@ -41,19 +48,19 @@ class CoolUtil
 	}
 
 	/**
-	 * Returns the class in question's path e.g `funkin.backend.CoolUtil`
-	 * @param class 
-	 * @return String 
-		return Type.getClassName(Type.getClass(class))
+		* Returns the class in question's path e.g `funkin.backend.CoolUtil`
+		* @param class 
+		* @return String 
+				return Type.getClassName(Type.getClass(class))
 	 */
-	public static function getClassPath(_class:Dynamic):String 
+	public static function getClassPath(_class:Dynamic):String
 		return Type.getClassName(Type.getClass(_class));
 
 	/**
-	 * Returns the class in question's name e.g `CoolUtil`
-	 * @param class 
-	 * @return String
-		return getClassPath(class).split(".").pop()
+		* Returns the class in question's name e.g `CoolUtil`
+		* @param class 
+		* @return String
+				return getClassPath(class).split(".").pop()
 	 */
 	public static function getClassName(_class:Dynamic):String
 		return getClassPath(_class).split(".").pop();
@@ -63,8 +70,10 @@ class CoolUtil
 	 * @param str String to add zeros
 	 * @param num The length required
 	 */
-	public static inline function addZeros(str:String, num:Int) {
-		while(str.length < num) str = '0${str}';
+	public static inline function addZeros(str:String, num:Int)
+	{
+		while (str.length < num)
+			str = '0${str}';
 		return str;
 	}
 
@@ -109,18 +118,21 @@ class CoolUtil
 	@:noUsing public static function coolTextFile(path:String):Array<String>
 	{
 		var betterehh:String = '';
-		if (OpenFlAssets.exists(path)) betterehh = OpenFlAssets.getText(path);
-		#if sys if (FileSystem.exists(path)) betterehh = File.getContent(path); #end
-		
+		if (OpenFlAssets.exists(path))
+			betterehh = OpenFlAssets.getText(path);
+		#if sys if (FileSystem.exists(path))
+			betterehh = File.getContent(path); #end
+
 		var trim:String;
-		return [for(line in betterehh.split("\n")) if ((trim = line.trim()) != "" && !trim.startsWith("#")) trim];
+		return [
+			for (line in betterehh.split("\n")) if ((trim = line.trim()) != "" && !trim.startsWith("#")) trim
+		];
 	}
 
 	inline public static function colorFromString(color:String):FlxColor
-		return FlxColor.fromString((color = ~/[\t\n\r]/.split(color).join('').trim()).startsWith('0x') ? color.substring(color.length - 6) : color) 
-			?? FlxColor.fromString('#$color') 
-			?? FlxColor.WHITE;
-
+		return FlxColor.fromString((color = ~/[\t\n\r]/.split(color)
+			.join('')
+			.trim()).startsWith('0x') ? color.substring(color.length - 6) : color) ?? FlxColor.fromString('#$color') ?? FlxColor.WHITE;
 
 	public static function listFromString(string:String):Array<String>
 		return [for (line in string.trim().split('\n')) line.trim()];
@@ -160,7 +172,7 @@ class CoolUtil
 	public static function range(max:Int, ?min = 0):Array<Int>
 		return [for (i in min...max) i];
 
-	@:noUsing public static function browserLoad(site:String) : Void
+	@:noUsing public static function browserLoad(site:String):Void
 	{
 		#if linux
 		Sys.command('/usr/bin/xdg-open', [site]);
@@ -179,6 +191,7 @@ class CoolUtil
 		@crowplexus
 	**/
 	public static var savePath(get, default):String;
+
 	@:access(flixel.util.FlxSave.validate)
 	inline public static function get_savePath():String
 		return '${FlxG.stage.application.meta.get('company')}/${FlxSave.validate(FlxG.stage.application.meta.get('file'))}';

@@ -77,6 +77,11 @@ class Init extends flixel.FlxState
 		openfl.Lib.current.addChild(watermark);
 		#end
 
+		Application.current.window.onClose.add(() -> {
+			ClientPrefs.saveSettings();
+			Logs.trace('Saving Preferences', ORANGE);
+		});
+
 		#if VIDEOS_ALLOWED
 		final loadingText:FlxText = new FlxText();
 		loadingText.setFormat(Paths.font("engine/Mojangles.ttf"), 24, FlxColor.WHITE);

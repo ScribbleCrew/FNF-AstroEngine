@@ -5,12 +5,13 @@ import flixel.system.FlxAssets;
 import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxAtlasFrames;
 
+#if openfl
 import openfl.system.System;
 import openfl.utils.AssetType;
 import openfl.display.BitmapData;
-
-import flash.media.Sound;
 import openfl.utils.Assets;
+#end
+import flash.media.Sound;
 
 #if sys
 import sys.io.File;
@@ -19,14 +20,16 @@ import sys.FileSystem;
 
 import funkin.backend.assets.AssetsPaths;
 
+using funkin.backend.CoolUtil;
 /**
  * Paths cuz very cool
  */
 @:final
 @:access(flash.media.Sound)
+@:access(flixel.system.frontEnds)
 @:access(openfl.display.BitmapData)
+@:allow(funkin.backend.assets.AssetsPaths)
 @:access(flixel.system.frontEnds.BitmapFrontEnd._cache)
-@:allow(AssetsPaths)
 class Paths
 {
 	#if MODS_ALLOWED
@@ -93,29 +96,40 @@ class Paths
 	 * Clears all tracked unused memory.
 	 * haya I love you for the base cache dump I took to the max.
 	 */
-	public static function clearUnusedMemory():Void
-	{
+	public static function clearUnusedMemory():Void @:privateAccess {
 		/**
 		 * clear non local assets in the tracked assets list
 		 */
 		for (key in currentTrackedAssets.keys())
-		{
-			/**
-			 * if it is not currently contained within the used local assets
-			 */
+		
 			if (!localTrackedAssets.contains(key) && !exclusions.contains(key))
 			{
-				/**
-				 * Destroy the graphic.
-				 */
 				destroyGraphic(currentTrackedAssets.get(key));
-
-				/**
-				 * After that remove the key from local cache map.
-				 */
 				currentTrackedAssets.remove(key);
 			}
+		
+
+		final __cache:openfl.utils.AssetCache = cast Assets.cache;
+		final __sounds:Array<Sound> = [for (i in FlxG.sound.list) if (i.isValid()) i._sound];
+		final __music : flixel.sound.FlxSound = FlxG.sound.music;
+
+		if (__music != null && __music.isValid() && (__music.persist && __music.active))
+			__sounds.push(FlxG.sound.music._sound);
+
+		for (a => v in __cache.sound)
+		{
+			if (__sounds.contains(v)) continue;
+			if (v?.__buffer != null)
+			{
+				v.__buffer.dispose();
+				v.__buffer = null;
+			}
+			__cache.removeSound(a);
 		}
+
+		for (v in __cache.font.keys())
+			if(v!=null)
+				__cache.removeFont(v);
 
 		FlxG.bitmap.clearUnused();
 
@@ -257,20 +271,21 @@ class Paths
 	 */
 	public static function clearStoredMemory():Void
 	{
-		/**
-		 * Clear all assets inside of `FlxG.bitmap._cache`. 
-		 */
+		// for (key in FlxG.bitmap._cache.keys())
+		// {
+		// 	if (!currentTrackedAssets.exists(key))
+		// 	{
+		// 		destroyGraphic(FlxG.bitmap.get(key));
+		// 	}
+		// }
+
 		for (key in FlxG.bitmap._cache.keys())
 		{
-			/**
-			 * Make sure it isn't inside of `currentTrackedAssets`.
-			 */
-			if (!currentTrackedAssets.exists(key))
+			final obj = FlxG.bitmap._cache.get(key);
+			if (obj != null && (key.startsWith(AssetsPaths.FLXGRAPHIC_KEY) || !obj.persist) && obj.useCount <= 0)
 			{
-				/**
-				 * Destroy the graphic.
-				 */
-				destroyGraphic(FlxG.bitmap.get(key));
+				FlxG.bitmap.removeKey(key);
+				if (obj != null) obj.destroy();
 			}
 		}
 
@@ -297,6 +312,7 @@ class Paths
 			}
 		}
 
+		
 		/**
 		 * Clears `localTrackedAssets`.
 		 */
@@ -332,45 +348,6 @@ class Paths
 		 */
 		return FlxG.bitmap.remove(graphic);
 	}
-
-	
-			/**
-		 * Get the path of a file.
-		 */
-public static function getPath(file:String, ?type:AssetType = TEXT, ?parentfolder:String, ?modsAllowed:Bool = true):String {
-    #if MODS_ALLOWED
-    if (modsAllowed) {
-        final modPath = modFolders('${parentfolder != null ? '$parentfolder/' : ""}$file');
-        if (FileSystem.exists(modPath))
-            return modPath;
-    }
-    #end
-
-    // Check specific parent folder on filesystem first
-    if (parentfolder != null) {
-        final folderPath = getFolderPath(file, parentfolder);
-        if (FileSystem.exists(folderPath) || OpenFlAssets.exists(folderPath, type))
-            return folderPath;
-    }
-
-    // Check current level folder (if not shared)
-    if (currentLevel != null && currentLevel != "shared") {
-        final levelPath = getFolderPath(file, currentLevel);
-        if (FileSystem.exists(levelPath) || OpenFlAssets.exists(levelPath, type))
-            return levelPath;
-    }
-
-    // Check shared folder
-    final sharedPath = getSharedPath(file);
-    if (FileSystem.exists(sharedPath) || OpenFlAssets.exists(sharedPath, type))
-        return sharedPath;
-
-    // 🔹 Finally check raw file path for embedded or filesystem
-    if (FileSystem.exists(file) || OpenFlAssets.exists(file, type))
-        return file;
-
-    return file; // fallback (probably will error if used)
-}
 
 	/**
 	 * Get a library path for a file.
@@ -486,6 +463,9 @@ public static function getPath(file:String, ?type:AssetType = TEXT, ?parentfolde
 		return getSharedPath()+'scripts/$path';
 	}
 
+	public static function getPath(file:String, ?type:AssetType = TEXT, ?parentFolder:String, ?modsAllowed:Bool = true)
+		return AssetsPaths.getPath(file, type, parentFolder, modsAllowed);
+
 	public static function cacheBitmap(key:String, ?parentFolder:String = null, ?bitmap:BitmapData, ?allowGPU:Bool = true):FlxGraphic
 	{
 		if (bitmap == null)
@@ -518,7 +498,7 @@ public static function getPath(file:String, ?type:AssetType = TEXT, ?parentfolde
 			bitmap.readable = true;
 		}
 
-		var graph:FlxGraphic = FlxGraphic.fromBitmapData(bitmap, false, key);
+		final graph:FlxGraphic = FlxGraphic.fromBitmapData(bitmap, false, key);
 		graph.persist = true;
 		graph.destroyOnNoUse = false;
 

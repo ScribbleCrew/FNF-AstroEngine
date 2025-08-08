@@ -137,7 +137,6 @@ class Character extends FlxSprite
 		var characterPath:String = 'characters/$character.json';
 
 		var path:String = Paths.getPath(characterPath, TEXT);
-		trace('FOR FUCK SAKE $path');
 		#if MODS_ALLOWED
 		if (!FileSystem.exists(path))
 		#else
