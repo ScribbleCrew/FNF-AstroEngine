@@ -29,7 +29,7 @@ typedef SustainCoverAnim =
 typedef SustainCoverData =
 {
 	@:optional var version:String;
-	
+
 	var scale:Float;
 	var allowRGB:Bool;
 	var allowPixel:Bool;
@@ -37,59 +37,49 @@ typedef SustainCoverData =
 	var animations:Map<String, SustainCoverAnim>;
 }
 
+typedef PixelShaderRef = NoteSplash.PixelSplashShaderRef;
+
+// TODO: make an editor + more options??? + optim ?????
+
 class SustainCover extends FlxSprite
 {
-	/**
-	 * Start Crochet.
-	 */
-	public static var startCrochet:Float;
+	@:noCompletion static var __stepCrochet:Float;
+	@:noCompletion static var __rate:Int;
 
 	/**
-	 * Framerate.	
+	 * Default Sustain Splash Asset.	
 	 */
-	public static var frameRate:Int;
-
-	/**
-	* Default Sustain Splash Asset.	
-	*/
-	public static var defaultSustainSplash:String = 'holdCovers/holdCover'; 
+	public static var defaultSustainSplash:String = 'holdCovers/holdCover';
 
 	/**
 	 * Strum note.	
 	 */
 	public var strumNote:StrumNote;
 
-	/**
-	 * Sustain Cover Timer.	
-	 */
-	var timer:FlxTimer;
-
-	/**
-	 * Sustain Cover Data.	
-	 */
-	var _data:SustainCoverData;
+	@:noCompletion var __tmr:FlxTimer;
+	@:noCompletion var __data:SustainCoverData;
+	@:noCompletion var __offsetmap:Map<String, Map<String, TwoDimensionalPoint>>;
 
 	/**
 	 * Formatted sustain cover prefix
 	 * e.g -normal, -cosmo
 	 */
-	var dataPrefix(get, never):String;
-	@:dox(hide) function get_dataPrefix():String
-		return ClientPrefs.data.holdSplashesSkin != "Normal" ? '-${ClientPrefs.data.holdSplashesSkin}' : "";
+	@:noCompletion var dataPrefix(get, never):String;
 
-	/**
-	 * Offset Animation Map	
-	 */
-	var offsetMap:Map<String, Map<String, TwoDimensionalPoint>> = new StringMap();
+	@:dox(hide) @:noCompletion function get_dataPrefix():String
+		return ClientPrefs.data.holdSplashesSkin != "Normal" ? '-${ClientPrefs.data.holdSplashesSkin}' : "";
 
 	// constructor
 	public function new():Void
 	{
 		super();
 
+		__offsetmap = new StringMap();
+
 		// setup shitz
 		animation = new AnimationController(this);
-		frames = Paths.getSparrowAtlas('$defaultSustainSplash$dataPrefix');
+		frames = Paths.getSparrowAtlas('${Constants.DEFAULT_SUSTAIN_COVER}$dataPrefix');
+		kill();
 		x = -50000;
 	}
 
@@ -103,7 +93,7 @@ class SustainCover extends FlxSprite
 	 */
 	public function playAnim(noteID:Int, animName:String, force:Bool = false, reversed:Bool = false, frame:Int = 0):Void
 	{
-		final prefixOffsets:Null<Map<String, Dynamic>> = offsetMap.get(Note.noteIDToName(noteID));
+		final prefixOffsets:Null<Map<String, Dynamic>> = __offsetmap.get(Note.noteIDToName(noteID));
 		final prefixOffset:TwoDimensionalPoint = prefixOffsets.exists(animName) ? prefixOffsets.get(animName) : {x: 0, y: 0};
 		offset.set((PlayState.isPixelStage ? 12 : -10) + prefixOffset.x ?? 0, prefixOffset.y ?? 0);
 		animation.play(animName, force, reversed, frame);
@@ -119,7 +109,7 @@ class SustainCover extends FlxSprite
 		if (raw != null)
 		{
 			// temp data for reformatting
-			final __data:SustainCoverData = {
+			final ___data:SustainCoverData = {
 				version: raw.version ?? "0.0.1",
 				animations: new Map<String, SustainCoverAnim>(),
 				scale: raw.scale ?? 1,
@@ -135,14 +125,16 @@ class SustainCover extends FlxSprite
 				{
 					if (!Reflect.hasField(anim, "anim_prefixes") || anim.anim_prefixes == null)
 						anim.anim_prefixes = new Map<String, Dynamic>();
-					__data.animations.set(key, cast anim);
+					___data.animations.set(key, cast anim);
 				}
 			}
 
 			// update the normal data
-			_data = __data;
+			__data = ___data;
 		}
 	}
+
+	@:noCompletion var __pixelShaderRef:PixelShaderRef;
 
 	/**
 	 * Setup the sustain splash
@@ -155,9 +147,9 @@ class SustainCover extends FlxSprite
 		// load da config
 		this.load();
 
-		for (key in _data.animations.keys())
+		for (key in __data.animations.keys())
 		{
-			var anim = _data.animations.get(key);
+			var anim = __data.animations.get(key);
 			if (anim == null || anim.noteData.indexOf(daNote.noteData) == -1)
 				continue;
 
@@ -180,65 +172,63 @@ class SustainCover extends FlxSprite
 				}
 			}
 
-			offsetMap.set(key, prefixOffsets);
+			__offsetmap.set(key, prefixOffsets);
 
 			for (part in prefixes.keys())
 			{
 				var prefix = prefixes.get(part);
 				if (prefix != null && (Std.is(prefix, String) ? prefix.length > 0 : true))
 				{
-					var prefixStr = Std.is(prefix, String) ? prefix : prefix.prefix;
+					final prefixStr:String = Std.is(prefix, String) ? prefix : prefix.prefix;
 					if (prefix.indices != null && prefix.indices.length > 0)
 						animation.addByIndices(part, prefixStr, prefix.indices, "", prefix.fps, prefix.loop);
 					else
 						animation.addByPrefix(part, prefixStr, prefix.fps, prefix.loop);
 
-					antialiasing = prefix.antialiasing ?? true;
+					antialiasing = (prefix.antialiasing ?? true);
 				}
 			}
 		}
 
 		// set the data scale
-		scale.set(_data.scale, _data.scale);
+		scale.set(__data.scale, __data.scale);
 
 		// play hold anim
 		playAnim(daNote.noteData, 'hold', true, false, 0);
 		if (animation.curAnim != null)
 		{
-			animation.curAnim.frameRate = frameRate;
+			animation.curAnim.frameRate = __rate ?? 24;
 			animation.curAnim.looped = true;
 		}
 
 		clipRect = new flixel.math.FlxRect(0, PlayState.isPixelStage ? -210 : 0, frameWidth, frameHeight);
 
-		if (daNote.shader != null && _data.allowRGB)
+		if (daNote.shader != null && __data.allowRGB)
 		{
-			final ref = new NoteSplash.PixelSplashShaderRef();
-			shader = ref.shader;
+			__pixelShaderRef = new PixelShaderRef();
+			shader = __pixelShaderRef.shader;
 			shader.data.r.value = daNote.shader.data.r.value;
 			shader.data.g.value = daNote.shader.data.g.value;
 			shader.data.b.value = daNote.shader.data.b.value;
 			shader.data.mult.value = daNote.shader.data.mult.value;
 
-			if (!_data.allowPixel)
-				ref.pixelAmount = 1;
-			else if (PlayState.isPixelStage)
-				ref.pixelAmount = 6;
+			__pixelShaderRef.pixelAmount = !__data.allowPixel ? 1 : PlayState.isPixelStage ? 6 : __pixelShaderRef.pixelAmount;
 		}
 
 		strumNote = strum;
 		alpha = ClientPrefs.data.holdSplashesAlpha - (1 - strumNote.alpha);
 
 		// cancel the timer
-		if (timer != null) timer.cancel();
-
-		final lengthToGet:Int = !daNote.isSustainNote ? daNote.tail.length : daNote.parent.tail.length;
-		final timeToGet:Float = !daNote.isSustainNote ? daNote.strumTime : daNote.parent.strumTime;
+		if (__tmr != null)
+			__tmr.cancel();
 
 		if (!daNote.hitByOpponent && ClientPrefs.data.holdSplashesAlpha != 0)
 		{
-			timer = new FlxTimer().start((startCrochet * lengthToGet
-				+ (timeToGet - Conductor.songPosition + ClientPrefs.data.ratingOffset)) / playbackRate * 0.001, (_) ->
+			__tmr = new FlxTimer().start((__stepCrochet * (!daNote.isSustainNote ? daNote.tail.length : daNote.parent.tail.length)
+				+ ((!daNote.isSustainNote ? daNote.strumTime : daNote.parent.strumTime)
+					- Conductor.songPosition
+					+ ClientPrefs.data.ratingOffset)) / playbackRate * 0.001,
+				(_) ->
 				{
 					if (!(daNote.isSustainNote ? daNote.parent.noteSplashData.disabled : daNote.noteSplashData.disabled)
 						&& animation != null)
@@ -264,7 +254,7 @@ class SustainCover extends FlxSprite
 		super.update(elapsed);
 		if (strumNote != null)
 		{
-			setPosition(strumNote.x, strumNote.y);
+			setPosition(strumNote.x, strumNote.y); // track the strumNote
 			visible = strumNote.visible;
 			alpha = ClientPrefs.data.holdSplashesAlpha - (1 - strumNote.alpha);
 
@@ -273,9 +263,21 @@ class SustainCover extends FlxSprite
 				&& strumNote.animation.curAnim != null
 				&& strumNote.animation.curAnim.name == "static")
 			{
-				x = -50000;
+				visible = false;
 				kill();
 			}
 		}
+	}
+
+	@:dox(hide) override function destroy():Void
+	{
+		if (__tmr != null)
+		{
+			__tmr.cancel();
+			__tmr = FlxDestroyUtil.destroy(__tmr);
+		}
+
+		if (__offsetmap != null)
+			__offsetmap.clear();
 	}
 }

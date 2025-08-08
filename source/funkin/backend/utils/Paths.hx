@@ -20,6 +20,7 @@ import sys.FileSystem;
 /**
  * Paths cuz very cool
  */
+@:final
 @:access(flash.media.Sound)
 @:access(openfl.display.BitmapData)
 @:access(flixel.system.frontEnds.BitmapFrontEnd._cache)
@@ -70,8 +71,7 @@ class Paths
 	 * point data shit to the correct lib (or whatever).
 	 */
 	@:isVar public static var currentLevel(default, set):String;
-
-	@:dox(hide) static inline function set_currentLevel(level:String):String
+	@:noCompletion @:dox(hide) static inline function set_currentLevel(level:String):String
 		return currentLevel = level.toLowerCase();
 
 	/**
@@ -396,14 +396,13 @@ class Paths
 	/**
 	 * Get a library path for a file.
 	 */
-	inline static public function xml(key:String, ?library:String):String
-		return getPath('data/$key.xml', TEXT, library);
+	inline static public function xml(key:String, ?library:String):String { return getPath('data/$key.xml', TEXT, library); }
 
 	/**
 	 * Get a library path for a file.
 	 */
 	inline static public function json(key:String, ?library:String):String
-		return getPath('data/$key.json', TEXT, library);
+		return AssetsPaths.getPath('data/$key.json', TEXT, library);
 
 	/**
 	 * Get a library path for a file.
@@ -731,65 +730,64 @@ class Paths
 	#end
 
 	#if FLXANIMATE_ALLOWED
-	public static function loadAnimateAtlas(spr:FlxAnimate, folderOrImg:Dynamic, spriteJson:Dynamic = null, animationJson:Dynamic = null)
+	public static function loadAnimateAtlas<T:FlxAnimate>(spr:T, folderOrImg:Dynamic, spriteJson:Dynamic = null, animationJson:Dynamic = null) : T
 	{
-		var changedAnimJson:Bool = false;
-		var changedAtlasJson:Bool = false;
-		var changedImage:Bool = false;
+		var spriteJsonContent:String = null;
+		var animationJsonContent:String = null;
+		var imageSource:Dynamic = folderOrImg;
 
 		if (spriteJson != null)
-		{
-			changedAtlasJson = true;
-			spriteJson = File.getContent(spriteJson);
-		}
-
+			spriteJsonContent = File.getContent(spriteJson);
+		
 		if (animationJson != null)
-		{
-			changedAnimJson = true;
-			animationJson = File.getContent(animationJson);
-		}
+			animationJsonContent = File.getContent(animationJson);
+		
 
-		// is folder or image path
 		if (Std.isOfType(folderOrImg, String))
 		{
-			final originalPath:String = folderOrImg;
+			var originalPath = folderOrImg;
+			var foundSpriteJson:Bool = spriteJsonContent != null;
+			var foundImage:Bool = false;
+
+			// Try loading spritemap<X>.json and corresponding images
 			for (i in 0...10)
 			{
-				final st:String = i == 0 ? '' : '$i';
+				final suffix : String = i == 0 ? "" : Std.string(i);
 
-				if (!changedAtlasJson)
+				if (!foundSpriteJson)
 				{
-					spriteJson = getTextFromFile('images/$originalPath/spritemap$st.json', false, true);
-					if (spriteJson != null)
+					var jsonPath = 'images/$originalPath/spritemap$suffix.json';
+					spriteJsonContent = getTextFromFile(jsonPath, false, true);
+					if (spriteJsonContent != null)
 					{
-						changedImage = true;
-						changedAtlasJson = true;
-						folderOrImg = image('$originalPath/spritemap$st');
+						imageSource = image('$originalPath/spritemap$suffix');
+						foundImage = foundSpriteJson = true;
 						break;
 					}
 				}
-				else if (fileExists('images/$originalPath/spritemap$st.png', IMAGE))
+				else
 				{
-					changedImage = true;
-					folderOrImg = image('$originalPath/spritemap$st');
-					break;
+					var imagePath = 'images/$originalPath/spritemap$suffix.png';
+					if (fileExists(imagePath, IMAGE))
+					{
+						imageSource = image('$originalPath/spritemap$suffix');
+						foundImage = true;
+						break;
+					}
 				}
 			}
 
-			if (!changedImage)
-			{
-				changedImage = true;
-				folderOrImg = image(originalPath);
-			}
+			// If no specific sprite mmap found, fallback to just the original image path
+			if (!foundImage)
+				imageSource = image(originalPath);
 
-			if (!changedAnimJson)
-			{
-				changedAnimJson = true;
-				animationJson = getTextFromFile('images/$originalPath/Animation.json');
-			}
+			if (animationJsonContent == null)
+				animationJsonContent = getTextFromFile('images/$originalPath/Animation.json');
 		}
 
-		spr.loadAtlasEx(folderOrImg, spriteJson, animationJson);
+		spr.loadAtlasEx(imageSource, spriteJsonContent, animationJsonContent);
+
+		return spr;
 	}
 	#end
 }

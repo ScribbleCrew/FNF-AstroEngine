@@ -50,10 +50,10 @@ class AssetsPaths
 
 		if (FileSystem.exists(sharedPath))
 			return sharedPath;
-		if (Assets.exists(sharedPath, type))
+		if (Assets.exists(sharedPath))
 			return sharedPath;
 
-		throw 'File not found: $file';
+		throw 'File not found: $file // $sharedPath';
 	}
 
     static function fsPath(key:String, ?library:String) : String {
@@ -74,9 +74,8 @@ class AssetsPaths
 	 * @param allowMods 
 	 * @return String
 	 */
-	public static function getContent(key:String, ?library:String, ?allowMods:Bool):String
+	public static function getContent(path:String, ?library:String, ?allowMods:Bool):String
 	{
-		final path:String = getPath(key, library, allowMods ?? true);
 		final fsPath:String = (library != null && library.length > 0 && path.indexOf(":") > -1) ? path.substr(path.indexOf(":") + 1) : path;
 
 		if (FileSystem.exists(fsPath))

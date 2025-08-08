@@ -76,8 +76,7 @@ class CustomCamera extends FlxCamera
 
 			if ((target is FlxSprite))
 			{
-				if (_lastTargetPosition == null)
-					_lastTargetPosition = FlxPoint.get(target.x, target.y); // Creates this point.
+				_lastTargetPosition ??= FlxPoint.get(target.x, target.y); // Creates this point.
 
 				_scrollTarget.x += (target.x - _lastTargetPosition.x) * followLead.x;
 				_scrollTarget.y += (target.y - _lastTargetPosition.y) * followLead.y;

@@ -97,7 +97,7 @@ class FreeplayState extends MusicBeatState
 			return;
 		}
 
-		addSong("test", -1, 'bf', 0x5539cc);// for fuck sake
+		addSong("test", 0, 'bf', 0x5539cc);// for fuck sake
 
 		for (i in 0...WeekData.weeksList.length)
 		{

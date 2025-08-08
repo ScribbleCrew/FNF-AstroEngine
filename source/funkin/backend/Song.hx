@@ -150,32 +150,17 @@ class Song
 		return PlayState.SONG;
 	}
 
-	static var _lastPath:String;
+	@:dox(hide) static var _lastPath:String;
 
-	public static function getChart(jsonInput:String, ?folder:String):SwagSong
+	@:noUsing public static function getChart(jsonInput:String, ?folder:String):SwagSong
 	{
-		if (folder == null)
-			folder = jsonInput;
-		var rawData:String = null;
+		folder??=jsonInput;
 
-		var formattedFolder:String = Paths.formatToSongPath(folder);
-		var formattedSong:String = Paths.formatToSongPath(jsonInput);
-
-		_lastPath = Paths.json('songs/$formattedFolder/$formattedSong');
-		if (!FileSystem.exists(_lastPath))
-			_lastPath = Paths.json('$formattedFolder/$formattedSong');// psych support
-
-		#if MODS_ALLOWED
-		if (FileSystem.exists(_lastPath))
-			rawData = File.getContent(_lastPath);
-		else
-		#end
-		rawData = Assets.getText(_lastPath);
-
+		final rawData:String = AssetsPaths.getContent(_lastPath = Paths.json('songs/${Paths.formatToSongPath(folder)}/${Paths.formatToSongPath(jsonInput)}'));
 		return rawData != null ? parseJSON(rawData, jsonInput) : null;
 	}
 
-	public static function parseJSON(rawData:String, ?nameForError:String = null, ?convertTo:String = ''):SwagSong
+	@:noUsing public static function parseJSON(rawData:String, ?nameForError:String = null, ?convertTo:String = ''):SwagSong
 	{
 		final stupidHaxe = 'astro_v${EngineData.VERSION}';
 

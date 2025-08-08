@@ -346,7 +346,7 @@ class PlayState extends MusicBeatState
 	 * The note splash group.
 	 */
 	public var grpNoteSplashes:FlxTypedGroup<NoteSplash>;
-	public var grpHoldSplashes:FlxTypedGroup<SustainCover> = new FlxTypedGroup<SustainCover>();
+	public var grpHoldSplashes:FlxTypedGroup<SustainCover>;
 
 	/**
 	 * If the camera is allowed to zoom.
@@ -709,6 +709,7 @@ class PlayState extends MusicBeatState
 
 		// Init Stuff
 		grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
+		grpHoldSplashes = new FlxTypedGroup<SustainCover>();
 		if (isPixelStage)
 			introSoundsSuffix = '-pixel';
 		if (SONG == null)
@@ -719,25 +720,18 @@ class PlayState extends MusicBeatState
 
 		#if DISCORD_ALLOWED
 		storyDifficultyText = Difficulty.list[storyDifficulty];
-
 		// String that contains the mode defined here so it isn't necessary to call changePresence for each mode
-		if (isStoryMode)
-			detailsText = "Story Mode: " + WeekData.getCurrentWeek().weekName;
-		else
-			detailsText = "Freeplay";
-
+		detailsText = isStoryMode ? 'Story Mode: ${WeekData.getCurrentWeek().weekName}' : "Freeplay";
 		// String for when the game is paused
 		detailsPausedText = "Paused - " + detailsText;
 		#end
-
-	//	cpuControlled = ClientPrefs.data.;
 
 		GameOverSubstate.resetVariables();
 		songName = Paths.formatToSongPath(SONG.song);
 
 		if (SONG.stage == null || SONG.stage.length < 1) SONG.stage = StageData.vanillaSongStage(Paths.formatToSongPath(Song.loadedSongName));
 
-		var stageData:StageFile = StageData.getStageFile(curStage);
+		final stageData:StageFile = StageData.getStageFile(curStage);
 		defaultCamZoom = stageData.defaultZoom;
 
 		// if u wanna hardcode stage json files
@@ -891,10 +885,14 @@ class PlayState extends MusicBeatState
 		splash.alpha = 0.000001;
 		grpNoteSplashes.add(splash);
 
-		SustainCover.startCrochet = Conductor.stepCrochet;
-		SustainCover.frameRate = Math.floor(24 / 100 * SONG.bpm);
+		@:privateAccess {
+			SustainCover.__stepCrochet = Conductor.stepCrochet;
+			SustainCover.__rate = Math.floor(24 / 100 * SONG.bpm);
+		}
+
 		final holdSplash:SustainCover = new SustainCover();
 		holdSplash.alpha = 0.0001;
+		grpHoldSplashes.add(holdSplash);
 
 		// Opponent strums.
 		opponentStrums = new FlxTypedGroup<StrumNote>();
@@ -3784,7 +3782,12 @@ class PlayState extends MusicBeatState
 
 			if (SONG.notes[curSection].changeBPM)
 			{
+				final prev:Float = Conductor.bpm;
 				Conductor.bpm = SONG.notes[curSection].bpm;
+				if(prev != Conductor.bpm) @:privateAccess {
+					SustainCover.__rate = Math.floor(24 / 100 * SONG.bpm);
+				}
+
 				scripts.set('curBpm', Conductor.bpm);
 				scripts.set('crochet', Conductor.crochet);
 				scripts.set('stepCrochet', Conductor.stepCrochet);

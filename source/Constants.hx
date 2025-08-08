@@ -40,6 +40,8 @@ class Constants
 	 */
 	public static inline final DEFAULT_DISCORD_ID:String = "1095422496473358356";
 
+	public static inline final DEFAULT_SUSTAIN_COVER:String = "holdCovers/holdCover";
+
 	/**
 	 * =========================
 	 * 		FILE EXTENSIONS

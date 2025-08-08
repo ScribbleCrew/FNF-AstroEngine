@@ -1,5 +1,6 @@
 {
     "version": "0.0.1",
+    
     "allowRGB": true,
     "allowPixel": true,
     "scale": 1,
