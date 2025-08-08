@@ -105,7 +105,7 @@ class SustainCover extends FlxSprite
 	 */
 	public function load(?custom:String):Void
 	{
-		final raw:Dynamic = tjson.TJSON.parse(Paths.getTextFromFile(custom != null ? custom : 'data/notes/covers/holdCover$dataPrefix.json'));
+		final raw:Dynamic = tjson.TJSON.parse(funkin.backend.assets.AssetsPaths.getContent(custom != null ? custom : 'data/notes/covers/holdCover$dataPrefix.json'));
 		if (raw != null)
 		{
 			// temp data for reformatting

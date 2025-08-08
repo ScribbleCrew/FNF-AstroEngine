@@ -106,7 +106,7 @@ class NoteSplash extends FlxSprite
 		}
 		else if (Paths.fileExists('$jsonPath.json', TEXT))
 		{
-			var config:Dynamic = tjson.TJSON.parse(Paths.getTextFromFile('$jsonPath.json'));
+			var config:Dynamic = tjson.TJSON.parse(funkin.backend.assets.AssetsPaths.getContent('$jsonPath.json'));
 			if (config != null)
 			{
 				var tempConfig:NoteSplashConfig = {
@@ -138,7 +138,7 @@ class NoteSplash extends FlxSprite
 		var offsets:Array<Array<Float>> = [[0, 0]];
 		if (Paths.fileExists('$jsonPath.txt', TEXT)) // Backwards compatibility with 0.7 splash txts
 		{
-			var configFile:Array<String> = CoolUtil.listFromString(Paths.getTextFromFile('$path.txt'));
+			var configFile:Array<String> = CoolUtil.listFromString(funkin.backend.assets.AssetsPaths.getContent('$path.txt'));
 			if (configFile.length > 0)
 			{
 				anim = configFile[0];

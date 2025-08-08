@@ -186,7 +186,7 @@ class TitleState extends MusicBeatState
 	{
 		try
 		{
-			final xml:Access = new Access(Xml.parse(Paths.getTextFromFile('data/config/titlescreen.xml')).firstElement());
+			final xml:Access = new Access(Xml.parse(funkin.backend.assets.AssetsPaths.getContent('data/config/titlescreen.xml')).firstElement());
 			if (xml != null)
 			{
 				// Title logo position xml data.

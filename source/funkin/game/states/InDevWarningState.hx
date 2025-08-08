@@ -94,7 +94,7 @@ class InDevWarningState extends MusicBeatState
 	static var developmentText(get, never):String;
 	
 	@:dox(hide) @:noCompletion static inline function get_developmentText():String
-		return funkin.backend.assets.AssetsPaths.getContent(Paths.txt("developmentWarning"), true) ?? '';
+		return funkin.backend.assets.AssetsPaths.getContent("data/developmentWarning.txt", true) ?? '';
 
 	@:dox(hide) override public function create():Void
 	{

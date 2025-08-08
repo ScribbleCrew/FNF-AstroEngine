@@ -137,6 +137,7 @@ class Character extends FlxSprite
 		var characterPath:String = 'characters/$character.json';
 
 		var path:String = Paths.getPath(characterPath, TEXT);
+		trace('FOR FUCK SAKE $path');
 		#if MODS_ALLOWED
 		if (!FileSystem.exists(path))
 		#else
@@ -145,6 +146,7 @@ class Character extends FlxSprite
 		{
 			// If a character couldn't be found, change him to BF just to prevent a crash
 			path = Paths.getSharedPath('characters/' + Constants.DEFAULT_CHARACTER + '.json');
+			
 			missingCharacter = true;
 			missingText = new FlxText(0, 0, 300, 'ERROR:\n$character.json', 16);
 			missingText.alignment = CENTER;

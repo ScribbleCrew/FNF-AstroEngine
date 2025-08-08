@@ -17,6 +17,8 @@ import sys.io.File;
 import sys.FileSystem;
 #end
 
+import funkin.backend.assets.AssetsPaths;
+
 /**
  * Paths cuz very cool
  */
@@ -24,7 +26,7 @@ import sys.FileSystem;
 @:access(flash.media.Sound)
 @:access(openfl.display.BitmapData)
 @:access(flixel.system.frontEnds.BitmapFrontEnd._cache)
-@:allow(funkin.backend.assets.AssetsPaths)
+@:allow(AssetsPaths)
 class Paths
 {
 	#if MODS_ALLOWED
@@ -335,27 +337,40 @@ class Paths
 			/**
 		 * Get the path of a file.
 		 */
-	public static function getPath(file:String, ?type:AssetType = TEXT, ?parentfolder:String, ?modsAllowed:Bool = true):String
-	{
-		#if MODS_ALLOWED
-		if (modsAllowed)
-		{
-			final modPath:String = modFolders('${parentfolder != null ?'$parentfolder/' :""}$file');
-			if (FileSystem.exists(modPath)) return modPath;
-		}
-		#end
+public static function getPath(file:String, ?type:AssetType = TEXT, ?parentfolder:String, ?modsAllowed:Bool = true):String {
+    #if MODS_ALLOWED
+    if (modsAllowed) {
+        final modPath = modFolders('${parentfolder != null ? '$parentfolder/' : ""}$file');
+        if (FileSystem.exists(modPath))
+            return modPath;
+    }
+    #end
 
-		if (parentfolder != null)
-			return getFolderPath(file, parentfolder);
+    // Check specific parent folder on filesystem first
+    if (parentfolder != null) {
+        final folderPath = getFolderPath(file, parentfolder);
+        if (FileSystem.exists(folderPath) || OpenFlAssets.exists(folderPath, type))
+            return folderPath;
+    }
 
-		if (currentLevel != null && currentLevel != 'shared')
-		{
-			final levelPath:String = getFolderPath(file, currentLevel);
-			if (OpenFlAssets.exists(levelPath, type))
-				return levelPath;
-		}
-		return getSharedPath(file);
-	}
+    // Check current level folder (if not shared)
+    if (currentLevel != null && currentLevel != "shared") {
+        final levelPath = getFolderPath(file, currentLevel);
+        if (FileSystem.exists(levelPath) || OpenFlAssets.exists(levelPath, type))
+            return levelPath;
+    }
+
+    // Check shared folder
+    final sharedPath = getSharedPath(file);
+    if (FileSystem.exists(sharedPath) || OpenFlAssets.exists(sharedPath, type))
+        return sharedPath;
+
+    // 🔹 Finally check raw file path for embedded or filesystem
+    if (FileSystem.exists(file) || OpenFlAssets.exists(file, type))
+        return file;
+
+    return file; // fallback (probably will error if used)
+}
 
 	/**
 	 * Get a library path for a file.
@@ -396,7 +411,7 @@ class Paths
 	/**
 	 * Get a library path for a file.
 	 */
-	inline static public function xml(key:String, ?library:String):String { return getPath('data/$key.xml', TEXT, library); }
+	inline static public function xml(key:String, ?library:String):String { return AssetsPaths.getPath('data/$key.xml', TEXT, library); }
 
 	/**
 	 * Get a library path for a file.
@@ -730,62 +745,65 @@ class Paths
 	#end
 
 	#if FLXANIMATE_ALLOWED
-	public static function loadAnimateAtlas<T:FlxAnimate>(spr:T, folderOrImg:Dynamic, spriteJson:Dynamic = null, animationJson:Dynamic = null) : T
+	public static function loadAnimateAtlas<T:FlxAnimate>(spr:T, folderOrImg:Dynamic, spriteJson:Dynamic = null, animationJson:Dynamic = null):T
 	{
-		var spriteJsonContent:String = null;
-		var animationJsonContent:String = null;
-		var imageSource:Dynamic = folderOrImg;
+		var changedAnimJson:Bool = false;
+		var changedAtlasJson:Bool = false;
+		var changedImage:Bool = false;
 
 		if (spriteJson != null)
-			spriteJsonContent = File.getContent(spriteJson);
-		
-		if (animationJson != null)
-			animationJsonContent = File.getContent(animationJson);
-		
+		{
+			changedAtlasJson = true;
+			spriteJson = File.getContent(spriteJson);
+		}
 
+		if (animationJson != null)
+		{
+			changedAnimJson = true;
+			animationJson = File.getContent(animationJson);
+		}
+
+		// is folder or image path
 		if (Std.isOfType(folderOrImg, String))
 		{
-			var originalPath = folderOrImg;
-			var foundSpriteJson:Bool = spriteJsonContent != null;
-			var foundImage:Bool = false;
-
-			// Try loading spritemap<X>.json and corresponding images
+			final originalPath:String = folderOrImg;
 			for (i in 0...10)
 			{
-				final suffix : String = i == 0 ? "" : Std.string(i);
+				final st:String = i == 0 ? '' : '$i';
 
-				if (!foundSpriteJson)
+				if (!changedAtlasJson)
 				{
-					var jsonPath = 'images/$originalPath/spritemap$suffix.json';
-					spriteJsonContent = getTextFromFile(jsonPath, false, true);
-					if (spriteJsonContent != null)
+					spriteJson = getTextFromFile('images/$originalPath/spritemap$st.json', false, true);
+					if (spriteJson != null)
 					{
-						imageSource = image('$originalPath/spritemap$suffix');
-						foundImage = foundSpriteJson = true;
+						changedImage = true;
+						changedAtlasJson = true;
+						folderOrImg = image('$originalPath/spritemap$st');
 						break;
 					}
 				}
-				else
+				else if (fileExists('images/$originalPath/spritemap$st.png', IMAGE))
 				{
-					var imagePath = 'images/$originalPath/spritemap$suffix.png';
-					if (fileExists(imagePath, IMAGE))
-					{
-						imageSource = image('$originalPath/spritemap$suffix');
-						foundImage = true;
-						break;
-					}
+					changedImage = true;
+					folderOrImg = image('$originalPath/spritemap$st');
+					break;
 				}
 			}
 
-			// If no specific sprite mmap found, fallback to just the original image path
-			if (!foundImage)
-				imageSource = image(originalPath);
+			if (!changedImage)
+			{
+				changedImage = true;
+				folderOrImg = image(originalPath);
+			}
 
-			if (animationJsonContent == null)
-				animationJsonContent = getTextFromFile('images/$originalPath/Animation.json');
+			if (!changedAnimJson)
+			{
+				changedAnimJson = true;
+				animationJson = AssetsPaths.getContent('images/$originalPath/Animation.json');
+			}
 		}
 
-		spr.loadAtlasEx(imageSource, spriteJsonContent, animationJsonContent);
+		spr.loadAtlasEx(folderOrImg, spriteJson, animationJson);
 
 		return spr;
 	}

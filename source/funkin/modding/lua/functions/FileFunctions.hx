@@ -1,4 +1,5 @@
 package funkin.modding.lua.functions;
+
 #if LUA_ALLOWED
 import openfl.utils.Assets;
 
@@ -60,28 +61,20 @@ class FileFunctions
 			}
 			return false;
 		});
-		Lua_helper.add_callback(lua, "getTextFromFile", function(path:String, ?ignoreModFolders:Bool = false)
-		{
-			return Paths.getTextFromFile(path, ignoreModFolders);
-		});
+		Lua_helper.add_callback(lua, "getTextFromFile",
+			(path:String, ?ignoreModFolders:Bool = false) -> return funkin.backend.assets.AssetsPaths.getContent(path, !ignoreModFolders));
+
 		Lua_helper.add_callback(lua, "directoryFileList", function(folder:String)
 		{
 			var list:Array<String> = [];
 			#if sys
 			if (FileSystem.exists(folder))
-			{
 				for (folder in FileSystem.readDirectory(folder))
-				{
 					if (!list.contains(folder))
-					{
 						list.push(folder);
-					}
-				}
-			}
 			#end
 			return list;
 		});
 	}
 }
-
 #end

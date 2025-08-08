@@ -156,7 +156,11 @@ class Song
 	{
 		folder??=jsonInput;
 
-		final rawData:String = AssetsPaths.getContent(_lastPath = Paths.json('songs/${Paths.formatToSongPath(folder)}/${Paths.formatToSongPath(jsonInput)}'));
+		final cuh:String = '${Paths.formatToSongPath(folder)}/${Paths.formatToSongPath(jsonInput)}';
+		final fixedPath:String = AssetsPaths.JSON_REGEX.match(cuh) ? cuh : cuh + AssetsPaths.JSON_SUFFEX;
+		_lastPath = fixedPath;
+		final rawData:String = AssetsPaths.getContent('data/songs/$fixedPath');
+		trace(fixedPath);
 		return rawData != null ? parseJSON(rawData, jsonInput) : null;
 	}
 

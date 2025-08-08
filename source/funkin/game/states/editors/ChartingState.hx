@@ -2983,7 +2983,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 			var eventFiles:Array<String> = loadFileList('custom_events/', ['.txt']);
 			for (file in eventFiles)
 			{
-				var desc:String = Paths.getTextFromFile('custom_events/$file.txt');
+				var desc:String = funkin.backend.assets.AssetsPaths.getContent('custom_events/$file.txt');
 				eventsList.push([file, desc]);
 			}
 
