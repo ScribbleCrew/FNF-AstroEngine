@@ -43,8 +43,11 @@ typedef PixelShaderRef = NoteSplash.PixelSplashShaderRef;
 
 class SustainCover extends FlxSprite
 {
-	@:noCompletion static var __stepCrochet:Float;
+	@:noCompletion var __tmr:FlxTimer;
 	@:noCompletion static var __rate:Int;
+	@:noCompletion var __data:SustainCoverData;
+	@:noCompletion static var __stepCrochet:Float;
+	@:noCompletion var __offsetmap:Map<String, Map<String, TwoDimensionalPoint>>;
 
 	/**
 	 * Default Sustain Splash Asset.	
@@ -55,10 +58,6 @@ class SustainCover extends FlxSprite
 	 * Strum note.	
 	 */
 	public var strumNote:StrumNote;
-
-	@:noCompletion var __tmr:FlxTimer;
-	@:noCompletion var __data:SustainCoverData;
-	@:noCompletion var __offsetmap:Map<String, Map<String, TwoDimensionalPoint>>;
 
 	/**
 	 * Formatted sustain cover prefix
@@ -239,12 +238,12 @@ class SustainCover extends FlxSprite
 						{
 							animation.curAnim.looped = false;
 							animation.curAnim.frameRate = 24;
-							animation.finishCallback = (_) -> kill();
+							animation.finishCallback = (_) -> this.kill();
 						}
 						clipRect = null;
 						return;
 					}
-					kill();
+					this.kill();
 				});
 		}
 	}
@@ -254,17 +253,17 @@ class SustainCover extends FlxSprite
 		super.update(elapsed);
 		if (strumNote != null)
 		{
-			setPosition(strumNote.x, strumNote.y); // track the strumNote
-			visible = strumNote.visible;
-			alpha = ClientPrefs.data.holdSplashesAlpha - (1 - strumNote.alpha);
+			this.setPosition(strumNote.x, strumNote.y); // track the strumNote
+			this.visible = strumNote.visible;
+			this.alpha = ClientPrefs.data.holdSplashesAlpha - (1 - strumNote.alpha);
 
 			if (animation.curAnim != null
 				&& animation.curAnim.name == "hold"
 				&& strumNote.animation.curAnim != null
 				&& strumNote.animation.curAnim.name == "static")
 			{
-				visible = false;
-				kill();
+				this.visible = false;
+				this.kill();
 			}
 		}
 	}
