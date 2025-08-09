@@ -303,21 +303,13 @@ class AlphaCharacter extends FlxSprite
 	public static function loadAlphabetData(request:String = 'alphabet', ?path:String = 'data/config')
 	{
 		var path:String = Paths.getPath('$path/$request.json');
-		#if MODS_ALLOWED
-		if (!FileSystem.exists(path))
-		#else
-		if (!Assets.exists(path, TEXT))
-		#end
-		path = Paths.getPath('$path/alphabet.json');
+		if (!FileSystem.exists(path) || !Assets.exists(path, TEXT))
+			path = Paths.getPath('$path/alphabet.json');
 
 		allLetters = new Map<String, Null<Letter>>();
 		try
 		{
-			#if MODS_ALLOWED
-			var data:Dynamic = tjson.TJSON.parse(File.getContent(path));
-			#else
-			var data:Dynamic = tjson.TJSON.parse(Assets.getText(path));
-			#end
+			final data:Dynamic = tjson.TJSON.parse(AssetsPaths.getContent('$path/alphabet.json'));
 
 			if (data.allowed != null && data.allowed.length > 0)
 			{
