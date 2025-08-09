@@ -383,36 +383,35 @@ class Paths
 	 * Get a library path for a file.
 	 */
 	inline static public function txt(key:String, ?library:String):String
-		return getPath('data/$key.txt', TEXT, library);
+		return getPath('data/$key.txt', library);
 
 	/**
 	 * Get a library path for a file.
 	 */
-	inline static public function xml(key:String, ?library:String):String { return AssetsPaths.getPath('data/$key.xml', TEXT, library); }
+	inline static public function xml(key:String, ?library:String):String { return AssetsPaths.getPath('data/$key.xml', library); }
 
 	/**
 	 * Get a library path for a file.
 	 */
-	inline static public function json(key:String, ?library:String):String
-		return AssetsPaths.getPath('data/$key.json', TEXT, library);
+	inline static public function json(key:String, ?library:String):String return AssetsPaths.getPath('data/$key.json', library);
 
 	/**
 	 * Get a library path for a file.
 	 */
 	inline static public function shaderFragment(key:String, ?library:String):String
-		return getPath('shaders/$key.frag', TEXT, library);
+		return getPath('shaders/$key.frag', library);
 
 	/**
 	 * Get a library path for a file.
 	 */
 	inline static public function shaderVertex(key:String, ?library:String):String
-		return getPath('shaders/$key.vert', TEXT, library);
+		return getPath('shaders/$key.vert', library);
 
 	/**
 	 * Get a library path for a file.
 	 */
 	inline static public function lua(key:String, ?library:String):String
-		return getPath('$key.lua', TEXT, library);
+		return getPath('$key.lua', library);
 
 	/**
 	 * Get a video from a key.
@@ -463,7 +462,7 @@ class Paths
 		return getSharedPath()+'scripts/$path';
 	}
 
-	public static function getPath(file:String, ?type:AssetType = TEXT, ?parentFolder:String, ?modsAllowed:Bool = true)
+	public static function getPath(file:String, ?type:openfl.utils.AssetType, ?parentFolder:String, ?modsAllowed:Bool = true)
 		return AssetsPaths.getPath(file, type, parentFolder, modsAllowed);
 
 	public static function cacheBitmap(key:String, ?parentFolder:String = null, ?bitmap:BitmapData, ?allowGPU:Bool = true):FlxGraphic
@@ -509,7 +508,7 @@ class Paths
 
 	inline static public function getTextFromFile(key:String, ?ignoreMods:Bool = false, ?ignoreWarnings:Bool = false):String
 	{
-		final path:String = getPath(key, TEXT, !ignoreMods);
+		final path:String = getPath(key, !ignoreMods);
 		#if sys if (FileSystem.exists(path)) return File.getContent(path); #end // now you can access embedded and non embedded assets.
 				if (OpenFlAssets.exists(path, TEXT)) return Assets.getText(path); // prioritize embedded assets
 		if(!ignoreWarnings)
@@ -518,20 +517,12 @@ class Paths
 	}
 
 	/**
-	* Returns an font from the given key.
-	*
-	* @param key Name of the font.	
-	*/
-	static public function font(key:String, ?library:String):String
-	{
-		if(library != null) return getFolderPath('fonts/$key', library);
-		#if MODS_ALLOWED
-		final file:String = modsFont(key);
-		if (FileSystem.exists(file))
-			return file;
-		#end
-		return 'assets/fonts/$key';
-	}
+	 * Returns an font from the given key.
+	 * @param key 
+	 * @param library 
+	 * @return String
+	 */
+	static public function font(key:String, ?library:String):String { return AssetsPaths.font(key, library); }
 
 	/**
 	* Checks if an file exists.
@@ -555,7 +546,7 @@ class Paths
 		var useMod = false;
 
 		final loadedImage:FlxGraphic = image(key, parentFolder);
-		final myXml:Dynamic = getPath('images/$key.xml', TEXT, parentFolder, true);
+		final myXml:Dynamic = getPath('images/$key.xml', parentFolder, true);
 
 		if (OpenFlAssets.exists(myXml) #if MODS_ALLOWED || (FileSystem.exists(myXml) && (useMod = true)) #end)
 		{
@@ -567,7 +558,7 @@ class Paths
 		}
 		else
 		{
-			final atlasJson:Dynamic = getPath('images/$key.json', TEXT, parentFolder, true);
+			final atlasJson:Dynamic = getPath('images/$key.json', parentFolder, true);
 			if (OpenFlAssets.exists(atlasJson) #if MODS_ALLOWED || (FileSystem.exists(atlasJson) && (useMod = true)) #end)
 			{
 				return #if MODS_ALLOWED 
@@ -590,9 +581,9 @@ class Paths
 		if (FileSystem.exists(xml))
 			xmlExists = true;
 
-		return FlxAtlasFrames.fromSparrow(imageLoaded, (xmlExists ? File.getContent(xml) : getPath('images/$key.xml', TEXT, parentFolder)));
+		return FlxAtlasFrames.fromSparrow(imageLoaded, (xmlExists ? File.getContent(xml) : getPath('images/$key.xml', parentFolder)));
 		#else
-		return FlxAtlasFrames.fromSparrow(imageLoaded, getPath('images/$key.xml', TEXT, parentFolder));
+		return FlxAtlasFrames.fromSparrow(imageLoaded, getPath('images/$key.xml', parentFolder));
 		#end
 	}
 
@@ -606,9 +597,9 @@ class Paths
 		if (FileSystem.exists(txt))
 			txtExists = true;
 
-		return FlxAtlasFrames.fromSpriteSheetPacker(imageLoaded, (txtExists ? File.getContent(txt) : getPath('images/$key.txt', TEXT, parentFolder)));
+		return FlxAtlasFrames.fromSpriteSheetPacker(imageLoaded, (txtExists ? File.getContent(txt) : getPath('images/$key.txt', parentFolder)));
 		#else
-		return FlxAtlasFrames.fromSpriteSheetPacker(imageLoaded, getPath('images/$key.txt', TEXT, parentFolder));
+		return FlxAtlasFrames.fromSpriteSheetPacker(imageLoaded, getPath('images/$key.txt', parentFolder));
 		#end
 	}
 
@@ -622,9 +613,9 @@ class Paths
 		if (FileSystem.exists(json))
 			jsonExists = true;
 
-		return FlxAtlasFrames.fromTexturePackerJson(imageLoaded, (jsonExists ? File.getContent(json) : getPath('images/$key.json', TEXT, parentFolder)));
+		return FlxAtlasFrames.fromTexturePackerJson(imageLoaded, (jsonExists ? File.getContent(json) : getPath('images/$key.json', parentFolder)));
 		#else
-		return FlxAtlasFrames.fromTexturePackerJson(imageLoaded, getPath('images/$key.json', TEXT, parentFolder));
+		return FlxAtlasFrames.fromTexturePackerJson(imageLoaded, getPath('images/$key.json', parentFolder));
 		#end
 	}
 

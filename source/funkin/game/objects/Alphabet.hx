@@ -9,7 +9,7 @@ enum Alignment
 	CENTERED;
 	RIGHT;
 }
-
+// REWRITE
 class Alphabet extends FlxSpriteGroup
 {
 	public var text(default, set):String;
@@ -302,14 +302,19 @@ class AlphaCharacter extends FlxSprite
 
 	public static function loadAlphabetData(request:String = 'alphabet', ?path:String = 'data/config')
 	{
-		var path:String = Paths.getPath('$path/$request.json');
-		if (!FileSystem.exists(path) || !Assets.exists(path, TEXT))
-			path = Paths.getPath('$path/alphabet.json');
+		// var path:String = Paths.getPath('$path/$request.json');
+		// if (!FileSystem.exists(path) || !Assets.exists(path, TEXT))
+		// 	path = Paths.getPath('$path/alphabet.json');
+
+		final __ppath = AssetsPaths.getPath('$path/$request.json');
+		var _path:String = AssetsPaths.getContent(__ppath);
+		if (!AssetsPaths.fileExists(__ppath))
+			_path = AssetsPaths.getContent(AssetsPaths.getPath('$_path/alphabet.json'));
 
 		allLetters = new Map<String, Null<Letter>>();
 		try
 		{
-			final data:Dynamic = tjson.TJSON.parse(AssetsPaths.getContent('$path/alphabet.json'));
+			final data:Dynamic = tjson.TJSON.parse(_path);
 
 			if (data.allowed != null && data.allowed.length > 0)
 			{
@@ -334,7 +339,7 @@ class AlphaCharacter extends FlxSprite
 						allLetters.set(character, {anim: letterData.animation, offsets: letterData.normal, offsetsBold: letterData.bold});
 				}
 			}
-			Logs.prefixedTrace('Reloaded letters successfully ($path)!','Alphabet Handler', CYAN);
+			Logs.prefixedTrace('Reloaded letters successfully ($__ppath)!','Alphabet Handler', CYAN);
 		}
 		catch (e:Dynamic)
 		{

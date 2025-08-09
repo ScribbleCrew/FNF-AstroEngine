@@ -157,7 +157,7 @@ class Song
 		folder??=jsonInput;
 
 		final cuh:String = '${Paths.formatToSongPath(folder)}/${Paths.formatToSongPath(jsonInput)}';
-		final fixedPath:String = AssetsPaths.JSON_REGEX.match(cuh) ? cuh : cuh + AssetsPaths.JSON_SUFFEX;
+		final fixedPath:String = AssetsPaths.JSON_REGEX.match(cuh) ? cuh : cuh + ".json";
 		_lastPath = fixedPath;
 		final rawData:String = AssetsPaths.getContent('data/songs/$fixedPath');
 		trace(fixedPath);
