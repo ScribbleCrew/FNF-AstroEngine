@@ -3505,9 +3505,8 @@ class PlayState extends MusicBeatState
 
 				note.wasGoodHit = true;
 				if (!note.isSustainNote)
-				{
 					invalidateNote(note);
-				}
+				
 				return;
 			}
 
@@ -3560,34 +3559,26 @@ class PlayState extends MusicBeatState
 			{
 				var time:Float = 0.15;
 				if (note.isSustainNote && !note.animation.curAnim.name.endsWith('end'))
-				{
 					time += 0.15;
-				}
+				
 				playStrumAnim(false, Std.int(Math.abs(note.noteData)), time);
 			}
 			else
 			{
 				var spr = playerStrums.members[note.noteData];
 				if (spr != null)
-				{
 					spr.playAnim('confirm', true);
-				}
+				
 			}
 			note.wasGoodHit = true;
 			vocals.volume = 1;
 
-			var isSus:Bool = note.isSustainNote; // GET OUT OF MY HEAD, GET OUT OF MY HEAD, GET OUT OF MY HEAD
-			var leData:Int = Math.round(Math.abs(note.noteData));
-			var leType:String = note.noteType;
-
 			stageAccess(function(stage:BaseStage) stage.goodNoteHit(note));
-			scripts.call('goodNoteHit', [notes.members.indexOf(note), leData, leType, isSus]);
+			scripts.call('goodNoteHit', [notes.members.indexOf(note), Math.round(Math.abs(note.noteData)), note.noteType, note.isSustainNote]);
 
 			spawnHoldSplashOnNote(note);
 			if (!note.isSustainNote)
-			{
 				invalidateNote(note);
-			}
 		}
 	}
 
