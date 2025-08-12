@@ -27,6 +27,9 @@ class AssetsPaths
 
 	public static function getPath(file:String, ?type:AssetType = TEXT, ?library:String, ?modsAllowed:Bool = true):String
 	{
+		if(library != null && library != "shared")
+		{}//	trace(library);
+
 		#if MODS_ALLOWED
 		if (modsAllowed)
 		{
@@ -36,17 +39,17 @@ class AssetsPaths
 		}
 		#end
 
-		if (library != null)
-		{
-			final folderPath = Paths.getFolderPath(file, library);
-			if (FileSystem.exists(folderPath) || Assets.exists(folderPath, type))
-				return folderPath;
-		}
+		// if (library != null)
+		// {
+		// 	final folderPath = Paths.getFolderPath(file, library);
+		// 	if (FileSystem.exists(folderPath) || Assets.exists(folderPath, type))
+		// 		return folderPath;
+		// }
 
 		if (Paths.currentLevel != null && Paths.currentLevel != "shared")
 		{
 			final levelPath = Paths.getFolderPath(file, Paths.currentLevel);
-			if (FileSystem.exists(levelPath) || Assets.exists(levelPath, type))
+			if (Assets.exists(levelPath, type))
 				return levelPath;
 		}
 
@@ -55,8 +58,8 @@ class AssetsPaths
 		// 	return sharedPath;
 
 	//	return library == null ? 'assets/$file' : '$library:assets/$library/$file';
-
-		return library == null ? 'assets/$file' : '$library:assets/$library/$file'; // fallback (probably will error if used)
+		
+		return library == null ? 'assets/$file' : 'assets/$library/$file';
 	}
 
 	public static function font(key:String, ?library:String) : String {
@@ -88,6 +91,10 @@ class AssetsPaths
 			return File.getContent(modPath);
 		#end
 
-		return Assets.getText(getPath(key, TEXT, library, allowMods));
+		var ffs = getPath(key, TEXT, library, allowMods);
+		if(Assets.exists(ffs, TEXT))
+			return Assets.getText(ffs);
+
+		return null;
 	}
 }

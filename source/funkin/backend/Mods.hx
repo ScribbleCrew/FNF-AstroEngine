@@ -92,16 +92,24 @@ class Mods
 
 	inline public static function directoriesWithFile(path:String, fileToFind:String, mods:Bool = true)
 	{
+		/*
 		var foldersToCheck:Array<String> = [];
 		trace(path + fileToFind);
 		if(AssetsPaths.fileExists(fileToFind)){
 			trace('fuck yeah ${path + fileToFind}');
-			foldersToCheck.push(path + fileToFind);}
+			foldersToCheck.push(path + fileToFind);
+		} 
+		*/
+
+		var foldersToCheck:Array<String> = [];
+		var hehe = path + fileToFind;
+		if(FileSystem.exists(hehe) || Assets.exists(hehe)){
+			foldersToCheck.push(path + fileToFind);
+		}
 
 		if(Paths.currentLevel != null && Paths.currentLevel != path)
 		{
 			var pth:String = Paths.getFolderPath(fileToFind, Paths.currentLevel);
-			trace(pth);
 			if(AssetsPaths.fileExists(fileToFind, Paths.currentLevel))
 				foldersToCheck.push(pth);
 		}

@@ -1193,8 +1193,8 @@ class PlayState extends MusicBeatState
 		}
 		else #end
 		{
-			luaFile = Paths.getSharedPath(luaFile);
-			if (Assets.exists(luaFile) || FileSystem.exists(luaFile))
+			luaFile = Paths.getPath(luaFile);
+			if (Assets.exists(luaFile))
 				doPush = true;
 		}
 
@@ -1231,8 +1231,8 @@ class PlayState extends MusicBeatState
 		else
 		#end
 		{
-			scriptFile = Paths.getSharedPath(scriptFile);
-			if (Assets.exists(luaFile) || FileSystem.exists(scriptFile))
+			scriptFile = Paths.getPath(scriptFile);
+			if (Assets.exists(luaFile))
 				doPush = true;
 		}
 
@@ -3567,9 +3567,13 @@ class PlayState extends MusicBeatState
 			note.wasGoodHit = true;
 			vocals.volume = 1;
 
-			stageAccess(function(stage:BaseStage) stage.goodNoteHit(note));
-			scripts.call('goodNoteHit', [notes.members.indexOf(note), Math.round(Math.abs(note.noteData)), note.noteType, note.isSustainNote]);
+			var isSus:Bool = note.isSustainNote; // GET OUT OF MY HEAD, GET OUT OF MY HEAD, GET OUT OF MY HEAD
+			var leData:Int = Math.round(Math.abs(note.noteData));
+			var leType:String = note.noteType;
 
+			stageAccess(function(stage:BaseStage) stage.goodNoteHit(note));
+			scripts.call('goodNoteHit', [notes.members.indexOf(note), leData, leType, isSus]);
+			
 			spawnHoldSplashOnNote(note);
 			if (!note.isSustainNote)
 				invalidateNote(note);
