@@ -22,8 +22,7 @@ class Difficulty
 
 	inline public static function getFilePath(num:Null<Int> = null):String
 	{
-		if (num == null)
-			num = PlayState.storyDifficulty;
+		num ??= PlayState.storyDifficulty;
 		return Paths.formatToSongPath(Paths.formatToSongPath(list[num]) != Paths.formatToSongPath(defaultDifficulty) ? '-' + list[num] : '');
 	}
 

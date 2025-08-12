@@ -4,6 +4,7 @@
 ### Haxe
 export/*
 dump/*
+.dump/*
 local/*
 
 ### VS Code
