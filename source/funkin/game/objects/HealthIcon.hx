@@ -4,52 +4,64 @@ import flixel.graphics.FlxGraphic;
 
 class HealthIcon extends FlxSprite
 {
-	@:noCompletion var _isPlayer:Bool = false;
-	@:noCompletion var _iconOffsets:Array<Float> = [0, 0];
-	@:noCompletion var _character:String = '';
-
 	@:isVar
 	public var character(get,never):String;
 	@:dox(hide) @:noCompletion inline function get_character():String
-		return _character;
+		return __character;
 	
+	@:noCompletion var __iconOffsets:FlxPoint;
+	@:noCompletion var __isPlayer:Bool = false;
+	@:noCompletion var __character:String = '';
+
+	/**
+	 * [Description] The sprite to track the health icon.
+	 */
 	public var sprTracker:FlxSprite;
+
+	/**
+	 * [Description] If true, it will automatically adjust the offsets based on the icon size.
+	 */
 	public var autoAdjustOffset:Bool = true;
 
-	public function new(char:String = 'face', isPlayer:Bool = false, ?allowGPU:Bool = true)
+	public override function new(?char:String, ?isPlayer:Bool, ?allowGPU:Bool) : Void
 	{
+		__iconOffsets = new FlxPoint(0, 0);
+
 		super();
-		this._isPlayer = isPlayer;
-		changeIcon(char, allowGPU);
+		
+		this.__isPlayer = (isPlayer ?? false);
+		changeIcon(char ?? 'face', allowGPU ?? true);
 		scrollFactor.set();
 	}
 
+	/**
+	 * [Description] Changes the icon of the health icon.
+	 * @param char The character name to change the icon to.
+	 * @param allowGPU If true, it will allow GPU rendering for the icon.
+	 * @return Void
+	 */
 	public function changeIcon(char:String, ?allowGPU:Bool = true):Void
 	{
-		if (this._character != char)
+		if (this.__character != char)
 		{
-			this._character = char;
+			this.__character = char;
 
-			var name:String = 'icons/' + char;
-			if (!Paths.fileExists('images/' + name + '.png', IMAGE))
-				name = 'icons/icon-' + char;
-			if (!Paths.fileExists('images/' + name + '.png', IMAGE))
-				name = 'icons/icon-face';
+			final __iconName : String = funkin.backend.CoolUtil.find(['icons/$char', 'icons/icon-$char', 'icons/icon-face'], opt -> Paths.fileExists('images/$opt.png', IMAGE)) ?? 'icons/icon-face';
+			final __graphic:FlxGraphic = Paths.image(__iconName, allowGPU);
+			this.loadGraphic(__graphic, true, Math.floor(__graphic.width / 2), Math.floor(__graphic.height));
+			__iconOffsets.x = (width - 150) / 2;
+			__iconOffsets.y = (height - 150) / 2;
+			this.updateHitbox();
 
-			final graphic:FlxGraphic = Paths.image(name, allowGPU);
-			loadGraphic(graphic, true, Math.floor(graphic.width / 2), Math.floor(graphic.height));
-			_iconOffsets[0] = (width - 150) / 2;
-			_iconOffsets[1] = (height - 150) / 2;
-			updateHitbox();
-
-			animation.add(char, [0, 1], 0, false, _isPlayer);
+			// TODO: add a animation support.
+			animation.add(char, [0, 1], 0, false, __isPlayer);
 			animation.play(char);
 
 			antialiasing = char.endsWith('-pixel') ? false : ClientPrefs.data.antialiasing;
 		}
 	}
 
-	override function update(elapsed:Float) : Void
+	@:dox(hide) @:noCompletion override function update(elapsed:Float) : Void
 	{
 		super.update(elapsed);
 
@@ -57,14 +69,14 @@ class HealthIcon extends FlxSprite
 			setPosition(sprTracker.x + sprTracker.width + 12, sprTracker.y - 30);
 	}
 
-	override function updateHitbox() : Void
+	@:dox(hide) @:noCompletion override function updateHitbox() : Void
 	{
 		super.updateHitbox();
 
 		if (autoAdjustOffset)
 		{
-			offset.x = _iconOffsets[0];
-			offset.y = _iconOffsets[1];
+			offset.x = __iconOffsets.x;
+			offset.y = __iconOffsets.y;
 		}
 	}
 }

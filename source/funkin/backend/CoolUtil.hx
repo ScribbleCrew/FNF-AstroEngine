@@ -60,6 +60,17 @@ class CoolUtil
 	}
 
 	/**
+	 * [Description] Finds the first element in an array that matches a given predicate.
+	 * @param arr Array<T> The array to search through.
+	 * @param predicate T->Bool The predicate function to match against each element.
+	 * @return Null<T> Returns the first element that matches the predicate, or null if none found.
+	 */
+	public static function find<T>(arr:Array<T>, predicate:T->Bool):Null<T> {
+		for (item in arr) if (predicate(item)) return item;
+		return null;
+	}
+
+	/**
 	 * [Description] Returns the class in question's path e.g `funkin.backend.CoolUtil`
 	 * @param class  Dynamic class to get the path of.
 	 * @return String Returns the class path.
