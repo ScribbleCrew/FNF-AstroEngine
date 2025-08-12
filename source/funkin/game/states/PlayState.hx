@@ -1178,7 +1178,7 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-	function startCharacterScripts(name:String):Void
+	function startCharacterScripts(name:String):Void // TODO: move this into character.hx
 	{
 		// Lua
 		#if LUA_ALLOWED
@@ -1191,16 +1191,12 @@ class PlayState extends MusicBeatState
 			luaFile = replacePath;
 			doPush = true;
 		}
-		else
+		else #end
 		{
 			luaFile = Paths.getSharedPath(luaFile);
-			if (FileSystem.exists(luaFile))
+			if (Assets.exists(luaFile) || FileSystem.exists(luaFile))
 				doPush = true;
 		}
-		#else
-		luaFile = Paths.getSharedPath(luaFile);
-		if (Assets.exists(luaFile))
-			doPush = true;
 		#end
 
 		if (doPush)
@@ -1221,7 +1217,7 @@ class PlayState extends MusicBeatState
 		}
 		#end
 
-		/*
+		
 		// HScript
 		#if HSCRIPT_ALLOWED
 		var doPush:Bool = false;
@@ -1237,7 +1233,7 @@ class PlayState extends MusicBeatState
 		#end
 		{
 			scriptFile = Paths.getSharedPath(scriptFile);
-			if (FileSystem.exists(scriptFile))
+			if (Assets.exists(luaFile) || FileSystem.exists(scriptFile))
 				doPush = true;
 		}
 
@@ -1250,7 +1246,6 @@ class PlayState extends MusicBeatState
 				new HScript(null, scriptFile).run();
 		}
 		#end
-		*/
 	}
 
 	function startCharacterPos(char:Character, ?gfCheck:Bool = false)

@@ -11,6 +11,7 @@ import rulescript.interps.RuleScriptInterp;
 import rulescript.parsers.HxParser;
 import rulescript.parsers.Parser;
 import rulescript.types.ScriptedTypeUtil;
+import openfl.utils.Assets;
 
 /**
  * Modified `haxe.PosInfos` type.	
@@ -116,7 +117,11 @@ class HScript extends rulescript.RuleScript implements IScript implements IHScri
 			var f:String = file.replace('\\', '/');
 			if (f.contains('/') && !f.contains('\n'))
 			{
-				scriptThing = File.getContent(f);
+				if (FileSystem.exists(f))
+					scriptThing = File.getContent(f);
+				
+				else if (Assets.exists(f))
+					scriptThing = Assets.getText(f);
 				scriptName = f;
 			}
 		}

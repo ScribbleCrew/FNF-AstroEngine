@@ -155,35 +155,6 @@ class MusicBeatState extends FlxState implements IBeat
 	static final extensions:Map<String, Array<String>> = new Map<String, Array<String>>();
 
 	/**
-	 * Checks if the script's file extension	is inside of the extensions map.
-	 */
-	#if GLOBAL_SCRIPT @:allow(funkin.modding.GlobalScript) #end
-	static function checkScriptExtensions(file:String, ?type:String):Bool
-	{
-		#if LUA_ALLOWED extensions.set('lua', [".lua", ".funkinlua"]); #end
-		#if HSCRIPT_ALLOWED extensions.set('haxe', [".hx", ".hxc", ".hscript" /* why would anyone need this... */]); /* funi extensions */ #end
-		
-		// Extension check loop
-		for (typeKey in extensions.keys())
-		{
-			// If 'type' is provided, check only that specific type
-			if (type != null && type != typeKey)
-				continue;
-
-			// Check extensions for the current type
-			for (ext in extensions.get(typeKey))
-			{
-				// Check if the file ends with the extension
-				if (file.endsWith(ext))
-					return true;
-			}
-		}
-
-		// If the extension isn't found
-		return false;
-	}
-
-	/**
 	 * Execute class scripts inside of mods/source.
 	 * Used inside The BeatStates.
 	 */
