@@ -64,6 +64,8 @@ class Init extends flixel.FlxState
 		#if HSCRIPT_ALLOWED @:privateAccess StaticImports.init(); #end
 		#if GLOBAL_SCRIPT GlobalScript.init(); #end
 
+		@:privateAccess	Script.initExt();
+
 		funkin.game.objects.Alphabet.AlphaCharacter.loadAlphabetData();
 
 			

@@ -23,10 +23,10 @@ class GlobalScript
 
 	public static function reload():Void
 	{
-		final more : String = scripts.scripts.length > 0;
-		Logs.log(more ? 'Reloading global scripts...' : 'No global scripts to reload...', YELLOW);
+		final more : Bool = (scripts?.scripts.length > 0) ?? true;
+		Logs.log(scripts == null ? 'No global script instance reloading...' : (more ? 'Reloading global scripts...' : 'No global scripts to reload...'), YELLOW);
 		
-		this.destroy();
+		destroy();
 
 		scripts = new ScriptPack();
 		loadScripts(Paths.getSharedPath(), 'scripts/modules/');
@@ -35,7 +35,7 @@ class GlobalScript
 			Logs.log('Global script successfully reloaded.', YELLOW);
 	}
 
-	static var loadedScripts : StringMap = new StringMap<Bool>();
+	static var loadedScripts : StringMap<Bool> = new StringMap<Bool>();
 
 	public static function loadScripts(path:String, fileToFind:String):Void
 	{

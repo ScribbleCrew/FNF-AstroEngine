@@ -155,38 +155,47 @@
 	<classpath name="source" />
 	
 	<!-- Build directories -->
-	<set name="BUILD_DIR" value="export/debug" if="debug" />
+	<set name="BUILD_DIR" value="export/debug_FFS" if="debug" />
 	<set name="BUILD_DIR" value="export/release" unless="debug" />
 	<set name="BUILD_DIR" value="export/32bit" if="32bits" />
 
 	<!-- Videos -->
-	<assets path="assets/videos" library="videos" if="VIDEOS_ALLOWED"/>
+	<!-- <assets path="assets/videos" library="videos" if="VIDEOS_ALLOWED"/> -->
 
 	<!-- Songs -->
-	<assets path="assets/songs" library="songs" exclude="*.ogg" if="web"/>
-	<assets path="assets/songs" library="songs" exclude="*.mp3" unless="web"/>
+	<!-- <assets path="assets/songs" library="songs" exclude="*.ogg" if="web"/>
+	<assets path="assets/songs" library="songs" exclude="*.mp3" unless="web"/> -->
 
 	<!-- Shared Assets -->
-	<assets path="assets/shared" exclude="*.ogg" if="web"/>
-	<assets path="assets/shared" exclude="*.mp3" unless="web"/>
+	<!-- <assets path="assets/shared" exclude="*.ogg" if="web"/>
+	<assets path="assets/shared" exclude="*.mp3" unless="web"/> -->
+	<define name="PRELOAD_ALL" unless="web" />
+	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL"/>
+
+	<library name="assets"    preload="true"  if="PRELOAD_ALL"/>
+	<library name="assets"    preload="false" if="NO_PRELOAD_ALL" />
+
+	<assets path="assets/"    rename="assets"	exclude="*.ogg" if="web"/>
+	<assets path="assets/"    rename="assets"	exclude="*.mp3" unless="web"/>
+	
 
 	<!-- Mods -->
 	<assets path='mods' embed='false'/>
 
 	<!-- Week Assets -->
-	<assets path="assets/week_assets" rename="assets" exclude="*.ogg" if="web"/>
-	<assets path="assets/week_assets" rename="assets" exclude="*.mp3" unless="web"/>
+	<assets path="week_assets" rename="assets" exclude="*.ogg" if="web"/>
+	<assets path="week_assets" rename="assets" exclude="*.mp3" unless="web"/>
 
 	<!-- Embedded Assets -->
-	<assets path="assets/embed" rename="assets" exclude="*.ogg" if="web" embed='true'/>
-	<assets path="assets/embed" rename="assets" exclude="*.mp3" unless="web" embed='true'/>
+	<assets path="embed" rename="assets" exclude="*.ogg" if="web" embed='true'/>
+	<assets path="embed" rename="assets" exclude="*.mp3" unless="web" embed='true'/>
 
 	<!-- Linux icon -->
 	<assets path='art/icons/iconOG.png' rename='icon.png' if="linux" />
 
 	<section if="BASE_GAME_FILES">
-		<assets path="assets/base_funkin" rename="assets" exclude="*.ogg" if="web"/>
-		<assets path="assets/base_funkin" rename="assets" exclude="*.mp3" unless="web"/>
+		<assets path="base_funkin" rename="assets" exclude="*.ogg" if="web"/>
+		<assets path="base_funkin" rename="assets" exclude="*.mp3" unless="web"/>
 		<haxelib name="grig.audio" if="BASE_GAME_FILES"/>
 		<haxelib name="funkin.vis" if="BASE_GAME_FILES"/>
 	</section>
@@ -200,7 +209,7 @@
 	</section>
 
 	<!-- Font Path -->
-	<assets path="assets/fonts" />
+	<!-- <assets path="assets/fonts" /> -->
 
 	<!-- _______________________________ Libraries ______________________________ -->
 

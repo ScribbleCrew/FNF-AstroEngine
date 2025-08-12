@@ -59,8 +59,12 @@ class Script implements IFlxDestroyable
 		active = false;
 	}
 
-	
-
+	static var extensions:Map<String, Array<String>> = new Map<String, Array<String>>();	
+	static function initExt():Void{// TODO: use regex instead of strings
+		#if LUA_ALLOWED extensions.set('lua', [".lua", ".funkinlua"]); #end
+		#if HSCRIPT_ALLOWED extensions.set('haxe', [".hx", ".hxc", ".hscript" /* why would anyone need this... */]); /* funi extensions */ #end
+	}
+		
 	/**
 	 * Checks if a given file name has a valid script file extension.
 	 *
@@ -72,11 +76,8 @@ class Script implements IFlxDestroyable
 	 * @return `true` if the file matches a valid extension for the given (or any) type, `false` otherwise.
 	 */
 	#if GLOBAL_SCRIPT @:allow(funkin.modding.GlobalScript) #end
-	static function checkScriptExtensions(file:String, ?type:String):Bool
+	public static function checkScriptExtensions(file:String, ?type:String):Bool
 	{
-		#if LUA_ALLOWED extensions.set('lua', [".lua", ".funkinlua"]); #end
-		#if HSCRIPT_ALLOWED extensions.set('haxe', [".hx", ".hxc", ".hscript" /* why would anyone need this... */]); /* funi extensions */ #end
-		
 		// Extension check loop
 		for (typeKey in extensions.keys())
 		{

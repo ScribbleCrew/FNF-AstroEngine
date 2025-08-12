@@ -4,7 +4,7 @@ package funkin.backend.framerate;
 import openfl.text.Font;
 import funkin.backend.framerate.addons.*;
 
-@:font('assets/embed/fonts/engine/Source-Code-Pro.ttf')
+@:font('embed/fonts/engine/Source-Code-Pro.ttf')
 class SourceCodePro extends openfl.text.Font {} // was called "FUCKYOU" but ive had a change of heart...
 
 class FramerateContainer extends Sprite

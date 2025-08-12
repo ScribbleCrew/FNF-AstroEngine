@@ -307,9 +307,10 @@ class AlphaCharacter extends FlxSprite
 		// 	path = Paths.getPath('$path/alphabet.json');
 
 		final __ppath = AssetsPaths.getPath('$path/$request.json');
-		var _path:String = AssetsPaths.getContent(__ppath);
+		trace(__ppath);
+		var _path:String = AssetsPaths.getContent('$path/$request.json');
 		if (!AssetsPaths.fileExists(__ppath))
-			_path = AssetsPaths.getContent(AssetsPaths.getPath('$_path/alphabet.json'));
+			_path = AssetsPaths.getContent('$path/$request.json');
 
 		allLetters = new Map<String, Null<Letter>>();
 		try

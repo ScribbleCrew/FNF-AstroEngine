@@ -365,13 +365,18 @@ class Paths
 	 * Get a folder path
 	 */
 	inline static public function getFolderPath(file:String, folder = "shared"):String
-		return 'assets/$folder/$file';
+		return AssetsPaths.getPath(file, folder == "shared" ? null : folder);//'assets/$folder/$file';
+
+//file:String, ?type:AssetType = TEXT, ?library:String, ?modsAllowed:Bool = true
+	public static inline function _getPath(file:String, ?library:String)
+		return library != null ? '$library:assets/$library/$file' : 'assets/$file';
+
 
 	/**
 	 * Get a file from the shared library.
 	 */
-	inline public static function getSharedPath(file:String = ''):String
-		return 'assets/shared/$file';
+	inline public static function getSharedPath(file:String = '', ?library:String):String
+		return _getPath(file,library); //'assets/shared/$file';
 
 	/**
 	 * Get a library path for a file.

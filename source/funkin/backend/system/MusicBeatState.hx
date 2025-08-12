@@ -154,6 +154,7 @@ class MusicBeatState extends FlxState implements IBeat
 	 */
 	static final extensions:Map<String, Array<String>> = new Map<String, Array<String>>();
 
+	#if SOFTCODED_STATES
 	/**
 	 * Execute class scripts inside of mods/source.
 	 * Used inside The BeatStates.
@@ -174,7 +175,7 @@ class MusicBeatState extends FlxState implements IBeat
 			for (_fileName in FileSystem.readDirectory(folderName))
 			{
 				// Skip files without valid extensions
-				if (!checkScriptExtensions(_fileName))
+				if (!Script.checkScriptExtensions(_fileName))
 					continue;
 
 				// Skips disabled scripts.
@@ -194,11 +195,11 @@ class MusicBeatState extends FlxState implements IBeat
 
 				// Execute Lua/HScript scripts if flag concurrent flag is enabled.
 				#if LUA_ALLOWED
-				if (checkScriptExtensions(_fileName, "lua"))
+				if (Script.checkScriptExtensions(_fileName, "lua"))
 					scripts.add(new FunkinLua(convertedScriptPath).execute(scriptArgs));
 				#end
 				#if HSCRIPT_ALLOWED
-				if (checkScriptExtensions(_fileName, "haxe"))
+				if (Script.checkScriptExtensions(_fileName, "haxe"))
 				{
 					//	final _class =
 					scripts.add(new HScript(null, convertedScriptPath).run(scriptArgs));
@@ -209,6 +210,7 @@ class MusicBeatState extends FlxState implements IBeat
 			}
 		}
 	}
+	#end
 
 	/**
 	 * Sets up the custom camera.
