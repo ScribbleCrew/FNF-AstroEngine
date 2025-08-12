@@ -3595,14 +3595,16 @@ class PlayState extends MusicBeatState
 		note.destroy();
 	}
 
-	public function spawnHoldSplashOnNote(note:Note) {
-		if (ClientPrefs.data.holdSplashesAlpha <= 0)
-			return;
+	public function spawnHoldSplashOnNote(note:Note) : Void {
+		if(scripts.call('onSpawnHoldSplashOnNote', [note]) != ScriptUtil.Function_Stop){
+			if (ClientPrefs.data.holdSplashesAlpha <= 0)
+				return;
 
-		if (ClientPrefs.data.holdCovers && note != null && !ClientPrefs.data.hideHud) {
-			var strum:StrumNote = ((ClientPrefs.data.oppHoldSplashes && note.hitByOpponent) ? opponentStrums : playerStrums).members[note.noteData];
-			if(strum != null && note.tail.length > 1)
-				spawnHoldSplash(note);
+			if (ClientPrefs.data.holdCovers && note != null && !ClientPrefs.data.hideHud) {
+				var strum:StrumNote = ((ClientPrefs.data.oppHoldSplashes && note.hitByOpponent) ? opponentStrums : playerStrums).members[note.noteData];
+				if(strum != null && note.tail.length > 1)
+					spawnHoldSplash(note);
+			}
 		}
 	}
 
@@ -3690,7 +3692,7 @@ class PlayState extends MusicBeatState
 	public static function cancelMusicFadeTween():Void
 	{
 		if (FlxG.sound.music.fadeTween != null)
-			FlxG.sound.music.fadeTween.cancel();
+			FlxG.sound.music?.fadeTween.cancel();
 		FlxG.sound.music.fadeTween = null;
 	}
 
@@ -3699,7 +3701,7 @@ class PlayState extends MusicBeatState
 	*/
 	@:noCompletion private var _lastStepHit:Int = -1;
 
-	@:dox(hide) override function stepHit():Void
+	@:dox(hide) @:noCompletion override function stepHit():Void
 	{
 		super.stepHit();
 		if (Math.abs(FlxG.sound.music.time - (Conductor.songPosition - Conductor.offset)) > (20 * playbackRate)
@@ -3718,7 +3720,7 @@ class PlayState extends MusicBeatState
 	* The last beat hit.	
 	*/
 	@:noCompletion private var _lastBeatHit:Int = -1;
-	@:dox(hide) override function beatHit():Void
+	@:dox(hide) @:noCompletion override function beatHit():Void
 	{
 		super.beatHit();
 
