@@ -40,6 +40,11 @@ class Constants
 	 */
 	public static inline final DEFAULT_DISCORD_ID:String = "1095422496473358356";
 
+	/**
+	 * Default sustain cover.
+	 * This is used when the note has a sustain, but no cover is specified.
+	 * It will use the default cover instead of the note's cover.
+	 */
 	public static inline final DEFAULT_SUSTAIN_COVER:String = "holdCovers/holdCover";
 
 	/**

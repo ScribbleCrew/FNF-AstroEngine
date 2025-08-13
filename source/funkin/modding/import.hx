@@ -1,5 +1,3 @@
-package funkin.modding;
-
 #if !macro
 // BASE SCRIPTING STUFF
 import funkin.modding.*;
@@ -16,7 +14,6 @@ import rulescript.parsers.*;
 import rulescript.types.Typedefs;
 import rulescript.types.ScriptedTypeUtil;
 import rulescript.scriptedClass.RuleScriptedClassUtil;
-
 import funkin.modding.hscript.*;
 #end
 #if LUA_ALLOWED
