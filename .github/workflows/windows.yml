@@ -9,6 +9,7 @@ on:
       - '.github/workflows/**'
       - 'Project.hxp'
       - 'Project.xml'
+      - 'cli/**'
   pull_request:
     branches: [main, experimental]
     paths:
@@ -17,6 +18,7 @@ on:
       - '.github/workflows/**'
       - 'Project.hxp'
       - 'Project.xml'
+      - 'cli/**'
 
   workflow_dispatch:
 
@@ -31,7 +33,7 @@ jobs:
           haxe-version: 4.3.4
       - name: Installing/Updating libraries
         run: |
-            haxe -cp commandline -D analyzer-optimize --run Main setup -s
+            haxe -cp commandline -D analyzer-optimize --run Main
         shell: cmd
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
