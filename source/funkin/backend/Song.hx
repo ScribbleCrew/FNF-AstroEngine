@@ -28,6 +28,7 @@ typedef SwagSong =
 
 	@:optional var arrowSkin:String;
 	@:optional var splashSkin:String;
+	@:optional var sustainSplashSkin:String;
 }
 
 typedef SwagSection =

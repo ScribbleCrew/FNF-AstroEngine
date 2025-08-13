@@ -43,6 +43,11 @@ typedef PixelShaderRef = NoteSplash.PixelSplashShaderRef;
 
 class SustainCover extends FlxSprite
 {
+	/**
+	 * Default Sustain Cover Asset.
+	 */
+	public static var DEFAULT_SUSTAIN_SPLASH(default, never):String = "holdCovers/holdCover";
+
 	@:noCompletion var __tmr:FlxTimer;
 	@:noCompletion static var __rate:Int;
 	@:noCompletion var __data:SustainCoverData;
@@ -50,9 +55,17 @@ class SustainCover extends FlxSprite
 	@:noCompletion var __offsetmap:Map<String, Map<String, TwoDimensionalPoint>>;
 
 	/**
-	 * Default Sustain Splash Asset.	
+	 * Formatted sustain cover postfix
+	 * e.g -normal, -cosmo
 	 */
-	public static var defaultSustainSplash:String = 'holdCovers/holdCover';
+	public static var sustainPostfix(get,never):String;
+	@:dox(hide) @:noCompletion static function get_sustainPostfix():String
+	{
+		var skin:String = '';
+		if (ClientPrefs.data.holdSplashesSkin != ClientPrefs.defaultData.holdSplashesSkin)
+			skin = '-' + ClientPrefs.data.splashSkin.trim().toLowerCase().replace(' ', '-');
+		return skin;
+	}
 
 	/**
 	 * Strum note.	

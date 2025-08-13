@@ -20,16 +20,15 @@ import haxe.ds.StringMap;
 class LoadingState extends MusicBeatState
 {
 	/**
-	* The amount of loaded files.
-	*/
+	 * The amount of loaded files.
+	 */
 	public static var loaded:Int = 0;
-
 
 	public static var loadMax:Int = 0;
 
 	static var originalBitmapKeys:StringMap<String> = new StringMap();
 	static var requestedBitmaps:Map<String, BitmapData> = [];
-	
+
 	static var mutex:Mutex;
 	static var threadPool:FixedThreadPool = null;
 
@@ -79,13 +78,11 @@ class LoadingState extends MusicBeatState
 	var funkay:FlxSprite;
 	#end
 
-	//public var scripts:ScriptPack;
-
+	// public var scripts:ScriptPack;
 	var stateChangeDelay:Float = 0;
 
 	override function create()
 	{
-
 		var bg:FlxSprite = new FlxSprite(0, 660).makeGraphic(1, 1, FlxColor.BLACK);
 		bg.scale.set(FlxG.width - 300, 25);
 		bg.updateHitbox();
@@ -116,13 +113,8 @@ class LoadingState extends MusicBeatState
 		}
 
 		#if HSCRIPT_ALLOWED
-		for (i in stateScripts.scripts)
-		{ // HAHAHAHAHAHAH
-			i.set('getLoaded', () -> return loaded);
-			i.set('getLoadMax', () -> return loadMax);
-			// i.set('barBack', barBack);
-			// i.set('bar', bar);
-		}
+		stateScripts.set('getLoadMax', () -> return loaded);
+		stateScripts.set('getLoaded', () -> return loadMax);
 		#end
 	}
 
@@ -247,24 +239,27 @@ class LoadingState extends MusicBeatState
 	}
 
 	/**
-	* Map of assets to preload.	
-	*/
+	 * Map of assets to preload.	
+	 */
 	static var AssetsToPrepare:Map<String, Array<String>> = ["images" => [], "sounds" => [], "music" => [], "songs" => []];
 
 	/**
-	*	
-	*/
+	 *	
+	 */
 	public static function prepare(images:Array<String> = null, sounds:Array<String> = null, music:Array<String> = null):Void
 	{
-		if (images != null) AssetsToPrepare.get('images').concat(images); // good?
-		if (sounds != null) AssetsToPrepare.get('sounds').concat(sounds);
-		if (music != null) AssetsToPrepare.get('music').concat(music);
+		if (images != null)
+			AssetsToPrepare.get('images').concat(images); // good?
+		if (sounds != null)
+			AssetsToPrepare.get('sounds').concat(sounds);
+		if (music != null)
+			AssetsToPrepare.get('music').concat(music);
 	}
 
 	static var initialThreadCompleted:Bool = true;
 	static var dontPreloadDefaultVoices:Bool = false;
 
-	static function _startPool() : Void
+	static function _startPool():Void
 		threadPool = new FixedThreadPool(#if MULTITHREADED_LOADING #if cpp OsAPI.cpuThreads #else 8 #end #else 1 #end);
 
 	public static function prepareToSong()
@@ -314,8 +309,13 @@ class LoadingState extends MusicBeatState
 			AssetsToPrepare.get('images').push(noteSplash);
 
 			// LOAD SUSTAIN SPLASHES
-			// !!! ISN'T FINISHED, JUST LOADS THE DEFAULT ONE !!!
-			AssetsToPrepare.get('images').push('holdCovers/holdCover');
+			////  ISN'T FINISHED, JUST LOADS THE DEFAULT ONE
+			var sustainSplash:String = SustainCover.DEFAULT_SUSTAIN_SPLASH;
+			if (PlayState.SONG.sustainSplashSkin != null && PlayState.SONG.sustainSplashSkin.length > 0)
+				sustainSplash = PlayState.SONG.sustainSplashSkin;
+			else
+				sustainSplash += SustainCover.sustainPostfix;
+			AssetsToPrepare.get('images').push(sustainSplash);
 
 			try
 			{
@@ -519,17 +519,19 @@ class LoadingState extends MusicBeatState
 			if (member.endsWith('/') || (!Paths.fileExists(myKey, type, false, parentFolder) && (doTrace = true)))
 			{
 				arr.remove(member);
-				if (doTrace) trace('Removed invalid $prefix: $member');
+				if (doTrace)
+					trace('Removed invalid $prefix: $member');
 			}
 			else
 				i++;
 		}
 	}
 
-	public static function startThreads() : Void
+	public static function startThreads():Void
 	{
 		mutex = new Mutex();
-		loadMax = AssetsToPrepare.get('images').length + AssetsToPrepare.get('sounds').length + AssetsToPrepare.get('music').length + AssetsToPrepare.get('songs').length;
+		loadMax = AssetsToPrepare.get('images').length + AssetsToPrepare.get('sounds').length + AssetsToPrepare.get('music').length
+			+ AssetsToPrepare.get('songs').length;
 		loaded = 0;
 
 		// then start threads
@@ -568,7 +570,7 @@ class LoadingState extends MusicBeatState
 			{
 				if (func() != null)
 				{
-					#if debug Logs.prefixedTrace('finished preloading $traceData in ${Sys.time() - threadStart}s', 'LoadingState, DEBUG' ,GREEN); #end
+					#if debug Logs.prefixedTrace('finished preloading $traceData in ${Sys.time() - threadStart}s', 'LoadingState, DEBUG', GREEN); #end
 				}
 				else
 					trace('ERROR! fail on preloading $traceData ');
