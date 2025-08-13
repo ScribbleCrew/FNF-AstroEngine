@@ -101,7 +101,7 @@ class HiddenProcess {
 	}
 
 	public function getPid():Int {
-		return NativeProcess.process_pid(p);
+		return NativeProcess.process_pid(p); 
 	}
 
 	public function exitCode(block:Bool = true):Null<Int> {
