@@ -38,11 +38,12 @@ jobs:
         run: |
           sudo apt-get install libvlc-dev libvlccore-dev
       - name: Installing/Updating libraries
-        run: haxe -cp cli -D analyzer-optimize --run Main --auto-exit
+        run: |
+          haxe -cp cli -D analyzer-optimize --run Main --auto-exit
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
       - name: Compile
-        run: haxelib run lime build linux --app-version="4.0.0-${{ github.run_id}}"
+        run: haxelib run lime build linux Project.xml --app-version="4.0.0-${{ github.run_id}}"
       - name: Uploading artifact (entire build)
         uses: actions/upload-artifact@v4
         with:
