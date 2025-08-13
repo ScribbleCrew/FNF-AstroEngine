@@ -1,2 +1,2 @@
 #!/bin/sh
-haxe -cp commandline -D analyzer-optimize --run Main
+haxe -cp cli -D analyzer-optimize --run Main

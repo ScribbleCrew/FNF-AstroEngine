@@ -38,7 +38,7 @@ jobs:
         run: |
           sudo apt-get install libvlc-dev libvlccore-dev
       - name: Installing/Updating libraries
-        run: haxe -cp commandline -D analyzer-optimize --run Main
+        run: haxe -cp cli -D analyzer-optimize --run Main
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
       - name: Compile
