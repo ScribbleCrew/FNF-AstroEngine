@@ -8,7 +8,7 @@ on:
       - 'source/**'
       - '.github/workflows/**'
       - 'Project.hxp'
-      - 'project.xml'
+      - 'project.xml' 
       - 'cli/**'
   pull_request:
     branches: [main, experimental]
@@ -23,27 +23,44 @@ on:
   workflow_dispatch:
 
 jobs:
-   buildLinux:
+  buildLinux:
     name: Release Build
     runs-on: ubuntu-24.04
 
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }} # Always start at repo root
+
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+
       - uses: krdlab/setup-haxe@master
         with:
           haxe-version: 4.3.4
-      # Runs a set of commands using the runners shell
+
       - name: Installing LibVLC
         run: |
           sudo apt-get install libvlc-dev libvlccore-dev
+
       - name: Installing/Updating libraries
         run: |
+          cd "${{ github.workspace }}"
           haxe -cp cli -D analyzer-optimize --run Main --auto-exit
+
+      - name: Verify project.xml exists
+        run: |
+          echo "Current directory: $(pwd)"
+          ls -la
+          find . -maxdepth 2 -name "project.xml" || (echo "ERROR: project.xml not found!" && exit 1)
+
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
+
       - name: Compile
-        run: haxelib run lime build linux --app-version="4.0.0-${{ github.run_id}}"
+        run: |
+          cd "${{ github.workspace }}"
+          haxelib run lime build linux --app-version="4.0.0-${{ github.run_id}}"
+
       - name: Uploading artifact (entire build)
         uses: actions/upload-artifact@v4
         with:
