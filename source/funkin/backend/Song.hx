@@ -160,12 +160,12 @@ class Song
 		final fixedPath:String = AssetsPaths.JSON_REGEX.match(cuh) ? cuh : cuh + ".json";
 		_lastPath = fixedPath;
 		final rawData:String = AssetsPaths.getContent('data/songs/$fixedPath');
-		trace(fixedPath);
 		return rawData != null ? parseJSON(rawData, jsonInput) : null;
 	}
 
 	@:noUsing public static function parseJSON(rawData:String, ?nameForError:String = null, ?convertTo:String = ''):SwagSong
 	{
+		//trace(rawData);
 		final stupidHaxe = 'astro_v${EngineData.VERSION}';
 
 		var songJson:SwagSong = cast tjson.TJSON.parse(rawData);

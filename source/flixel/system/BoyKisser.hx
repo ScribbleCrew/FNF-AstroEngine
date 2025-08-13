@@ -31,7 +31,7 @@ import flixel.util.FlxHorizontalAlign;
 
 import openfl.display.Bitmap;
 
-@:bitmap("assets/embed/shared/images/extra/kisser.png")
+@:bitmap("assets/embed/images/extra/kisser.png")
 @:noCompletion class BoyKissers extends BitmapData {}
 
 typedef GraphicStats = flixel.system.debug.FlxDebugger.GraphicStats;

@@ -4,9 +4,12 @@ import flixel.util.FlxDestroyUtil.IFlxDestroyable;
 #if GLOBAL_SCRIPT
 import flixel.util.FlxSignal.FlxTypedSignal;
 import funkin.modding.Script.ScriptType as TScript;
+import openfl.utils.Assets;
+import haxe.ds.StringMap;
+
 class GlobalScript
 {
-	// 
+	//
 	// PUBLIC HELPERS
 	//
 	public static function call(event:String, ?args:Array<Dynamic>, ?scriptType:TScript):Dynamic
@@ -20,38 +23,88 @@ class GlobalScript
 
 	public static function reload():Void
 	{
+		final more : Bool = (scripts?.scripts.length > 0) ?? true;
+		Logs.log(scripts == null ? 'No global script instance reloading...' : (more ? 'Reloading global scripts...' : 'No global scripts to reload...'), YELLOW);
+		
 		destroy();
 
 		scripts = new ScriptPack();
-
 		loadScripts(Paths.getSharedPath(), 'scripts/modules/');
-		scripts.run();
-		// for(i in )
+
+		if(more)
+			Logs.log('Global script successfully reloaded.', YELLOW);
 	}
 
-	public static function loadScripts(path:String, fileToFind:String) : Void
+	static var loadedScripts : StringMap<Bool> = new StringMap<Bool>();
+
+	public static function loadScripts(path:String, fileToFind:String):Void
 	{
 		for (folderName in Mods.directoriesWithFile(path, fileToFind))
 		{
+			// Filesystem files
 			for (_fileName in FileSystem.readDirectory(folderName))
 			{
-				if (!MusicBeatState.checkScriptExtensions(_fileName))
+				if (!Script.checkScriptExtensions(_fileName))
 					continue;
 				if (!_fileName.startsWith("MODULE_"))
 					continue;
 
 				final convertedScriptPath:String = folderName + _fileName;
+
+				if (loadedScripts.exists(convertedScriptPath))
+					continue;
+
 				#if LUA_ALLOWED
-				if (MusicBeatState.checkScriptExtensions(_fileName, "lua"))
+				if (Script.checkScriptExtensions(_fileName, "lua"))
+				{
 					scripts.add(new FunkinLua(convertedScriptPath));
+					loadedScripts.set(convertedScriptPath, true);
+				}
 				#end
 				#if HSCRIPT_ALLOWED
-				if (MusicBeatState.checkScriptExtensions(_fileName, "haxe"))
+				if (Script.checkScriptExtensions(_fileName, "haxe"))
+				{
 					scripts.add(new HScript(null, convertedScriptPath));
+					loadedScripts.set(convertedScriptPath, true);
+				}
 				#end
-				scripts.run();
+
+				loadedScripts.set(convertedScriptPath, true);
+			}
+
+			var prefix = if (!folderName.endsWith("/")) folderName + "/" else folderName;
+
+			// Embedded assets
+			for (asset in Assets.list())
+			{
+				if (!asset.startsWith(prefix)) continue;
+				final relative : String = asset.substr(prefix.length);
+				if (relative.contains("/")) continue;
+				if (!Script.checkScriptExtensions(relative)) continue;
+				if (!relative.startsWith("MODULE_")) continue;
+
+				final convertedScriptPath:String = prefix + relative;
+				if (loadedScripts.exists(convertedScriptPath)) continue;
+
+				#if LUA_ALLOWED
+				if (Script.checkScriptExtensions(relative, "lua"))
+				{
+					scripts.add(new FunkinLua(convertedScriptPath));
+					loadedScripts.set(convertedScriptPath, true);
+				}
+				#end
+
+				#if HSCRIPT_ALLOWED
+				if (Script.checkScriptExtensions(relative, "haxe"))
+				{
+					scripts.add(new HScript(null, convertedScriptPath));
+					loadedScripts.set(convertedScriptPath, true);
+				}
+				#end
 			}
 		}
+
+		scripts.run();
 	}
 
 	public static function init():Void
@@ -74,8 +127,21 @@ class GlobalScript
 		FlxG.signals.postGameStart.add(() -> scripts.call("postGameStart"));
 		FlxG.signals.postStateSwitch.add(() -> scripts.call("postStateSwitch"));
 
+		FlxG.signals.preDraw.add(() -> scripts.call("preDraw"));
+		FlxG.signals.preGameReset.add(() -> scripts.call("preGameReset"));
+		FlxG.signals.preGameStart.add(() -> scripts.call("preGameStart"));
+		FlxG.signals.preStateCreate.add((state:FlxState) -> scripts.call("preStateCreate", [state]));
+		FlxG.signals.preStateSwitch.add(() -> scripts.call("preStateSwitch", []));
+
+		FlxG.signals.preUpdate.add(() ->
+		{
+			scripts.call("preUpdate", [FlxG.elapsed]);
+			scripts.call("update", [FlxG.elapsed]);
+		});
+
 		FlxG.signals.postUpdate.add(() ->
 		{
+			FlxG.watch.addQuick("Loaded Scripts", scripts.scripts.length);
 			if (FlxG.keys.justPressed.F5)
 			{
 				if (scripts.scripts.length > 0)
@@ -92,21 +158,10 @@ class GlobalScript
 			}
 			scripts.call("postUpdate", [FlxG.elapsed]);
 		});
-
-		FlxG.signals.preDraw.add(() -> scripts.call("preDraw"));
-		FlxG.signals.preGameReset.add(() -> scripts.call("preGameReset"));
-		FlxG.signals.preGameStart.add(() -> scripts.call("preGameStart"));
-		FlxG.signals.preStateCreate.add((state:FlxState) -> scripts.call("preStateCreate", [state]));
-		FlxG.signals.preStateSwitch.add(() -> scripts.call("preStateSwitch", []));
-
-		FlxG.signals.preUpdate.add(() ->
-		{
-			scripts.call("preUpdate", [FlxG.elapsed]);
-			scripts.call("update", [FlxG.elapsed]);
-		});
 	}
 
-	public static function destroy():Void{
+	public static function destroy():Void
+	{
 		if (scripts != null)
 		{
 			scripts.call('destroy');

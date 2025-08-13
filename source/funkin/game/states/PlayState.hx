@@ -1178,7 +1178,7 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-	function startCharacterScripts(name:String):Void
+	function startCharacterScripts(name:String):Void // TODO: move this into character.hx
 	{
 		// Lua
 		#if LUA_ALLOWED
@@ -1191,17 +1191,12 @@ class PlayState extends MusicBeatState
 			luaFile = replacePath;
 			doPush = true;
 		}
-		else
+		else #end
 		{
-			luaFile = Paths.getSharedPath(luaFile);
-			if (FileSystem.exists(luaFile))
+			luaFile = Paths.getPath(luaFile);
+			if (Assets.exists(luaFile))
 				doPush = true;
 		}
-		#else
-		luaFile = Paths.getSharedPath(luaFile);
-		if (Assets.exists(luaFile))
-			doPush = true;
-		#end
 
 		if (doPush)
 		{
@@ -1221,7 +1216,7 @@ class PlayState extends MusicBeatState
 		}
 		#end
 
-		/*
+		
 		// HScript
 		#if HSCRIPT_ALLOWED
 		var doPush:Bool = false;
@@ -1236,8 +1231,8 @@ class PlayState extends MusicBeatState
 		else
 		#end
 		{
-			scriptFile = Paths.getSharedPath(scriptFile);
-			if (FileSystem.exists(scriptFile))
+			scriptFile = Paths.getPath(scriptFile);
+			if (Assets.exists(luaFile))
 				doPush = true;
 		}
 
@@ -1250,7 +1245,6 @@ class PlayState extends MusicBeatState
 				new HScript(null, scriptFile).run();
 		}
 		#end
-		*/
 	}
 
 	function startCharacterPos(char:Character, ?gfCheck:Bool = false)
@@ -3573,9 +3567,13 @@ class PlayState extends MusicBeatState
 			note.wasGoodHit = true;
 			vocals.volume = 1;
 
-			stageAccess(function(stage:BaseStage) stage.goodNoteHit(note));
-			scripts.call('goodNoteHit', [notes.members.indexOf(note), Math.round(Math.abs(note.noteData)), note.noteType, note.isSustainNote]);
+			var isSus:Bool = note.isSustainNote; // GET OUT OF MY HEAD, GET OUT OF MY HEAD, GET OUT OF MY HEAD
+			var leData:Int = Math.round(Math.abs(note.noteData));
+			var leType:String = note.noteType;
 
+			stageAccess(function(stage:BaseStage) stage.goodNoteHit(note));
+			scripts.call('goodNoteHit', [notes.members.indexOf(note), leData, leType, isSus]);
+			
 			spawnHoldSplashOnNote(note);
 			if (!note.isSustainNote)
 				invalidateNote(note);
@@ -3597,14 +3595,16 @@ class PlayState extends MusicBeatState
 		note.destroy();
 	}
 
-	public function spawnHoldSplashOnNote(note:Note) {
-		if (ClientPrefs.data.holdSplashesAlpha <= 0)
-			return;
+	public function spawnHoldSplashOnNote(note:Note) : Void {
+		if(scripts.call('onSpawnHoldSplashOnNote', [note]) != ScriptUtil.Function_Stop){
+			if (ClientPrefs.data.holdSplashesAlpha <= 0)
+				return;
 
-		if (ClientPrefs.data.holdCovers && note != null && !ClientPrefs.data.hideHud) {
-			var strum:StrumNote = ((ClientPrefs.data.oppHoldSplashes && note.hitByOpponent) ? opponentStrums : playerStrums).members[note.noteData];
-			if(strum != null && note.tail.length > 1)
-				spawnHoldSplash(note);
+			if (ClientPrefs.data.holdCovers && note != null && !ClientPrefs.data.hideHud) {
+				var strum:StrumNote = ((ClientPrefs.data.oppHoldSplashes && note.hitByOpponent) ? opponentStrums : playerStrums).members[note.noteData];
+				if(strum != null && note.tail.length > 1)
+					spawnHoldSplash(note);
+			}
 		}
 	}
 
@@ -3692,7 +3692,7 @@ class PlayState extends MusicBeatState
 	public static function cancelMusicFadeTween():Void
 	{
 		if (FlxG.sound.music.fadeTween != null)
-			FlxG.sound.music.fadeTween.cancel();
+			FlxG.sound.music?.fadeTween.cancel();
 		FlxG.sound.music.fadeTween = null;
 	}
 
@@ -3701,7 +3701,7 @@ class PlayState extends MusicBeatState
 	*/
 	@:noCompletion private var _lastStepHit:Int = -1;
 
-	@:dox(hide) override function stepHit():Void
+	@:dox(hide) @:noCompletion override function stepHit():Void
 	{
 		super.stepHit();
 		if (Math.abs(FlxG.sound.music.time - (Conductor.songPosition - Conductor.offset)) > (20 * playbackRate)
@@ -3720,7 +3720,7 @@ class PlayState extends MusicBeatState
 	* The last beat hit.	
 	*/
 	@:noCompletion private var _lastBeatHit:Int = -1;
-	@:dox(hide) override function beatHit():Void
+	@:dox(hide) @:noCompletion override function beatHit():Void
 	{
 		super.beatHit();
 

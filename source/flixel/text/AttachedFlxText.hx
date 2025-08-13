@@ -1,22 +1,18 @@
 package flixel.text;
 
+import flixel.util.FlxDestroyUtil;
 import flixel.math.FlxPoint;
-
-private typedef OptionsType = {
-	var visible:Bool;
-	var alpha:Bool;
-}
 
 class AttachedFlxText extends flixel.text.FlxText
 {
-	@:dox(hide) @:noCompletion var _tracker(default, null):FlxSprite;
+	@:dox(hide) @:noCompletion var __trackerSpr(default, null):FlxSprite;
 
 	/**
 	* The spr tracker.
 	*/
 	@:isVar public var sprTracker(get, set):FlxSprite;
-	@:dox(hide) inline function set_sprTracker(spr:FlxSprite):FlxSprite return _tracker = spr;
-	@:dox(hide) inline function get_sprTracker():FlxSprite return _tracker;
+	@:dox(hide) inline function set_sprTracker(_:FlxSprite):FlxSprite return __trackerSpr = _;
+	@:dox(hide) inline function get_sprTracker():FlxSprite return __trackerSpr;
 
 	/**
 	* The tracked sprites offset.
@@ -28,48 +24,66 @@ class AttachedFlxText extends flixel.text.FlxText
 	*/
 	public var copy:OptionsType;
 
-	// legacy support lmao (deprecated)
+	/**
+	 * [Description] The X offset of the tracker.
+	 * @deprecated use `trackerOffset.x` instead!!!
+	 * @returns Float Returns the X offset of the tracker.
+	 */
 	@:isVar 
-	@:deprecated("deprecated, use `trackerOffset` instead")
+	@:deprecated("DEPRECATED, use `trackerOffset.x` instead!!!")
 	public var offsetX(default,set):Float = 0;
 	@:dox(hide) inline function set_offsetX(value:Float):Float
 		return offsetX = trackerOffset.x = value;
 
+	/**
+	 * [Description] The Y offset of the tracker.
+	 * @deprecated use `trackerOffset.y` instead!!!
+	 * @returns Float Returns the Y offset of the tracker.
+	 */
 	@:isVar 
-	@:deprecated("deprecated, use `trackerOffset` instead")
+	@:deprecated("DEPRECATED, use `trackerOffset.y` instead!!!")
 	public var offsetY(default,set):Float = 0;
 	@:dox(hide) inline function set_offsetY(value:Float):Float
 		return offsetY = trackerOffset.y = value;
 
-	public function new(text:String = "", ?offsetX:Float = 0, ?offsetY:Float = 0, ?bold = false, ?scale:Float = 1):Void
+	public override function new(text:String = "", ?offset:FlxPoint):Void
 	{
-		super(0, 0, text, bold);
+		offset??=FlxPoint.get(0, 0);
 
-		this.offsetX = this.trackerOffset.x = offsetX;
-		this.offsetY = this.trackerOffset.y = offsetY;
+		super(0, 0, text ?? "", bold ?? false);
+		this.offsetX = this.trackerOffset.x = (offset.x ?? 0);
+		this.offsetY = this.trackerOffset.y = (offset.y ?? 0);
 	}
 
-	function refreshThis():Void {
-		setPosition(_tracker.x + (trackerOffset.x ?? 0), _tracker.y + (trackerOffset.y ?? 0));
-		if (copy.visible) visible = _tracker.visible;
-		if (copy.alpha) alpha = _tracker.alpha;
+	@:dox(hide) function __refresh():Void {
+		setPosition(__trackerSpr.x + (trackerOffset.x ?? 0), __trackerSpr.y + (trackerOffset.y ?? 0));
+		if (copy.visible) visible = __trackerSpr.visible;
+		if (copy.alpha) alpha = __trackerSpr.alpha;
 	}
 
-	@:noCompletion
-	@:dox(hide) 
-	override function initVars():Void {
+	@:dox(hide) override function destroy() : Void {
+		trackerOffset = FlxDestroyUtil.put(trackerOffset);
+		super.destroy();
+	}
+
+	@:dox(hide) override function initVars():Void {
 		super.initVars();
+
 		trackerOffset = new FlxPoint();
 		copy.visible = true;
 		copy.alpha = false;
 	}
 
-	@:dox(hide)
-	override function update(elapsed:Float):Void
+	@:dox(hide) override function update(elapsed:Float):Void
 	{
-		if (_tracker != null)
-			refreshThis();
+		if (__trackerSpr != null)
+			__refresh();
 
 		super.update(elapsed);
 	}
+}
+
+@:dox(hide) typedef OptionsType = {
+	var visible:Bool;
+	var alpha:Bool;
 }

@@ -4656,6 +4656,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 		#if MODS_ALLOWED
 		for (directory in Mods.directoriesWithFile(Paths.getSharedPath(), mainFolder))
 		{
+			if(FileSystem.exists(directory)){
 			for (file in FileSystem.readDirectory(directory))
 			{
 				var path = haxe.io.Path.join([directory, file.trim()]);
@@ -4671,6 +4672,7 @@ class ChartingState extends MusicBeatState implements FlxUIEventHandler.FlxUIEve
 						}
 					}
 				}
+			}
 			}
 		}
 		#end

@@ -63,12 +63,12 @@ class Paths
 		 * Pause Menu Music.
 		 * breakfast.(ogg/mp3).
 		 */
-		'assets/shared/music/breakfast.${Constants.SOUND_EXT}',
+		'assets/music/breakfast.${Constants.SOUND_EXT}',
 		/**
 		 * Pause Menu Music.
 		 * tea-time.(ogg/mp3).
 		 */
-		'assets/shared/music/tea-time.${Constants.SOUND_EXT}',
+		'assets/music/tea-time.${Constants.SOUND_EXT}',
 	];
 
 	/**
@@ -364,14 +364,21 @@ class Paths
 	/**
 	 * Get a folder path
 	 */
-	inline static public function getFolderPath(file:String, folder = "shared"):String
+	// inline static public function getFolderPath(file:String, folder = "shared"):String
+	// 	return AssetsPaths.getPath(file, folder == "shared" ? null : folder);//'assets/$folder/$file';
+	inline static public function getFolderPath(file:String, folder = "shared")
 		return 'assets/$folder/$file';
+
+//file:String, ?type:AssetType = TEXT, ?library:String, ?modsAllowed:Bool = true
+	public static inline function _getPath(file:String, ?library:String)
+		return library != null ? '$library:assets/$library/$file' : 'assets/$file';
+
 
 	/**
 	 * Get a file from the shared library.
 	 */
-	inline public static function getSharedPath(file:String = ''):String
-		return 'assets/shared/$file';
+	inline public static function getSharedPath(file:String = '', ?library:String):String
+		return _getPath(file,library); //'assets/shared/$file';
 
 	/**
 	 * Get a library path for a file.
@@ -393,7 +400,9 @@ class Paths
 	/**
 	 * Get a library path for a file.
 	 */
-	inline static public function json(key:String, ?library:String):String return AssetsPaths.getPath('data/$key.json', library);
+	inline static public function json(key:String, ?library:String):String {
+		return AssetsPaths.getPath('data/$key.json', library);
+	}
 
 	/**
 	 * Get a library path for a file.
@@ -537,7 +546,7 @@ class Paths
 		#if MODS_ALLOWED
 		if (FileSystem.exists(mods(Mods.currentModDirectory + '/' + key)) || FileSystem.exists(mods(key))) return true;
 		#end
-		if (OpenFlAssets.exists(getPath(key, type))) return true;
+		if (OpenFlAssets.exists(getPath(key, type))) {return true;}
 		return false;
 	}
 

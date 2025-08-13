@@ -27,6 +27,9 @@ class AssetsPaths
 
 	public static function getPath(file:String, ?type:AssetType = TEXT, ?library:String, ?modsAllowed:Bool = true):String
 	{
+		if(library != null && library != "shared")
+		{}//	trace(library);
+
 		#if MODS_ALLOWED
 		if (modsAllowed)
 		{
@@ -36,25 +39,27 @@ class AssetsPaths
 		}
 		#end
 
-		if (library != null)
-		{
-			final folderPath = Paths.getFolderPath(file, library);
-			if (FileSystem.exists(folderPath) || Assets.exists(folderPath, type))
-				return folderPath;
-		}
+		// if (library != null)
+		// {
+		// 	final folderPath = Paths.getFolderPath(file, library);
+		// 	if (FileSystem.exists(folderPath) || Assets.exists(folderPath, type))
+		// 		return folderPath;
+		// }
 
 		if (Paths.currentLevel != null && Paths.currentLevel != "shared")
 		{
 			final levelPath = Paths.getFolderPath(file, Paths.currentLevel);
-			if (FileSystem.exists(levelPath) || Assets.exists(levelPath, type))
+			if (Assets.exists(levelPath, type))
 				return levelPath;
 		}
 
-		final sharedPath = Paths.getSharedPath(file);
-		if (FileSystem.exists(sharedPath) || Assets.exists(sharedPath, type))
-			return sharedPath;
+		// final sharedPath = Paths.getSharedPath(file);
+		// if (FileSystem.exists(sharedPath) || Assets.exists(sharedPath, type))
+		// 	return sharedPath;
 
-		return file; // fallback (probably will error if used)
+	//	return library == null ? 'assets/$file' : '$library:assets/$library/$file';
+		
+		return library == null ? 'assets/$file' : 'assets/$library/$file';
 	}
 
 	public static function font(key:String, ?library:String) : String {
@@ -69,13 +74,13 @@ class AssetsPaths
 	public static inline function fileExists(key:String, ?type:AssetType, ?allowMods:Bool = true, ?library:String) : Bool  {
 		final path : String = getPath(key, type, library, allowMods);
 		#if MODS_ALLOWED if (FileSystem.exists(Paths.mods(Mods.currentModDirectory + '/' + key)) || FileSystem.exists(Paths.mods(key))) return true; #end
-		return FileSystem.exists(path) || Assets.exists(path);
+		return Assets.exists(path);
 	}
 
-	public static inline function getContent(key:String, ?library:String, ?allowMods:Bool):String
-		return _getContent(getPath(key, TEXT, library, allowMods));
+	public static function getContent(key:String, ?library:String, ?allowMods:Bool):String
+		return _getContent(key, library, allowMods);
 
-	 static inline function _getContent(key:String):String {
+	 static function _getContent(key:String, ?library:String, ?allowMods:Bool):String {
 		#if MODS_ALLOWED
 		var modPath = Paths.mods('${Mods.currentModDirectory}/$key');
 		if (FileSystem.exists(modPath))
@@ -86,6 +91,10 @@ class AssetsPaths
 			return File.getContent(modPath);
 		#end
 
-		return FileSystem.exists(key) ? File.getContent(key) : Assets.exists(key) ? Assets.getText(key) : null;
+		var ffs = getPath(key, TEXT, library, allowMods);
+		if(Assets.exists(ffs, TEXT))
+			return Assets.getText(ffs);
+
+		return null;
 	}
 }

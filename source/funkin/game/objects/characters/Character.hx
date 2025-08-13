@@ -158,7 +158,7 @@ class Character extends FlxSprite
 			#else
 			loadCharacterFile(tjson.TJSON.parse(Assets.getText(path)));
 			#end
-			#if HSCRIPT_ALLOWED loadCharacterScript(true, character); #end
+		//	#if HSCRIPT_ALLOWED loadCharacterScript(true, character); #end
 		}
 		catch (e:Dynamic)
 		{

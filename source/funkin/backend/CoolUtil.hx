@@ -13,17 +13,22 @@ import openfl.utils.Assets;
 
 class CoolUtil
 {
-		@:access(openfl.media.Sound)
+	/**
+	 * [Description] Check if a sound is valid, meaning it has a buffer and a transform.
+	 * @param sound This parameter can be any sound type, such as `openfl.media.Sound` or `flixel.sound.FlxSound`.
+	 * @return Bool Returns true if the sound is valid, false otherwise.
+	 */
 	@:access(flixel.sound.FlxSound)
-	public static function isValid<T:FlxSound>(sound:T):Bool
-		return sound._sound?.__buffer != null && sound?._transform != null;
+	@:access(openfl.media.Sound.__buffer)
+	public static function isValid<T:FlxSound>(s:T):Bool
+		return s != null && s._sound?.__buffer != null && s?._transform != null;
 
 	/**
-	 * Returns a string representation of a size, following this format: `1.02 GB`, `134.00 MB`
-	 * @param size Size to convert to string
-	 * @return String Result string representation
+	 * [Description] Gets the size of a file in bytes and converts it to a human-readable string.
+	 * @param size Size in bytes to convert.
+	 * @return String Returns a string representation of the size, e.g. `1.02 GB`, `134.00 MB`
 	 */
-	public static function getSizeString(size:Float):String
+	@:noUsing public static function getSizeString(size:Float):String
 	{
 		var labels = ["B", "KB", "MB", "GB", "TB"];
 		var rSize:Float = size;
@@ -36,41 +41,57 @@ class CoolUtil
 		return '${Std.int(rSize) + "." + addZeros(Std.string(Std.int((rSize % 1) * 100)), 2)}${labels[label]}';
 	}
 
-	static var _mousePoint:FlxPoint = new FlxPoint();
-	static var _objPoint:FlxPoint = new FlxPoint();
+	@:dox(hide) @:noCompletion static var __mousePoint:FlxPoint = new FlxPoint();
+	@:dox(hide) @:noCompletion static var __objPoint:FlxPoint = new FlxPoint();
 
+	/**
+	 * [Description] Checks if the mouse is overlapping with a given object.
+	 * @param obj The object to check for mouse overlap.
+	 * @param mousePoint If not provided, it will use the current mouse position.
+	 * @param camera  If not provided, it will use the object's camera.
+	 * @return Bool Returns true if the mouse is overlapping with the object, false otherwise.
+	 */
 	public static function mouseOverlapping<T:flixel.FlxObject>(obj:T, ?mousePoint:FlxPoint, ?camera:flixel.FlxCamera)
 	{
 		camera ??= obj.camera;
-		mousePoint ??= FlxG.mouse.getScreenPosition(camera, _mousePoint);
-		obj.getScreenPosition(_objPoint, camera);
-		return FlxMath.pointInCoordinates(mousePoint.x, mousePoint.y, _objPoint.x, _objPoint.y, obj.width, obj.height);
+		mousePoint ??= FlxG.mouse.getScreenPosition(camera, __mousePoint);
+		obj.getScreenPosition(__objPoint, camera);
+		return FlxMath.pointInCoordinates(mousePoint.x, mousePoint.y, __objPoint.x, __objPoint.y, obj.width, obj.height);
 	}
 
 	/**
-		* Returns the class in question's path e.g `funkin.backend.CoolUtil`
-		* @param class 
-		* @return String 
-				return Type.getClassName(Type.getClass(class))
+	 * [Description] Finds the first element in an array that matches a given predicate.
+	 * @param arr Array<T> The array to search through.
+	 * @param predicate T->Bool The predicate function to match against each element.
+	 * @return Null<T> Returns the first element that matches the predicate, or null if none found.
 	 */
-	public static function getClassPath(_class:Dynamic):String
+	public static function find<T>(arr:Array<T>, predicate:T->Bool):Null<T> {
+		for (item in arr) if (predicate(item)) return item;
+		return null;
+	}
+
+	/**
+	 * [Description] Returns the class in question's path e.g `funkin.backend.CoolUtil`
+	 * @param class  Dynamic class to get the path of.
+	 * @return String Returns the class path.
+	 */
+	@:noUsing public static function getClassPath(_class:Dynamic):String
 		return Type.getClassName(Type.getClass(_class));
 
 	/**
-		* Returns the class in question's name e.g `CoolUtil`
-		* @param class 
-		* @return String
-				return getClassPath(class).split(".").pop()
+	 * [Description] Returns the class in question's name e.g `CoolUtil`
+	 * @param class Dynamic class to get the name of.
+	 * @return String Returns the class name.
 	 */
-	public static function getClassName(_class:Dynamic):String
+	@:noUsing public static function getClassName(_class:Dynamic):String
 		return getClassPath(_class).split(".").pop();
 
 	/**
-	 * Add several zeros at the beginning of a string, so that `2` becomes `02`.
+	 * [Description] Add several zeros at the beginning of a string, so that `2` becomes `02`.
 	 * @param str String to add zeros
 	 * @param num The length required
 	 */
-	public static inline function addZeros(str:String, num:Int)
+	@:noUsing public static inline function addZeros(str:String, num:Int)
 	{
 		while (str.length < num)
 			str = '0${str}';
@@ -78,9 +99,11 @@ class CoolUtil
 	}
 
 	/**
-	 * Used to uhh fix json maps.	
+	 * [Description] Converts an object to a map.
+	 * @param v The object to convert.
+	 * @return Map<String, Dynamic> Returns a map with the object's fields and values.
 	 */
-	public static function objectToMap<T>(v:Dynamic):Map<String, Dynamic>
+	@:noUsing public static inline function objectToMap<T>(v:Dynamic):Map<String, Dynamic>
 	{
 		final animPrefixes:StringMap<Dynamic> = new StringMap<Dynamic>();
 		for (field in Reflect.fields(v))
@@ -88,14 +111,26 @@ class CoolUtil
 		return animPrefixes;
 	}
 
+	/**
+	 * [Description] Returns a ratio of the current FPS to the target FPS.
+	 * @param ratio	 The ratio to calculate, usually between 0 and 1.
+	 * @return Float Returns the ratio of the current FPS to the target FPS.
+	 */
 	@:noUsing public static inline function getFPSRatio(ratio:Float):Float
 	{
 		return FlxMath.bound(ratio * 60 * FlxG.elapsed, 0, 1);
 	}
 
-	@:noUsing public static inline function fpsLerp(v1:Float, v2:Float, ratio:Float):Float
+	/**
+	 * [Description] Lerps between two values based on the current FPS ratio.
+	 * @param a  The first value to lerp from.
+	 * @param b  The second value to lerp to.
+	 * @param ratio  The ratio to calculate, usually between 0 and 1.
+	 * @return Float Returns the lerped value between `a` and `b` based on the current FPS ratio.
+	 */
+	@:noUsing public static inline function fpsLerp(a:Float, b:Float, ratio:Float):Float
 	{
-		return FlxMath.lerp(v1, v2, getFPSRatio(ratio));
+		return FlxMath.lerp(a, b, getFPSRatio(ratio));
 	}
 
 	/**
@@ -110,9 +145,15 @@ class CoolUtil
 		ClientPrefs.saveSettings();
 	}
 
-	public static inline function getDefault<T>(v:Null<T>, defaultValue:T):T
+	/**
+	 * [Description] Returns a default value if the given value is null or NaN.
+	 * @param v The value to check.
+	 * @param defaultVal The default value to return if the given value is null or NaN.
+	 * @return T
+	 */
+	public static inline function getDefault<T>(v:Null<T>, defaultVal:T):T
 	{
-		return (v == null || MathsAddon.isNaN(v)) ? defaultValue : v;
+		return (v == null || MathsAddon.isNaN(v)) ? defaultVal : v;
 	}
 
 	@:noUsing public static function coolTextFile(path:String):Array<String>
@@ -120,24 +161,33 @@ class CoolUtil
 		var betterehh:String = '';
 		if (OpenFlAssets.exists(path))
 			betterehh = OpenFlAssets.getText(path);
-		#if sys if (FileSystem.exists(path))
-			betterehh = File.getContent(path); #end
+		#if sys
+		if (FileSystem.exists(path))
+			betterehh = File.getContent(path);
+		#end
 
 		var trim:String;
 		return [
-			for (line in betterehh.split("\n")) if ((trim = line.trim()) != "" && !trim.startsWith("#")) trim
+			for (line in betterehh.split("\n"))
+				if ((trim = line.trim()) != "" && !trim.startsWith("#")) trim
 		];
 	}
 
+	@:dox(hide) @:noCompletion static final __COLOR_REGEX:EReg = ~/[\t\n\r]/;
+	/**
+	 * [Description] Converts a string to a FlxColor.
+	 * @param color The color string to convert.
+	 * @return FlxColor Returns the FlxColor representation of the given color string.
+	 */
 	inline public static function colorFromString(color:String):FlxColor
-		return FlxColor.fromString((color = ~/[\t\n\r]/.split(color)
+		return FlxColor.fromString((color = __COLOR_REGEX.split(color)
 			.join('')
 			.trim()).startsWith('0x') ? color.substring(color.length - 6) : color) ?? FlxColor.fromString('#$color') ?? FlxColor.WHITE;
 
-	public static function listFromString(string:String):Array<String>
+	@:noUsing public static function listFromString(string:String):Array<String>
 		return [for (line in string.trim().split('\n')) line.trim()];
 
-	inline public static function dominantColor(sprite:flixel.FlxSprite):Int
+	@:noUsing inline public static function dominantColor(sprite:flixel.FlxSprite):Int
 	{
 		var countByColor:Map<Int, Int> = [];
 		for (col in 0...sprite.frameWidth)
@@ -169,7 +219,7 @@ class CoolUtil
 		return maxKey;
 	}
 
-	public static function range(max:Int, ?min = 0):Array<Int>
+	@:noUsing public static function range(max:Int, ?min = 0):Array<Int>
 		return [for (i in min...max) i];
 
 	@:noUsing public static function browserLoad(site:String):Void
@@ -193,6 +243,6 @@ class CoolUtil
 	public static var savePath(get, default):String;
 
 	@:access(flixel.util.FlxSave.validate)
-	inline public static function get_savePath():String
+	@:noUsing inline public static function get_savePath():String
 		return '${FlxG.stage.application.meta.get('company')}/${FlxSave.validate(FlxG.stage.application.meta.get('file'))}';
 }
