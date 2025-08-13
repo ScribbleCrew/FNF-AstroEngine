@@ -17,6 +17,7 @@ class Main {
 
 	public static function main() : Void {
 		var libraries:Array<TLibrary> = [];
+		var args:Array<String> = Sys.args();
 
 		Console.separator("Lunar Engine Setup 🌒");
 		if (!FileSystem.exists('.haxelib')) FileSystem.createDirectory('.haxelib');
@@ -89,21 +90,24 @@ class Main {
 
 		Console.separator("All done! 🎉");
 
-		__exit();
+		__exit(args.length > 0 && args[0] == "--auto-exit" ? true : false);
 	}
 
-	@:noCompletion static function __exit() : Void {
+	@:noCompletion static function __exit(?autoExit:Bool = false) : Void {
 		Sys.print(Console.GREEN + "Finished installing libraries. " + Console.RESET);
-		Sys.print(Console.CYAN + "Exit program? (Y): " + Console.RESET);
-		while (true) {
-			var input = Sys.stdin().readLine();
-			if (input == null) continue;
-			
-			input = input.trim().toUpperCase();
-			if (input == "Y") break;
+		if(!autoExit) {
+			Sys.print(Console.CYAN + "Exit program? (Y): " + Console.RESET);
+			while (true) {
+				var input:String = Sys.stdin().readLine();
+				if (input == null) continue;
+				input = input.trim().toUpperCase();
+				if (input == "Y") break;
 
-			Sys.print(Console.YELLOW + "Press Y To Leave: " + Console.RESET);
+				Sys.print(Console.YELLOW + "Press Y To Leave: " + Console.RESET);
+			}
 		}
+		else
+			Sys.exit(0);
 	}
 
 	@:noCompletion static final __ereg:EReg = ~/(\d+)%/;

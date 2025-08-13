@@ -33,7 +33,7 @@ jobs:
           haxe-version: 4.3.4
       - name: Installing/Updating libraries
         run: |
-            haxe -cp cli -D analyzer-optimize --run Main
+            haxe -cp cli -D analyzer-optimize --run Main --auto-exit
         shell: cmd
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION

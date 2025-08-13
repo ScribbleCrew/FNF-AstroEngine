@@ -7,7 +7,7 @@ using StringTools;
 
 class Console
 {
-	static final SPIN_FRAMES:Array<String> = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+	@:allow(Main) static final SPIN_FRAMES:Array<String> = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
 
 	public static inline final RESET  = "\x1b[0m";
 	public static inline final BOLD   = "\x1b[1m";
