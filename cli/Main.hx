@@ -16,8 +16,10 @@ class Main {
 	@:noCompletion inline static var __silent:Bool = false;
 
 	public static function main() : Void {
+		final args:Array<String> = Sys.args();
+		final __skip:Bool = args.length > 0 && args[0] == "--auto-exit" ? true : false;
+
 		var libraries:Array<TLibrary> = [];
-		var args:Array<String> = Sys.args();
 
 		Console.separator("Lunar Engine Setup 🌒");
 		if (!FileSystem.exists('.haxelib')) FileSystem.createDirectory('.haxelib');
@@ -88,10 +90,19 @@ class Main {
 			}
 		}
 
-		final __skip:Bool = args.length > 0 && args[0] == "--auto-exit" ? true : false;
-
 		// creds to @crowplexus, @nexisdumb, 
-		if (Utils.buildTarget().toLowerCase() == "windows" && new Process('"C:/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe" -property catalog_productDisplayVersion').exitCode(true) == 1) {
+		__installVSC(__skip);
+		Console.separator("All done! 🎉");
+		__exit(__skip);
+	}
+
+	/**
+	 * [Description] Installs Microsoft Visual Studio Community if not already installed.
+	 * @param autoExit If true, exits the program after installation.
+	 * @return Void
+	 */
+	@:noCompletion static function __installVSC(?autoExit:Bool = false) : Void {
+		if (Utils.buildTarget.toLowerCase() == "windows" && new Process('"C:/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe" -property catalog_productDisplayVersion').exitCode(true) == 1) {
 			Console.info("Installing Microsoft Visual Studio Community (Dependency)");
 
 			Console.spinner("Downloading Visual Studio Community...", 2.5);
@@ -99,17 +110,13 @@ class Main {
 			Sys.command("vs_Community.exe --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows10SDK.19041 -p");
 
 			FileSystem.deleteFile("vs_Community.exe");
-			if(!__skip)
+			if(!autoExit)
 			{
 				Console.warning("If this wasn't specified before you'll need to restart you device for the changes to take effect.");
 				Sys.print("Do you wish to do it now [y/n]? ");
 				if(Sys.stdin().readLine().toUpperCase() == "Y") Sys.command("shutdown /r /t 0 /f");
 			}
 		}
-
-		Console.separator("All done! 🎉");
-
-		__exit(__skip);
 	}
 
 	@:noCompletion static function __exit(?autoExit:Bool = false) : Void {

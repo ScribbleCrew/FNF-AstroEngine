@@ -8,7 +8,7 @@ class Utils
      */
     public static var buildTarget(get, null):String;
     @:noCompletion static var __buildTarget:String = null;
-    @:noCompletion inline static function get__buildTarget():String {
+    @:noCompletion inline static function get_buildTarget():String {
         if (__buildTarget == null) {
             __buildTarget = switch (Sys.systemName().toUpperCase()) {
                 case "WINDOWS": "windows";
