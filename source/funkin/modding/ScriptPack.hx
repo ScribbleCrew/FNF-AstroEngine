@@ -2,7 +2,7 @@ package funkin.modding;
 
 import funkin.modding.Script.ScriptType;
 
-class ScriptPack implements IDummy implements flixel.util.FlxDestroyUtil.IFlxDestroyable
+class ScriptPack implements flixel.util.FlxDestroyUtil.IFlxDestroyable
 {
 	@:deprecated('Find a better way')
 	public static var packInstances:Array<ScriptPack> = [];
