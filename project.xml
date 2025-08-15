@@ -155,7 +155,7 @@
 	<classpath name="source" />
 	
 	<!-- Build directories -->
-	<set name="BUILD_DIR" value="export/debug_FFS_alt" if="debug" />
+	<set name="BUILD_DIR" value="export/debug" if="debug" />
 	<set name="BUILD_DIR" value="export/release" unless="debug" />
 	<set name="BUILD_DIR" value="export/32bit" if="32bits" />
 
