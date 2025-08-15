@@ -134,7 +134,7 @@ class CallbackHandler
 	}
 }
 
-class FunkinLua extends Script implements IScript
+class FunkinLua extends Script implements IScript implements ILua
 {
 	public static var instances:Array<FunkinLua> = [];
 
@@ -1958,6 +1958,10 @@ class FunkinLua extends Script implements IScript
 	public var lastCalledFunction:String = '';
 
 	public static var lastCalledScript:FunkinLua = null;
+
+	override public function setParent(parent:Dynamic)
+	{
+	}
 
 	override public function call(functionName:String, ?funcArgs:Array<Dynamic>):Dynamic
 	{

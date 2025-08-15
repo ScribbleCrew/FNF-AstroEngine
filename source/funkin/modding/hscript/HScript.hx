@@ -41,7 +41,7 @@ typedef HScriptInfos =
 	#end
 }
 
-class HScript extends rulescript.RuleScript
+class HScript extends rulescript.RuleScript implements IScript implements IHScript
 {
 	/**
 	 * All executed instances of `HSCRIPT`.	
@@ -78,11 +78,13 @@ class HScript extends rulescript.RuleScript
 		return exec;
 	}
 
-	override public function setParent(parent:Dynamic) : Dynamic
+	override public function setParent(parent:Dynamic)
 	{
-		final __interp = Std.isOfType(interp, RuleScriptInterpreter) ? cast interp : null;
-		__interp ?? return null; // bruh,,, i fucking hate types 🥺🙏
-		return __interp.superInstance = parent;
+		final _interp:RuleScriptInterpreter = Std.isOfType(interp, RuleScriptInterpreter) ? cast interp : null;
+		if (_interp == null)
+			return; // bruh,,, i fucking hate types 🥺🙏
+		_interp.superInstance = parent;
+		return;
 	}
 
 	/**
