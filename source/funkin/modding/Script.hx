@@ -60,7 +60,7 @@ class Script implements IFlxDestroyable
 	}
 
 	static var extensions:Map<String, Array<String>> = new Map<String, Array<String>>();	
-	static function initExt():Void{// TODO: use regex instead of strings
+	static function __setupScriptExt():Void{// TODO: use regex instead of strings
 		#if LUA_ALLOWED extensions.set('lua', [".lua", ".funkinlua"]); #end
 		#if HSCRIPT_ALLOWED extensions.set('haxe', [".hx", ".hxc", ".hscript" /* why would anyone need this... */]); /* funi extensions */ #end
 	}
