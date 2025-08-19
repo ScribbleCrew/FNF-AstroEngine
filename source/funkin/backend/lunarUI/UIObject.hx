@@ -3,8 +3,9 @@ package funkin.backend.lunarUI;
 import flixel.FlxSprite;
 import flixel.FlxBasic;
 import flixel.util.FlxSignal.FlxTypedSignal;
-
-// TODO: have a UIState focus + boolean to chose to follow focus rules 
+import openfl.ui.MouseCursor;
+import openfl.ui.Mouse;
+// TODO: have a UIState focus + boolean to choose to follow focus rules 
 // Which means if you have it false you can have `UIState.state.focus = spr` be active and `spr` be active
 // im sorry, im awful at explaining stuffz
 class UIObject extends FlxSprite
@@ -36,7 +37,7 @@ class UIObject extends FlxSprite
 	
 	// WHEN YOU FUCKING HOVER OR SMTH OR WHEN YOU DOn'T FUCKING UHHH
 	public var focusChange:FlxTypedSignal<(Bool, ?UIObject) -> Void> = new FlxTypedSignal();
-
+	public var cursor:MouseCursor = ARROW;
 	@:noCompletion var __prevFocus:Bool = false;
 
 	@:dox(hide) override public function update(elapsed:Float):Void
@@ -52,7 +53,10 @@ class UIObject extends FlxSprite
 					pressedCallback.dispatch(this);
 		}
 
-		if (__prevFocus != focused && focusChange != null && available)
+		if (__prevFocus != focused && focusChange != null && available){
+			if (UIState.state != null)
+				UIState.state.hoveredSprite = (focused ? this : null);
 			focusChange.dispatch(focused, this);
+		}
 	}
 }

@@ -15,7 +15,7 @@ class UIDebugState extends UIState
 
 		final contextBox = new UISliceSprite(0, 0, 300, 200, 'ui/context-bg');
 		contextBox.scrollFactor.set(1, 1);
-		contextBox.sCenter();
+		contextBox.centerScreen();
 		add(contextBox);
 
 		// for(i in 1...4)// makes 3 i thonk
@@ -48,6 +48,19 @@ class UIDebugState extends UIState
 				className: "lunarDoc",
 				methodName: "WHAT:void"
 			});
+
+		if(FlxG.keys.justPressed.F8)
+			openSubState(new WindowPopup(FlxG.width-400, FlxG.height-200, "Test 3.2.1. (kisser) <:3>:3<:3>", (state:WindowPopup)->{
+				state.persistentDraw = true;
+				state.persistentUpdate = true;
+
+				state._windowTitle.applyMarkup(state._windowTitle.text, [new FlxTextFormatMarkerPair(new FlxTextFormat(0xFFFFA6FB), "<:3>")]);
+				state._windowTitle.textField.antiAliasType = openfl.text.AntiAliasType.ADVANCED;
+				state._windowTitle.textField.sharpness = 400;
+
+				var spr; state.add(spr = new FlxSprite(0,0,Paths.image('extra/kisser')));
+				spr.cameras = state.cameras; state._windowBackground.centerSpriteOnThis(spr);
+			}));
 
 	}
 
